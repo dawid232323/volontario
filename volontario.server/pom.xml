@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>uam.volontario</groupId>
-	<artifactId>volontario</artifactId>
+	<artifactId>volontario.server</artifactId>
 	<version>0.0.1</version>
 
 	<properties>
