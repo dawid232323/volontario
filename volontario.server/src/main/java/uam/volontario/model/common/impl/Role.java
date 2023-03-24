@@ -1,7 +1,11 @@
 package uam.volontario.model.common.impl;
 
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import uam.volontario.model.common.RoleIf;
 
 /**
@@ -9,9 +13,8 @@ import uam.volontario.model.common.RoleIf;
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
+@Builder
 @Entity
 @Table( name = "roles" )
 public class Role implements RoleIf
@@ -22,5 +25,6 @@ public class Role implements RoleIf
     private Long id;
 
     @Column
+    @NotBlank( message = "User must have defined role" )
     private String name;
 }

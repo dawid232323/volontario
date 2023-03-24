@@ -1,7 +1,12 @@
 package uam.volontario.model.volunteer.impl;
 
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 
 /**
@@ -9,9 +14,8 @@ import uam.volontario.model.common.VolontarioDomainElementIf;
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
+@Builder
 @Entity
 @Table( name = "volunteer_experiences" )
 public class VolunteerExperience implements VolontarioDomainElementIf
@@ -22,8 +26,10 @@ public class VolunteerExperience implements VolontarioDomainElementIf
     private Long id;
 
     @Column
+    @NotBlank( message = "User needs to have experience defined" )
     private String name;
 
+    @Size( max = 500 )
     @Column( length = 500 )
     private String definition;
 }

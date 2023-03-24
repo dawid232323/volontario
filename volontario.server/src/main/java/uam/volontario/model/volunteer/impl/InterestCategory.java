@@ -1,7 +1,12 @@
 package uam.volontario.model.volunteer.impl;
 
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 
 import java.util.Set;
@@ -11,9 +16,8 @@ import java.util.Set;
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
+@Builder
 @Entity
 @Table( name = "interest_categories" )
 public class InterestCategory implements VolontarioDomainElementIf
@@ -24,9 +28,11 @@ public class InterestCategory implements VolontarioDomainElementIf
     private Long id;
 
     @Column
+    @NotBlank( message = "Interest category must be named" )
     private String name;
 
     @Column( length = 750 )
+    @Size( max = 750 )
     private String description;
 
     @ManyToMany( mappedBy = "interestCategories" )

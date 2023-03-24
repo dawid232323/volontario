@@ -1,7 +1,11 @@
 package uam.volontario.model.volunteer.impl;
 
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 import uam.volontario.model.common.impl.User;
 
@@ -12,9 +16,8 @@ import java.util.Set;
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
+@Builder
 @Entity
 @Table( name = "volunteer_data" )
 public class VolunteerData implements VolontarioDomainElementIf
@@ -28,14 +31,15 @@ public class VolunteerData implements VolontarioDomainElementIf
     @JoinColumn
     private User user;
 
+    @Size( max = 1500 )
     @Column( length = 1500 )
     private String participationMotivation;
 
-    @OneToOne
+    @OneToOne( cascade = CascadeType.ALL )
     @JoinColumn
     private VolunteerExperience experience;
 
-    @ManyToMany( cascade = { CascadeType.ALL } )
+    @ManyToMany( cascade =  CascadeType.ALL  )
     @JoinTable( name = "volunteer_interests",
                 joinColumns = { @JoinColumn( name = "volunteer_data_id" ) },
                 inverseJoinColumns = { @JoinColumn( name = "interest_category_id" ) }
