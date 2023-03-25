@@ -1,5 +1,1 @@
-
-
-export interface UserIf {
-
-}
+export interface UserIf {}

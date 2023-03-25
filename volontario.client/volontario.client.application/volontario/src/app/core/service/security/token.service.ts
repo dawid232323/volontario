@@ -1,14 +1,11 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from '@angular/core';
 
-
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TokenService {
-
   private readonly TOKEN_KEY = 'AUTH_TOKEN';
   private readonly REFRESH_TOKEN_KEY = 'AUTH_REFRESH_TOKEN';
 
-  constructor() {
-  }
+  constructor() {}
 
   public saveToken(newToken: string) {
     window.sessionStorage.removeItem(this.TOKEN_KEY);

@@ -1,5 +1,4 @@
-import {InterestCategoryDTO} from './interestCategory.model';
-
+import { InterestCategoryDTO } from './interestCategory.model';
 
 export class VolunteerRegisterDTO {
   constructor(
@@ -12,8 +11,7 @@ export class VolunteerRegisterDTO {
     public participationMotivation: string,
     public experience: string,
     public interestCategories: InterestCategoryDTO[]
-  ) {
-  }
+  ) {}
 
   public static fromPayload(payload: any): VolunteerRegisterDTO {
     return new VolunteerRegisterDTO(

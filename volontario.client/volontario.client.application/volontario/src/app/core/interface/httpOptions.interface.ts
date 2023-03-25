@@ -1,5 +1,4 @@
-import {HttpContext, HttpHeaders, HttpParams} from "@angular/common/http";
-
+import { HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
 
 export interface HttpOptionsInterface {
   headers?: HttpHeaders;
@@ -9,5 +8,4 @@ export interface HttpOptionsInterface {
   reportProgress?: boolean;
   responseType?: 'json';
   withCredentials?: boolean;
-
 }
