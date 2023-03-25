@@ -1,6 +1,8 @@
 package uam.volontario.dto.convert;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
@@ -47,9 +49,11 @@ public class DtoConverter
                 .participationMotivation( aDto.getParticipationMotivation() )
                 .interestCategories( volunteerInterestCategories ).build();
 
+        final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         return User.builder().firstName( aDto.getFirstName() )
                 .lastName( aDto.getLastName() )
-                .hashedPassword( aDto.getPassword() ) // TODO: once Spring Security is brought back, we need to pass hashed password here.
+                .hashedPassword( passwordEncoder.encode( aDto.getPassword() ) )
                 .domainEmailAddress( aDto.getDomainEmail() )
                 .contactEmailAddress( aDto.getContactEmail() )
                 .phoneNumber( aDto.getPhoneNumber() )
