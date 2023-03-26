@@ -1,8 +1,12 @@
 package uam.volontario.security.jwt;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uam.volontario.crud.service.UserService;
 import uam.volontario.model.common.impl.User;
 
 import java.time.Duration;
@@ -16,6 +20,9 @@ import java.util.Map;
 @Component
 public class JWTService
 {
+    @Autowired
+    private UserService userService;
+
     //TODO: temporary key, for testing.
     private final static String KEY = "AmoULwYGnw9BaYbb0ZkkjFZuUJi0pfGNN8RuuKmWwVP5mvkcGmouqBqd" +
             "4IZqMPSVyAxe8gljmEyGVlmVXDYzeMlLyKs6gWYMYQMVgjH7Qoc58KJWAUtUyeOAMADMHZikMw5dIpJ6H" +
@@ -42,13 +49,66 @@ public class JWTService
         );
     }
 
-    private String createToken( final User aUser, int aExpirationOffsetFromNowInMinutes )
+    /**
+     * Validates token by checking whether it has existing user and still valid expiration date.
+     *
+     * @param aJWT jwt.
+     *
+     * @return false, if jwt is expired or when it has no existing user. True otherwise.
+     */
+    public boolean validateToken( final String aJWT )
+    {
+        try
+        {
+            final Claims jwtClaims = Jwts.parserBuilder()
+                    .setSigningKey( KEY )
+                    .build()
+                    .parseClaimsJws( aJWT )
+                    .getBody();
+
+            final Long userId = (long) (int)jwtClaims.get( "id" );
+            return userService.tryLoadEntity( userId ).isPresent();
+        }
+        catch ( ExpiredJwtException aE )
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Reads domain email address from jwt.
+     *
+     * @param aJWT jwt.
+     *
+     * @return jwt's domain email address or null if jwt is expired.
+     */
+    public String readDomainEmailAddressFromJWT( final String aJWT )
+    {
+        try
+        {
+            final Claims jwtClaims = Jwts.parserBuilder()
+                    .setSigningKey( KEY )
+                    .build()
+                    .parseClaimsJws( aJWT )
+                    .getBody();
+
+            return (String)jwtClaims.get( "domainEmail" );
+        }
+        catch ( ExpiredJwtException aE )
+        {
+            // TODO: add logger
+            return null;
+        }
+    }
+
+    private String createToken( final User aUser, final int aExpirationOffsetFromNowInMinutes )
     {
         final Instant now = Instant.now();
 
         return Jwts.builder()
-                .setSubject( aUser.getDomainEmailAddress() )
-                .setClaims( Map.of( "id", aUser.getId(), "role", aUser.getRole().getName() ) )
+                .setClaims( Map.of( "id", aUser.getId(),
+                        "role", aUser.getRole().getName(),
+                        "domainEmail", aUser.getDomainEmailAddress() ) )
                 .setIssuedAt( Date.from( now ) )
                 .setExpiration( Date.from( now.plus( Duration.ofMinutes( aExpirationOffsetFromNowInMinutes ) ) ) )
                 .signWith( SignatureAlgorithm.HS512, KEY )

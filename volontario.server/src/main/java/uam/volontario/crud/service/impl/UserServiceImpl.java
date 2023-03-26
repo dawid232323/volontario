@@ -3,6 +3,8 @@ package uam.volontario.crud.service.impl;
 import com.google.common.collect.Lists;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.repository.UserRepository;
 import uam.volontario.crud.service.UserService;
@@ -49,5 +51,19 @@ public class UserServiceImpl implements UserService
     public void deleteEntity( final Long aEntityId )
     {
         userRepository.deleteById( aEntityId );
+    }
+
+    @Override
+    public Optional< User > tryToLoadByDomainEmail( final String aDomainEmail )
+    {
+        return loadAllEntities().stream()
+                .filter( user -> user.getDomainEmailAddress().equals( aDomainEmail ) )
+                .findAny();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername( String username ) throws UsernameNotFoundException
+    {
+        return tryToLoadByDomainEmail( username ).orElseThrow( () -> new UsernameNotFoundException( "not found" ) );
     }
 }

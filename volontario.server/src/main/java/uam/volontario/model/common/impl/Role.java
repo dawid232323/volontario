@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import uam.volontario.model.common.RoleIf;
 
 /**
@@ -17,7 +18,7 @@ import uam.volontario.model.common.RoleIf;
 @Builder
 @Entity
 @Table( name = "roles" )
-public class Role implements RoleIf
+public class Role implements RoleIf, GrantedAuthority
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -27,4 +28,10 @@ public class Role implements RoleIf
     @Column
     @NotBlank( message = "User must have defined role" )
     private String name;
+
+    @Override
+    public String getAuthority()
+    {
+        return name;
+    }
 }

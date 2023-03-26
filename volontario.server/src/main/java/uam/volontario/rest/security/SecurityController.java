@@ -116,4 +116,11 @@ public class SecurityController
                     .body( aE.getMessage() );
         }
     }
+
+    // TODO: test endpoint.
+    @PostMapping( value = "/test" )
+    public ResponseEntity< ? > test( @RequestBody String aString )
+    {
+        return ResponseEntity.ok( 200 );
+    }
 }

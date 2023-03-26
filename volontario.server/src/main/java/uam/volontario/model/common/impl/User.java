@@ -10,10 +10,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import uam.volontario.model.common.UserIf;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.validation.annotation.DomainEmail;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Basic implementation of {@linkplain UserIf}.
@@ -24,7 +29,7 @@ import uam.volontario.validation.annotation.DomainEmail;
 @Builder
 @Entity
 @Table( name = "users" )
-public class User implements UserIf
+public class User implements UserIf, UserDetails
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -75,4 +80,46 @@ public class User implements UserIf
     @ManyToOne( cascade = CascadeType.ALL )
     @JoinColumn( name = "institution_id" )
     private Institution institution;
+
+    @Override
+    public Collection< ? extends GrantedAuthority > getAuthorities()
+    {
+        return List.of( role );
+    }
+
+    @Override
+    public String getPassword()
+    {
+        return getHashedPassword();
+    }
+
+    @Override
+    public String getUsername()
+    {
+        return getDomainEmailAddress();
+    }
+
+
+    // TODO: those UserDetails methods need to be discusses and taken care of.
+    @Override
+    public boolean isAccountNonExpired()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        return true;
+    }
 }
