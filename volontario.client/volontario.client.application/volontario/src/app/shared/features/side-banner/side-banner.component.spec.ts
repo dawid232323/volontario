@@ -8,9 +8,8 @@ describe('SideBannerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SideBannerComponent ]
-    })
-    .compileComponents();
+      declarations: [SideBannerComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SideBannerComponent);
     component = fixture.componentInstance;

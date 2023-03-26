@@ -36,10 +36,7 @@ export class VolontarioRestService {
     endpoint: string,
     options?: HttpOptionsInterface
   ): Observable<any> {
-    return this.httpClient.get(
-      endpoint,
-      this.getHttpOptionsWithAuthorization(options)
-    );
+    return this.httpClient.get(this.getEnvironmentUrl() + endpoint, options);
   }
 
   public post(
@@ -48,9 +45,9 @@ export class VolontarioRestService {
     options?: HttpOptionsInterface
   ): Observable<any> {
     return this.httpClient.post(
-      endpoint,
+      this.getEnvironmentUrl() + endpoint,
       body,
-      this.getHttpOptionsWithAuthorization(options)
+      options
     );
   }
 
@@ -60,9 +57,9 @@ export class VolontarioRestService {
     options?: HttpOptionsInterface
   ): Observable<any> {
     return this.httpClient.post(
-      endpoint,
+      this.getEnvironmentUrl() + endpoint,
       body,
-      this.getHttpOptionsWithAuthorization(options)
+      options
     );
   }
 
@@ -70,9 +67,11 @@ export class VolontarioRestService {
     endpoint: string,
     options?: HttpOptionsInterface
   ): Observable<any> {
-    return this.httpClient.delete(
-      endpoint,
-      this.getHttpOptionsWithAuthorization(options)
-    );
+    return this.httpClient.delete(this.getEnvironmentUrl() + endpoint, options);
+  }
+
+  // TODO when we introduce environment variables this method should return corresponding url
+  public getEnvironmentUrl(): string {
+    return 'http://localhost:8080/api';
   }
 }

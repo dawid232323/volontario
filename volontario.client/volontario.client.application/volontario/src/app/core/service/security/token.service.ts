@@ -24,4 +24,9 @@ export class TokenService {
   public getRefreshToken(): string | null {
     return window.sessionStorage.getItem(this.REFRESH_TOKEN_KEY);
   }
+
+  public logout() {
+    window.sessionStorage.removeItem(this.TOKEN_KEY);
+    window.sessionStorage.removeItem(this.REFRESH_TOKEN_KEY);
+  }
 }

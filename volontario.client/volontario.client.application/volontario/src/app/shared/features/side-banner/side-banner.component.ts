@@ -3,13 +3,10 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-side-banner',
   templateUrl: './side-banner.component.html',
-  styleUrls: ['./side-banner.component.scss']
+  styleUrls: ['./side-banner.component.scss'],
 })
 export class SideBannerComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
