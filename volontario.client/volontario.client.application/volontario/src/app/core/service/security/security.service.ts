@@ -31,14 +31,12 @@ export class SecurityService {
     return new Observable<any>();
   }
 
-  // TODO implement logic when backend service is ready
   public login(loginDto: LoginInterface): Observable<void> {
-    const url = this.endpointBaseUrl + '/login';
-    return this.httpClient.post(url, loginDto).pipe(
+    return this.volRestService.post('/login', loginDto).pipe(
       map(result => {
         const loginResult = <TokenPairInterface>result;
         this.tokenService.saveToken(loginResult.token);
-        this.tokenService.saveRefreshToken(loginResult.refreshToken);
+        this.tokenService.saveRefreshToken(loginResult.refresh_token);
         this.isLoggedIn = true;
       })
     );

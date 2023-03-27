@@ -1,0 +1,14 @@
+<button
+  (click)="onButtonClicked()"
+  [ngClass]="{
+    'bg-btnAccentPrimary': shouldBeEnabled,
+    'bg-btnAccentDisabled': !shouldBeEnabled || isLoading,
+    'cursor-not-allowed': !shouldBeEnabled || isLoading
+  }"
+  class="w-full transition hover:text-gray-100 hover:bg-btnAccentHover text-white font-bold py-2 px-4 rounded-[10px]"
+  [disabled]="!shouldBeEnabled">
+  <i
+    *ngIf="isLoading"
+    class="fa-solid fa-circle-notch fa-spin w-4 h-4 mr-3"></i>
+  {{ buttonLabel }}
+</button>

@@ -1,11 +1,11 @@
 export interface LoginInterface {
-  login: string;
+  domainEmailAddress: string;
   password: string;
 }
 
 export interface TokenPairInterface {
   token: string;
-  refreshToken: string;
+  refresh_token: string;
 }
 
 export interface RefreshTokenInterface {
