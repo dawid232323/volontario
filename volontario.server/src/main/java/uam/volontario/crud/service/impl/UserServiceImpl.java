@@ -56,9 +56,7 @@ public class UserServiceImpl implements UserService
     @Override
     public Optional< User > tryToLoadByDomainEmail( final String aDomainEmail )
     {
-        return loadAllEntities().stream()
-                .filter( user -> user.getDomainEmailAddress().equals( aDomainEmail ) )
-                .findAny();
+        return userRepository.findByDomainEmailAddress( aDomainEmail );
     }
 
     @Override

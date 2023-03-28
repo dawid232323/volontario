@@ -1,12 +1,14 @@
 package uam.volontario.crud.service;
 
+import jakarta.persistence.NoResultException;
+
 import java.util.List;
 import java.util.Optional;
 
 /**
  * CRUD service for all Volontario domain entities.
  *
- * @param <T> entity type.
+ * @param < T > entity type.
  */
 public interface EntityService< T >
 {
@@ -19,7 +21,7 @@ public interface EntityService< T >
      *
      * @throws jakarta.persistence.NoResultException when none entity matches given ID.
      */
-    T loadEntity( Long aEntityId );
+    T loadEntity( Long aEntityId ) throws NoResultException;
 
     /**
      * Tries to load entity by its ID.

@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class InterestCategoriesDto
+public class InterestCategoryDto
 {
+    private Long id;
+
     private String name;
 
     private String description;

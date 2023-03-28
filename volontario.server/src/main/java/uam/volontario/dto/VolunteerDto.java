@@ -30,5 +30,5 @@ public class VolunteerDto
 
     private VolunteerExperienceDto experience;
 
-    private List< InterestCategoriesDto > interestCategories;
+    private List< Long > interestCategoriesIds;
 }

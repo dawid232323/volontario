@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uam.volontario.crud.service.InterestCategoryService;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.LoginDto;
 import uam.volontario.dto.VolunteerDto;
@@ -18,8 +18,6 @@ import uam.volontario.model.common.impl.User;
 import uam.volontario.security.jwt.JWTService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.UserValidationService;
-
-import java.util.List;
 
 /**
  * Controller for login, registration and other strict-security related functionalities.
@@ -34,10 +32,16 @@ public class SecurityController
     private UserValidationService userValidationService;
 
     @Autowired
+    private InterestCategoryService interestCategoryService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private JWTService jwtService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Registers volunteer.
@@ -53,7 +57,8 @@ public class SecurityController
     {
         try
         {
-            final User user = DtoConverter.createVolunteerFromDto( aDto );
+            final User user = DtoConverter.createVolunteerFromDto( aDto, interestCategoryService::findByIds,
+                    passwordEncoder::encode );
             final ValidationResult validationResult = userValidationService.validateVolunteerUser( user );
 
             if( validationResult.isValidated() )
@@ -87,10 +92,7 @@ public class SecurityController
     {
         try
         {
-            final List< User > allUsers = userService.loadAllEntities();
-            final User user = allUsers.stream()
-                    .filter( usr -> usr.getDomainEmailAddress().equals( aDto.getDomainEmailAddress() ) )
-                    .findAny()
+            final User user = userService.tryToLoadByDomainEmail( aDto.getDomainEmailAddress() )
                     .orElse( null );
 
             if( user == null )
@@ -100,7 +102,6 @@ public class SecurityController
                                 + " is registered in the system." );
             }
 
-            final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if( !passwordEncoder.matches( aDto.getPassword(), user.getHashedPassword() ) )
             {
                 return ResponseEntity.badRequest()
@@ -109,6 +110,30 @@ public class SecurityController
             }
 
             return ResponseEntity.ok( jwtService.createMainTokenAndRefreshToken( user ) );
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    @PostMapping( value = "/refresh/token" )
+    public ResponseEntity< ? > refreshJWT( @RequestBody String aRefreshToken )
+    {
+        try
+        {
+            if( jwtService.validateToken( aRefreshToken ) )
+            {
+                final String userDomainEmail = jwtService.readDomainEmailAddressFromJWT( aRefreshToken );
+                final User user = userService.tryToLoadByDomainEmail( userDomainEmail ).orElseThrow();
+
+                return ResponseEntity.status( HttpStatus.CREATED )
+                        .body( jwtService.createMainTokenAndRefreshToken( user ) );
+            }
+
+            return ResponseEntity.badRequest()
+                    .body( "Refresh JWT is expired." );
         }
         catch ( Exception aE )
         {
