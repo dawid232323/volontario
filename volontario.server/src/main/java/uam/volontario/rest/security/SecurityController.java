@@ -19,6 +19,8 @@ import uam.volontario.security.jwt.JWTService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.UserValidationService;
 
+import java.util.Map;
+
 /**
  * Controller for login, registration and other strict-security related functionalities.
  */
@@ -119,13 +121,14 @@ public class SecurityController
     }
 
     @PostMapping( value = "/refresh/token" )
-    public ResponseEntity< ? > refreshJWT( @RequestBody String aRefreshToken )
+    public ResponseEntity< ? > refreshJWT( @RequestBody Map<String, String> aRefreshToken )
     {
         try
         {
-            if( jwtService.validateToken( aRefreshToken ) )
+            String jwt = aRefreshToken.get( "refresh_token" );
+            if( jwtService.validateToken( jwt ) )
             {
-                final String userDomainEmail = jwtService.readDomainEmailAddressFromJWT( aRefreshToken );
+                final String userDomainEmail = jwtService.readDomainEmailAddressFromJWT( jwt );
                 final User user = userService.tryToLoadByDomainEmail( userDomainEmail ).orElseThrow();
 
                 return ResponseEntity.status( HttpStatus.CREATED )
