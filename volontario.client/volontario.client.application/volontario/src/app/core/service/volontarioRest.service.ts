@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isNil } from 'lodash';
 import { HttpOptionsInterface } from '../interface/httpOptions.interface';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class VolontarioRestService {
@@ -70,8 +71,7 @@ export class VolontarioRestService {
     return this.httpClient.delete(this.getEnvironmentUrl() + endpoint, options);
   }
 
-  // TODO when we introduce environment variables this method should return corresponding url
   public getEnvironmentUrl(): string {
-    return 'http://localhost:8080/api';
+    return environment.apiUrl;
   }
 }
