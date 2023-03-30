@@ -3,6 +3,8 @@ package uam.volontario.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import io.jsonwebtoken.security.SignatureException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uam.volontario.crud.service.UserService;
@@ -24,6 +26,8 @@ public class JWTService
     private UserService userService;
 
     private static final SecretKey SECRET_KEY = MacProvider.generateKey( SignatureAlgorithm.HS512 );
+
+    private static final Logger LOGGER = LogManager.getLogger( JWTService.class );
 
     /**
      * Creates two JWTs - the main one lasting 5 minutes and refresh one lasting 5 hours. Both of have user's id
@@ -60,11 +64,21 @@ public class JWTService
 
             final Long userId = (long)(int)jwtClaims.get( "id" );
             return userService.tryLoadEntity( userId ).isPresent();
-        }
-        catch ( ExpiredJwtException | SignatureException | MalformedJwtException |
-               UnsupportedJwtException | IllegalArgumentException  aE )
+        } catch ( ExpiredJwtException aE )
         {
-            // TODO: add logger and handle those exceptions in nice fashion.
+            LOGGER.warn( "JWT validation failed: JWT token has expired" );
+            return false;
+        } catch ( SignatureException aE )
+        {
+            LOGGER.warn( "JWT signature validation failed: {}", aE.getMessage(), aE );
+            return false;
+        } catch ( MalformedJwtException | UnsupportedJwtException aE )
+        {
+            LOGGER.warn( "JWT validation failed, reason: {}", aE.getMessage(), aE );
+            return false;
+        } catch ( IllegalArgumentException aE )
+        {
+            LOGGER.warn( "An empty or null String has been passed to JWT validation: {}", aE.getMessage(), aE );
             return false;
         }
     }
@@ -87,11 +101,21 @@ public class JWTService
                     .getBody();
 
             return (String)jwtClaims.get( "domainEmail" );
-        }
-        catch ( ExpiredJwtException | SignatureException | MalformedJwtException |
-               UnsupportedJwtException | IllegalArgumentException aE )
+        } catch ( ExpiredJwtException aE )
         {
-            // TODO: add logger and handle those exceptions in nice fashion.
+            LOGGER.warn( "Retrieving email from JWT failed: JWT token has expired" );
+            return null;
+        } catch ( SignatureException aE )
+        {
+            LOGGER.warn( "Retrieving email from JWT failed, signature error: {}", aE.getMessage(), aE );
+            return null;
+        } catch ( MalformedJwtException | UnsupportedJwtException aE )
+        {
+            LOGGER.warn( "Retrieving email from JWT failed, reason: {}", aE.getMessage(), aE );
+            return null;
+        } catch ( IllegalArgumentException aE )
+        {
+            LOGGER.warn( "An empty or null String has been passed to JWT email retrieval: {}", aE.getMessage(), aE );
             return null;
         }
     }

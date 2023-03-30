@@ -1,5 +1,7 @@
 package uam.volontario.rest.security;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,6 +47,8 @@ public class SecurityController
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private static final Logger LOGGER = LogManager.getLogger( SecurityController.class );
+
     /**
      * Registers volunteer.
      *
@@ -65,16 +69,20 @@ public class SecurityController
 
             if( validationResult.isValidated() )
             {
+                LOGGER.info( "A new user has been registered for email {}, userId: {}",
+                        user.getDomainEmailAddress(), user.getId() );
                 userService.saveOrUpdate( user );
                 return ResponseEntity.status( HttpStatus.CREATED )
                         .body( validationResult.getValidatedEntity() );
             }
-
+            LOGGER.warn( "Validation failed for new user with email {}, violations: {}", aDto.getDomainEmail(),
+                    validationResult.getValidationViolations().values() );
             return ResponseEntity.badRequest()
                     .body( validationResult.getValidationViolations() );
         }
         catch ( Exception aE )
         {
+            LOGGER.error( "Exception occured during registration: {}", aE.getMessage(), aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
@@ -110,11 +118,13 @@ public class SecurityController
                         .body( "Wrong password for user registered with domain email "
                                 + aDto.getDomainEmailAddress() + "." );
             }
-
+            LOGGER.info( "User with domain email {} has logged on", aDto.getDomainEmailAddress() );
             return ResponseEntity.ok( jwtService.createMainTokenAndRefreshToken( user ) );
         }
         catch ( Exception aE )
         {
+            LOGGER.error( "Error when processing user login, email: {}, exception: {}",
+                    aDto.getDomainEmailAddress(), aE.getMessage(), aE);
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
@@ -130,7 +140,7 @@ public class SecurityController
             {
                 final String userDomainEmail = jwtService.readDomainEmailAddressFromJWT( jwt );
                 final User user = userService.tryToLoadByDomainEmail( userDomainEmail ).orElseThrow();
-
+                LOGGER.debug( "Refresh token renewed for user with email {}", user.getDomainEmailAddress());
                 return ResponseEntity.status( HttpStatus.CREATED )
                         .body( jwtService.createMainTokenAndRefreshToken( user ) );
             }
@@ -140,6 +150,7 @@ public class SecurityController
         }
         catch ( Exception aE )
         {
+            LOGGER.error( "Error occurred when processing token refresh: {}", aE.getMessage(), aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }

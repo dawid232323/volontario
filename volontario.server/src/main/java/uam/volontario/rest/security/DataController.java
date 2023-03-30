@@ -1,5 +1,7 @@
 package uam.volontario.rest.security;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +24,8 @@ public class DataController
     @Autowired
     private InterestCategoryService interestCategoryService;
 
+    private static final Logger LOGGER = LogManager.getLogger( DataController.class );
+
     @GetMapping( value = "/interestCategories" )
     public ResponseEntity< ? > loadInterestCategories()
     {
@@ -33,6 +37,7 @@ public class DataController
         }
         catch ( Exception aE )
         {
+            LOGGER.error( "Exception occured when loading interest categories: {}", aE.getMessage(), aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
