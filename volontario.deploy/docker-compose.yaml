@@ -1,0 +1,35 @@
+version: '3'
+services:
+  volontario-front:
+    image: volontario-front:latest
+    restart: always
+    depends_on:
+      - volontario-back
+    ports:
+      - '8000:80' # should be 80:80 on production
+    build:
+      context: ../volontario.client/volontario.client.application/volontario
+    environment:
+      - BACKEND_HOSTNAME=volontario-back
+  volontario-back:
+    image: volontario-back:latest
+    restart: always
+    depends_on:
+      - volontario-db
+    ports:
+      - '8080:8080'
+    build:
+      context: ../volontario.server
+    env_file: 'variables.env'
+  volontario-db:
+    image: postgres:15.2-alpine
+    restart: always
+    env_file: 'variables.env'
+    volumes: 
+      - volontario-db:/var/lib/postgresql/data
+volumes:
+  volontario-db:
+    driver: local
+
+# to-do mail server (postfix)
+# maybe another nginx as proxy? (although reverse proxy would be better running on another machine)
