@@ -73,7 +73,7 @@ public class UserValidationService
                         contactEmail + " belongs to already registered User." ) );
         allUsers.stream()
                 .map( User::getPhoneNumber )
-                .filter( phoneNumber -> phoneNumber.equals( aUser.getPhoneNumber() ) )
+                .filter( phoneNumber ->  aUser.getPhoneNumber().equals( phoneNumber ) )
                 .findAny()
                 .ifPresent( phoneNumber -> aValidationViolations.put( "phoneNumber",
                         phoneNumber + " belongs to already registered User." ) );

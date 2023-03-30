@@ -59,8 +59,8 @@ public class User implements UserIf, UserDetails
     private String contactEmailAddress;
 
     @Column
-    @Pattern( regexp = "([0-9]{9})", message = "Phone number has incorrect syntax." )
-    @NotBlank( message = "Phone number must be defined" )
+    //@Pattern( regexp = "([0-9]{9})", message = "Phone number has incorrect syntax." )
+    //@NotBlank( message = "Phone number must be defined" )
     private String phoneNumber;
 
     @Column
