@@ -49,6 +49,7 @@ public class SecurityConfiguration
                 "/api/register",
                 "/api/login",
                 "/api/interestCategories",
+                "/api/experienceLevels",
                 "/api/refresh/token" ) );
 
         aHttp.authorizeHttpRequests().anyRequest().authenticated()

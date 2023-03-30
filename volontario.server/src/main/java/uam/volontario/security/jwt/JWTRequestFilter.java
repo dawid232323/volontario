@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import uam.volontario.crud.service.UserService;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Filter for JWT requests.
@@ -39,13 +40,14 @@ public class JWTRequestFilter extends OncePerRequestFilter
             return;
         }
 
-        final String jwt = authenticationHeader.substring( 7 );
-        final String domainEmail = jwtService.readDomainEmailAddressFromJWT( jwt );
+        final String jwt = jwtService.getTokenFromAuthorizationHeader( authenticationHeader );
+        final Optional< String > domainEmail = jwtService.readDomainEmailAddressFromJWT( jwt );
 
-        if( domainEmail != null && jwtService.validateToken( jwt )
+        if( domainEmail.isPresent() && jwtService.validateToken( jwt )
                 && SecurityContextHolder.getContext().getAuthentication() == null )
         {
-            final UserDetails userDetails = userService.tryToLoadByDomainEmail( domainEmail ).orElseThrow();
+            final UserDetails userDetails = userService.loadUserByUsername( domainEmail.get() );
+
             final UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken( userDetails.getUsername(), userDetails.getPassword(),
                             userDetails.getAuthorities() );

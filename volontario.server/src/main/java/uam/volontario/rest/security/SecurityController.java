@@ -22,6 +22,7 @@ import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.UserValidationService;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Controller for login, registration and other strict-security related functionalities.
@@ -32,6 +33,9 @@ import java.util.Map;
         produces = MediaType.APPLICATION_JSON_VALUE )
 public class SecurityController
 {
+    @Autowired
+    private DtoConverter dtoConverter;
+
     @Autowired
     private UserValidationService userValidationService;
 
@@ -63,8 +67,7 @@ public class SecurityController
     {
         try
         {
-            final User user = DtoConverter.createVolunteerFromDto( aDto, interestCategoryService::findByIds,
-                    passwordEncoder::encode );
+            final User user = dtoConverter.createVolunteerFromDto( aDto );
             final ValidationResult validationResult = userValidationService.validateVolunteerUser( user );
 
             if( validationResult.isValidated() )
@@ -102,24 +105,23 @@ public class SecurityController
     {
         try
         {
-            final User user = userService.tryToLoadByDomainEmail( aDto.getDomainEmailAddress() )
-                    .orElse( null );
+            final Optional< User > user = userService.tryToLoadByDomainEmail( aDto.getDomainEmailAddress() );
 
-            if( user == null )
+            if( user.isEmpty() )
             {
                 return ResponseEntity.badRequest()
                         .body( "No user with domain email " + aDto.getDomainEmailAddress()
                                 + " is registered in the system." );
             }
 
-            if( !passwordEncoder.matches( aDto.getPassword(), user.getHashedPassword() ) )
+            if( !passwordEncoder.matches( aDto.getPassword(), user.get().getHashedPassword() ) )
             {
                 return ResponseEntity.badRequest()
                         .body( "Wrong password for user registered with domain email "
                                 + aDto.getDomainEmailAddress() + "." );
             }
             LOGGER.info( "User with domain email {} has logged on", aDto.getDomainEmailAddress() );
-            return ResponseEntity.ok( jwtService.createMainTokenAndRefreshToken( user ) );
+            return ResponseEntity.ok( jwtService.createMainTokenAndRefreshToken( user.get() ) );
         }
         catch ( Exception aE )
         {
@@ -131,22 +133,28 @@ public class SecurityController
     }
 
     @PostMapping( value = "/refresh/token" )
-    public ResponseEntity< ? > refreshJWT( @RequestBody Map<String, String> aRefreshToken )
+    public ResponseEntity< ? > refreshJWT( @RequestBody Map< String, String > aRefreshToken )
     {
         try
         {
-            String jwt = aRefreshToken.get( "refresh_token" );
-            if( jwtService.validateToken( jwt ) )
+            final String refreshJWT = aRefreshToken.get( "refresh_token" );
+            if( jwtService.validateToken( refreshJWT ) )
             {
-                final String userDomainEmail = jwtService.readDomainEmailAddressFromJWT( jwt );
-                final User user = userService.tryToLoadByDomainEmail( userDomainEmail ).orElseThrow();
-                LOGGER.debug( "Refresh token renewed for user with email {}", user.getDomainEmailAddress());
-                return ResponseEntity.status( HttpStatus.CREATED )
-                        .body( jwtService.createMainTokenAndRefreshToken( user ) );
+                final Optional< String > userDomainEmail = jwtService.readDomainEmailAddressFromJWT( refreshJWT );
+                if( userDomainEmail.isPresent() )
+                {
+                    final Optional< User > user = userService.tryToLoadByDomainEmail( userDomainEmail.get() );
+                    if( user.isPresent() )
+                    {
+                        LOGGER.debug( "Refresh token renewed for user with email {}", user.get().getDomainEmailAddress() );
+                        return ResponseEntity.status( HttpStatus.CREATED )
+                                .body( jwtService.createMainTokenAndRefreshToken( user.get() ) );
+                    }
+                }
             }
 
             return ResponseEntity.badRequest()
-                    .body( "Refresh JWT is expired." );
+                    .body( "Invalid token." );
         }
         catch ( Exception aE )
         {

@@ -28,7 +28,7 @@ public class VolunteerDto
 
     private String participationMotivation;
 
-    private VolunteerExperienceDto experience;
+    private Long experienceId;
 
     private List< Long > interestCategoriesIds;
 }

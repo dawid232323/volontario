@@ -1,6 +1,7 @@
 package uam.volontario.crud.repository;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 /**
  * Repository for {@linkplain InterestCategory} entity.
  */
+@Repository
 public interface InterestCategoryRepository extends CrudRepository< InterestCategory, Long >
 {
     /**

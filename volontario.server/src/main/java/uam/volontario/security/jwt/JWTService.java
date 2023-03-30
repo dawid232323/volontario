@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Service for Json Web Token functionalities.
@@ -54,33 +55,8 @@ public class JWTService
      */
     public boolean validateToken( final String aJWT )
     {
-        try
-        {
-            final Claims jwtClaims = Jwts.parserBuilder()
-                    .setSigningKey( SECRET_KEY )
-                    .build()
-                    .parseClaimsJws( aJWT )
-                    .getBody();
-
-            final Long userId = (long)(int)jwtClaims.get( "id" );
-            return userService.tryLoadEntity( userId ).isPresent();
-        } catch ( ExpiredJwtException aE )
-        {
-            LOGGER.warn( "JWT validation failed: JWT token has expired" );
-            return false;
-        } catch ( SignatureException aE )
-        {
-            LOGGER.warn( "JWT signature validation failed: {}", aE.getMessage(), aE );
-            return false;
-        } catch ( MalformedJwtException | UnsupportedJwtException aE )
-        {
-            LOGGER.warn( "JWT validation failed, reason: {}", aE.getMessage(), aE );
-            return false;
-        } catch ( IllegalArgumentException aE )
-        {
-            LOGGER.warn( "An empty or null String has been passed to JWT validation: {}", aE.getMessage(), aE );
-            return false;
-        }
+        return readUserFromJWT( aJWT )
+                .isPresent();
     }
 
     /**
@@ -90,34 +66,54 @@ public class JWTService
      *
      * @return jwt's domain email address or null if jwt is expired.
      */
-    public String readDomainEmailAddressFromJWT( final String aJWT )
+    public Optional< String > readDomainEmailAddressFromJWT( final String aJWT )
     {
-        try
-        {
-            final Claims jwtClaims = Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseClaimsJws( aJWT )
-                    .getBody();
+        final Optional< Claims > optionalParsedToken = parseToken( aJWT );
 
-            return (String)jwtClaims.get( "domainEmail" );
-        } catch ( ExpiredJwtException aE )
+        if( optionalParsedToken.isPresent() )
         {
-            LOGGER.warn( "Retrieving email from JWT failed: JWT token has expired" );
-            return null;
-        } catch ( SignatureException aE )
-        {
-            LOGGER.warn( "Retrieving email from JWT failed, signature error: {}", aE.getMessage(), aE );
-            return null;
-        } catch ( MalformedJwtException | UnsupportedJwtException aE )
-        {
-            LOGGER.warn( "Retrieving email from JWT failed, reason: {}", aE.getMessage(), aE );
-            return null;
-        } catch ( IllegalArgumentException aE )
-        {
-            LOGGER.warn( "An empty or null String has been passed to JWT email retrieval: {}", aE.getMessage(), aE );
-            return null;
+            final Claims parsedToken = optionalParsedToken.get();
+            final Object domainEmail = parsedToken.get( "domainEmail" );
+
+            if( domainEmail != null )
+            {
+                return Optional.of( (String)domainEmail );
+            }
         }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Reads user from jwt.
+     *
+     * @param aJWT jwt.
+     *
+     * @return jwt's user or null if jwt is expired.
+     */
+    public Optional< User > readUserFromJWT( final String aJWT )
+    {
+        final Optional< Claims > optionalParsedToken = parseToken( aJWT );
+
+        if( optionalParsedToken.isPresent() )
+        {
+            final Claims parsedToken = optionalParsedToken.get();
+            return userService.tryLoadEntity( parsedToken.get( "id", Long.class ) );
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Reads token from 'Authorization' header.
+     *
+     * @param aAuthorizationHeader 'Authorization' header.
+     *
+     * @return jwt.
+     */
+    public String getTokenFromAuthorizationHeader( final String aAuthorizationHeader )
+    {
+        return aAuthorizationHeader.substring( 7 );
     }
 
     private String createToken( final User aUser, final int aExpirationOffsetFromNowInMinutes )
@@ -130,7 +126,39 @@ public class JWTService
                         "domainEmail", aUser.getDomainEmailAddress() ) )
                 .setIssuedAt( Date.from( now ) )
                 .setExpiration( Date.from( now.plus( Duration.ofMinutes( aExpirationOffsetFromNowInMinutes ) ) ) )
-                .signWith(SECRET_KEY)
+                .signWith( SECRET_KEY )
                 .compact();
+    }
+
+    private Optional< Claims > parseToken( final String aJWT )
+    {
+        try
+        {
+            return Optional.of( Jwts.parserBuilder()
+                    .setSigningKey( SECRET_KEY )
+                    .build()
+                    .parseClaimsJws( aJWT )
+                    .getBody() );
+        }
+        catch ( ExpiredJwtException aE )
+        {
+            LOGGER.error( "Retrieving email from JWT failed: JWT token has expired" );
+            return Optional.empty();
+        }
+        catch ( SignatureException aE )
+        {
+            LOGGER.error( "Retrieving email from JWT failed, signature error: {}", aE.getMessage() );
+            return Optional.empty();
+        }
+        catch ( MalformedJwtException | UnsupportedJwtException aE )
+        {
+            LOGGER.error( "Retrieving email from JWT failed, reason: {}", aE.getMessage() );
+            return Optional.empty();
+        }
+        catch ( IllegalArgumentException aE )
+        {
+            LOGGER.error( "An empty or null String has been passed to JWT email retrieval: {}", aE.getMessage() );
+            return Optional.empty();
+        }
     }
 }
