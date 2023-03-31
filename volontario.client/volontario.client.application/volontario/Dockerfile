@@ -7,4 +7,5 @@ RUN npm run build --prod
 
 # move files to nginx image
 FROM nginx:1.23-alpine
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=node /app/dist/volontario /usr/share/nginx/html
