@@ -39,6 +39,6 @@ public class Institution implements VolontarioDomainElementIf
     @Column( length = 10 )
     private String krsNumber;
 
-    @OneToMany( mappedBy = "institution" )
+    @OneToMany( mappedBy = "institution", cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
     private List< User > employees;
 }

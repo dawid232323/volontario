@@ -53,7 +53,7 @@ public class DtoConverter
                 .participationMotivation( aDto.getParticipationMotivation() )
                 .interestCategories( Sets.newHashSet( volunteerInterestCategories ) ).build();
 
-        return User.builder().firstName( aDto.getFirstName() )
+        User user = User.builder().firstName( aDto.getFirstName() )
                 .lastName( aDto.getLastName() )
                 .hashedPassword( passwordEncoder.encode( aDto.getPassword() ) )
                 .domainEmailAddress( aDto.getDomainEmail() )
@@ -63,6 +63,8 @@ public class DtoConverter
                 .isVerified( true ) // TODO: for now until email verification is implemented.
                 .volunteerData( volunteerData )
                 .build();
+        user.getVolunteerData().setUser( user );
+        return user;
     }
 
     /**

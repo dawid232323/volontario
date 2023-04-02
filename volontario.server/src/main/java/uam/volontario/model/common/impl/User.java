@@ -1,5 +1,6 @@
 package uam.volontario.model.common.impl;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import uam.volontario.model.common.UserIf;
@@ -23,6 +25,7 @@ import java.util.List;
 /**
  * Basic implementation of {@linkplain UserIf}.
  */
+@EqualsAndHashCode( exclude = {"volunteerData"} )
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
 @Data
@@ -66,18 +69,19 @@ public class User implements UserIf, UserDetails
     @Column
     private boolean isVerified;
 
-    @OneToOne( cascade = CascadeType.ALL )
-    @JoinColumn
+    @ManyToOne( cascade = CascadeType.PERSIST ) //TODO: Remove this cascading once we get Roles sorted out
+    @JoinColumn( name = "role_id" )
     @Nonnull
     private Role role;
 
+    @JsonManagedReference
     @Nullable
     @OneToOne( cascade = CascadeType.ALL )
     @JoinColumn
     private VolunteerData volunteerData;
 
     @Nullable
-    @ManyToOne( cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn( name = "institution_id" )
     private Institution institution;
 

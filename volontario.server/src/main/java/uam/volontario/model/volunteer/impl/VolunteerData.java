@@ -1,5 +1,6 @@
 package uam.volontario.model.volunteer.impl;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,8 @@ public class VolunteerData implements VolontarioDomainElementIf
     @Column
     private Long id;
 
-    @OneToOne
+    @JsonBackReference
+    @OneToOne( mappedBy = "volunteerData")
     @JoinColumn
     private User user;
 
@@ -35,14 +37,21 @@ public class VolunteerData implements VolontarioDomainElementIf
     @Column( length = 1500 )
     private String participationMotivation;
 
-    @OneToOne( cascade = CascadeType.ALL )
-    @JoinColumn
+    @ManyToOne
+    @JoinColumn( name = "volunteer_experience_id" )
     private VolunteerExperience experience;
 
-    @ManyToMany( cascade =  CascadeType.ALL  )
+    @ManyToMany( cascade =  { CascadeType.PERSIST }  )
     @JoinTable( name = "volunteer_interests",
                 joinColumns = { @JoinColumn( name = "volunteer_data_id" ) },
                 inverseJoinColumns = { @JoinColumn( name = "interest_category_id" ) }
     )
     private Set< InterestCategory > interestCategories;
+
+    @Override
+    public String toString()
+    {
+        return "VolunteerData(id=" + id + ", participationMotivation=" + participationMotivation +", " +
+                "experience=" + experience.toString() + ", owningUserId=" + user.getId() + ")";
+    }
 }

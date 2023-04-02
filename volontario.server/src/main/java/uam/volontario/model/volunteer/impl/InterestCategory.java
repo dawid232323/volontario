@@ -1,5 +1,6 @@
 package uam.volontario.model.volunteer.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -35,6 +36,7 @@ public class InterestCategory implements VolontarioDomainElementIf
     @Size( max = 750 )
     private String description;
 
+    @JsonIgnore
     @ManyToMany( mappedBy = "interestCategories" )
     private Set< VolunteerData > volunteerData;
 }
