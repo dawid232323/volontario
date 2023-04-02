@@ -78,7 +78,7 @@ public class SecurityController
                 return ResponseEntity.status( HttpStatus.CREATED )
                         .body( validationResult.getValidatedEntity() );
             }
-            LOGGER.warn( "Validation failed for new user with email {}, violations: {}", aDto.getDomainEmail(),
+            LOGGER.debug( "Validation failed for new user with email {}, violations: {}", aDto.getDomainEmail(),
                     validationResult.getValidationViolations().values() );
             return ResponseEntity.badRequest()
                     .body( validationResult.getValidationViolations() );
@@ -120,7 +120,7 @@ public class SecurityController
                         .body( "Wrong password for user registered with domain email "
                                 + aDto.getDomainEmailAddress() + "." );
             }
-            LOGGER.info( "User with domain email {} has logged on", aDto.getDomainEmailAddress() );
+            LOGGER.debug( "User with domain email {} has logged on", aDto.getDomainEmailAddress() );
             return ResponseEntity.ok( jwtService.createMainTokenAndRefreshToken( user.get() ) );
         }
         catch ( Exception aE )

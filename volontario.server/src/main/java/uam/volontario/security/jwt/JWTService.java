@@ -142,22 +142,22 @@ public class JWTService
         }
         catch ( ExpiredJwtException aE )
         {
-            LOGGER.error( "Retrieving email from JWT failed: JWT token has expired" );
+            LOGGER.debug( "Retrieving email from JWT failed: JWT token has expired" );
             return Optional.empty();
         }
         catch ( SignatureException aE )
         {
-            LOGGER.error( "Retrieving email from JWT failed, signature error: {}", aE.getMessage() );
+            LOGGER.debug( "Retrieving email from JWT failed, signature error: {}", aE.getMessage() );
             return Optional.empty();
         }
         catch ( MalformedJwtException | UnsupportedJwtException aE )
         {
-            LOGGER.error( "Retrieving email from JWT failed, reason: {}", aE.getMessage() );
+            LOGGER.debug( "Retrieving email from JWT failed, reason: {}", aE.getMessage() );
             return Optional.empty();
         }
         catch ( IllegalArgumentException aE )
         {
-            LOGGER.error( "An empty or null String has been passed to JWT email retrieval: {}", aE.getMessage() );
+            LOGGER.debug( "An empty or null String has been passed to JWT email retrieval: {}", aE.getMessage() );
             return Optional.empty();
         }
     }
