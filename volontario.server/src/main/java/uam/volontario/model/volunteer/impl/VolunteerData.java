@@ -41,7 +41,7 @@ public class VolunteerData implements VolontarioDomainElementIf
     @JoinColumn( name = "volunteer_experience_id" )
     private ExperienceLevel experience;
 
-    @ManyToMany( cascade =  { CascadeType.PERSIST }  )
+    @ManyToMany( cascade =  { CascadeType.PERSIST }, fetch = FetchType.EAGER )
     @JoinTable( name = "volunteer_interests",
                 joinColumns = { @JoinColumn( name = "volunteer_data_id" ) },
                 inverseJoinColumns = { @JoinColumn( name = "interest_category_id" ) }

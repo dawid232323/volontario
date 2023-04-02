@@ -37,6 +37,6 @@ public class InterestCategory implements VolontarioDomainElementIf
     private String description;
 
     @JsonIgnore
-    @ManyToMany( mappedBy = "interestCategories" )
+    @ManyToMany( mappedBy = "interestCategories", fetch = FetchType.LAZY )
     private Set< VolunteerData > volunteerData;
 }
