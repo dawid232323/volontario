@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uam.volontario.crud.service.InterestCategoryService;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.LoginDto;
 import uam.volontario.dto.VolunteerDto;
-import uam.volontario.dto.convert.DtoConverter;
+import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.security.jwt.JWTService;
 import uam.volontario.validation.ValidationResult;
@@ -33,23 +32,40 @@ import java.util.Optional;
         produces = MediaType.APPLICATION_JSON_VALUE )
 public class SecurityController
 {
-    @Autowired
-    private DtoConverter dtoConverter;
+    private final DtoService dtoService;
 
-    @Autowired
-    private UserValidationService userValidationService;
+    private final UserValidationService userValidationService;
 
-    @Autowired
-    private InterestCategoryService interestCategoryService;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    private final JWTService jwtService;
 
-    @Autowired
-    private JWTService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
+    /**
+     * CDI constructor.
+     *
+     * @param aDtoService dto service.
+     *
+     * @param aUserValidationService user validation service.
+     *
+     * @param aUserService user service.
+     *
+     * @param aJwtService jwt service.
+     *
+     * @param aPasswordEncoder password encoder.
+     */
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public SecurityController( final DtoService aDtoService, final UserValidationService aUserValidationService,
+                               final UserService aUserService, final JWTService aJwtService,
+                               final PasswordEncoder aPasswordEncoder )
+    {
+        dtoService = aDtoService;
+        userValidationService = aUserValidationService;
+        userService = aUserService;
+        jwtService = aJwtService;
+        passwordEncoder = aPasswordEncoder;
+    }
 
     private static final Logger LOGGER = LogManager.getLogger( SecurityController.class );
 
@@ -63,11 +79,11 @@ public class SecurityController
      *         then ResponseEntity with 501 status and error message.
      */
     @PostMapping( value = "/register" )
-    public ResponseEntity< ? > registerVolunteer( @RequestBody VolunteerDto aDto )
+    public ResponseEntity< ? > registerVolunteer( @RequestBody final VolunteerDto aDto )
     {
         try
         {
-            final User user = dtoConverter.createVolunteerFromDto( aDto );
+            final User user = dtoService.createVolunteerFromDto( aDto );
             final ValidationResult validationResult = userValidationService.validateVolunteerUser( user );
 
             if( validationResult.isValidated() )
@@ -101,7 +117,7 @@ public class SecurityController
      *         then ResponseEntity with 501 status and error message.
      */
     @PostMapping( value = "/login" )
-    public ResponseEntity< ? > login( @RequestBody LoginDto aDto )
+    public ResponseEntity< ? > login( @RequestBody final LoginDto aDto )
     {
         try
         {
@@ -132,8 +148,16 @@ public class SecurityController
         }
     }
 
+    /**
+     * Refreshes pair of JWTs.
+     *
+     * @param aRefreshToken refresh token.
+     *
+     * @return if token is valid, then Response Entity with 200 code and pair of new JWTs. If token is invalid,
+     *         then Response Entity with 400 code. If unexpected error occurred, then Response Entity with 500 code.
+     */
     @PostMapping( value = "/refresh/token" )
-    public ResponseEntity< ? > refreshJWT( @RequestBody Map< String, String > aRefreshToken )
+    public ResponseEntity< ? > refreshJWT( @RequestBody final Map< String, String > aRefreshToken )
     {
         try
         {

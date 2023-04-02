@@ -4,7 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,11 +22,22 @@ import java.util.Optional;
 @Component
 public class JWTRequestFilter extends OncePerRequestFilter
 {
-    @Autowired
-    private JWTService jwtService;
+    private final JWTService jwtService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    /**
+     * CDI constructor.
+     *
+     * @param aJwtService jwt service.
+     *
+     * @param aUserService user service.
+     */
+    public JWTRequestFilter( final JWTService aJwtService, final UserService aUserService )
+    {
+        this.jwtService = aJwtService;
+        this.userService = aUserService;
+    }
 
     @Override
     protected void doFilterInternal( final HttpServletRequest aRequest, final HttpServletResponse aResponse,

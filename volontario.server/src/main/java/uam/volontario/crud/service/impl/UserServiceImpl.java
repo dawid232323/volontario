@@ -19,20 +19,29 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService
 {
+    private final UserRepository userRepository;
+
+    /**
+     * CDI constructor.
+     * @param aUserRepository user repository.
+     */
     @Autowired
-    private UserRepository userRepository;
+    public UserServiceImpl( final UserRepository aUserRepository )
+    {
+        userRepository = aUserRepository;
+    }
 
     @Override
-    public User loadEntity( final Long aEntityId )
+    public User loadEntity( final Long aUserId )
     {
-        return userRepository.findById( aEntityId )
+        return tryLoadEntity( aUserId )
                     .orElseThrow( NoResultException::new );
     }
 
     @Override
-    public Optional< User > tryLoadEntity( final Long aEntityId )
+    public Optional< User > tryLoadEntity( final Long aUserId )
     {
-        return userRepository.findById( aEntityId );
+        return userRepository.findById( aUserId );
     }
 
     @Override
@@ -42,15 +51,15 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public User saveOrUpdate( final User aEntity )
+    public User saveOrUpdate( final User aUser )
     {
-        return userRepository.save( aEntity );
+        return userRepository.save( aUser );
     }
 
     @Override
-    public void deleteEntity( final Long aEntityId )
+    public void deleteEntity( final Long aUserId )
     {
-        userRepository.deleteById( aEntityId );
+        userRepository.deleteById( aUserId );
     }
 
     @Override
@@ -59,9 +68,20 @@ public class UserServiceImpl implements UserService
         return userRepository.findByDomainEmailAddress( aDomainEmail );
     }
 
+    /**
+     * Method needed for Spring Security integration. Domain email address is username in Volontario system.
+     *
+     * @param aDomainEmail domain email address (username).
+     *
+     * @return userDetails of found User.
+     *
+     * @throws UsernameNotFoundException when there is no user with such domain email in the system.
+     */
     @Override
-    public UserDetails loadUserByUsername( String username ) throws UsernameNotFoundException
+    public UserDetails loadUserByUsername( final String aDomainEmail ) throws UsernameNotFoundException
     {
-        return tryToLoadByDomainEmail( username ).orElseThrow( () -> new UsernameNotFoundException( "not found" ) );
+        return tryToLoadByDomainEmail( aDomainEmail )
+                .orElseThrow( () -> new UsernameNotFoundException( "Domain email " + aDomainEmail
+                        + " was not found in the system." ) );
     }
 }

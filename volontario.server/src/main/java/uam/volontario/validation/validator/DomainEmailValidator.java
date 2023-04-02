@@ -11,6 +11,7 @@ import java.util.Objects;
  */
 public class DomainEmailValidator implements ConstraintValidator< DomainEmail, String >
 {
+    @Override
     public boolean isValid( final String aDomainEmail, final ConstraintValidatorContext aValidatorContext )
     {
         if( !Objects.isNull( aDomainEmail ) )

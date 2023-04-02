@@ -2,6 +2,7 @@ package uam.volontario.model.volunteer.impl;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +18,8 @@ import uam.volontario.model.common.VolontarioDomainElementIf;
 @Data
 @Builder
 @Entity
-@Table( name = "volunteer_experiences" )
-public class VolunteerExperience implements VolontarioDomainElementIf
+@Table( name = "experience_level" )
+public class ExperienceLevel implements VolontarioDomainElementIf
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -32,4 +33,8 @@ public class VolunteerExperience implements VolontarioDomainElementIf
     @Size( max = 500 )
     @Column( length = 500 )
     private String definition;
+
+    @NotNull
+    @Column
+    private Long value;
 }

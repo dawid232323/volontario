@@ -3,34 +3,49 @@ package uam.volontario.dto.convert;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import uam.volontario.crud.service.ExperienceLevelService;
 import uam.volontario.crud.service.InterestCategoryService;
-import uam.volontario.crud.service.VolunteerExperienceService;
+import uam.volontario.dto.ExperienceLevelDto;
 import uam.volontario.dto.InterestCategoryDto;
 import uam.volontario.dto.VolunteerDto;
-import uam.volontario.dto.VolunteerExperienceDto;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
-import uam.volontario.model.volunteer.impl.VolunteerExperience;
 
 import java.util.List;
 
 /**
- * Utility class used for converting DTOs.
+ * Service for DTO operations.
  */
-@Component
-public class DtoConverter
+@Service
+public class DtoService
 {
-    @Autowired
-    private InterestCategoryService interestCategoryService;
+    private final InterestCategoryService interestCategoryService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
+    private final ExperienceLevelService experienceLevelService;
+
+    /**
+     * CDI constructor.
+     *
+     * @param aInterestCategoryService interest category service.
+     *
+     * @param aPasswordEncoder password encoder.
+     *
+     * @param aExperienceLevelService experience level service.
+     */
     @Autowired
-    private VolunteerExperienceService volunteerExperienceService;
+    public DtoService( final InterestCategoryService aInterestCategoryService, final PasswordEncoder aPasswordEncoder,
+                      final ExperienceLevelService aExperienceLevelService )
+    {
+        interestCategoryService = aInterestCategoryService;
+        passwordEncoder = aPasswordEncoder;
+        experienceLevelService = aExperienceLevelService;
+    }
 
     /**
      * Creates Volunteer {@linkplain User} from DTO.
@@ -39,21 +54,24 @@ public class DtoConverter
      *
      * @return Volunteer.
      */
-    public User createVolunteerFromDto( final VolunteerDto aDto  )
+    public User createVolunteerFromDto( final VolunteerDto aDto )
     {
         final Role volunteerRole = Role.builder()
                 .name( "role::volunteer" ) // TODO: roles are yet to be discussed.
                 .build();
 
-        final VolunteerExperience volunteerExperience = volunteerExperienceService.loadEntity( aDto.getExperienceId() );
-        final List< InterestCategory > volunteerInterestCategories = interestCategoryService.findByIds( aDto.getInterestCategoriesIds() );
+        final ExperienceLevel experienceLevel = experienceLevelService.tryLoadEntity( aDto.getExperienceId() )
+                .orElse( null ); // TODO: change once basic experience levels are implemented.
+
+        final List< InterestCategory > volunteerInterestCategories = interestCategoryService.findByIds(
+                aDto.getInterestCategoriesIds() );
 
         final VolunteerData volunteerData = VolunteerData.builder()
-                .experience( volunteerExperience )
+                .experience( experienceLevel )
                 .participationMotivation( aDto.getParticipationMotivation() )
                 .interestCategories( Sets.newHashSet( volunteerInterestCategories ) ).build();
 
-        User user = User.builder().firstName( aDto.getFirstName() )
+        final User user = User.builder().firstName( aDto.getFirstName() )
                 .lastName( aDto.getLastName() )
                 .hashedPassword( passwordEncoder.encode( aDto.getPassword() ) )
                 .domainEmailAddress( aDto.getDomainEmail() )
@@ -64,6 +82,7 @@ public class DtoConverter
                 .volunteerData( volunteerData )
                 .build();
         user.getVolunteerData().setUser( user );
+
         return user;
     }
 
@@ -81,14 +100,15 @@ public class DtoConverter
     }
 
     /**
-     * Maps {@linkplain VolunteerExperience} to its DTO.
+     * Maps {@linkplain ExperienceLevel} to its DTO.
      *
-     * @param aVolunteerExperience volunteer experience level to map.
+     * @param aExperienceLevel volunteer experience level to map.
      *
      * @return dto.
      */
-    public VolunteerExperienceDto volunteerExperienceToDto( final VolunteerExperience aVolunteerExperience )
+    public ExperienceLevelDto volunteerExperienceToDto( final ExperienceLevel aExperienceLevel )
     {
-        return new VolunteerExperienceDto( aVolunteerExperience.getName(), aVolunteerExperience.getDefinition() );
+        return new ExperienceLevelDto( aExperienceLevel.getName(), aExperienceLevel.getDefinition(),
+                aExperienceLevel.getValue() );
     }
 }

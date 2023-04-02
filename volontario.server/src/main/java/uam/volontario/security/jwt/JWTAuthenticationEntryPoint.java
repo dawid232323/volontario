@@ -25,7 +25,6 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     public void commence( final HttpServletRequest aRequest, final HttpServletResponse aResponse,
                          final AuthenticationException aAuthException ) throws IOException
     {
-
         aResponse.sendError( HttpStatus.UNAUTHORIZED.value() );
     }
 

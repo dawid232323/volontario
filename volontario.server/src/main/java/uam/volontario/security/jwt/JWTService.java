@@ -23,12 +23,22 @@ import java.util.Optional;
 @Component
 public class JWTService
 {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    private static final SecretKey SECRET_KEY = MacProvider.generateKey( SignatureAlgorithm.HS512 );
+    /**
+     * CDI constructor.
+     *
+     * @param aUserService user service.
+     */
+    @Autowired
+    public JWTService( final UserService aUserService )
+    {
+        userService = aUserService;
+    }
 
     private static final Logger LOGGER = LogManager.getLogger( JWTService.class );
+
+    private static final SecretKey SECRET_KEY = MacProvider.generateKey( SignatureAlgorithm.HS512 );
 
     /**
      * Creates two JWTs - the main one lasting 5 minutes and refresh one lasting 5 hours. Both of have user's id

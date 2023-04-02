@@ -17,20 +17,30 @@ import java.util.Optional;
 @Service
 public class InterestCategoryServiceImpl implements InterestCategoryService
 {
+    private final InterestCategoryRepository interestCategoryRepository;
+
+    /**
+     * CDI constructor.
+     *
+     * @param aInterestCategoryRepository interest category repository.
+     */
     @Autowired
-    private InterestCategoryRepository interestCategoryRepository;
+    public InterestCategoryServiceImpl( final InterestCategoryRepository aInterestCategoryRepository )
+    {
+        interestCategoryRepository = aInterestCategoryRepository;
+    }
 
     @Override
-    public InterestCategory loadEntity( final Long aEntityId )
+    public InterestCategory loadEntity( final Long aInterestCategoryId )
     {
-        return interestCategoryRepository.findById( aEntityId )
+        return tryLoadEntity( aInterestCategoryId )
                 .orElseThrow( NoResultException::new );
     }
 
     @Override
-    public Optional< InterestCategory > tryLoadEntity( final Long aEntityId )
+    public Optional< InterestCategory > tryLoadEntity( final Long aInterestCategoryId )
     {
-        return interestCategoryRepository.findById( aEntityId );
+        return interestCategoryRepository.findById( aInterestCategoryId );
     }
 
     @Override
@@ -46,14 +56,14 @@ public class InterestCategoryServiceImpl implements InterestCategoryService
     }
 
     @Override
-    public InterestCategory saveOrUpdate( final InterestCategory aEntity )
+    public InterestCategory saveOrUpdate( final InterestCategory aInterestCategory )
     {
-        return interestCategoryRepository.save( aEntity );
+        return interestCategoryRepository.save( aInterestCategory );
     }
 
     @Override
-    public void deleteEntity( final Long aEntityId )
+    public void deleteEntity( final Long aInterestCategoryId )
     {
-        interestCategoryRepository.deleteById( aEntityId );
+        interestCategoryRepository.deleteById( aInterestCategoryId );
     }
 }

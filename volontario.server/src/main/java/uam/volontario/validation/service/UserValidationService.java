@@ -14,11 +14,24 @@ import uam.volontario.validation.ValidationResult;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Service for validation of {@linkplain User}.
+ */
 @Component
 public class UserValidationService
 {
+    private final UserService userService;
+
+    /**
+     * CDI constructor.
+     *
+     * @param aUserService user service.
+     */
     @Autowired
-    private UserService userService;
+    public UserValidationService( final UserService aUserService )
+    {
+        userService = aUserService;
+    }
 
     /**
      * Validates volunteer.

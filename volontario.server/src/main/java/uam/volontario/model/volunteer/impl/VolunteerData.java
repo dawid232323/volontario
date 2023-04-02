@@ -39,7 +39,7 @@ public class VolunteerData implements VolontarioDomainElementIf
 
     @ManyToOne
     @JoinColumn( name = "volunteer_experience_id" )
-    private VolunteerExperience experience;
+    private ExperienceLevel experience;
 
     @ManyToMany( cascade =  { CascadeType.PERSIST }  )
     @JoinTable( name = "volunteer_interests",
