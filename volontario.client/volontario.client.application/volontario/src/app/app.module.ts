@@ -8,7 +8,6 @@ import { AuthorizationInterceptor } from './core/interceptor/AuthorizationInterc
 import { HttpErrorInterceptor } from './core/interceptor/HttpErrorInterceptor';
 import { SideBannerModule } from './shared/features/side-banner/side-banner.module';
 import { LoginModule } from './features/login/login.module';
-import { HomePageComponent } from './features/home-page/home-page.component';
 import { HomePageModule } from './features/home-page/home-page.module';
 
 @NgModule({

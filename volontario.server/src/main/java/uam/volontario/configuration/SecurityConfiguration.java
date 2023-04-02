@@ -52,6 +52,8 @@ public class SecurityConfiguration
                 "/api/experienceLevels",
                 "/api/refresh/token" ) );
 
+        aHttp.cors();
+        aHttp.csrf().disable();
         aHttp.authorizeHttpRequests().anyRequest().authenticated()
             .and()
             .exceptionHandling().authenticationEntryPoint( jwtAuthenticationEntryPoint )

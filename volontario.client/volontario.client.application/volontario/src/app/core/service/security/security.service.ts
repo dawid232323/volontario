@@ -9,6 +9,7 @@ import {
   TokenPairInterface,
 } from '../../interface/authorization.interface';
 import { VolontarioRestService } from '../volontarioRest.service';
+import { isNil } from 'lodash';
 
 @Injectable({ providedIn: 'root' })
 export class SecurityService {
@@ -49,12 +50,21 @@ export class SecurityService {
 
   public refreshToken(): Observable<any> {
     const refreshTokenObj: RefreshTokenInterface = {
-      refreshToken: this.tokenService.getRefreshToken(),
+      refresh_token: this.tokenService.getRefreshToken(),
     };
-    return this.volRestService.post('/refreshToken', refreshTokenObj);
+    return this.volRestService.post('/refresh/token', refreshTokenObj).pipe(
+      map(response => {
+        const refreshTokenResult = <TokenPairInterface>response;
+        this.tokenService.saveToken(refreshTokenResult.token);
+        this.tokenService.saveRefreshToken(refreshTokenResult.refresh_token);
+      })
+    );
   }
 
   public isUserLoggedIn(): boolean {
-    return this.isLoggedIn;
+    return (
+      !isNil(this.tokenService.getToken()) &&
+      !isNil(this.tokenService.getRefreshToken())
+    );
   }
 }

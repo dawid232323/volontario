@@ -9,5 +9,5 @@ export interface TokenPairInterface {
 }
 
 export interface RefreshTokenInterface {
-  refreshToken: string | null;
+  refresh_token: string | null;
 }

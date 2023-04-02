@@ -13,7 +13,6 @@ import { SecurityService } from '../service/security/security.service';
 @Injectable({ providedIn: 'root' })
 export class HttpErrorInterceptor implements HttpInterceptor {
   private isRefreshing = false;
-  private isUserLoggedIn = false;
 
   constructor(
     private tokenService: TokenService,
@@ -46,7 +45,13 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       return this.authService.refreshToken().pipe(
         switchMap(() => {
           this.isRefreshing = false;
-          return next.handle(req);
+          // old request doesn't fall into AuthorizationInterceptor once again so new token needs to be added manually
+          const refreshedRequest = req.clone({
+            setHeaders: {
+              Authorization: `Bearer ${this.tokenService.getToken()}`,
+            },
+          });
+          return next.handle(refreshedRequest);
         }),
         catchError(error => {
           this.isRefreshing = false;

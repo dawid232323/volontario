@@ -30,7 +30,10 @@ export class AuthorizationInterceptor implements HttpInterceptor {
       this.isVolontarioApiUrl(req.url)
     ) {
       req = req.clone({
-        setHeaders: { Authorization: authHeader },
+        setHeaders: {
+          Authorization: authHeader,
+          'Content-Type': 'application/json',
+        },
       });
     }
     return next.handle(req);
