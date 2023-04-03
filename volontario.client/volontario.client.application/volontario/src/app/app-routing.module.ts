@@ -3,9 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
 import { HomePageComponent } from './features/home-page/home-page.component';
 import { RouterGuard } from './core/guard/RouterGuard';
+import { RegisterComponent } from './features/register/register.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomePageComponent, canActivate: [RouterGuard] },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

@@ -29,7 +29,7 @@ export class SecurityService {
   public registerVolunteer(
     volunteerRegisterDto: VolunteerRegisterDTO
   ): Observable<any> {
-    return new Observable<any>();
+    return this.volRestService.post('/register', VolunteerRegisterDTO);
   }
 
   public login(loginDto: LoginInterface): Observable<void> {

@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login.component';
 import { SideBannerModule } from '../../shared/features/side-banner/side-banner.module';
 import { LoginFormModule } from './_features/login-form/login-form.module';
-import { LogoModule } from '../../shared/features/logo/logo.module';
-
+import { LogoModule } from 'src/app/shared/features/logo/logo.module';
 @NgModule({
   declarations: [LoginComponent],
   imports: [CommonModule, SideBannerModule, LoginFormModule, LogoModule],

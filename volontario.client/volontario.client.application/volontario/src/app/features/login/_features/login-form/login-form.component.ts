@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginInterface } from 'src/app/core/interface/authorization.interface';
 
@@ -7,7 +7,7 @@ import { LoginInterface } from 'src/app/core/interface/authorization.interface';
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.scss'],
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent {
   loginFormGroup = new FormGroup({
     login: new FormControl('', [
       Validators.required,
@@ -23,8 +23,6 @@ export class LoginFormComponent implements OnInit {
   @Input() isLogging = false;
 
   constructor() {}
-
-  ngOnInit(): void {}
 
   onFormSubmit() {
     const { login, password } = this.loginFormGroup.value;

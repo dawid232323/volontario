@@ -7,10 +7,10 @@ export class VolunteerRegisterDTO {
     public password: string,
     public domainEmail: string,
     public contactEmail: string,
-    public phoneNumber: string,
+    public phoneNumber: string | null,
     public participationMotivation: string,
-    public experience: string,
-    public interestCategories: InterestCategoryDTO[]
+    public experienceId: number,
+    public interestCategoriesIds: number[]
   ) {}
 
   public static fromPayload(payload: any): VolunteerRegisterDTO {

@@ -9,15 +9,17 @@ import { HttpErrorInterceptor } from './core/interceptor/HttpErrorInterceptor';
 import { SideBannerModule } from './shared/features/side-banner/side-banner.module';
 import { LoginModule } from './features/login/login.module';
 import { HomePageModule } from './features/home-page/home-page.module';
+import { RegisterModule } from './features/register/register.module';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     SideBannerModule,
     LoginModule,
-    HttpClientModule,
+    RegisterModule,
     HomePageModule,
   ],
   providers: [
