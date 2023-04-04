@@ -1,26 +1,18 @@
 package uam.volontario.model.common.impl;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.EqualsAndHashCode;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.*;
 import uam.volontario.model.common.UserIf;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.validation.annotation.DomainEmail;
+import uam.volontario.validation.annotation.Password;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Basic implementation of {@linkplain UserIf}.
@@ -32,7 +24,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table( name = "users" )
-public class User implements UserIf, UserDetails
+public class User implements UserIf
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -47,9 +39,12 @@ public class User implements UserIf, UserDetails
     @NotBlank( message = "Last name must be defined" )
     private String lastName;
 
+    @Transient
+    @Password
+    private String password;
+
     @Column
-    @NotBlank( message = "Password must be defined" )
-    private String hashedPassword; // TODO: add validation for password.
+    private String hashedPassword;
 
     @Column
     @Email( message = "Domain email has incorrect syntax" )
@@ -61,18 +56,19 @@ public class User implements UserIf, UserDetails
     @NotBlank( message = "Contact email must be defined" )
     private String contactEmailAddress;
 
-    @Column
-    //@Pattern( regexp = "([0-9]{9})", message = "Phone number has incorrect syntax." )
-    //@NotBlank( message = "Phone number must be defined" )
+    @Column // TODO: phone number validation needs to be rethought.
     private String phoneNumber;
 
     @Column
     private boolean isVerified;
 
-    @ManyToOne( cascade = CascadeType.PERSIST ) //TODO: Remove this cascading once we get Roles sorted out
-    @JoinColumn( name = "role_id" )
-    @Nonnull
-    private Role role;
+
+    @ManyToMany( fetch = FetchType.EAGER )
+    @JoinTable( name = "user_roles",
+            joinColumns = { @JoinColumn( name = "user_id" ) },
+            inverseJoinColumns = { @JoinColumn( name = "role_id" ) }
+    )
+    private Set< Role > roles;
 
     @JsonManagedReference
     @Nullable
@@ -84,46 +80,4 @@ public class User implements UserIf, UserDetails
     @ManyToOne
     @JoinColumn( name = "institution_id" )
     private Institution institution;
-
-    @Override
-    public Collection< ? extends GrantedAuthority > getAuthorities()
-    {
-        return List.of( role );
-    }
-
-    @Override
-    public String getPassword()
-    {
-        return getHashedPassword();
-    }
-
-    @Override
-    public String getUsername()
-    {
-        return getDomainEmailAddress();
-    }
-
-
-    // TODO: those UserDetails methods need to be discusses and taken care of.
-    @Override
-    public boolean isAccountNonExpired()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled()
-    {
-        return true;
-    }
 }

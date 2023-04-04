@@ -88,20 +88,25 @@ public class SecurityController
 
             if( validationResult.isValidated() )
             {
-                LOGGER.info( "A new user has been registered for email {}, userId: {}",
-                        user.getDomainEmailAddress(), user.getId() );
+                user.setHashedPassword( passwordEncoder.encode( user.getPassword() ) );
                 userService.saveOrUpdate( user );
+
+                LOGGER.debug( "A new user has been registered for email {}, userId: {}",
+                        user.getDomainEmailAddress(), user.getId() );
+
                 return ResponseEntity.status( HttpStatus.CREATED )
                         .body( validationResult.getValidatedEntity() );
             }
+
             LOGGER.debug( "Validation failed for new user with email {}, violations: {}", aDto.getDomainEmail(),
                     validationResult.getValidationViolations().values() );
+
             return ResponseEntity.badRequest()
                     .body( validationResult.getValidationViolations() );
         }
         catch ( Exception aE )
         {
-            LOGGER.error( "Exception occured during registration: {}", aE.getMessage(), aE );
+            LOGGER.error( "Exception occurred during registration: {}", aE.getMessage(), aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }

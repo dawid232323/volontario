@@ -2,7 +2,6 @@ package uam.volontario.dto.convert;
 
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.ExperienceLevelService;
 import uam.volontario.crud.service.InterestCategoryService;
@@ -16,6 +15,7 @@ import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service for DTO operations.
@@ -25,8 +25,6 @@ public class DtoService
 {
     private final InterestCategoryService interestCategoryService;
 
-    private final PasswordEncoder passwordEncoder;
-
     private final ExperienceLevelService experienceLevelService;
 
     /**
@@ -34,16 +32,13 @@ public class DtoService
      *
      * @param aInterestCategoryService interest category service.
      *
-     * @param aPasswordEncoder password encoder.
-     *
      * @param aExperienceLevelService experience level service.
      */
     @Autowired
-    public DtoService( final InterestCategoryService aInterestCategoryService, final PasswordEncoder aPasswordEncoder,
-                      final ExperienceLevelService aExperienceLevelService )
+    public DtoService( final InterestCategoryService aInterestCategoryService, final ExperienceLevelService
+            aExperienceLevelService )
     {
         interestCategoryService = aInterestCategoryService;
-        passwordEncoder = aPasswordEncoder;
         experienceLevelService = aExperienceLevelService;
     }
 
@@ -56,12 +51,10 @@ public class DtoService
      */
     public User createVolunteerFromDto( final VolunteerDto aDto )
     {
-        final Role volunteerRole = Role.builder()
-                .name( "role::volunteer" ) // TODO: roles are yet to be discussed.
-                .build();
+        final Set< Role > roles = Sets.newHashSet(); // TODO: change once roles are imported in the system.
 
         final ExperienceLevel experienceLevel = experienceLevelService.tryLoadEntity( aDto.getExperienceId() )
-                .orElse( null ); // TODO: change once basic experience levels are implemented.
+                .orElse( null ); // TODO: change once basic experience levels are imported in the system.
 
         final List< InterestCategory > volunteerInterestCategories = interestCategoryService.findByIds(
                 aDto.getInterestCategoriesIds() );
@@ -73,14 +66,15 @@ public class DtoService
 
         final User user = User.builder().firstName( aDto.getFirstName() )
                 .lastName( aDto.getLastName() )
-                .hashedPassword( passwordEncoder.encode( aDto.getPassword() ) )
+                .password( aDto.getPassword() )
                 .domainEmailAddress( aDto.getDomainEmail() )
                 .contactEmailAddress( aDto.getContactEmail() )
                 .phoneNumber( aDto.getPhoneNumber() )
-                .role( volunteerRole )
+                .roles( roles )
                 .isVerified( true ) // TODO: for now until email verification is implemented.
                 .volunteerData( volunteerData )
                 .build();
+
         user.getVolunteerData().setUser( user );
 
         return user;

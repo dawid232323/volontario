@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uam.volontario.crud.service.UserService;
+import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 
 import javax.crypto.SecretKey;
@@ -132,7 +133,9 @@ public class JWTService
 
         return Jwts.builder()
                 .setClaims( Map.of( "id", aUser.getId(),
-                        "role", aUser.getRole().getName(),
+                        "roles", aUser.getRoles().stream()
+                                        .map( Role::getName )
+                                        .toList(),
                         "domainEmail", aUser.getDomainEmailAddress() ) )
                 .setIssuedAt( Date.from( now ) )
                 .setExpiration( Date.from( now.plus( Duration.ofMinutes( aExpirationOffsetFromNowInMinutes ) ) ) )

@@ -52,7 +52,7 @@ public class ExperienceLevelServiceImpl implements ExperienceLevelService
     @Override
     public ExperienceLevel saveOrUpdate( final ExperienceLevel aExperienceLevel )
     {
-        return experienceLevelRepository.save(aExperienceLevel);
+        return experienceLevelRepository.save( aExperienceLevel );
     }
 
     @Override

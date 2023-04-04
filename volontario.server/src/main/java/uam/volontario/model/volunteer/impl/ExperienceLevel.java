@@ -34,6 +34,9 @@ public class ExperienceLevel implements VolontarioDomainElementIf
     @Column( length = 500 )
     private String definition;
 
+    /**
+     * Indication of how large experience is. Bigger the level, bigger the value.
+     */
     @NotNull
     @Column
     private Long value;

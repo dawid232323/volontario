@@ -42,7 +42,8 @@ public class UserValidationService
      */
     public ValidationResult validateVolunteerUser( final User aUser )
     {
-        final Multimap< String, String > validationViolations =  ArrayListMultimap.create();
+        final Multimap< String, String > validationViolations = ArrayListMultimap.create();
+
         validateVolunteerByAnnotations( aUser, validationViolations );
         checkUniquenessOfUniqueAttributes( aUser, validationViolations );
 
