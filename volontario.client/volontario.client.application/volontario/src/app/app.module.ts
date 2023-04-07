@@ -10,6 +10,7 @@ import { SideBannerModule } from './shared/features/side-banner/side-banner.modu
 import { LoginModule } from './features/login/login.module';
 import { HomePageModule } from './features/home-page/home-page.module';
 import { RegisterModule } from './features/register/register.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,6 +22,7 @@ import { RegisterModule } from './features/register/register.module';
     LoginModule,
     RegisterModule,
     HomePageModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     {

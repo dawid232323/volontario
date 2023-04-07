@@ -1,3 +1,106 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+$volontario-primaryPalette: (
+  50 : #f4e9e9,
+  100 : #e4c8c8,
+  200 : #d2a3a3,
+  300 : #bf7e7e,
+  400 : #b26262,
+  500 : #a44646,
+  600 : #9c3f3f,
+  700 : #923737,
+  800 : #892f2f,
+  900 : #782020,
+  A100 : #ffb6b6,
+  A200 : #ff8383,
+  A400 : #ff5050,
+  A700 : #ff3636,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #ffffff,
+  )
+);
+
+$volontario-accentPalette: (
+  50 : #e0f6f6,
+  100 : #b3eaea,
+  200 : #80dcdc,
+  300 : #4dcdcd,
+  400 : #26c3c3,
+  500 : #00b8b8,
+  600 : #00b1b1,
+  700 : #00a8a8,
+  800 : #00a0a0,
+  900 : #009191,
+  A100 : #bdffff,
+  A200 : #8affff,
+  A400 : #57ffff,
+  A700 : #3dffff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$volontario-primary: mat.define-palette($volontario-primaryPalette);
+$volontario-accent: mat.define-palette($volontario-accentPalette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$volontario-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$volontario-theme: mat.define-light-theme((
+  color: (
+    primary: $volontario-primary,
+    accent: $volontario-accent,
+    warn: $volontario-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($volontario-theme);
+
 /* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
@@ -9,3 +112,8 @@
   padding: 0;
   font-family: 'Montserrat', sans-serif;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
