@@ -10,6 +10,13 @@ services:
       - '5432:5432'
     volumes: 
       - db:/var/lib/postgresql/data
+  volontario-mailserver:
+    image: mwader/postfix-relay:1.1
+    restart: always
+    environment:
+      - POSTFIX_myhostname=smtp.domain.tld
+      - OPENDKIM_DOMAINS=smtp.domain.tld
+    hostname: volontario.me # placeholder domain, to be changed later
 volumes:
   db:
     driver: local
