@@ -1,22 +1,57 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VolunteerRegisterDTO } from 'src/app/core/model/volunteer.model';
 import { SecurityService } from 'src/app/core/service/security/security.service';
-import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
+import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
+import { SelectFieldModelIf } from 'src/app/core/interface/selectField.interface';
+import { forkJoin } from 'rxjs';
+import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   isPerformingRegistration: boolean = false;
-  constructor(private authService: SecurityService, private router: Router) {}
+  hasRegisteredCorrectly = false;
+  interestCategories: SelectFieldModelIf[] = [];
+  experienceLevels: SelectFieldModelIf[] = [];
+
+  constructor(
+    private authService: SecurityService,
+    private interestCategoryService: InterestCategoryService,
+    private experienceService: VolunteerExperienceService,
+    public router: Router
+  ) {}
+
+  ngOnInit(): void {
+    forkJoin([
+      this.interestCategoryService.getAllInterestCategories(),
+      this.experienceService.getAllExperienceLevels(),
+    ]).subscribe(([categories, experiences]) => {
+      this.interestCategories = categories.map(category => {
+        return {
+          value: category.id,
+          viewValue: category.name,
+        };
+      });
+      this.experienceLevels = experiences.map(expLevel => {
+        return {
+          value: expLevel.id,
+          viewValue: expLevel.name,
+        };
+      });
+    });
+  }
 
   onRegisterFormSubmit(event: VolunteerRegisterDTO) {
     this.isPerformingRegistration = true;
     this.authService.registerVolunteer(event).subscribe({
-      next: () => this.router.navigate(['login']),
+      next: () => {
+        this.isPerformingRegistration = false;
+        this.hasRegisteredCorrectly = true;
+      },
       error: this.handleRegisterError.bind(this),
     });
   }

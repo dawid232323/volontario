@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from './token.service';
 import { map, Observable } from 'rxjs';
 import { VolunteerRegisterDTO } from '../../model/volunteer.model';
@@ -10,6 +10,7 @@ import {
 } from '../../interface/authorization.interface';
 import { VolontarioRestService } from '../volontarioRest.service';
 import { isNil } from 'lodash';
+import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 
 @Injectable({ providedIn: 'root' })
 export class SecurityService {
@@ -25,11 +26,14 @@ export class SecurityService {
     this.endpointBaseUrl = this.volRestService.getEnvironmentUrl();
   }
 
-  // TODO implement logic when backend service is ready
   public registerVolunteer(
     volunteerRegisterDto: VolunteerRegisterDTO
   ): Observable<any> {
-    return this.volRestService.post('/register', VolunteerRegisterDTO);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const options: HttpOptionsInterface = {
+      headers: headers,
+    };
+    return this.volRestService.post('/register', volunteerRegisterDto, options);
   }
 
   public login(loginDto: LoginInterface): Observable<void> {

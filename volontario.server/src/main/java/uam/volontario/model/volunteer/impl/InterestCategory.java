@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,5 +39,5 @@ public class InterestCategory implements VolontarioDomainElementIf
 
     @JsonIgnore
     @ManyToMany( mappedBy = "interestCategories", fetch = FetchType.LAZY )
-    private Set< VolunteerData > volunteerData;
+    private List< VolunteerData > volunteerData;
 }

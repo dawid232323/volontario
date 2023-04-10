@@ -1,124 +1,70 @@
-<div class="flex flex-col items-center justify-center min-h-screen w-full">
+<div class="flex flex-col justify-center min-h-screen">
   <div class="text-4xl font-bold text-center pb-8">Zarejestruj się</div>
   <div>
     <form [formGroup]="registerFormGroup" (ngSubmit)="onFormSubmit()">
-      <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <div class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
-          <label for="firstName" class="block font-semibold">Imię </label>
-          <div class="relative w-full">
-            <i
-              class="fa-solid fa-user top-1/2 -translate-y-[60%] absolute text-bgPrimary text-xl"></i>
-            <input
-              id="firstName"
-              name="firstName"
-              type="text"
-              formControlName="firstName"
-              [ngClass]="{
-                'border-bgPrimary':
-                  registerFormGroup.controls['firstName'].valid,
-                'border-red-500': !registerFormGroup.controls['firstName'].valid
-              }"
-              class="text-l block pb-2 pl-7 w-full text-sm text-black bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold" />
-          </div>
-        </div>
-        <div class="flex pt-3 pb-3 flex-col w-full lg:ml-3">
-          <label for="firstName" class="block font-semibold">Nazwisko </label>
-          <div class="relative w-full">
-            <i
-              class="fa-solid fa-user top-1/2 -translate-y-[60%] absolute text-bgPrimary text-xl"></i>
-            <input
-              id="lastName"
-              name="lastName"
-              type="text"
-              formControlName="lastName"
-              [ngClass]="{
-                'border-bgPrimary':
-                  registerFormGroup.controls['lastName'].valid,
-                'border-red-500': !registerFormGroup.controls['lastName'].valid
-              }"
-              class="text-l block pb-2 pl-7 w-full text-sm text-black bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold" />
-          </div>
-        </div>
+      <div class="flex flex-col lg:flex-row items-stretch">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          appearance="standard">
+          <mat-label>Imię</mat-label>
+          <input matInput formControlName="firstName" />
+          <mat-icon matPrefix color="primary">person</mat-icon>
+          <mat-hint *ngIf="registerFormGroup.controls['firstName'].invalid"
+            >Pole wymagane</mat-hint
+          >
+        </mat-form-field>
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
+          appearance="standard">
+          <mat-label>Nazwisko </mat-label>
+          <input matInput formControlName="lastName" />
+          <mat-icon matPrefix color="primary">person</mat-icon>
+          <mat-hint *ngIf="registerFormGroup.controls['lastName'].invalid"
+            >Pole wymagane</mat-hint
+          >
+        </mat-form-field>
       </div>
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <div class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
-          <label for="domainEmail" class="block font-semibold"
-            >Adres email uczelniany
-          </label>
-          <div class="relative w-full">
-            <i
-              class="fa-solid fa-envelope top-1/2 -translate-y-[60%] absolute text-bgPrimary text-xl"></i>
-            <input
-              id="domainEmail"
-              name="domainEmail"
-              type="text"
-              formControlName="domainEmail"
-              [ngClass]="{
-                'border-bgPrimary':
-                  registerFormGroup.controls['domainEmail'].valid,
-                'border-red-500':
-                  !registerFormGroup.controls['domainEmail'].valid
-              }"
-              class="text-l block pb-2 pl-7 w-full text-sm text-black bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold" />
-          </div>
-        </div>
-        <div class="flex pt-3 pb-3 flex-col w-full lg:ml-3">
-          <label for="contactEmail" class="block font-semibold"
-            >Adres email kontaktowy
-          </label>
-          <div class="relative w-full">
-            <i
-              class="fa-solid fa-envelope top-1/2 -translate-y-[60%] absolute text-bgPrimary text-xl"></i>
-            <input
-              id="contactEmail"
-              name="contactEmail"
-              type="text"
-              formControlName="contactEmail"
-              [ngClass]="{
-                'border-bgPrimary':
-                  registerFormGroup.controls['contactEmail'].valid,
-                'border-red-500':
-                  !registerFormGroup.controls['contactEmail'].valid
-              }"
-              class="text-l block pb-2 pl-7 w-full text-sm text-black bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold" />
-          </div>
-        </div>
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          appearance="standard">
+          <mat-label>Adres email uczelniany </mat-label>
+          <input matInput formControlName="domainEmail" />
+          <mat-icon matPrefix color="primary">mail</mat-icon>
+          <mat-hint *ngIf="registerFormGroup.controls['domainEmail'].invalid"
+            >Pole wymagane</mat-hint
+          >
+        </mat-form-field>
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
+          appearance="standard">
+          <mat-label>Adres email kontaktowy </mat-label>
+          <input matInput formControlName="contactEmail" />
+          <mat-icon matPrefix color="primary">mail</mat-icon>
+          <mat-hint *ngIf="registerFormGroup.controls['contactEmail'].invalid"
+            >Pole wymagane</mat-hint
+          >
+        </mat-form-field>
       </div>
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <div class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
-          <label for="password" class="block font-semibold">Hasło </label>
-          <div class="relative w-full">
-            <i
-              class="fa-solid fa-lock top-1/2 -translate-y-[60%] absolute text-bgPrimary text-xl"></i>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              formControlName="password"
-              [ngClass]="{
-                'border-bgPrimary':
-                  registerFormGroup.controls['password'].valid,
-                'border-red-500': !registerFormGroup.controls['password'].valid
-              }"
-              class="text-l block pb-2 pl-7 w-full text-sm text-black bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold"
-              (keyup)="checkPassword()" />
-          </div>
-        </div>
-        <div class="flex pt-3 pb-3 flex-col w-full lg:ml-3">
-          <label for="passwordRepeat" class="block font-semibold"
-            >Powtórz hasło
-          </label>
-          <div class="relative w-full">
-            <i
-              class="fa-solid fa-lock top-1/2 -translate-y-[60%] absolute text-bgPrimary text-xl"></i>
-            <input
-              id="passwordRepeat"
-              name="passwordRepeat"
-              type="password"
-              formControlName="passwordRepeat"
-              class="text-l border-b-bgPrimary block pb-2 pl-7 w-full text-sm text-black bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold" />
-          </div>
-        </div>
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          appearance="standard">
+          <mat-label>Hasło</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            type="password"
+            (keyup)="checkPassword()" />
+          <mat-icon matPrefix color="primary">lock</mat-icon>
+        </mat-form-field>
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
+          appearance="standard">
+          <mat-label>Powtórz hasło </mat-label>
+          <input matInput formControlName="passwordRepeat" type="password" />
+          <mat-icon matPrefix color="primary">lock</mat-icon>
+        </mat-form-field>
       </div>
       <div class="w-full bg-bgPrimary bg-opacity-10 p-3 rounded-md">
         <h1 class="font-bold text-sm">Twoje hasło musi zawierać</h1>
@@ -190,78 +136,51 @@
           </li>
         </ul>
       </div>
-      <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <div class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
-          <label for="experience" class="block font-semibold"
-            >Poziom doświadczenia
-          </label>
-          <div class="relative w-full">
-            <input
-              id="experience"
-              name="experience"
-              type="range"
-              min="1"
-              max="5"
-              formControlName="experience"
-              [ngClass]="{
-                'border-bgPrimary':
-                  registerFormGroup.controls['experience'].valid,
-                'border-red-500':
-                  !registerFormGroup.controls['experience'].valid
-              }"
-              class="w-full accent-bgPrimary py-3" />
-          </div>
-        </div>
-        <div class="flex pt-3 pb-3 flex-col w-full lg:ml-3">
-          <label for="interestCategories" class="block font-semibold"
-            >Wybierz zainteresowania
-          </label>
-          <div class="relative w-full">
-            <select
-              id="interestCategories"
-              name="interestCategories"
-              formControlName="interestCategories"
-              [ngClass]="{
-                'border-bgPrimary':
-                  registerFormGroup.controls['interestCategories'].valid,
-                'border-red-500':
-                  !registerFormGroup.controls['interestCategories'].valid
-              }"
-              class="text-l block pb-2 pl-7 w-full text-sm text-black bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold">
-              <option
-                *ngFor="let interestCategory of interestCategoriesData"
-                [value]="interestCategory.value">
-                {{ interestCategory.viewValue }}
-              </option>
-            </select>
-          </div>
-        </div>
+      <div class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
+        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
+          <mat-label>Poziom doświadczenia </mat-label>
+          <mat-select formControlName="experience">
+            <mat-option
+              *ngFor="let experience of availableExperiences"
+              [value]="experience.value"
+              >{{ experience.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:ml-3">
+          <mat-label>Wybierz zainteresowania </mat-label>
+          <mat-select
+            formControlName="interestCategories"
+            id="interestCategories"
+            name="interestCategories"
+            multiple>
+            <mat-option
+              *ngFor="let category of availableCategories"
+              [value]="category.value">
+              {{ category.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-      <div class="w-full">
-        <label class="block font-semibold">Motywacja do uczestnictwa: </label>
-        <textarea
-          formControlName="participationMotivation"
-          [ngClass]="{
-            'border-bgPrimary':
-              registerFormGroup.controls['participationMotivation'].valid,
-            'border-red-500':
-              !registerFormGroup.controls['participationMotivation'].valid
-          }"
-          class="w-full text-sm p-2 bg-bgPrimary bg-opacity-20 rounded-md border-b-2 border-bgPrimary resize-none h-[120px]">
+      <mat-form-field class="w-full" appearance="fill" color="primary">
+        <mat-label>Motywacja do uczestnictwa: </mat-label>
+        <textarea matInput formControlName="participationMotivation">
         </textarea>
-      </div>
-      <div class="w-full">
-        <input
-          type="checkbox"
-          formControlName="rodo"
-          class="checked:bg-bgPrimary mr-3" />
-        <label class="font-medium"
-          >Wyrazam zgode na przetwarzanie moich danych.....</label
+        <mat-hint
+          *ngIf="registerFormGroup.controls['participationMotivation'].invalid"
+          >Pole wymagane, podaj maksymalnie 150 znaków</mat-hint
         >
+      </mat-form-field>
+      <div class="w-full pt-3">
+        <mat-checkbox formControlName="rodo" color="primary">
+          <label class="font-medium"
+            >Wyrazam zgode na przetwarzanie moich danych.....</label
+          >
+        </mat-checkbox>
       </div>
       <div class="flex flex-col items-center">
         <app-primary-button
-          class="w-1/2 h-full"
+          class="w-1/2 h-full pt-10"
           [buttonLabel]="'Zarejestruj się'"
           [buttonType]="'submit'"
           [shouldBeEnabled]="registerFormGroup.valid"

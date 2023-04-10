@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SelectField } from 'src/app/core/interface/selectField.interface';
+import { SelectFieldModelIf } from 'src/app/core/interface/selectField.interface';
 import { VolunteerRegisterDTO } from 'src/app/core/model/volunteer.model';
+
 interface passwordVerification {
   hasLowerCase: boolean;
   hasUpperCase: boolean;
@@ -9,12 +10,18 @@ interface passwordVerification {
   hasSpecialChar: boolean;
   isTheSame: boolean;
 }
+
 @Component({
   selector: 'app-register-form',
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.scss'],
 })
 export class RegisterFormComponent {
+  @Output() formSubmit = new EventEmitter<VolunteerRegisterDTO>();
+  @Input() isRegistering: boolean = false;
+  @Input() availableCategories: SelectFieldModelIf[] = [];
+  @Input() availableExperiences: SelectFieldModelIf[] = [];
+
   registerFormGroup = new FormGroup({
     firstName: new FormControl('', [
       Validators.required,
@@ -32,25 +39,14 @@ export class RegisterFormComponent {
     contactEmail: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
     passwordRepeat: new FormControl('', [Validators.required]),
-    experience: new FormControl(1, [Validators.required]),
+    experience: new FormControl(null, [Validators.required]),
     interestCategories: new FormControl([1], [Validators.required]),
-    participationMotivation: new FormControl('', [Validators.required]),
+    participationMotivation: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(150),
+    ]),
     rodo: new FormControl('', [Validators.required]),
   });
-
-  public interestCategoriesData: SelectField[] = [
-    {
-      value: 1,
-      viewValue: 'Opcja 1',
-    },
-    {
-      value: 2,
-      viewValue: 'Opcja 2',
-    },
-  ];
-
-  @Output() formSubmit = new EventEmitter<VolunteerRegisterDTO>();
-  @Input() isRegistering: boolean = false;
 
   constructor() {}
 
@@ -88,10 +84,13 @@ export class RegisterFormComponent {
       domainEmail: <string>domainEmail,
       contactEmail: <string>contactEmail,
       password: <string>password,
-      phoneNumber: '123456789',
       participationMotivation: <string>participationMotivation,
       experienceId: <number>1,
-      interestCategoriesIds: <number[]>[1],
+      interestCategoriesIds: <number[]>interestCategories,
+      phoneNumber: (
+        Math.random() * (999999999 - 0o00000001) +
+        0o00000001
+      ).toString(),
     };
 
     this.formSubmit.emit(registerDTO);

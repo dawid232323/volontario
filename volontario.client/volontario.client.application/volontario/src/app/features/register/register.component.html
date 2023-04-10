@@ -4,9 +4,16 @@
       <app-logo class="lg:hidden"></app-logo>
     </div>
     <app-register-form
-      class="h-full w-full"
+      *ngIf="!hasRegisteredCorrectly"
+      class="h-full w-3/4"
       (formSubmit)="onRegisterFormSubmit($event)"
+      [availableCategories]="interestCategories"
+      [availableExperiences]="experienceLevels"
       [isRegistering]="isPerformingRegistration"></app-register-form>
+    <app-register-success-info
+      (loginPageTransitionClicked)="router.navigate(['login'])"
+      class="h-full w-3/4"
+      *ngIf="hasRegisteredCorrectly"></app-register-success-info>
   </div>
   <div class="hidden lg:block basis-1/2">
     <app-side-banner></app-side-banner>

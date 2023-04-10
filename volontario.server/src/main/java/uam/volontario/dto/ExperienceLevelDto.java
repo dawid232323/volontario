@@ -13,6 +13,8 @@ import uam.volontario.model.volunteer.impl.ExperienceLevel;
 @NoArgsConstructor
 public class ExperienceLevelDto
 {
+    private Long id;
+
     private String name;
 
     private String definition;

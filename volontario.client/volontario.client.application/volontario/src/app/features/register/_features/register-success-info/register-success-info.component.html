@@ -1,0 +1,24 @@
+<div class="flex flex-col justify-center min-h-screen">
+  <mat-card>
+    <mat-card-header>
+      <mat-icon mat-card-avatar [ngStyle]="{ color: 'green' }"
+        >task_alt</mat-icon
+      >
+      <mat-card-title>Rejestracja przebiegła pomyślnie</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        Na twój email uczelniany wysłaliśmy link do weryfikacji konta. Wejdź w
+        niego aby zweryfikować swoje konto i zacząć korzystać z Volontario
+      </p>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button
+        mat-button
+        color="primary"
+        (click)="loginPageTransitionClicked.emit()">
+        Ekran logowania
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -62,7 +62,7 @@ public class DtoService
         final VolunteerData volunteerData = VolunteerData.builder()
                 .experience( experienceLevel )
                 .participationMotivation( aDto.getParticipationMotivation() )
-                .interestCategories( Sets.newHashSet( volunteerInterestCategories ) ).build();
+                .interestCategories( volunteerInterestCategories ).build();
 
         final User user = User.builder().firstName( aDto.getFirstName() )
                 .lastName( aDto.getLastName() )
@@ -102,7 +102,7 @@ public class DtoService
      */
     public ExperienceLevelDto volunteerExperienceToDto( final ExperienceLevel aExperienceLevel )
     {
-        return new ExperienceLevelDto( aExperienceLevel.getName(), aExperienceLevel.getDefinition(),
-                aExperienceLevel.getValue() );
+        return new ExperienceLevelDto(aExperienceLevel.getId(), aExperienceLevel.getName(),
+                aExperienceLevel.getDefinition(), aExperienceLevel.getValue() );
     }
 }

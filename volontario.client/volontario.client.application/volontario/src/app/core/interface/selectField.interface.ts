@@ -1,4 +1,4 @@
-export interface SelectField {
+export interface SelectFieldModelIf {
   value: number;
   viewValue: string;
 }

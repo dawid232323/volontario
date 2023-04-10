@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 import uam.volontario.model.common.impl.User;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -46,7 +47,7 @@ public class VolunteerData implements VolontarioDomainElementIf
                 joinColumns = { @JoinColumn( name = "volunteer_data_id" ) },
                 inverseJoinColumns = { @JoinColumn( name = "interest_category_id" ) }
     )
-    private Set< InterestCategory > interestCategories;
+    private List< InterestCategory > interestCategories;
 
     @Override
     public String toString()

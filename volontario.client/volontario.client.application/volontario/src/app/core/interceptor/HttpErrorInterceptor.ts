@@ -9,6 +9,7 @@ import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { TokenService } from '../service/security/token.service';
 import { SecurityService } from '../service/security/security.service';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -16,7 +17,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
   constructor(
     private tokenService: TokenService,
-    private authService: SecurityService
+    private authService: SecurityService,
+    private router: Router
   ) {}
   intercept(
     req: HttpRequest<any>,
@@ -55,6 +57,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         }),
         catchError(error => {
           this.isRefreshing = false;
+          this.authService.logout();
+          this.router.navigate(['/login']);
           return throwError(error);
         })
       );
