@@ -97,7 +97,6 @@ public class DtoService
                 .localization( aDto.getLocalization() )
                 .headquarters( aDto.getHeadquartersAddress() )
                 .krsNumber( aDto.getKrsNumber() )
-                .pathToImage( aDto.getPathToImage() )
                 .isActive( false )
                 .build();
     }
