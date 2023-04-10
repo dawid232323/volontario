@@ -16,6 +16,8 @@ services:
     environment:
       - POSTFIX_myhostname=smtp.domain.tld
       - OPENDKIM_DOMAINS=smtp.domain.tld
+    ports:
+      - '25:25'
     hostname: volontario.me # placeholder domain, to be changed later
 volumes:
   db:
