@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.ExperienceLevelService;
 import uam.volontario.crud.service.InterestCategoryService;
 import uam.volontario.dto.ExperienceLevelDto;
+import uam.volontario.dto.InstitutionDto;
 import uam.volontario.dto.InterestCategoryDto;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
@@ -78,6 +80,26 @@ public class DtoService
         user.getVolunteerData().setUser( user );
 
         return user;
+    }
+
+    /**
+     * Creates Volunteer {@linkplain Institution} from DTO.
+     *
+     * @param aDto dto.
+     *
+     * @return Institution.
+     */
+    public Institution createInstitutionFromDto( final InstitutionDto aDto )
+    {
+        return Institution.builder()
+                .name( aDto.getName() )
+                .description( aDto.getDescription() )
+                .localization( aDto.getLocalization() )
+                .headquarters( aDto.getHeadquartersAddress() )
+                .krsNumber( aDto.getKrsNumber() )
+                .pathToImage( aDto.getPathToImage() )
+                .isActive( false )
+                .build();
     }
 
     /**

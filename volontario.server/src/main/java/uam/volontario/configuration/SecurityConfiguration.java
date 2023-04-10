@@ -46,11 +46,12 @@ public class SecurityConfiguration
         aHttp.csrf().disable().httpBasic();
 
         excludeUrlsFromJWTAuthentication( aHttp, List.of(
-                "/api/register",
+                "/api/volunteer/register",
                 "/api/login",
                 "/api/interestCategories",
                 "/api/experienceLevels",
-                "/api/refresh/token" ) );
+                "/api/refresh/token",
+                "/api/institution/register" ) );
 
         aHttp.cors();
         aHttp.csrf().disable();

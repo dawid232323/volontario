@@ -11,12 +11,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uam.volontario.crud.service.InstitutionService;
 import uam.volontario.crud.service.UserService;
+import uam.volontario.dto.InstitutionDto;
 import uam.volontario.dto.LoginDto;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.security.jwt.JWTService;
+import uam.volontario.security.mail.MailService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.UserValidationService;
 
@@ -42,6 +46,10 @@ public class SecurityController
 
     private final PasswordEncoder passwordEncoder;
 
+    private final InstitutionService institutionService;
+
+    private final MailService mailService;
+
     /**
      * CDI constructor.
      *
@@ -57,14 +65,17 @@ public class SecurityController
      */
     @Autowired
     public SecurityController( final DtoService aDtoService, final UserValidationService aUserValidationService,
-                               final UserService aUserService, final JWTService aJwtService,
-                               final PasswordEncoder aPasswordEncoder )
+                              final UserService aUserService, final JWTService aJwtService,
+                              final PasswordEncoder aPasswordEncoder, final InstitutionService aInstitutionService,
+                              final MailService aMailService )
     {
         dtoService = aDtoService;
         userValidationService = aUserValidationService;
         userService = aUserService;
         jwtService = aJwtService;
         passwordEncoder = aPasswordEncoder;
+        institutionService = aInstitutionService;
+        mailService = aMailService;
     }
 
     private static final Logger LOGGER = LogManager.getLogger( SecurityController.class );
@@ -76,9 +87,9 @@ public class SecurityController
      *
      * @return if volunteer passes validation, then ResponseEntity with 201 status and volunteer. If volunteer did not
      *         pass validation then ResponseEntity with 401 status and constraints violated. If there was an error,
-     *         then ResponseEntity with 501 status and error message.
+     *         then ResponseEntity with 500 status and error message.
      */
-    @PostMapping( value = "/register" )
+    @PostMapping( value = "/volunteer/register" )
     public ResponseEntity< ? > registerVolunteer( @RequestBody final VolunteerDto aDto )
     {
         try
@@ -106,7 +117,40 @@ public class SecurityController
         }
         catch ( Exception aE )
         {
-            LOGGER.error( "Exception occurred during registration: {}", aE.getMessage(), aE );
+            LOGGER.error( "Exception occurred during registration of volunteer: {}", aE.getMessage(), aE );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    /**
+     * Registers volunteer.
+     *
+     * @param aDto dto containing registration data.
+     *
+     * @return if institution passes validation, then ResponseEntity with 201 status and institution. If institution did not
+     *         pass validation then ResponseEntity with 401 status and constraints violated. If there was an error,
+     *         then ResponseEntity with 500 status and error message.
+     */
+    @PostMapping( value = "/institution/register" )
+    public ResponseEntity< ? > registerInstitution( @RequestBody final InstitutionDto aDto )
+    {
+        try
+        {
+            final Institution institution = dtoService.createInstitutionFromDto( aDto );
+
+            // TODO: add server-side validation for institution similar to the volunteer one and return 401 if validation failed.
+            institutionService.saveOrUpdate( institution );
+
+            mailService.sendInstitutionVerificationMailToModerator( aDto );
+
+            return ResponseEntity.status( HttpStatus.CREATED )
+                    .body( institution );
+
+        }
+        catch ( Exception aE )
+        {
+            LOGGER.error( "Exception occurred during registration of institution: {}", aE.getMessage(), aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
@@ -119,7 +163,7 @@ public class SecurityController
      *
      * @return if user gave correct logging data, then ResponseEntity with 200 status and JWTs. If user did not
      *         give correct logging data then ResponseEntity with 401 status and reason. If there was an error,
-     *         then ResponseEntity with 501 status and error message.
+     *         then ResponseEntity with 500 status and error message.
      */
     @PostMapping( value = "/login" )
     public ResponseEntity< ? > login( @RequestBody final LoginDto aDto )
