@@ -81,7 +81,7 @@ $volontario-accentPalette: (
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $volontario-primary: mat.define-palette($volontario-primaryPalette);
-$volontario-accent: mat.define-palette($volontario-accentPalette, A200, A100, A400);
+$volontario-accent: mat.define-palette($volontario-accentPalette, 300, 400, 500, 600);
 
 // The warn palette is optional (defaults to red).
 $volontario-warn: mat.define-palette(mat.$red-palette);

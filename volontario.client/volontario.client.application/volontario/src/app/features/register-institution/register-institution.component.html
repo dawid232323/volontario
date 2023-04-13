@@ -1,0 +1,43 @@
+<div class="flex flex-row max-h-screen">
+  <div class="flex flex-col items-center max-h-screen lg:basis-1/2 w-full">
+    <div class="w-[90%] mx-auto">
+      <app-logo class="lg:hidden"></app-logo>
+    </div>
+    <span class="pt-32" *ngIf="!hasRegisteredCorrectly">
+      <div class="text-4xl font-bold text-center">Zarejestruj Instytucję</div>
+    </span>
+    <div
+      *ngIf="!hasRegisteredCorrectly"
+      class="flex flex-col items-center lg:w-full h-full pt-16">
+      <mat-stepper labelPosition="end" color="primary" class="w-3/4">
+        <mat-step
+          label="Informacje podstawowe"
+          [formGroup]="basicInfoFormGroup">
+          <app-register-basic-info-form
+            [basicInfoFormGroup]="basicInfoFormGroup">
+          </app-register-basic-info-form>
+        </mat-step>
+        <mat-step
+          label="Informacje dodatkowe"
+          [formGroup]="additionalInfoFormGroup">
+          <app-register-additional-info-form
+            [additionalInfoFormGroup]="additionalInfoFormGroup"
+            [canSubmit]="canSubmitForm"
+            (formSubmit)="onFormSubmit()"
+            class="lg:w-1/2 w-full px-5"></app-register-additional-info-form>
+        </mat-step>
+      </mat-stepper>
+    </div>
+    <div class="flex flex-col items-center justify-center lg:basis-1/2 w-full">
+      <app-success-info-card
+        class="h-full w-3/4"
+        *ngIf="hasRegisteredCorrectly"
+        [titleMessage]="successTitle"
+        [cardContent]="successContent"
+        [buttonText]="buttonText"></app-success-info-card>
+    </div>
+  </div>
+  <div class="hidden lg:block basis-1/2">
+    <app-side-banner></app-side-banner>
+  </div>
+</div>

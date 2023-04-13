@@ -1,5 +1,5 @@
 <div class="flex flex-row h-full">
-  <div class="flex flex-col items-center lg:basis-1/2 w-full">
+  <div class="flex flex-col items-center justify-center lg:basis-1/2 w-full">
     <div class="w-[90%] mx-auto">
       <app-logo class="lg:hidden"></app-logo>
     </div>
@@ -10,10 +10,13 @@
       [availableCategories]="interestCategories"
       [availableExperiences]="experienceLevels"
       [isRegistering]="isPerformingRegistration"></app-register-form>
-    <app-register-success-info
-      (loginPageTransitionClicked)="router.navigate(['login'])"
+    <app-success-info-card
+      *ngIf="hasRegisteredCorrectly"
       class="h-full w-3/4"
-      *ngIf="hasRegisteredCorrectly"></app-register-success-info>
+      (cardButtonClicked)="router.navigate(['login'])"
+      [titleMessage]="successMessageTitle"
+      [cardContent]="successMessageContent"
+      [buttonText]="successButtonText"></app-success-info-card>
   </div>
   <div class="hidden lg:block basis-1/2">
     <app-side-banner></app-side-banner>

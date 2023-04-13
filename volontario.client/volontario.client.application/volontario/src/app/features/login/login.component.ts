@@ -30,6 +30,10 @@ export class LoginComponent implements OnInit {
   }
 
   onRegisterButtonClicked() {
-    this.router.navigate(['register']);
+    return this.router.navigate(['register']);
+  }
+
+  onRegisterInstitutionClicked() {
+    return this.router.navigate(['register-institution']);
   }
 }

@@ -1,0 +1,97 @@
+<div>
+  <div class="w-full h-full">
+    <form [formGroup]="additionalInfoFormGroup">
+      <div class="flex flex-col lg:flex-row items-stretch">
+        <mat-form-field
+          appearance="standard"
+          #institutionTagsInput
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
+          <mat-chip-list #tagsChipList formControlName="institutionTags">
+            <mat-chip
+              *ngFor="let tag of institutionTags?.value"
+              [selectable]="true"
+              [removable]="true"
+              (removed)="removeTag(tag)">
+              {{ tag }}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="Przedmioty działalności"
+              [matChipInputFor]="tagsChipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="true"
+              (matChipInputTokenEnd)="addTag($event)" />
+          </mat-chip-list>
+          <mat-hint
+            >Podaj maksymalnie 10 przedmiotów działalności instytucji w formie
+            pojedynczych tagów</mat-hint
+          >
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col lg:flex-row items-stretch">
+        <mat-form-field
+          appearance="standard"
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          #institutionDescriptionInput>
+          <mat-label>Opis działalności instytucji</mat-label>
+          <textarea
+            matInput
+            formControlName="institutionDescription"
+            placeholder="Podaj krótki opis działalności instytucji"></textarea>
+          <mat-error
+            *ngIf="
+              additionalInfoFormGroup.controls['institutionDescription'].invalid
+            "
+            >Opis powinien być któtszy niż 200 znaków</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col lg:flex-row items-stretch">
+        <mat-form-field
+          appearance="standard"
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          #operationPlaceInput>
+          <mat-label>Miejsce prowadzenia działalności</mat-label>
+          <input
+            matInput
+            formControlName="operationPlace"
+            placeholder="Podaj miejsce prowadzenia działalności" />
+          <mat-hint
+            *ngIf="additionalInfoFormGroup.controls['operationPlace'].invalid"
+            >Pole obowiązkowe</mat-hint
+          >
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col lg:flex-row justify-between items-stretch">
+        <mat-checkbox formControlName="rulesApprove" color="primary"
+          >Akceptacja regulaminu</mat-checkbox
+        >
+      </div>
+      <div class="flex flex-col lg:flex-row justify-between items-stretch">
+        <mat-checkbox formControlName="rodoApprove" color="primary"
+          >Zgoda na przetwarzanie danych osobowych</mat-checkbox
+        >
+      </div>
+      <div class="flex flex-row items-center gap-x-5 justify-between pt-10">
+        <button
+          mat-raised-button
+          matStepperPrevious
+          type="button"
+          class="w-1/2 h-full"
+          color="primary">
+          Wstecz
+        </button>
+        <button
+          mat-raised-button
+          matStepperNext
+          type="submit"
+          class="w-1/2 h-full"
+          color="accent"
+          [disabled]="!canSubmit"
+          (click)="formSubmit.emit()">
+          Zakończ
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -11,6 +11,7 @@ import { LoginModule } from './features/login/login.module';
 import { HomePageModule } from './features/home-page/home-page.module';
 import { RegisterModule } from './features/register/register.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RegisterInstitutionModule } from 'src/app/features/register-institution/register-institution.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,6 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RegisterModule,
     HomePageModule,
     BrowserAnimationsModule,
+    RegisterInstitutionModule,
   ],
   providers: [
     {

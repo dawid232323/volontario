@@ -33,7 +33,11 @@ export class SecurityService {
     const options: HttpOptionsInterface = {
       headers: headers,
     };
-    return this.volRestService.post('/volunteer/register', VolunteerRegisterDTO);
+    return this.volRestService.post(
+      '/volunteer/register',
+      volunteerRegisterDto,
+      options
+    );
   }
 
   public login(loginDto: LoginInterface): Observable<void> {

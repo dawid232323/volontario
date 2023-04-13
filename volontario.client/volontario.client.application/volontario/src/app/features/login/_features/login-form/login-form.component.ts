@@ -19,6 +19,7 @@ export class LoginFormComponent {
 
   @Output() formSubmit = new EventEmitter<LoginInterface>();
   @Output() registerButtonClicked = new EventEmitter<void>();
+  @Output() registerInstitutionButtonClicked = new EventEmitter<void>();
   @Input() loginHasFailed: boolean = false;
   @Input() isLogging = false;
 

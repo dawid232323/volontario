@@ -4,20 +4,16 @@
       <mat-icon mat-card-avatar [ngStyle]="{ color: 'green' }"
         >task_alt</mat-icon
       >
-      <mat-card-title>Rejestracja przebiegła pomyślnie</mat-card-title>
+      <mat-card-title>{{ titleMessage }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <p>
-        Na twój email uczelniany wysłaliśmy link do weryfikacji konta. Wejdź w
-        niego aby zweryfikować swoje konto i zacząć korzystać z Volontario
+        {{ cardContent }}
       </p>
     </mat-card-content>
     <mat-card-actions align="end">
-      <button
-        mat-button
-        color="primary"
-        (click)="loginPageTransitionClicked.emit()">
-        Ekran logowania
+      <button mat-button color="primary" (click)="cardButtonClicked.emit()">
+        {{ buttonText }}
       </button>
     </mat-card-actions>
   </mat-card>

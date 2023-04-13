@@ -18,6 +18,12 @@ export class RegisterComponent implements OnInit {
   interestCategories: SelectFieldModelIf[] = [];
   experienceLevels: SelectFieldModelIf[] = [];
 
+  successMessageTitle = 'Rejestracja przebiegła pomyślnie';
+  successMessageContent =
+    'Na twój email uczelniany wysłaliśmy link do weryfikacji konta. Wejdź w\n' +
+    '        niego aby zweryfikować swoje konto i zacząć korzystać z Volontario';
+  successButtonText = 'Ekran logowania';
+
   constructor(
     private authService: SecurityService,
     private interestCategoryService: InterestCategoryService,

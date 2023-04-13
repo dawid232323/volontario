@@ -4,7 +4,7 @@ import { RegisterComponent } from './register.component';
 import { SideBannerModule } from 'src/app/shared/features/side-banner/side-banner.module';
 import { LogoModule } from 'src/app/shared/features/logo/logo.module';
 import { RegisterFormModule } from './_features/register-form/register-form.module';
-import { RegisterSuccessInfoModule } from 'src/app/features/register/_features/register-success-info/register-success-info.module';
+import { SuccessInfoCardModule } from 'src/app/shared/features/success-info-card/success-info-card.module';
 
 @NgModule({
   declarations: [RegisterComponent],
@@ -13,7 +13,7 @@ import { RegisterSuccessInfoModule } from 'src/app/features/register/_features/r
     SideBannerModule,
     LogoModule,
     RegisterFormModule,
-    RegisterSuccessInfoModule,
+    SuccessInfoCardModule,
   ],
   exports: [RegisterComponent],
 })
