@@ -1,17 +1,16 @@
 package uam.volontario.dto.convert;
 
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.ExperienceLevelService;
 import uam.volontario.crud.service.InterestCategoryService;
-import uam.volontario.dto.ExperienceLevelDto;
-import uam.volontario.dto.InstitutionDto;
-import uam.volontario.dto.InterestCategoryDto;
-import uam.volontario.dto.VolunteerDto;
+import uam.volontario.dto.*;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
+import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
@@ -91,6 +90,14 @@ public class DtoService
      */
     public Institution createInstitutionFromDto( final InstitutionDto aDto )
     {
+        final InstitutionContactPersonDto contactPersonDto = aDto.getContactPerson();
+        final InstitutionContactPerson contactPerson = InstitutionContactPerson.builder()
+                .firstName( contactPersonDto.getFirstName() )
+                .lastName( contactPersonDto.getLastName() )
+                .contactEmail( contactPersonDto.getContactEmail() )
+                .phoneNumber( contactPersonDto.getPhoneNumber() )
+                .build();
+
         return Institution.builder()
                 .name( aDto.getName() )
                 .description( aDto.getDescription() )
@@ -98,6 +105,8 @@ public class DtoService
                 .headquarters( aDto.getHeadquartersAddress() )
                 .krsNumber( aDto.getKrsNumber() )
                 .isActive( false )
+                .registrationToken( RandomStringUtils.randomAlphanumeric( 64 ) )
+                .institutionContactPerson( contactPerson )
                 .build();
     }
 

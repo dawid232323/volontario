@@ -61,4 +61,10 @@ public class InstitutionServiceImpl implements InstitutionService
     {
         institutionRepository.deleteById( aInstitutionId );
     }
+
+    @Override
+    public Optional< Institution > loadByRegistrationToken( final String aRegistrationToken )
+    {
+        return institutionRepository.findByRegistrationToken( aRegistrationToken );
+    }
 }

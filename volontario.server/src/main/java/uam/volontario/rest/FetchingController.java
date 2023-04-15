@@ -1,4 +1,4 @@
-package uam.volontario.rest.security;
+package uam.volontario.rest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +16,7 @@ import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.security.jwt.JWTService;
 
+// TODO: this controller needs to be rethought.
 /**
  * Controller for fetching data.
  */

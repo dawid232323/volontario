@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uam.volontario.crud.service.InstitutionService;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.InstitutionDto;
@@ -27,6 +24,7 @@ import uam.volontario.validation.service.UserValidationService;
 import java.util.Map;
 import java.util.Optional;
 
+// TODO: I think that we should separate logic from Controller classes, look at InstitutionRegistrationController class.
 /**
  * Controller for login, registration and other strict-security related functionalities.
  */
@@ -46,10 +44,6 @@ public class SecurityController
 
     private final PasswordEncoder passwordEncoder;
 
-    private final InstitutionService institutionService;
-
-    private final MailService mailService;
-
     /**
      * CDI constructor.
      *
@@ -66,16 +60,13 @@ public class SecurityController
     @Autowired
     public SecurityController( final DtoService aDtoService, final UserValidationService aUserValidationService,
                               final UserService aUserService, final JWTService aJwtService,
-                              final PasswordEncoder aPasswordEncoder, final InstitutionService aInstitutionService,
-                              final MailService aMailService )
+                              final PasswordEncoder aPasswordEncoder )
     {
         dtoService = aDtoService;
         userValidationService = aUserValidationService;
         userService = aUserService;
         jwtService = aJwtService;
         passwordEncoder = aPasswordEncoder;
-        institutionService = aInstitutionService;
-        mailService = aMailService;
     }
 
     private static final Logger LOGGER = LogManager.getLogger( SecurityController.class );
@@ -118,39 +109,6 @@ public class SecurityController
         catch ( Exception aE )
         {
             LOGGER.error( "Exception occurred during registration of volunteer: {}", aE.getMessage(), aE );
-            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-                    .body( aE.getMessage() );
-        }
-    }
-
-    /**
-     * Registers volunteer.
-     *
-     * @param aDto dto containing registration data.
-     *
-     * @return if institution passes validation, then ResponseEntity with 201 status and institution. If institution did not
-     *         pass validation then ResponseEntity with 401 status and constraints violated. If there was an error,
-     *         then ResponseEntity with 500 status and error message.
-     */
-    @PostMapping( value = "/institution/register" )
-    public ResponseEntity< ? > registerInstitution( @RequestBody final InstitutionDto aDto )
-    {
-        try
-        {
-            final Institution institution = dtoService.createInstitutionFromDto( aDto );
-
-            // TODO: add server-side validation for institution similar to the volunteer one and return 401 if validation failed.
-            institutionService.saveOrUpdate( institution );
-
-            mailService.sendInstitutionVerificationMailToModerator( aDto );
-
-            return ResponseEntity.status( HttpStatus.CREATED )
-                    .body( institution );
-
-        }
-        catch ( Exception aE )
-        {
-            LOGGER.error( "Exception occurred during registration of institution: {}", aE.getMessage(), aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
@@ -235,12 +193,5 @@ public class SecurityController
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
-    }
-
-    // TODO: test endpoint.
-    @PostMapping( value = "/test" )
-    public ResponseEntity< ? > test( @RequestBody String aString )
-    {
-        return ResponseEntity.ok( 200 );
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import uam.volontario.dto.InstitutionContactPersonDto;
 import uam.volontario.dto.InstitutionDto;
+import uam.volontario.model.institution.impl.Institution;
+import uam.volontario.model.institution.impl.InstitutionContactPerson;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -38,14 +40,14 @@ public class MailService
     /**
      * Sends verification email to moderator regarding accepting newly registered Institution.
      *
-     * @param aInstitutionDto
-     *                            institution dto.
+     * @param aInstitution
+     *                            institution.
      * @throws MessagingException
      *                                          in case of message syntax errors.
      * @throws UnsupportedEncodingException
      *                                          in case of wrong encoding of email.
      */
-    public void sendInstitutionVerificationMailToModerator( final InstitutionDto aInstitutionDto )
+    public void sendInstitutionVerificationMailToModerator( final Institution aInstitution )
         throws MessagingException, UnsupportedEncodingException
     {
         final MimeMessage message = mailSender.createMimeMessage();
@@ -55,22 +57,23 @@ public class MailService
         final String moderatorEmail = "s464846@wmi.amu.edu.pl";
         final String volontarioAddress = "no-reply@volontario.com";
         final String sender = "Volontario";
-        final String mailSubject = aInstitutionDto.getName() + " asks for verification.";
+        final String mailSubject = aInstitution.getName() + " asks for verification.";
 
         helper.setFrom( volontarioAddress, sender );
         helper.setTo( moderatorEmail );
         helper.setSubject( mailSubject );
-        helper.setText( buildMailContentForInstitutionRegistration( aInstitutionDto ), true );
+        helper.setText( buildMailContentForInstitutionRegistration( aInstitution ), true );
 
         mailSender.send( message );
     }
 
-    private String buildMailContentForInstitutionRegistration( final InstitutionDto aInstitutionDto )
+    private String buildMailContentForInstitutionRegistration( final Institution aInstitution )
     {
-        final InstitutionContactPersonDto contactPersonDto = aInstitutionDto.getContactPerson();
+        final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
         final StringBuilder contentBuilder = new StringBuilder();
 
-        // TODO: perhaps definition of content could be defined in separate file?
+        // TODO: this email should be hold in separate file in /resources section.
+        // TODO: once 'tags' are resolved in terms on how to store it in db, bring it back.
         contentBuilder.append( "Institution '|institutionName|' asks for verification:<br>" );
         contentBuilder.append( "Institution details: <br>" );
         contentBuilder.append( "<ul>" );
@@ -79,7 +82,7 @@ public class MailService
         contentBuilder.append( "  <li>Headquarters: |headQuartersAddress|</li>" );
         contentBuilder.append( "  <li>Localization: |localization|</li>" );
         contentBuilder.append( "  <li>Description: |description|</li>" );
-        contentBuilder.append( "  <li>Tags: |tags|</li>" );
+//        contentBuilder.append( "  <li>Tags: |tags|</li>" );
         contentBuilder.append( "</ul> " );
         contentBuilder.append( "Contact person: <br>" );
         contentBuilder.append( "<ul>" );
@@ -87,24 +90,28 @@ public class MailService
         contentBuilder.append( "  <li>Contact email: |contactEmail|</li>" );
         contentBuilder.append( "  <li>Phone number: |phoneNumber|</li>" );
         contentBuilder.append( "</ul> " );
-        contentBuilder.append( "<h3><a href=\"|verificationUrl|\" target=\"_self\">VERIFY</a></h3>" );
+        contentBuilder.append( "<h3><a href=\"|acceptUrl|\" target=\"_self\">ACCEPT</a></h3>" );
+        contentBuilder.append( "<h3><a href=\"|rejectUrl|\" target=\"_self\">REJECT</a></h3>" );
 
-        final String verifyURL =
-            "http://URLneedsToBeChoosen:port" + "/accept?krs=" + aInstitutionDto.getKrsNumber();
+        // TODO: url and port need to be adjusted for client.
+        final String acceptUrl = "http://localhost:8080" + "/institution/accept?token=" + aInstitution.getRegistrationToken();
+        final String rejectUrl = "http://localhost:8080" + "/institution/reject?token=" + aInstitution.getRegistrationToken();
 
         String content = contentBuilder.toString();
 
-        content = content.replaceAll( "\\|institutionName\\|", aInstitutionDto.getName() );
-        content = content.replaceAll( "\\|krsNumber\\|", aInstitutionDto.getKrsNumber() );
-        content = content.replaceAll( "\\|headQuartersAddress\\|", aInstitutionDto.getHeadquartersAddress() );
-        content = content.replaceAll( "\\|localization\\|", aInstitutionDto.getLocalization() );
-        content = content.replaceAll( "\\|description\\|", aInstitutionDto.getDescription() );
-        content = content.replaceAll( "\\|tags\\|", StringUtils.join( aInstitutionDto.getTags(), ", " ) );
-        content = content.replaceAll( "\\|firstName\\|", contactPersonDto.getFirstName() );
-        content = content.replaceAll( "\\|lastName\\|", contactPersonDto.getLastName() );
-        content = content.replaceAll( "\\|contactEmail\\|", contactPersonDto.getContactEmail() );
-        content = content.replaceAll( "\\|phoneNumber\\|", contactPersonDto.getPhoneNumber() );
-        content = content.replaceAll( "\\|verificationUrl\\|", verifyURL );
+        content = content.replaceAll( "\\|institutionName\\|", aInstitution.getName() );
+        content = content.replaceAll( "\\|krsNumber\\|", aInstitution.getKrsNumber() );
+        content = content.replaceAll( "\\|headQuartersAddress\\|", aInstitution.getHeadquarters() );
+        content = content.replaceAll( "\\|localization\\|", aInstitution.getLocalization() );
+        content = content.replaceAll( "\\|description\\|", aInstitution.getDescription() );
+//        content = content.replaceAll( "\\|tags\\|", StringUtils.join( aInstitution.getTags(), ", " ) );
+        content = content.replaceAll( "\\|firstName\\|", contactPerson.getFirstName() );
+        content = content.replaceAll( "\\|lastName\\|", contactPerson.getLastName() );
+        content = content.replaceAll( "\\|contactEmail\\|", contactPerson.getContactEmail() );
+        content = content.replaceAll( "\\|phoneNumber\\|", contactPerson.getPhoneNumber() );
+        content = content.replaceAll( "\\|acceptUrl\\|", acceptUrl );
+        content = content.replaceAll( "\\|rejectUrl\\|", rejectUrl );
+
 
         return content;
     }

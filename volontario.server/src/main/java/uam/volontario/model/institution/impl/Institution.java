@@ -54,4 +54,19 @@ public class Institution implements VolontarioDomainElementIf
 
     @Column
     private boolean isActive;
+
+    @Column
+    private String registrationToken;
+
+    @OneToOne( cascade = { CascadeType.PERSIST, CascadeType.REMOVE },
+               fetch = FetchType.EAGER )
+    @JoinColumn
+    private InstitutionContactPerson institutionContactPerson;
+
+    @Override
+    public String toString()
+    {
+        // TODO: adjust to string.
+        return "Institution{}";
+    }
 }

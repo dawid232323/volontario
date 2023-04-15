@@ -45,13 +45,16 @@ public class SecurityConfiguration
     {
         aHttp.csrf().disable().httpBasic();
 
+        // TODO: do not forget to remove some of those URLs when their authentication is resolved.
         excludeUrlsFromJWTAuthentication( aHttp, List.of(
                 "/api/volunteer/register",
                 "/api/login",
                 "/api/interestCategories",
                 "/api/experienceLevels",
                 "/api/refresh/token",
-                "/api/institution/register" ) );
+                "/api/institution/register",
+                "/api/institution/accept",
+                "/api/institution/reject" ) );
 
         aHttp.cors();
         aHttp.csrf().disable();
