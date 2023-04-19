@@ -11,6 +11,7 @@ import {
 import { VolontarioRestService } from '../volontarioRest.service';
 import { isNil } from 'lodash';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
+import { EndpointUrls } from 'src/app/utils/url.util';
 
 @Injectable({ providedIn: 'root' })
 export class SecurityService {
@@ -34,14 +35,14 @@ export class SecurityService {
       headers: headers,
     };
     return this.volRestService.post(
-      '/volunteer/register',
+      EndpointUrls.registerVolunteer,
       volunteerRegisterDto,
       options
     );
   }
 
   public login(loginDto: LoginInterface): Observable<void> {
-    return this.volRestService.post('/login', loginDto).pipe(
+    return this.volRestService.post(EndpointUrls.login, loginDto).pipe(
       map(result => {
         const loginResult = <TokenPairInterface>result;
         this.tokenService.saveToken(loginResult.token);
@@ -60,13 +61,15 @@ export class SecurityService {
     const refreshTokenObj: RefreshTokenInterface = {
       refresh_token: this.tokenService.getRefreshToken(),
     };
-    return this.volRestService.post('/refresh/token', refreshTokenObj).pipe(
-      map(response => {
-        const refreshTokenResult = <TokenPairInterface>response;
-        this.tokenService.saveToken(refreshTokenResult.token);
-        this.tokenService.saveRefreshToken(refreshTokenResult.refresh_token);
-      })
-    );
+    return this.volRestService
+      .post(EndpointUrls.refreshToken, refreshTokenObj)
+      .pipe(
+        map(response => {
+          const refreshTokenResult = <TokenPairInterface>response;
+          this.tokenService.saveToken(refreshTokenResult.token);
+          this.tokenService.saveRefreshToken(refreshTokenResult.refresh_token);
+        })
+      );
   }
 
   public isUserLoggedIn(): boolean {

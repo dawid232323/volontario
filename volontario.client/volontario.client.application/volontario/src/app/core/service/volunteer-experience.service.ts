@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { HttpHeaders } from '@angular/common/http';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
+import { EndpointUrls } from 'src/app/utils/url.util';
 
 @Injectable({ providedIn: 'root' })
 export class VolunteerExperienceService {
@@ -15,7 +16,7 @@ export class VolunteerExperienceService {
       headers: headers,
     };
     return this.restService
-      .get('/experienceLevels', options)
+      .get(EndpointUrls.experienceLevels, options)
       .pipe(map(result => result.map(VolunteerExperience.fromPayload)));
   }
 }

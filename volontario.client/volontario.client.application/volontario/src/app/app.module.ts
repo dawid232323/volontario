@@ -12,6 +12,7 @@ import { HomePageModule } from './features/home-page/home-page.module';
 import { RegisterModule } from './features/register/register.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterInstitutionModule } from 'src/app/features/register-institution/register-institution.module';
+import { InstitutionVerifyModule } from 'src/app/features/institution-verify/institution-verify.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,6 +26,7 @@ import { RegisterInstitutionModule } from 'src/app/features/register-institution
     HomePageModule,
     BrowserAnimationsModule,
     RegisterInstitutionModule,
+    InstitutionVerifyModule,
   ],
   providers: [
     {

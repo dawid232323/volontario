@@ -6,8 +6,10 @@ import {
 } from 'src/app/core/model/institution.model';
 import { Observable } from 'rxjs';
 import { InstitutionContactPersonModel } from 'src/app/core/model/InstitutionContactPerson.model';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
+import { VerifyType } from 'src/app/features/institution-verify/institution-verify.const';
+import { EndpointUrls } from 'src/app/utils/url.util';
 
 @Injectable({ providedIn: 'root' })
 export class InstitutionService {
@@ -21,8 +23,22 @@ export class InstitutionService {
       headers: headers,
     };
     return this.restService.post(
-      '/institution/register',
-      institutionModel,
+      EndpointUrls.institutionRegister,
+      institutionModel
+    );
+  }
+
+  public verifyInstitution(
+    token: string,
+    operationType?: VerifyType
+  ): Observable<any> {
+    const params = new HttpParams({ fromObject: { token: token } });
+    const options: HttpOptionsInterface = {
+      params: params,
+    };
+    return this.restService.post(
+      EndpointUrls.getInstitutionVerify(operationType!),
+      {},
       options
     );
   }
@@ -34,8 +50,8 @@ export class InstitutionService {
     const contactPerson = new InstitutionContactPersonModel(
       basicInfoValue.registerPersonName,
       basicInfoValue.registerPersonLastName,
-      basicInfoValue.registerPersonEmail,
-      basicInfoValue.registerPersonPhoneNumber
+      basicInfoValue.registerPersonPhoneNumber,
+      basicInfoValue.registerPersonEmail
     );
     const { institutionName, krsNumber, address } = basicInfoValue;
     const { institutionTags, institutionDescription, operationPlace } =

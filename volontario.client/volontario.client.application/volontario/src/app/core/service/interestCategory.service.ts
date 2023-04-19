@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 import { HttpHeaders } from '@angular/common/http';
+import { EndpointUrls } from 'src/app/utils/url.util';
 
 @Injectable({ providedIn: 'root' })
 export class InterestCategoryService {
@@ -15,7 +16,7 @@ export class InterestCategoryService {
       headers: headers,
     };
     return this.restService
-      .get('/interestCategories', options)
+      .get(EndpointUrls.interestCategories, options)
       .pipe(map(result => result.map(InterestCategoryDTO.fromPayload)));
   }
 }

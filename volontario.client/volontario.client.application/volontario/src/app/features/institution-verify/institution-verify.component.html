@@ -1,0 +1,26 @@
+<div class="flex flex-row min-h-screen">
+  <div class="flex flex-col items-center min-h-screen lg:basis-1/2 w-full">
+    <div class="w-[90%] mx-auto">
+      <app-logo class="lg:hidden"></app-logo>
+    </div>
+    <div class="flex flex-col items-center lg:w-full h-full pt-16">
+      <div class="flex flex-col items-center justify-center lg:w-full h-full">
+        <mat-progress-spinner
+          *ngIf="!hasEndedOperation"
+          [mode]="'indeterminate'"
+          [color]="'primary'"></mat-progress-spinner>
+      </div>
+      <app-success-info-card
+        class="h-full w-3/4"
+        *ngIf="hasEndedOperation"
+        [titleMessage]="title"
+        [cardContent]="content"
+        [buttonText]="'Strona domowa'"
+        (cardButtonClicked)="onCardButtonClicked()">
+      </app-success-info-card>
+    </div>
+  </div>
+  <div class="hidden lg:block basis-1/2">
+    <app-side-banner></app-side-banner>
+  </div>
+</div>

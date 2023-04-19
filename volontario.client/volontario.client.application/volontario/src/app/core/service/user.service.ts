@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { User } from 'src/app/core/model/user.model';
 import { isNil } from 'lodash';
+import { EndpointUrls } from 'src/app/utils/url.util';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -14,7 +15,7 @@ export class UserService {
       return of(this.userData);
     }
     return this.restService
-      .get('/userData')
+      .get(EndpointUrls.userData)
       .pipe(map(userResult => User.fromPayload(userResult)));
   }
 }

@@ -54,7 +54,7 @@ public class MailService
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
         // TODO: email fields need to be verified with prostecki.
-        final String moderatorEmail = "s464846@wmi.amu.edu.pl";
+        final String moderatorEmail = "s464891@wmi.amu.edu.pl";
         final String volontarioAddress = "no-reply@volontario.com";
         final String sender = "Volontario";
         final String mailSubject = aInstitution.getName() + " asks for verification.";
@@ -93,9 +93,9 @@ public class MailService
         contentBuilder.append( "<h3><a href=\"|acceptUrl|\" target=\"_self\">ACCEPT</a></h3>" );
         contentBuilder.append( "<h3><a href=\"|rejectUrl|\" target=\"_self\">REJECT</a></h3>" );
 
-        // TODO: url and port need to be adjusted for client.
-        final String acceptUrl = "http://localhost:8080" + "/institution/accept?token=" + aInstitution.getRegistrationToken();
-        final String rejectUrl = "http://localhost:8080" + "/institution/reject?token=" + aInstitution.getRegistrationToken();
+        // TODO: Urls need to be stored inside the env variable
+        final String acceptUrl = "http://localhost:4200" + "/institution/verify?a=accept&t=" + aInstitution.getRegistrationToken();
+        final String rejectUrl = "http://localhost:4200" + "/institution/verify/?a=reject&t" + aInstitution.getRegistrationToken();
 
         String content = contentBuilder.toString();
 
