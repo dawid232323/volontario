@@ -51,12 +51,12 @@ public class JWTRequestFilter extends OncePerRequestFilter
         }
 
         final String jwt = jwtService.getTokenFromAuthorizationHeader( authenticationHeader );
-        final Optional< String > domainEmail = jwtService.readDomainEmailAddressFromJWT( jwt );
+        final Optional< String > contactEmail = jwtService.readContactEmailAddressFromJWT( jwt );
 
-        if( domainEmail.isPresent() && jwtService.validateToken( jwt )
+        if( contactEmail.isPresent() && jwtService.validateToken( jwt )
                 && SecurityContextHolder.getContext().getAuthentication() == null )
         {
-            final UserDetails userDetails = userService.loadUserByUsername( domainEmail.get() );
+            final UserDetails userDetails = userService.loadUserByUsername( contactEmail.get() );
 
             final UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken( userDetails.getUsername(), userDetails.getPassword(),

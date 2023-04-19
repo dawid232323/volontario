@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 
 import java.util.List;
@@ -18,7 +17,8 @@ import java.util.Set;
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @Table( name = "interest_categories" )
@@ -40,4 +40,30 @@ public class InterestCategory implements VolontarioDomainElementIf
     @JsonIgnore
     @ManyToMany( mappedBy = "interestCategories", fetch = FetchType.LAZY )
     private List< VolunteerData > volunteerData;
+
+    @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder()
+                .append( name )
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals( final Object aObj )
+    {
+        if( aObj instanceof InterestCategory interestCategory )
+        {
+            return new EqualsBuilder()
+                    .append( this.name, interestCategory.name )
+                    .isEquals();
+        }
+        return false;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Interest Category (id: " + id + ", name: " + name +")";
+    }
 }

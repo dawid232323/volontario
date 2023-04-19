@@ -46,8 +46,8 @@ public class FetchingController
      * @param aJwtService jwt service.
      */
     public FetchingController( final DtoService aDtoService, final InterestCategoryService aInterestCategoryService,
-                              final ExperienceLevelService aExperienceLevelService,
-                              final JWTService aJwtService )
+                               final ExperienceLevelService aExperienceLevelService,
+                               final JWTService aJwtService )
     {
         dtoService = aDtoService;
         interestCategoryService = aInterestCategoryService;
@@ -110,7 +110,7 @@ public class FetchingController
      *         error on server side occurred.
      */
     @GetMapping( value = "/userData" )
-    public ResponseEntity< ? > loadUserData( @RequestHeader( HttpHeaders.AUTHORIZATION ) String aAuthenticationHeader )
+    public ResponseEntity< ? > loadUserData( @RequestHeader( HttpHeaders.AUTHORIZATION ) final String aAuthenticationHeader )
     {
         try
         {

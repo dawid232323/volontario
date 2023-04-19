@@ -24,14 +24,29 @@ import java.util.List;
 @Configuration
 public class SecurityConfiguration
 {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
+    private final JWTRequestFilter jwtRequestFilter;
+
+    /**
+     * CDI constructor.
+     *
+     * @param aUserService user service.
+     *
+     * @param aJWTAuthEntryPoint jwt authentication entry point.
+     *
+     * @param aJWTRequestFilter jwt request filter.
+     */
     @Autowired
-    private JWTRequestFilter jwtRequestFilter;
+    public SecurityConfiguration( final UserService aUserService, final JWTAuthenticationEntryPoint aJWTAuthEntryPoint,
+                                  final JWTRequestFilter aJWTRequestFilter )
+    {
+        userService = aUserService;
+        jwtAuthenticationEntryPoint = aJWTAuthEntryPoint;
+        jwtRequestFilter = aJWTRequestFilter;
+    }
 
     /**
      * Configures web behaviour across application.
@@ -41,7 +56,7 @@ public class SecurityConfiguration
      * @return security filter chain.
      */
     @Bean
-    public SecurityFilterChain securityFilterChain( HttpSecurity aHttp ) throws Exception
+    public SecurityFilterChain securityFilterChain( final HttpSecurity aHttp ) throws Exception
     {
         aHttp.csrf().disable().httpBasic();
 
@@ -54,7 +69,8 @@ public class SecurityConfiguration
                 "/api/refresh/token",
                 "/api/institution/register",
                 "/api/institution/accept",
-                "/api/institution/reject" ) );
+                "/api/institution/reject",
+                "/api/institution/register-contact-person" ) );
 
         aHttp.cors();
         aHttp.csrf().disable();
@@ -87,7 +103,7 @@ public class SecurityConfiguration
      * @throws Exception on failure during authentication.
      */
     @Autowired
-    public void configureGlobal( AuthenticationManagerBuilder aAuth ) throws Exception
+    public void configureGlobal( final AuthenticationManagerBuilder aAuth ) throws Exception
     {
         aAuth.userDetailsService( userService )
                 .passwordEncoder( new BCryptPasswordEncoder() );

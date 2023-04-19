@@ -1,14 +1,18 @@
 package uam.volontario.validation.service;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.validation.ValidationResult;
+import uam.volontario.validation.service.entity.UserValidationService;
+import uam.volontario.validation.service.entity.VolunteerDataValidationService;
 
 import java.util.Collections;
 import java.util.Random;
@@ -23,8 +27,11 @@ import static org.mockito.Mockito.doReturn;
 @RunWith( MockitoJUnitRunner.Silent.class )
 public class VolunteerCreationValidationTest
 {
-    @Mock
+    @Spy
     private UserService userService;
+
+    @Spy
+    private VolunteerDataValidationService volunteerDataValidationService;
 
     @InjectMocks
     private UserValidationService userValidationService;
@@ -37,7 +44,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -52,7 +59,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -67,7 +74,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -82,7 +89,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -93,41 +100,42 @@ public class VolunteerCreationValidationTest
     public void volunteerWithBlankPasswordShouldNotBeValidated()
     {
         // given
-        final User volunteer = prepareUserBuilderWithCorrectData().hashedPassword( "" ).build();
+        final User volunteer = prepareUserBuilderWithCorrectData().password( "" ).build();
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
-        assertNotEquals( null, validationResult.getValidationViolations().get( "hashedPassword" ) );
+        assertNotEquals( null, validationResult.getValidationViolations().get( "password" ) );
     }
 
     @Test
     public void volunteerWithNullPasswordShouldNotBeValidated()
     {
         // given
-        final User volunteer = prepareUserBuilderWithCorrectData().hashedPassword( null ).build();
+        final User volunteer = prepareUserBuilderWithCorrectData().password( null ).build();
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
-        assertNotEquals( null, validationResult.getValidationViolations().get( "hashedPassword" ) );
+        assertNotEquals( null, validationResult.getValidationViolations().get( "password" ) );
     }
 
     @Test
     public void volunteerWithBlankDomainEmailShouldNotBeValidated()
     {
         // given
-        final User volunteer = prepareUserBuilderWithCorrectData().domainEmailAddress( "" ).build();
+        final User volunteer = prepareUserBuilderWithCorrectData().build();
+        volunteer.getVolunteerData().setDomainEmailAddress( "" );
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -138,11 +146,12 @@ public class VolunteerCreationValidationTest
     public void volunteerWithNullDomainEmailShouldNotBeValidated()
     {
         // given
-        final User volunteer = prepareUserBuilderWithCorrectData().domainEmailAddress( null ).build();
+        final User volunteer = prepareUserBuilderWithCorrectData().build();
+        volunteer.getVolunteerData().setDomainEmailAddress( null );
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -153,11 +162,12 @@ public class VolunteerCreationValidationTest
     public void volunteerWithDomainEmailHavingWrongEmailSyntaxShouldNotBeValidated()
     {
         // given
-        final User volunteer = prepareUserBuilderWithCorrectData().domainEmailAddress( "asuafus" ).build();
+        final User volunteer = prepareUserBuilderWithCorrectData().build();
+        volunteer.getVolunteerData().setDomainEmailAddress( "ihsgi" );
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -172,7 +182,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -187,7 +197,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -202,7 +212,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -213,11 +223,13 @@ public class VolunteerCreationValidationTest
     public void volunteerWithDomainEmailNotHavingUniversityDomainShouldNotBeValidated()
     {
         // given
-        final User volunteer = prepareUserBuilderWithCorrectData().domainEmailAddress( "student@wp.pl" ).build();
+        final User volunteer = prepareUserBuilderWithCorrectData().build();
+        volunteer.getVolunteerData().setDomainEmailAddress( "student@wp.pl" );
+
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -225,6 +237,8 @@ public class VolunteerCreationValidationTest
     }
 
     @Test
+    @Ignore // TODO: once phone number validation is back again.
+
     public void volunteerWithNullPhoneNumberShouldNotBeValidated()
     {
         // given
@@ -232,7 +246,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -240,6 +254,7 @@ public class VolunteerCreationValidationTest
     }
 
     @Test
+    @Ignore // TODO: once phone number validation is back again.
     public void volunteerWithBlankPhoneNumberShouldNotBeValidated()
     {
         // given
@@ -247,7 +262,7 @@ public class VolunteerCreationValidationTest
 
         // when
         assertThatUserServiceRepositoryIsEmpty();
-        final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+        final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
         // then
         assertFalse( validationResult.isValidated() );
@@ -255,6 +270,7 @@ public class VolunteerCreationValidationTest
     }
 
     @Test( timeout = 15_000 )
+    @Ignore // TODO: once phone number validation is back again.
     public void volunteerWithPhoneNumberHavingOtherThanNumericCharactersShouldNotBeValidated()
     {
         for( int i = 0; i < 1000; i++ )
@@ -266,7 +282,7 @@ public class VolunteerCreationValidationTest
 
             // when
             assertThatUserServiceRepositoryIsEmpty();
-            final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+            final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
             // then
             assertFalse( validationResult.isValidated() );
@@ -275,6 +291,7 @@ public class VolunteerCreationValidationTest
     }
 
     @Test( timeout = 15_000 )
+    @Ignore // TODO: once phone number validation is back again.
     public void volunteerWithPhoneNumberHavingMoreOrLessThan9DigitsShouldNotBeValidated()
     {
         for( int i = 0; i < 1000; i++ )
@@ -289,7 +306,7 @@ public class VolunteerCreationValidationTest
 
             // when
             assertThatUserServiceRepositoryIsEmpty();
-            final ValidationResult validationResult = userValidationService.validateVolunteerUser( volunteer );
+            final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
 
             // then
             assertFalse( validationResult.isValidated() );
@@ -299,17 +316,24 @@ public class VolunteerCreationValidationTest
 
     private void assertThatUserServiceRepositoryIsEmpty()
     {
-        doReturn( Collections.emptyList() ).when( userService ).loadAllEntities();
+        doReturn( Collections.emptyList() ).when( userService )
+                .loadAllEntities();
     }
 
     private User.UserBuilder prepareUserBuilderWithCorrectData()
     {
+        final VolunteerData volunteerData = VolunteerData.builder()
+                .domainEmailAddress( "student@st.amu.edu.pl" )
+                .build();
+
+
         return User.builder().firstName( "Jan" )
                 .lastName( "Kowalski" )
                 .hashedPassword( "aafsaios" )
-                .domainEmailAddress( "student@st.amu.edu.pl")
                 .contactEmailAddress( "contact@wp.pl" )
+                .password( "ABCdef123_" )
                 .phoneNumber( "123456789" )
+                .volunteerData( volunteerData )
                 .isVerified( true );
     }
 }

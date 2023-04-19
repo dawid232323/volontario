@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService
 
     /**
      * CDI constructor.
+     *
      * @param aUserRepository user repository.
      */
     @Autowired
@@ -63,25 +64,39 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public Optional< User > tryToLoadByDomainEmail( final String aDomainEmail )
+    public Optional< User > tryToLoadByContactEmail( final String aContactEmail )
     {
-        return userRepository.findByDomainEmailAddress( aDomainEmail );
+        return userRepository.findByContactEmailAddress( aContactEmail );
+    }
+
+    @Override
+    public Optional< User > tryToLoadByLogin( final String aLogin )
+    {
+        Optional< User > user = tryToLoadByContactEmail( aLogin );
+
+        if( user.isPresent() )
+        {
+            return user;
+        }
+
+        return userRepository.findByPhoneNumber( aLogin );
     }
 
     /**
-     * Method needed for Spring Security integration. Domain email address is username in Volontario system.
+     * Method needed for Spring Security integration. In Volontario system we consider contact email address as
+     * username (although we can also log in with phone number).
      *
-     * @param aDomainEmail domain email address (username).
+     * @param aContactEmail contact email address (username).
      *
      * @return userDetails of found User.
      *
-     * @throws UsernameNotFoundException when there is no user with such domain email in the system.
+     * @throws UsernameNotFoundException when there is no user with such contact email in the system.
      */
     @Override
-    public UserDetails loadUserByUsername( final String aDomainEmail ) throws UsernameNotFoundException
+    public UserDetails loadUserByUsername( final String aContactEmail ) throws UsernameNotFoundException
     {
-        return tryToLoadByDomainEmail( aDomainEmail )
-                .orElseThrow( () -> new UsernameNotFoundException( "Domain email " + aDomainEmail
+        return tryToLoadByContactEmail( aContactEmail )
+                .orElseThrow( () -> new UsernameNotFoundException( "Contact email " + aContactEmail
                         + " was not found in the system." ) );
     }
 }

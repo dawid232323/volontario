@@ -1,11 +1,16 @@
 package uam.volontario.model.institution.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.volunteer.impl.ExperienceLevel;
 
 import java.util.List;
 
@@ -14,9 +19,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Data
+@Getter
+@Setter
 @Builder
-@EqualsAndHashCode
 @Entity
 @Table( name = "institutions" )
 public class Institution implements VolontarioDomainElementIf
@@ -44,10 +49,17 @@ public class Institution implements VolontarioDomainElementIf
     @Pattern( regexp = "\\d{10}", message = "Wrong format of KRS number" )
     private String krsNumber;
 
+    @JsonIgnore
     @OneToMany( mappedBy = "institution",
                 cascade = { CascadeType.PERSIST, CascadeType.MERGE },
                 fetch = FetchType.LAZY )
     private List< User > employees;
+
+    @JsonManagedReference
+    @OneToOne( cascade = { CascadeType.PERSIST, CascadeType.REMOVE },
+            fetch = FetchType.EAGER )
+    @JoinColumn
+    private InstitutionContactPerson institutionContactPerson;
 
     @Column
     private String pathToImage; // TODO: look at InstitutionContactPersonDto.
@@ -58,15 +70,29 @@ public class Institution implements VolontarioDomainElementIf
     @Column
     private String registrationToken;
 
-    @OneToOne( cascade = { CascadeType.PERSIST, CascadeType.REMOVE },
-               fetch = FetchType.EAGER )
-    @JoinColumn
-    private InstitutionContactPerson institutionContactPerson;
+    @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder()
+                .append( krsNumber )
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals( final Object aObj )
+    {
+        if( aObj instanceof Institution institution )
+        {
+            return new EqualsBuilder()
+                    .append( this.krsNumber, institution.krsNumber )
+                    .isEquals();
+        }
+        return false;
+    }
 
     @Override
     public String toString()
     {
-        // TODO: adjust to string.
-        return "Institution{}";
+        return "Institution (id: " + id + ", name: " + name + ", krs: " + krsNumber + ")";
     }
 }

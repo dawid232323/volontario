@@ -11,11 +11,20 @@ import java.util.Optional;
 public interface UserService extends EntityService< User >, UserDetailsService
 {
     /**
-     * Tries to load user by domain email address.
+     * Tries to load user by contact email address.
      *
-     * @param aDomainEmail domain email address.
+     * @param aContactEmail contact email address.
      *
-     * @return user with given domain email or empty optional if given domain email does not belong to any user.
+     * @return user with given contact email or empty optional if given contact email does not belong to any user.
      */
-    Optional< User > tryToLoadByDomainEmail( String aDomainEmail );
+    Optional< User > tryToLoadByContactEmail( String aContactEmail );
+
+    /**
+     * Tries to load by login.
+     *
+     * @param aLogin either domain email, contact email or phone number
+     *
+     * @return user matching login or empty optional if given login does not belong to any user.
+     */
+    Optional< User > tryToLoadByLogin( String aLogin );
 }

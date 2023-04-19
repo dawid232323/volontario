@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 
 /**
@@ -15,7 +14,8 @@ import uam.volontario.model.common.VolontarioDomainElementIf;
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @Table( name = "experience_level" )
@@ -40,4 +40,32 @@ public class ExperienceLevel implements VolontarioDomainElementIf
     @NotNull
     @Column
     private Long value;
+
+    @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder()
+                .append( name )
+                .append( value )
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals( final Object aObj )
+    {
+        if( aObj instanceof ExperienceLevel experienceLevel )
+        {
+            return new EqualsBuilder()
+                    .append( this.name, experienceLevel.name )
+                    .append( this.value, experienceLevel.value )
+                    .isEquals();
+        }
+        return false;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Experience Level (id: " + id + ", name: " + name + ")";
+    }
 }

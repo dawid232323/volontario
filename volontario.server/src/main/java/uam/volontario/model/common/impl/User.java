@@ -1,26 +1,32 @@
 package uam.volontario.model.common.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.UserIf;
+import uam.volontario.model.common.UserRole;
 import uam.volontario.model.institution.impl.Institution;
+import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.validation.annotation.DomainEmail;
 import uam.volontario.validation.annotation.Password;
 
+import java.util.List;
 import java.util.Set;
 
 /**
  * Basic implementation of {@linkplain UserIf}.
  */
-@EqualsAndHashCode( exclude = {"volunteerData"} )
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @Table( name = "users" )
@@ -44,12 +50,8 @@ public class User implements UserIf
     private String password;
 
     @Column
+    @JsonIgnore
     private String hashedPassword;
-
-    @Column
-    @Email( message = "Domain email has incorrect syntax" )
-    @DomainEmail
-    private String domainEmailAddress;
 
     @Column
     @Email( message = "Contact email has incorrect syntax" )
@@ -62,22 +64,62 @@ public class User implements UserIf
     @Column
     private boolean isVerified;
 
-
+    @JsonManagedReference
     @ManyToMany( fetch = FetchType.EAGER )
     @JoinTable( name = "user_roles",
             joinColumns = { @JoinColumn( name = "user_id" ) },
             inverseJoinColumns = { @JoinColumn( name = "role_id" ) }
     )
-    private Set< Role > roles;
+    private List< Role > roles;
 
-    @JsonManagedReference
     @Nullable
+    @JsonManagedReference
     @OneToOne( cascade = CascadeType.ALL )
     @JoinColumn
     private VolunteerData volunteerData;
 
     @Nullable
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn( name = "institution_id" )
     private Institution institution;
+
+    @Override
+    public List< UserRole > getUserRoles()
+    {
+        return UserRole.mapRolesToUserRoles( roles );
+    }
+
+    @Override
+    public boolean hasUserRole( final UserRole aUserRole )
+    {
+        return getUserRoles().stream()
+                .anyMatch( userRole -> userRole.equals( aUserRole ) );
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder()
+                .append( contactEmailAddress )
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals( final Object aObj )
+    {
+        if( aObj instanceof User user )
+        {
+            return new EqualsBuilder()
+                    .append( this.contactEmailAddress, user.contactEmailAddress )
+                    .isEquals();
+        }
+        return false;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "User (id: " + id + ", contact email: " + contactEmailAddress + ")";
+    }
 }

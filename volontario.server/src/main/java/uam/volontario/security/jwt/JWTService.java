@@ -71,24 +71,24 @@ public class JWTService
     }
 
     /**
-     * Reads domain email address from jwt.
+     * Reads contact email address from jwt.
      *
      * @param aJWT jwt.
      *
-     * @return jwt's domain email address or null if jwt is expired.
+     * @return jwt's contact email address or null if jwt is expired.
      */
-    public Optional< String > readDomainEmailAddressFromJWT( final String aJWT )
+    public Optional< String > readContactEmailAddressFromJWT( final String aJWT )
     {
         final Optional< Claims > optionalParsedToken = parseToken( aJWT );
 
         if( optionalParsedToken.isPresent() )
         {
             final Claims parsedToken = optionalParsedToken.get();
-            final Object domainEmail = parsedToken.get( "domainEmail" );
+            final Object contactEmail = parsedToken.get( "contactEmail" );
 
-            if( domainEmail != null )
+            if( contactEmail != null )
             {
-                return Optional.of( (String)domainEmail );
+                return Optional.of( (String)contactEmail );
             }
         }
 
@@ -136,7 +136,7 @@ public class JWTService
                         "roles", aUser.getRoles().stream()
                                         .map( Role::getName )
                                         .toList(),
-                        "domainEmail", aUser.getDomainEmailAddress() ) )
+                        "contactEmail", aUser.getContactEmailAddress() ) )
                 .setIssuedAt( Date.from( now ) )
                 .setExpiration( Date.from( now.plus( Duration.ofMinutes( aExpirationOffsetFromNowInMinutes ) ) ) )
                 .signWith( SECRET_KEY )
@@ -155,22 +155,22 @@ public class JWTService
         }
         catch ( ExpiredJwtException aE )
         {
-            LOGGER.debug( "Retrieving email from JWT failed: JWT token has expired" );
+            LOGGER.debug( "Parsing JWT failed: JWT token has expired" );
             return Optional.empty();
         }
         catch ( SignatureException aE )
         {
-            LOGGER.debug( "Retrieving email from JWT failed, signature error: {}", aE.getMessage() );
+            LOGGER.debug( "Parsing JWT failed, signature error: {}", aE.getMessage() );
             return Optional.empty();
         }
         catch ( MalformedJwtException | UnsupportedJwtException aE )
         {
-            LOGGER.debug( "Retrieving email from JWT failed, reason: {}", aE.getMessage() );
+            LOGGER.debug( "Parsing JWT failed, reason: {}", aE.getMessage() );
             return Optional.empty();
         }
         catch ( IllegalArgumentException aE )
         {
-            LOGGER.debug( "An empty or null String has been passed to JWT email retrieval: {}", aE.getMessage() );
+            LOGGER.debug( "Parsing JWT failed: {}", aE.getMessage() );
             return Optional.empty();
         }
     }

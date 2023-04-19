@@ -15,7 +15,7 @@ public class PasswordValidator implements ConstraintValidator< Password, String 
     @Override
     public boolean isValid( final String aPassword, final ConstraintValidatorContext aValidatorContext )
     {
-        if( !Objects.isNull( aPassword ) )
+        if( !Objects.isNull( aPassword ) && !aPassword.isBlank() )
         {
             final Pattern passwordPattern = Pattern.compile( "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])" +
                     "(?=.*[!@#&()_–[{}]:;',?/*~$^+=<>]).{8,30}$" );

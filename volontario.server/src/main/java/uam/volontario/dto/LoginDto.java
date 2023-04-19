@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class LoginDto
 {
-    private String domainEmailAddress; // TODO: perhaps we will enable logging in from phoneNumber?
+    /**
+     * Either domain email address, or contact email address, or phone number.
+     */
+    private String login;
 
     private String password;
 }

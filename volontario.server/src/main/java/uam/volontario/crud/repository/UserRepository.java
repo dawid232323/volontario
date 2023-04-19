@@ -13,11 +13,20 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository< User, Long >
 {
     /**
-     * Looks for User possessing given domain email address.
+     * Looks for User possessing given contact email address.
      *
-     * @param aDomainEmail domain email address.
+     * @param aContactEmail contact email address.
      *
-     * @return user with the same domain email, if found.
+     * @return user with the same contact email, if found.
      */
-    Optional< User > findByDomainEmailAddress( String aDomainEmail );
+    Optional< User > findByContactEmailAddress( String aContactEmail );
+
+    /**
+     * Looks for User possessing given phone number.
+     *
+     * @param aPhoneNumber phone number.
+     *
+     * @return user with the same phone number, if found.
+     */
+    Optional< User > findByPhoneNumber( String aPhoneNumber );
 }

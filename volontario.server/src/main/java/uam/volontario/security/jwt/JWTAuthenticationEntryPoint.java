@@ -23,7 +23,7 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 
     @Override
     public void commence( final HttpServletRequest aRequest, final HttpServletResponse aResponse,
-                         final AuthenticationException aAuthException ) throws IOException
+                          final AuthenticationException aAuthException ) throws IOException
     {
         aResponse.sendError( HttpStatus.UNAUTHORIZED.value() );
     }

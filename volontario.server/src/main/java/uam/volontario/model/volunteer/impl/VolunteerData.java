@@ -1,14 +1,17 @@
 package uam.volontario.model.volunteer.impl;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.validation.annotation.DomainEmail;
 
 import java.util.List;
 import java.util.Set;
@@ -18,7 +21,8 @@ import java.util.Set;
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @Table( name = "volunteer_data" )
@@ -29,19 +33,26 @@ public class VolunteerData implements VolontarioDomainElementIf
     @Column
     private Long id;
 
-    @JsonBackReference
-    @OneToOne( mappedBy = "volunteerData")
+    @JsonIgnore
+    @OneToOne( mappedBy = "volunteerData" )
     @JoinColumn
     private User user;
+
+    @Column
+    @Email( message = "Domain email has incorrect syntax" )
+    @DomainEmail
+    private String domainEmailAddress;
 
     @Size( max = 1500 )
     @Column( length = 1500 )
     private String participationMotivation;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn( name = "volunteer_experience_id" )
     private ExperienceLevel experience;
 
+    @JsonManagedReference
     @ManyToMany( cascade =  { CascadeType.PERSIST }, fetch = FetchType.EAGER )
     @JoinTable( name = "volunteer_interests",
                 joinColumns = { @JoinColumn( name = "volunteer_data_id" ) },
@@ -50,9 +61,28 @@ public class VolunteerData implements VolontarioDomainElementIf
     private List< InterestCategory > interestCategories;
 
     @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder()
+                .append( domainEmailAddress )
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals( final Object aObj )
+    {
+        if( aObj instanceof VolunteerData volunteerData )
+        {
+            return new EqualsBuilder()
+                    .append( this.domainEmailAddress, volunteerData.domainEmailAddress )
+                    .isEquals();
+        }
+        return false;
+    }
+
+    @Override
     public String toString()
     {
-        return "VolunteerData(id=" + id + ", participationMotivation=" + participationMotivation +", " +
-                "experience=" + experience.toString() + ", owningUserId=" + user.getId() + ")";
+        return "VolunteerData (domain email: " + domainEmailAddress + ")";
     }
 }

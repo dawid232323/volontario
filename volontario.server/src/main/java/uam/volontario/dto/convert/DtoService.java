@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.ExperienceLevelService;
 import uam.volontario.crud.service.InterestCategoryService;
+import uam.volontario.crud.service.RoleService;
 import uam.volontario.dto.*;
+import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
@@ -15,8 +17,10 @@ import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service for DTO operations.
@@ -28,6 +32,8 @@ public class DtoService
 
     private final ExperienceLevelService experienceLevelService;
 
+    private final RoleService roleService;
+
     /**
      * CDI constructor.
      *
@@ -37,10 +43,11 @@ public class DtoService
      */
     @Autowired
     public DtoService( final InterestCategoryService aInterestCategoryService, final ExperienceLevelService
-            aExperienceLevelService )
+            aExperienceLevelService, final RoleService aRoleService )
     {
         interestCategoryService = aInterestCategoryService;
         experienceLevelService = aExperienceLevelService;
+        roleService = aRoleService;
     }
 
     /**
@@ -52,10 +59,10 @@ public class DtoService
      */
     public User createVolunteerFromDto( final VolunteerDto aDto )
     {
-        final Set< Role > roles = Sets.newHashSet(); // TODO: change once roles are imported in the system.
+        final List< Role > roles = roleService.findByNameIn( UserRole.mapUserRolesToRoleNames( List.of( UserRole.VOLUNTEER ) ) );
 
         final ExperienceLevel experienceLevel = experienceLevelService.tryLoadEntity( aDto.getExperienceId() )
-                .orElse( null ); // TODO: change once basic experience levels are imported in the system.
+                .orElseThrow();
 
         final List< InterestCategory > volunteerInterestCategories = interestCategoryService.findByIds(
                 aDto.getInterestCategoriesIds() );
@@ -63,12 +70,12 @@ public class DtoService
         final VolunteerData volunteerData = VolunteerData.builder()
                 .experience( experienceLevel )
                 .participationMotivation( aDto.getParticipationMotivation() )
+                .domainEmailAddress( aDto.getDomainEmail() )
                 .interestCategories( volunteerInterestCategories ).build();
 
         final User user = User.builder().firstName( aDto.getFirstName() )
                 .lastName( aDto.getLastName() )
                 .password( aDto.getPassword() )
-                .domainEmailAddress( aDto.getDomainEmail() )
                 .contactEmailAddress( aDto.getContactEmail() )
                 .phoneNumber( aDto.getPhoneNumber() )
                 .roles( roles )

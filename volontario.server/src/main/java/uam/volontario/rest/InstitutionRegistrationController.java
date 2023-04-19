@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.InstitutionDto;
 import uam.volontario.handler.InstitutionRegistrationHandler;
 
+import java.util.Map;
+
 /**
  * Controller for API related to registering {@linkplain uam.volontario.model.institution.impl.Institution}.
  */
-@RestController
-@RequestMapping( value = "/api/institution",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE )
+@RestController( value = "/api/institution" )
+@RequestMapping( consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 public class InstitutionRegistrationController
 {
     private final InstitutionRegistrationHandler institutionRegistrationHandler;
@@ -72,5 +72,26 @@ public class InstitutionRegistrationController
     public ResponseEntity< ? > rejectInstitution( @RequestParam( "token" ) final String aRegistrationToken )
     {
         return institutionRegistrationHandler.rejectInstitution( aRegistrationToken );
+    }
+
+    /**
+     * Registers Institution Contact Person user account.
+     *
+     * @param aRegistrationToken institution registration token.
+     *
+     * @param aPassword user password.
+     *
+     * @return ResponseEntity with newly created user of contact person and code 201 if provided password passed
+     *         validation, or ResponseEntity with code 400 if registration token is invalid or provided password did not
+     *         pass validation (in this case also the reason is provided in response body) and if any error occurs then
+     *         Response Entity with code 500 and error message.
+     *
+     */
+    @PostMapping( value = "/register-contact-person" )
+    public ResponseEntity< ? > registerInstitutionContactPerson( @RequestParam( "t" ) final String aRegistrationToken,
+                                                                 @RequestBody final Map< String, String > aPassword )
+    {
+        return institutionRegistrationHandler.registerInstitutionContactPerson( aRegistrationToken,
+                aPassword.get( "password" ) );
     }
 }
