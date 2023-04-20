@@ -1,0 +1,13 @@
+localhost:8080/api/login (logowanie emailem kontaktowym):
+
+{
+    "login": "jkowalski@wp.pl",
+    "password": "SecurePassword123_"
+}
+
+localhost:8080/api/login (logowanie numerem telefonu):
+
+{
+    "login": "123456789",
+    "password": "SecurePassword123_"
+}

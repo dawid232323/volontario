@@ -1,0 +1,16 @@
+http://localhost:8080/api/institution/register
+
+{
+    "name": "wolontariat",
+    "contactPerson": {
+        "firstName": "Jan",
+        "lastName": "Kowalski",
+        "phoneNumber": "123456789",
+        "contactEmail": "Kowalski@wolontariat.gov.pl"
+    },
+    "krsNumber": "1234567890",
+    "tags": [],
+    "description": "Testowanie procesu rejestracji",
+    "localization": "Poznan",
+    "headquartersAddress": "Testowa 20"
+}

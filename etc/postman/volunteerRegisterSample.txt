@@ -1,0 +1,13 @@
+localhost:8080/api/volunteer/register
+
+{
+    "firstName": "Jan",
+    "lastName": "Kowalski",
+    "password": "SecurePassword123_",
+    "domainEmail": "uamStudent@st.amu.edu.pl",
+    "contactEmail": "jkowalski@wp.pl",
+    "phoneNumber": "123456789",
+    "participationMotivation": "Testowanie procesu rejestracji",
+    "experienceId": 1,
+    "interestCategoriesIds": [1, 2, 3]
+}

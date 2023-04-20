@@ -1,0 +1,5 @@
+localhost:8080/api/refresh/token
+
+{
+    "refresh_token": "TOKEN WYGENEROWANY PRZY LOGOWANIU"
+}

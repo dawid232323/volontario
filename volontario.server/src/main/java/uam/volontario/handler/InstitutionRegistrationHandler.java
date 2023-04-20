@@ -18,13 +18,11 @@ import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.security.mail.MailService;
 import uam.volontario.validation.ValidationResult;
-import uam.volontario.validation.service.entity.InstitutionContactPersonValidationService;
 import uam.volontario.validation.service.entity.InstitutionValidationService;
 import uam.volontario.validation.service.entity.UserValidationService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Handler class for {@linkplain Institution} related operations.
@@ -149,7 +147,8 @@ public class InstitutionRegistrationHandler
                 institution.setActive( true );
                 institutionService.saveOrUpdate( institution );
 
-                // TODO: send email to contact person for creating an account.
+                mailService.sendInstitutionAcceptedMail( institution );
+
                 return ResponseEntity.ok().
                         build();
             }
@@ -186,7 +185,8 @@ public class InstitutionRegistrationHandler
                 final Institution institution = optionalInstitution.get();
                 institutionService.deleteEntity( institution.getId() );
 
-                // TODO: send email to contact person that his attempt was rejected
+                mailService.sendInstitutionRejectedMail( institution );
+
                 return ResponseEntity.ok().
                         build();
             }
