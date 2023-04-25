@@ -13,7 +13,7 @@ import { RegisterModule } from './features/register/register.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterInstitutionModule } from 'src/app/features/register-institution/register-institution.module';
 import { InstitutionVerifyModule } from 'src/app/features/institution-verify/institution-verify.module';
-
+import { MainPageModule } from './features/main-page/main-page.module';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -27,6 +27,7 @@ import { InstitutionVerifyModule } from 'src/app/features/institution-verify/ins
     BrowserAnimationsModule,
     RegisterInstitutionModule,
     InstitutionVerifyModule,
+    MainPageModule,
   ],
   providers: [
     {

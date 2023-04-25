@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         textPrimary: '#A1A1A1',
         bgPrimary: '#A44646',
+        bgPrimaryLight: '#CB8686',
         bgWhite: '#f2f2f2',
         btnAccentPrimary: '#00B8B8',
         btnAccentHover: '#018c8c',

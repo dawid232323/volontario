@@ -7,6 +7,7 @@ import { RegisterComponent } from './features/register/register.component';
 import { RegisterInstitutionComponent } from 'src/app/features/register-institution/register-institution.component';
 import { InstitutionVerifyComponent } from 'src/app/features/institution-verify/institution-verify.component';
 import { InstitutionVerifyGuard } from 'src/app/core/guard/institutionVerify.guard';
+import { MainPageComponent } from './features/main-page/main-page.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -24,7 +25,7 @@ const routes: Routes = [
       },
     ],
   },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', component: MainPageComponent },
 ];
 
 @NgModule({
