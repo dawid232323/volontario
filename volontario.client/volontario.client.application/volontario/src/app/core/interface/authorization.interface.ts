@@ -1,5 +1,5 @@
 export interface LoginInterface {
-  domainEmailAddress: string;
+  login: string;
   password: string;
 }
 
@@ -10,4 +10,8 @@ export interface TokenPairInterface {
 
 export interface RefreshTokenInterface {
   refresh_token: string | null;
+}
+
+export interface RegisterContactPersonInterface {
+  password: string;
 }

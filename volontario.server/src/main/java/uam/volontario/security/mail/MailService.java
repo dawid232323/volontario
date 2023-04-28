@@ -147,7 +147,7 @@ public class MailService
             throws IOException
     {
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
-        final String proceedUrl = "http://localhost:8080" + "/institution/register-contact-person?t=" + aInstitution.getRegistrationToken();
+        final String proceedUrl = "http://localhost:4200" + "/institution/register-contact-person?t=" + aInstitution.getRegistrationToken();
 
         URL url = Resources.getResource( "emails/institutionRegistrationAccepted.html" );
 

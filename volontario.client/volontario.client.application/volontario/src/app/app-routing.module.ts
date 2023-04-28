@@ -6,13 +6,16 @@ import { RouterGuard } from 'src/app/core/guard/router.guard';
 import { RegisterComponent } from './features/register/register.component';
 import { RegisterInstitutionComponent } from 'src/app/features/register-institution/register-institution.component';
 import { InstitutionVerifyComponent } from 'src/app/features/institution-verify/institution-verify.component';
-import { InstitutionVerifyGuard } from 'src/app/core/guard/institutionVerify.guard';
+import {
+  InstitutionRegistrationGuard,
+  InstitutionRegistrationStage,
+} from 'src/app/core/guard/institution-registration.guard';
+import { RegisterContactPersonComponent } from 'src/app/features/register-contact-person/register-contact-person.component';
 import { MainPageComponent } from './features/main-page/main-page.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'register-institution', component: RegisterInstitutionComponent },
   { path: 'home', component: HomePageComponent, canActivate: [RouterGuard] },
   { path: 'institution', redirectTo: 'home' },
   {
@@ -21,7 +24,15 @@ const routes: Routes = [
       {
         path: 'verify',
         component: InstitutionVerifyComponent,
-        canActivate: [InstitutionVerifyGuard],
+        canActivate: [InstitutionRegistrationGuard],
+        data: { stage: InstitutionRegistrationStage.Verification },
+      },
+      { path: 'register', component: RegisterInstitutionComponent },
+      {
+        path: 'register-contact-person',
+        component: RegisterContactPersonComponent,
+        canActivate: [InstitutionRegistrationGuard],
+        data: { stage: InstitutionRegistrationStage.ContactPersonRegistration },
       },
     ],
   },

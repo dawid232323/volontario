@@ -9,6 +9,8 @@ export class EndpointUrls {
   public static readonly institutionResource: string = '/institution';
   public static readonly institutionRegister: string =
     EndpointUrls.institutionResource.concat('/register');
+  public static readonly institutionRegisterContactPerson =
+    EndpointUrls.institutionResource.concat('/register-contact-person');
   public static readonly interestCategories: string = '/interestCategories';
   public static readonly experienceLevels: string = '/experienceLevels';
   public static readonly userData: string = '/userData';

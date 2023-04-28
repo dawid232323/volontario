@@ -8,6 +8,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { PasswordCheckCardModule } from 'src/app/shared/features/password-check-card/password-check-card.module';
 
 @NgModule({
   declarations: [RegisterFormComponent],
@@ -21,6 +22,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatIconModule,
     MatCheckboxModule,
     FormsModule,
+    PasswordCheckCardModule,
   ],
   exports: [RegisterFormComponent],
 })

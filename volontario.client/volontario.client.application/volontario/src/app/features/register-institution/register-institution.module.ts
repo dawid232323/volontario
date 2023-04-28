@@ -8,6 +8,7 @@ import { RegisterAdditionalInfoFormModule } from 'src/app/features/register-inst
 import { MatStepperModule } from '@angular/material/stepper';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SuccessInfoCardModule } from 'src/app/shared/features/success-info-card/success-info-card.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [RegisterInstitutionComponent],
@@ -20,6 +21,7 @@ import { SuccessInfoCardModule } from 'src/app/shared/features/success-info-card
     MatStepperModule,
     ReactiveFormsModule,
     SuccessInfoCardModule,
+    MatProgressSpinnerModule,
   ],
   exports: [RegisterInstitutionComponent],
 })

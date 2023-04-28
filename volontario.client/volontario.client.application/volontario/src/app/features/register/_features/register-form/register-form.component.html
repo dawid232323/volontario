@@ -54,9 +54,14 @@
           <input
             matInput
             formControlName="password"
-            type="password"
-            (keyup)="checkPassword()" />
+            [type]="passwordInputType" />
           <mat-icon matPrefix color="primary">lock</mat-icon>
+          <mat-icon
+            class="hover:opacity-100 hover:cursor-pointer opacity-50"
+            matSuffix
+            (click)="isPasswordShown = !isPasswordShown">
+            {{ !isPasswordShown ? 'visibility' : 'visibility_off' }}</mat-icon
+          >
         </mat-form-field>
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
@@ -66,76 +71,9 @@
           <mat-icon matPrefix color="primary">lock</mat-icon>
         </mat-form-field>
       </div>
-      <div class="w-full bg-bgPrimary bg-opacity-10 p-3 rounded-md">
-        <h1 class="font-bold text-sm">Twoje hasło musi zawierać</h1>
-        <ul class="text-xs list-inside pl-4 font-semibold">
-          <li
-            [ngClass]="{
-              'text-red-600': !checkPassword().hasLowerCase,
-              'text-green-600': checkPassword().hasLowerCase
-            }">
-            <i
-              class="fa-solid"
-              [ngClass]="{
-                'fa-circle-xmark': !checkPassword().hasLowerCase,
-                'fa-circle-check': checkPassword().hasLowerCase
-              }"></i>
-            1 małą literę
-          </li>
-          <li
-            [ngClass]="{
-              'text-red-600': !checkPassword().hasUpperCase,
-              'text-green-600': checkPassword().hasUpperCase
-            }">
-            <i
-              class="fa-solid"
-              [ngClass]="{
-                'fa-circle-xmark': !checkPassword().hasUpperCase,
-                'fa-circle-check': checkPassword().hasUpperCase
-              }"></i>
-            1 duza literę
-          </li>
-          <li
-            [ngClass]="{
-              'text-red-600': !checkPassword().hasNumber,
-              'text-green-600': checkPassword().hasNumber
-            }">
-            <i
-              class="fa-solid"
-              [ngClass]="{
-                'fa-circle-xmark': !checkPassword().hasNumber,
-                'fa-circle-check': checkPassword().hasNumber
-              }"></i>
-            1 cyfrę
-          </li>
-          <li
-            [ngClass]="{
-              'text-red-600': !checkPassword().hasSpecialChar,
-              'text-green-600': checkPassword().hasSpecialChar
-            }">
-            <i
-              class="fa-solid"
-              [ngClass]="{
-                'fa-circle-xmark': !checkPassword().hasSpecialChar,
-                'fa-circle-check': checkPassword().hasSpecialChar
-              }"></i>
-            1 znak specjalny
-          </li>
-          <li
-            [ngClass]="{
-              'text-red-600': !checkPassword().isTheSame,
-              'text-green-600': checkPassword().isTheSame
-            }">
-            <i
-              class="fa-solid"
-              [ngClass]="{
-                'fa-circle-xmark': !checkPassword().isTheSame,
-                'fa-circle-check': checkPassword().isTheSame
-              }"></i>
-            Hasła są takie same
-          </li>
-        </ul>
-      </div>
+      <app-password-check-card
+        [passwordValue]="passwordValue"
+        [repeatPasswordValue]="repeatPasswordValue"></app-password-check-card>
       <div class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
         <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
           <mat-label>Poziom doświadczenia </mat-label>

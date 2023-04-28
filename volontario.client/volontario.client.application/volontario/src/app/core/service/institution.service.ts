@@ -10,6 +10,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 import { VerifyType } from 'src/app/features/institution-verify/institution-verify.const';
 import { EndpointUrls } from 'src/app/utils/url.util';
+import { RegisterContactPersonInterface } from 'src/app/core/interface/authorization.interface';
 
 @Injectable({ providedIn: 'root' })
 export class InstitutionService {
@@ -39,6 +40,21 @@ export class InstitutionService {
     return this.restService.post(
       EndpointUrls.getInstitutionVerify(operationType!),
       {},
+      options
+    );
+  }
+
+  public registerContactPerson(
+    token: string,
+    registerIf: RegisterContactPersonInterface
+  ): Observable<any> {
+    const params = new HttpParams({ fromObject: { t: token } });
+    const options: HttpOptionsInterface = {
+      params: params,
+    };
+    return this.restService.post(
+      EndpointUrls.institutionRegisterContactPerson,
+      registerIf,
       options
     );
   }

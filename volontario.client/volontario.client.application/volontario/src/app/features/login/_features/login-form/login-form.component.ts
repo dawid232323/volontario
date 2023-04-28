@@ -9,11 +9,7 @@ import { LoginInterface } from 'src/app/core/interface/authorization.interface';
 })
 export class LoginFormComponent {
   loginFormGroup = new FormGroup({
-    login: new FormControl('', [
-      Validators.required,
-      Validators.email,
-      Validators.pattern('.*.st.amu.edu.pl'),
-    ]),
+    login: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
 
@@ -28,7 +24,7 @@ export class LoginFormComponent {
   onFormSubmit() {
     const { login, password } = this.loginFormGroup.value;
     const loginDTO: LoginInterface = {
-      domainEmailAddress: <string>login,
+      login: <string>login,
       password: <string>password,
     };
     this.formSubmit.emit(loginDTO);

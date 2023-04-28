@@ -12,6 +12,7 @@ import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.validation.service.AbstractValidationService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -73,6 +74,7 @@ public class UserValidationService extends AbstractValidationService< User >
         {
             allUsers.stream()
                     .map( User::getVolunteerData )
+                    .filter( Objects::nonNull )
                     .map( VolunteerData::getDomainEmailAddress )
                     .filter( emailUniquenessPredicate( aUser ) )
                     .findAny()

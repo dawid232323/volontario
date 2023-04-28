@@ -14,6 +14,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterInstitutionModule } from 'src/app/features/register-institution/register-institution.module';
 import { InstitutionVerifyModule } from 'src/app/features/institution-verify/institution-verify.module';
 import { MainPageModule } from './features/main-page/main-page.module';
+import { RegisterContactPersonModule } from 'src/app/features/register-contact-person/register-contact-person.module';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -28,6 +30,7 @@ import { MainPageModule } from './features/main-page/main-page.module';
     RegisterInstitutionModule,
     InstitutionVerifyModule,
     MainPageModule,
+    RegisterContactPersonModule,
   ],
   providers: [
     {

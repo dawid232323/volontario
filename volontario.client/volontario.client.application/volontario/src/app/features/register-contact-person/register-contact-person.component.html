@@ -1,0 +1,36 @@
+<div class="flex flex-row min-h-screen">
+  <div class="flex flex-col items-center min-h-screen lg:basis-1/2 w-full">
+    <div class="w-[90%] mx-auto">
+      <app-logo class="lg:hidden"></app-logo>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center lg:w-full h-full pt-16">
+      <div
+        *ngIf="isPerformingRegistration"
+        class="flex flex-col items-center justify-center lg:w-full h-full">
+        <mat-progress-spinner
+          [mode]="'indeterminate'"
+          [color]="'primary'"></mat-progress-spinner>
+      </div>
+      <span
+        *ngIf="!hasRegisteredCorrectly && !isPerformingRegistration"
+        class="pb-12">
+        <div class="text-4xl font-bold text-center">Ustaw swoje hasło</div>
+      </span>
+      <app-register-contact-person-form
+        *ngIf="!hasRegisteredCorrectly && !isPerformingRegistration"
+        (formSubmitEvent)="registerUser($event)"
+        class="w-1/2"></app-register-contact-person-form>
+      <app-success-info-card
+        class="h-full w-3/4"
+        titleMessage="Rejestracja przebiegła pomyślnie"
+        cardContent="Twoje konto zostało pomyślnie stworzone. Przejdź do strony logowania aby zalogować się po raz pierwszy"
+        (cardButtonClicked)="onSuccessCardButtonClicked()"
+        buttonText="Strona logowania"
+        *ngIf="hasRegisteredCorrectly"></app-success-info-card>
+    </div>
+  </div>
+  <div class="hidden lg:block basis-1/2">
+    <app-side-banner></app-side-banner>
+  </div>
+</div>

@@ -17,6 +17,7 @@ export class RegisterInstitutionComponent implements OnInit {
   basicInfoFormGroup: FormGroup = new FormGroup<any>({});
   additionalInfoFormGroup: FormGroup = new FormGroup<any>({});
   hasRegisteredCorrectly: boolean = false;
+  isPerformingRegistration: boolean = false;
 
   successTitle = 'Wniosek złożony pomyślnie';
   successContent =
@@ -73,18 +74,20 @@ export class RegisterInstitutionComponent implements OnInit {
   }
 
   onFormSubmit() {
-    const institutionMode =
+    this.isPerformingRegistration = true;
+    const institutionModel =
       this.institutionService.getInstitutionModelFromFormData(
         this.basicInfoFormGroup.value,
         this.additionalInfoFormGroup.value
       );
-    this.institutionService.createInstitution(institutionMode).subscribe({
+    this.institutionService.createInstitution(institutionModel).subscribe({
       next: this.onRegisterSuccess.bind(this),
       error: err => console.log(err),
     });
   }
 
   private onRegisterSuccess(result: any) {
+    this.isPerformingRegistration = false;
     this.hasRegisteredCorrectly = true;
   }
 

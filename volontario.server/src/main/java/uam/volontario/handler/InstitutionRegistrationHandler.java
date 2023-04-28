@@ -38,8 +38,6 @@ public class InstitutionRegistrationHandler
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UserService userService;
-
     private final UserValidationService userValidationService;
 
     private final InstitutionValidationService institutionValidationService;
@@ -57,8 +55,6 @@ public class InstitutionRegistrationHandler
      *
      * @param aPasswordEncoder password encoder.
      *
-     * @param aUserService user service.
-     *
      * @param aUserValidationService user validation service.
      *
      * @param aInstitutionValidationService institution validation service.
@@ -68,7 +64,7 @@ public class InstitutionRegistrationHandler
     @Autowired
     public InstitutionRegistrationHandler(final DtoService aDtoService, final MailService aMailService,
                                           final InstitutionService aInstitutionService,
-                                          final PasswordEncoder aPasswordEncoder, final UserService aUserService,
+                                          final PasswordEncoder aPasswordEncoder,
                                           final UserValidationService aUserValidationService,
                                           final InstitutionValidationService aInstitutionValidationService,
                                           final RoleService aRoleService )
@@ -77,7 +73,6 @@ public class InstitutionRegistrationHandler
         mailService = aMailService;
         institutionService = aInstitutionService;
         passwordEncoder = aPasswordEncoder;
-        userService = aUserService;
         userValidationService = aUserValidationService;
         institutionValidationService = aInstitutionValidationService;
         roleService = aRoleService;
@@ -254,7 +249,6 @@ public class InstitutionRegistrationHandler
                     institution.getEmployees().add( contactPersonUser );
 
                     institutionService.saveOrUpdate( institution );
-                    userService.saveOrUpdate( contactPersonUser );
 
                     return ResponseEntity.status( HttpStatus.CREATED )
                             .body( userValidationResult.getValidatedEntity() );

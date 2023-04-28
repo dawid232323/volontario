@@ -34,6 +34,6 @@ export class LoginComponent implements OnInit {
   }
 
   onRegisterInstitutionClicked() {
-    return this.router.navigate(['register-institution']);
+    return this.router.navigate(['institution/register']);
   }
 }

@@ -1,26 +1,27 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { SelectFieldModelIf } from 'src/app/core/interface/selectField.interface';
 import { VolunteerRegisterDTO } from 'src/app/core/model/volunteer.model';
-
-interface passwordVerification {
-  hasLowerCase: boolean;
-  hasUpperCase: boolean;
-  hasNumber: boolean;
-  hasSpecialChar: boolean;
-  isTheSame: boolean;
-}
 
 @Component({
   selector: 'app-register-form',
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.scss'],
 })
-export class RegisterFormComponent {
+export class RegisterFormComponent implements OnInit {
   @Output() formSubmit = new EventEmitter<VolunteerRegisterDTO>();
   @Input() isRegistering: boolean = false;
   @Input() availableCategories: SelectFieldModelIf[] = [];
   @Input() availableExperiences: SelectFieldModelIf[] = [];
+
+  private _isPasswordShown: boolean = false;
 
   registerFormGroup = new FormGroup({
     firstName: new FormControl('', [
@@ -37,7 +38,13 @@ export class RegisterFormComponent {
       Validators.pattern('.*.st.amu.edu.pl'),
     ]),
     contactEmail: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.pattern('.*[a-z].*'),
+      Validators.pattern('.*[A-Z].*'),
+      Validators.pattern('.*[0-9].*'),
+      Validators.pattern('.*[!@#$%^&*()_+].*'),
+    ]),
     passwordRepeat: new FormControl('', [Validators.required]),
     experience: new FormControl(null, [Validators.required]),
     interestCategories: new FormControl([1], [Validators.required]),
@@ -50,20 +57,16 @@ export class RegisterFormComponent {
 
   constructor() {}
 
-  public checkPassword(): passwordVerification {
-    const passwordValue = this.registerFormGroup.get('password')?.value;
-    const passwordRepeatValue =
-      this.registerFormGroup.get('passwordRepeat')?.value;
+  ngOnInit(): void {
+    this.registerFormGroup.addValidators(this.equalPasswordValidator);
+  }
 
-    const hasLowerCase = Boolean(passwordValue && passwordValue.match(/[a-z]/));
-    const hasUpperCase = Boolean(passwordValue && passwordValue.match(/[A-Z]/));
-    const hasNumber = Boolean(passwordValue && passwordValue.match(/\d/));
-    const hasSpecialChar = Boolean(
-      passwordValue && passwordValue.match(/[!@#$%^&*()_+]/)
-    );
-    const isTheSame = Boolean(passwordValue === passwordRepeatValue);
+  public get passwordValue(): any {
+    return this.registerFormGroup.get('password')?.value;
+  }
 
-    return { hasLowerCase, hasUpperCase, hasNumber, hasSpecialChar, isTheSame };
+  public get repeatPasswordValue(): any {
+    return this.registerFormGroup.get('passwordRepeat')?.value;
   }
 
   public onFormSubmit(): void {
@@ -95,4 +98,27 @@ export class RegisterFormComponent {
 
     this.formSubmit.emit(registerDTO);
   }
+
+  public get isPasswordShown(): boolean {
+    return this._isPasswordShown;
+  }
+
+  public set isPasswordShown(isShown: boolean) {
+    this._isPasswordShown = isShown;
+  }
+
+  public get passwordInputType(): string {
+    if (this.isPasswordShown) {
+      return 'text';
+    }
+    return 'password';
+  }
+
+  private equalPasswordValidator: ValidatorFn = (
+    group: AbstractControl
+  ): ValidationErrors | null => {
+    let pass = group.get('password')?.value;
+    let confirmPass = group.get('passwordRepeat')?.value;
+    return pass === confirmPass ? null : { notSame: true };
+  };
 }
