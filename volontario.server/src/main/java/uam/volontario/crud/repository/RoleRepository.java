@@ -4,7 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 import uam.volontario.model.common.impl.Role;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Repository for {@linkplain uam.volontario.model.common.impl.Role} entity.

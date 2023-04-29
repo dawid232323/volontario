@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 import uam.volontario.model.common.impl.User;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
+import uam.volontario.model.offer.impl.Offer;
 
 import java.util.List;
 
@@ -51,13 +51,15 @@ public class Institution implements VolontarioDomainElementIf
 
     @JsonIgnore
     @OneToMany( mappedBy = "institution",
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE },
-                fetch = FetchType.LAZY )
+                cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
     private List< User > employees;
 
+    @JsonIgnore
+    @OneToMany( mappedBy = "institution" )
+    private List< Offer > offers;
+
     @JsonManagedReference
-    @OneToOne( cascade = { CascadeType.PERSIST, CascadeType.REMOVE },
-            fetch = FetchType.EAGER )
+    @OneToOne( cascade = { CascadeType.PERSIST, CascadeType.REMOVE } )
     @JoinColumn
     private InstitutionContactPerson institutionContactPerson;
 

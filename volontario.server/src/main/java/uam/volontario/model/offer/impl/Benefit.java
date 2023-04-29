@@ -1,19 +1,18 @@
-package uam.volontario.model.volunteer.impl;
+package uam.volontario.model.offer.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.VolontarioDomainElementIf;
-import uam.volontario.model.offer.impl.Offer;
 
 import java.util.List;
 
 /**
- * Definition of interest category.
+ * Definition of offer's benefit.
  */
 @AllArgsConstructor
 @NoArgsConstructor // for Hibernate.
@@ -21,8 +20,8 @@ import java.util.List;
 @Setter
 @Builder
 @Entity
-@Table( name = "interest_categories" )
-public class InterestCategory implements VolontarioDomainElementIf
+@Table( name = "benefits" )
+public class Benefit implements VolontarioDomainElementIf
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -30,19 +29,12 @@ public class InterestCategory implements VolontarioDomainElementIf
     private Long id;
 
     @Column
-    @NotBlank( message = "Interest category must be named" )
+    @NotNull( message = "Benefit name must be defined." )
+    @Size( max = 250, message = "Benefit name must not exceed 250 characters." )
     private String name;
 
-    @Column( length = 750 )
-    @Size( max = 750 )
-    private String description;
-
     @JsonIgnore
-    @ManyToMany( mappedBy = "interestCategories" )
-    private List< VolunteerData > volunteerData;
-
-    @JsonIgnore
-    @ManyToMany( mappedBy = "interestCategories" )
+    @ManyToMany( mappedBy = "benefits" )
     private List< Offer > offers;
 
     @Override
@@ -56,10 +48,10 @@ public class InterestCategory implements VolontarioDomainElementIf
     @Override
     public boolean equals( final Object aObj )
     {
-        if( aObj instanceof InterestCategory interestCategory )
+        if( aObj instanceof Benefit benefit )
         {
             return new EqualsBuilder()
-                    .append( this.name, interestCategory.name )
+                    .append( this.name, benefit.name )
                     .isEquals();
         }
         return false;
@@ -68,6 +60,6 @@ public class InterestCategory implements VolontarioDomainElementIf
     @Override
     public String toString()
     {
-        return "Interest Category (id: " + id + ", name: " + name +")";
+        return "Benefit (name: " + name + ")";
     }
 }

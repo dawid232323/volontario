@@ -13,7 +13,9 @@ import java.util.Map;
  * Controller for API related to registering {@linkplain uam.volontario.model.institution.impl.Institution}.
  */
 @RestController
-@RequestMapping( value = "/api/institution", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
+@RequestMapping( value = "/api/institution",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE )
 public class InstitutionRegistrationController
 {
     private final InstitutionRegistrationHandler institutionRegistrationHandler;
