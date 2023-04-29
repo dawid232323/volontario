@@ -4,6 +4,7 @@
       <div class="flex flex-col lg:flex-row items-stretch">
         <mat-form-field
           appearance="standard"
+          color="accent"
           #institutionNameInput
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
           <mat-label>Nazwa Instytucji</mat-label>
@@ -11,7 +12,7 @@
             matInput
             formControlName="institutionName"
             placeholder="Podaj nazwę instytucji" />
-          <mat-icon matPrefix color="primary">business</mat-icon>
+          <mat-icon matPrefix color="accent">business</mat-icon>
           <mat-hint
             *ngIf="basicInfoFormGroup.controls['institutionName'].invalid"
             >Pole jest wymagane</mat-hint
@@ -21,6 +22,7 @@
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
         <mat-form-field
           appearance="standard"
+          color="accent"
           #krsNumberInput
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
           <mat-label>Numer KRS</mat-label>
@@ -28,7 +30,7 @@
             matInput
             formControlName="krsNumber"
             placeholder="Podaj nazwę instytucji" />
-          <mat-icon matPrefix color="primary">pin</mat-icon>
+          <mat-icon matPrefix color="accent">pin</mat-icon>
           <mat-hint *ngIf="basicInfoFormGroup.controls['krsNumber'].invalid"
             >Pole jest wymagane</mat-hint
           >
@@ -36,13 +38,14 @@
         <mat-form-field
           appearance="standard"
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          color="accent"
           #addressInputName>
           <mat-label>Adres siedziby</mat-label>
           <input
             matInput
             formControlName="address"
             placeholder="Podaj adres siedziby" />
-          <mat-icon matPrefix color="primary">place</mat-icon>
+          <mat-icon matPrefix color="accent">place</mat-icon>
           <mat-hint *ngIf="basicInfoFormGroup.controls['address'].invalid"
             >Pole jest wymagane</mat-hint
           >
@@ -51,6 +54,7 @@
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
         <mat-form-field
           appearance="standard"
+          color="accent"
           #registerPersonNameInput
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
           <mat-label>Imię osoby kontaktowej</mat-label>
@@ -58,7 +62,7 @@
             matInput
             formControlName="registerPersonName"
             placeholder="Podaj imię osoby kontaktowej" />
-          <mat-icon matPrefix color="primary">account_circle</mat-icon>
+          <mat-icon matPrefix color="accent">account_circle</mat-icon>
           <mat-hint
             *ngIf="basicInfoFormGroup.controls['registerPersonName'].invalid"
             >Pole jest wymagane</mat-hint
@@ -67,13 +71,14 @@
         <mat-form-field
           appearance="standard"
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          color="accent"
           #registerPersonLastNameInput>
           <mat-label>Naziwsko osoby kontaktowej</mat-label>
           <input
             matInput
             formControlName="registerPersonLastName"
             placeholder="Podaj nazwisko osoby kontaktowej" />
-          <mat-icon matPrefix color="primary">account_circle</mat-icon>
+          <mat-icon matPrefix color="accent">account_circle</mat-icon>
           <mat-hint
             *ngIf="
               basicInfoFormGroup.controls['registerPersonLastName'].invalid
@@ -85,6 +90,7 @@
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
         <mat-form-field
           appearance="standard"
+          color="accent"
           #registerPersonEmailInput
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
           <mat-label>Email osoby kontaktowej</mat-label>
@@ -92,7 +98,7 @@
             matInput
             formControlName="registerPersonEmail"
             placeholder="Podaj email osoby kontaktowej" />
-          <mat-icon matPrefix color="primary">alternate_email</mat-icon>
+          <mat-icon matPrefix color="accent">alternate_email</mat-icon>
           <mat-hint
             *ngIf="basicInfoFormGroup.controls['registerPersonEmail'].invalid"
             >Pole jest wymagane</mat-hint
@@ -101,13 +107,14 @@
         <mat-form-field
           appearance="standard"
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          color="accent"
           #registerPersonPhoneNumberInput>
           <mat-label>Numer telefonu osoby kontaktowej</mat-label>
           <input
             matInput
             formControlName="registerPersonPhoneNumber"
             placeholder="Podaj numer telefonu osoby kontaktowej" />
-          <mat-icon matPrefix color="primary">smartphone</mat-icon>
+          <mat-icon matPrefix color="accent">smartphone</mat-icon>
           <mat-hint
             *ngIf="
               basicInfoFormGroup.controls['registerPersonPhoneNumber'].invalid
@@ -122,7 +129,7 @@
           matStepperNext
           type="button"
           class="w-1/2 h-full"
-          color="primary"
+          color="accent"
           [disabled]="false">
           Dalej
         </button>

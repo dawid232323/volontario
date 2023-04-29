@@ -4,6 +4,7 @@
       <div class="flex flex-col lg:flex-row items-stretch">
         <mat-form-field
           appearance="standard"
+          color="accent"
           #institutionTagsInput
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
           <mat-chip-list #tagsChipList formControlName="institutionTags">
@@ -30,6 +31,7 @@
       </div>
       <div class="flex flex-col lg:flex-row items-stretch">
         <mat-form-field
+          color="accent"
           appearance="standard"
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
           #institutionDescriptionInput>
@@ -48,6 +50,7 @@
       </div>
       <div class="flex flex-col lg:flex-row items-stretch">
         <mat-form-field
+          color="accent"
           appearance="standard"
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
           #operationPlaceInput>
@@ -63,12 +66,12 @@
         </mat-form-field>
       </div>
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <mat-checkbox formControlName="rulesApprove" color="primary"
+        <mat-checkbox formControlName="rulesApprove" color="accent"
           >Akceptacja regulaminu</mat-checkbox
         >
       </div>
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <mat-checkbox formControlName="rodoApprove" color="primary"
+        <mat-checkbox formControlName="rodoApprove" color="accent"
           >Zgoda na przetwarzanie danych osobowych</mat-checkbox
         >
       </div>
@@ -78,7 +81,7 @@
           matStepperPrevious
           type="button"
           class="w-1/2 h-full"
-          color="primary">
+          color="accent">
           Wstecz
         </button>
         <button
@@ -86,7 +89,7 @@
           matStepperNext
           type="submit"
           class="w-1/2 h-full"
-          color="accent"
+          color="primary"
           [disabled]="!canSubmit"
           (click)="formSubmit.emit()">
           Zakończ

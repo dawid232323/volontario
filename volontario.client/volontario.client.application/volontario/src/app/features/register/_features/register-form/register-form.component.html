@@ -5,20 +5,22 @@
       <div class="flex flex-col lg:flex-row items-stretch">
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-          appearance="standard">
+          appearance="standard"
+          color="accent">
           <mat-label>Imię</mat-label>
           <input matInput formControlName="firstName" />
-          <mat-icon matPrefix color="primary">person</mat-icon>
+          <mat-icon matPrefix color="accent">person</mat-icon>
           <mat-hint *ngIf="registerFormGroup.controls['firstName'].invalid"
             >Pole wymagane</mat-hint
           >
         </mat-form-field>
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
-          appearance="standard">
+          appearance="standard"
+          color="accent">
           <mat-label>Nazwisko </mat-label>
           <input matInput formControlName="lastName" />
-          <mat-icon matPrefix color="primary">person</mat-icon>
+          <mat-icon matPrefix color="accent">person</mat-icon>
           <mat-hint *ngIf="registerFormGroup.controls['lastName'].invalid"
             >Pole wymagane</mat-hint
           >
@@ -27,20 +29,22 @@
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-          appearance="standard">
+          appearance="standard"
+          color="accent">
           <mat-label>Adres email uczelniany </mat-label>
           <input matInput formControlName="domainEmail" />
-          <mat-icon matPrefix color="primary">mail</mat-icon>
+          <mat-icon matPrefix color="accent">mail</mat-icon>
           <mat-hint *ngIf="registerFormGroup.controls['domainEmail'].invalid"
             >Pole wymagane</mat-hint
           >
         </mat-form-field>
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
-          appearance="standard">
+          appearance="standard"
+          color="accent">
           <mat-label>Adres email kontaktowy </mat-label>
           <input matInput formControlName="contactEmail" />
-          <mat-icon matPrefix color="primary">mail</mat-icon>
+          <mat-icon matPrefix color="accent">mail</mat-icon>
           <mat-hint *ngIf="registerFormGroup.controls['contactEmail'].invalid"
             >Pole wymagane</mat-hint
           >
@@ -49,13 +53,14 @@
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-          appearance="standard">
+          appearance="standard"
+          color="accent">
           <mat-label>Hasło</mat-label>
           <input
             matInput
             formControlName="password"
             [type]="passwordInputType" />
-          <mat-icon matPrefix color="primary">lock</mat-icon>
+          <mat-icon matPrefix color="accent">lock</mat-icon>
           <mat-icon
             class="hover:opacity-100 hover:cursor-pointer opacity-50"
             matSuffix
@@ -65,17 +70,20 @@
         </mat-form-field>
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
-          appearance="standard">
+          appearance="standard"
+          color="accent">
           <mat-label>Powtórz hasło </mat-label>
           <input matInput formControlName="passwordRepeat" type="password" />
-          <mat-icon matPrefix color="primary">lock</mat-icon>
+          <mat-icon matPrefix color="accent">lock</mat-icon>
         </mat-form-field>
       </div>
       <app-password-check-card
         [passwordValue]="passwordValue"
         [repeatPasswordValue]="repeatPasswordValue"></app-password-check-card>
       <div class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          color="accent">
           <mat-label>Poziom doświadczenia </mat-label>
           <mat-select formControlName="experience">
             <mat-option
@@ -85,7 +93,9 @@
             >
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:ml-3">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
+          color="accent">
           <mat-label>Wybierz zainteresowania </mat-label>
           <mat-select
             formControlName="interestCategories"
@@ -100,7 +110,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <mat-form-field class="w-full" appearance="fill" color="primary">
+      <mat-form-field class="w-full" appearance="fill" color="accent">
         <mat-label>Motywacja do uczestnictwa: </mat-label>
         <textarea matInput formControlName="participationMotivation">
         </textarea>
@@ -110,7 +120,7 @@
         >
       </mat-form-field>
       <div class="w-full pt-3">
-        <mat-checkbox formControlName="rodo" color="primary">
+        <mat-checkbox formControlName="rodo" color="accent">
           <label class="font-medium"
             >Wyrazam zgode na przetwarzanie moich danych.....</label
           >

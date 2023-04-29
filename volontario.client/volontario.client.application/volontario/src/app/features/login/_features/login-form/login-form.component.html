@@ -8,14 +8,14 @@
         <label for="login" class="font-bold pb-3 pt-3">Adres Email</label>
         <div class="relative flex items-center pt-3 pb-3">
           <i
-            class="fa-solid fa-envelope -translate-y-1 absolute text-bgPrimary text-xl"></i>
+            class="fa-solid fa-envelope -translate-y-1 absolute text-btnAccentPrimary text-xl"></i>
           <input
             id="login"
             name="login"
             type="email"
             formControlName="login"
             [ngClass]="{
-              'border-bgPrimary': loginFormGroup.controls['login'].valid,
+              'border-btnAccentPrimary': loginFormGroup.controls['login'].valid,
               'border-pink-600': !loginFormGroup.controls['login'].valid
             }"
             class="text-l block pb-1 pl-7 w-full text-sm text-black-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold" />
@@ -28,14 +28,14 @@
         <label for="password" class="font-bold">Hasło</label>
         <div class="relative flex items-center pt-3 pb-3">
           <i
-            class="fa-solid fa-lock -translate-y-1 absolute text-bgPrimary text-xl"></i>
+            class="fa-solid fa-lock -translate-y-1 absolute text-btnAccentPrimary text-xl"></i>
           <input
             id="password"
             name="password"
             type="password"
             formControlName="password"
             [ngClass]="{
-              'border-bgPrimary': loginFormGroup.controls['login'].valid,
+              'border-btnAccentPrimary': loginFormGroup.controls['login'].valid,
               'border-pink-600': !loginFormGroup.controls['login'].valid
             }"
             class="block pb-1 pl-7 w-full text-sm text-black-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold" />

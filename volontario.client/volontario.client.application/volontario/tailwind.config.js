@@ -5,12 +5,12 @@ module.exports = {
     extend: {
       colors: {
         textPrimary: '#A1A1A1',
-        bgPrimary: '#A44646',
-        bgPrimaryLight: '#CB8686',
+        bgPrimary: 'rgba(9,116,140,0.7)',
+        bgPrimaryLight: 'rgba(9,116,140,0.7)',
         bgWhite: '#f2f2f2',
-        btnAccentPrimary: '#00B8B8',
-        btnAccentHover: '#018c8c',
-        btnAccentDisabled: 'rgba(1,176,176,0.62)'
+        btnAccentPrimary: '#FBC740',
+        btnAccentHover: '#f6c033',
+        btnAccentDisabled: 'rgba(175,172,172,0.77)'
       },
     },
   },
