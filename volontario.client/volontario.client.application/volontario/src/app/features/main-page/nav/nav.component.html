@@ -43,6 +43,52 @@
           </ul>
         </nav>
       </div>
+      <nav
+        [@sidebarTrigger]="showSidebar ? 'open' : 'close'"
+        class="md:hidden bg-white fixed bottom-0 top-20 right-0 w-full h-1/2"
+        aria-label="Site Nav">
+        <ul class="flex flex-col items-center justify-center gap-6 text-sm">
+          <li>
+            <a
+              class="text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
+              href="#about">
+              O nas
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
+              href="#howwework">
+              Jak działamy
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
+              href="#forVolonteers">
+              Dla wolontariuszy
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
+              href="#forInstitutions">
+              Dla organizacji
+            </a>
+          </li>
+        </ul>
+        <div class="mt-10 flex flex-row justify-center items-center">
+          <a
+            class="text-center text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
+            routerLink="/register">
+            Nie masz konta? <br />
+            Zarejestruj się!
+          </a>
+        </div>
+      </nav>
       <div class="flex items-center gap-4">
         <div class="sm:flex sm:gap-4">
           <a
@@ -60,7 +106,8 @@
         </div>
         <div class="block md:hidden">
           <button
-            class="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
+            class="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75"
+            (click)="toggleMenu()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
