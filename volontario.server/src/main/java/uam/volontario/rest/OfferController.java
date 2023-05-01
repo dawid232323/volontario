@@ -3,10 +3,9 @@ package uam.volontario.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import uam.volontario.handler.FetchOfferDataHandler;
+import org.springframework.web.bind.annotation.*;
+import uam.volontario.dto.OfferDto;
+import uam.volontario.handler.CrudOfferDataHandler;
 
 /**
  * Controller for API related to {@linkplain uam.volontario.model.offer.impl.Offer}s.
@@ -17,7 +16,7 @@ import uam.volontario.handler.FetchOfferDataHandler;
         produces = MediaType.APPLICATION_JSON_VALUE )
 public class OfferController
 {
-    private final FetchOfferDataHandler fetchOfferDataHandler;
+    private final CrudOfferDataHandler crudOfferDataHandler;
 
     /**
      * CDI constructor.
@@ -25,9 +24,9 @@ public class OfferController
      * @param aOfferDataHandler fetch offer data handler.
      */
     @Autowired
-    public OfferController( final FetchOfferDataHandler aOfferDataHandler )
+    public OfferController( final CrudOfferDataHandler aOfferDataHandler )
     {
-        fetchOfferDataHandler = aOfferDataHandler;
+        crudOfferDataHandler = aOfferDataHandler;
     }
 
     /**
@@ -39,7 +38,7 @@ public class OfferController
     @GetMapping
     public ResponseEntity< ? > loadAllOffers()
     {
-        return fetchOfferDataHandler.loadAllOffers();
+        return crudOfferDataHandler.loadAllOffers();
     }
 
     /**
@@ -51,7 +50,7 @@ public class OfferController
     @GetMapping( value = "/benefit" )
     public ResponseEntity< ? > loadAllBenefits()
     {
-        return fetchOfferDataHandler.loadAllBenefits();
+        return crudOfferDataHandler.loadAllBenefits();
     }
 
     /**
@@ -63,6 +62,12 @@ public class OfferController
     @GetMapping( value = "/type" )
     public ResponseEntity< ? > loadAllOfferTypes()
     {
-        return fetchOfferDataHandler.loadAllOfferTypes();
+        return crudOfferDataHandler.loadAllOfferTypes();
+    }
+
+    @PostMapping
+    public ResponseEntity< ? > createNewOffer( @RequestBody final OfferDto aOfferDto )
+    {
+        return this.crudOfferDataHandler.createNewOffer( aOfferDto );
     }
 }

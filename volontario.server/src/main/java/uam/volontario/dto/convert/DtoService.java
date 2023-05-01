@@ -1,25 +1,26 @@
 package uam.volontario.dto.convert;
 
-import com.google.common.collect.Sets;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uam.volontario.crud.service.ExperienceLevelService;
-import uam.volontario.crud.service.InterestCategoryService;
-import uam.volontario.crud.service.RoleService;
+import uam.volontario.crud.service.*;
 import uam.volontario.dto.*;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
+import uam.volontario.model.offer.impl.Benefit;
+import uam.volontario.model.offer.impl.Offer;
+import uam.volontario.model.offer.impl.OfferType;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 
-import java.util.HashSet;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +35,14 @@ public class DtoService
 
     private final RoleService roleService;
 
+    private final BenefitService benefitService;
+
+    private final OfferService offerService;
+
+    private final UserService userService;
+
+    private final OfferTypeService offerTypeService;
+
     /**
      * CDI constructor.
      *
@@ -43,11 +52,17 @@ public class DtoService
      */
     @Autowired
     public DtoService( final InterestCategoryService aInterestCategoryService, final ExperienceLevelService
-            aExperienceLevelService, final RoleService aRoleService )
+            aExperienceLevelService, final RoleService aRoleService, final BenefitService aBenefitService,
+            final OfferService aOfferService, final UserService aUserService,
+            final OfferTypeService aOfferTypeService )
     {
         interestCategoryService = aInterestCategoryService;
         experienceLevelService = aExperienceLevelService;
         roleService = aRoleService;
+        benefitService = aBenefitService;
+        offerService = aOfferService;
+        userService = aUserService;
+        offerTypeService = aOfferTypeService;
     }
 
     /**
@@ -141,5 +156,63 @@ public class DtoService
     {
         return new ExperienceLevelDto(aExperienceLevel.getId(), aExperienceLevel.getName(),
                 aExperienceLevel.getDefinition(), aExperienceLevel.getValue() );
+    }
+
+    /**
+     * Maps {@linkplain OfferDto} to its entity {@linkplain Offer}
+     *
+     * @param aOfferDto dto to be mapped
+     *
+     * @return entity based on dto
+     */
+    public Offer createOfferFromDto(final OfferDto aOfferDto )
+    {
+        final Offer createdOffer = new Offer();
+
+        final User contactPerson = this.userService.loadEntity( aOfferDto.getContactPersonId() );
+        final List< InterestCategory > offerCategories = this.interestCategoryService
+                .findByIds( aOfferDto.getInterestCategoryIds() );
+        final OfferType offerType = this.offerTypeService
+                .loadEntity( aOfferDto.getOfferTypeId() );
+
+        ExperienceLevel offerMinExperience = null;
+        List< Benefit > benefits = null;
+        Instant offerEndDate = null;
+
+        if ( aOfferDto.getIsExperienceRequired() )
+        {
+            offerMinExperience = this.experienceLevelService
+                    .loadEntity( aOfferDto.getExperienceLevelId() );
+        }
+        if ( aOfferDto.getOfferBenefitIds() != null && !aOfferDto.getOfferBenefitIds().isEmpty() )
+        {
+            benefits = this.benefitService.findByIds( aOfferDto.getOfferBenefitIds() );
+        }
+        if ( aOfferDto.getEndDate() != null ) {
+            offerEndDate = aOfferDto.getEndDate().toInstant();
+        }
+        ChronoUnit durationUnit = ChronoUnit.valueOf( aOfferDto.getDurationUnit() );
+        Duration durationValue = Duration.of( aOfferDto.getDurationValue(), durationUnit );
+        String weekDays = aOfferDto.getOfferWeekDays()
+                .stream().map(Object::toString).collect(Collectors.joining(","));
+        createdOffer.setTitle( aOfferDto.getOfferTitle() );
+        createdOffer.setExpirationDate( aOfferDto.getOfferExpirationDate().toInstant() );
+        createdOffer.setContactPerson( contactPerson );
+        createdOffer.setInstitution( contactPerson.getInstitution() );
+        createdOffer.setOfferType( offerType );
+        createdOffer.setStartDate( aOfferDto.getStartDate().toInstant() );
+        createdOffer.setEndDate( offerEndDate );
+        createdOffer.setWeekDays( weekDays );
+        createdOffer.setDuration( durationValue );
+        createdOffer.setOfferInterval( aOfferDto.getOfferInterval() );
+        createdOffer.setInterestCategories( offerCategories );
+        createdOffer.setIsExperienceRequired( aOfferDto.getIsExperienceRequired() );
+        createdOffer.setMinimumExperience( offerMinExperience );
+        createdOffer.setDescription( aOfferDto.getOfferDescription() );
+        createdOffer.setPlace( aOfferDto.getOfferPlace() );
+        createdOffer.setIsPoznanOnly( aOfferDto.getIsPoznanOnly() );
+        createdOffer.setBenefits( benefits );
+        createdOffer.setIsInsuranceNeeded( aOfferDto.getIsInsuranceNeeded() );
+        return createdOffer;
     }
 }

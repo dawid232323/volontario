@@ -60,4 +60,9 @@ public class BenefitServiceImpl implements BenefitService
     {
         benefitRepository.deleteById( aBenefitId );
     }
+
+    @Override
+    public List<Benefit> findByIds(List<Long> aIds) {
+        return this.benefitRepository.findByIdIn( aIds );
+    }
 }

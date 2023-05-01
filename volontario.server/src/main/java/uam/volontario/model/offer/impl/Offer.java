@@ -36,6 +36,10 @@ public class Offer implements OfferIf
     @Column
     private Long id;
 
+    @Column( length = 100 )
+    @Size( max = 100, message = "Offer title cannot be longer than 100 characters" )
+    private String title;
+
     @Column( length = 500 )
     @Size( max = 500, message = "Offer description must be 500 characters long at most." )
     private String description;
@@ -96,6 +100,24 @@ public class Offer implements OfferIf
     @Column
     private Instant expirationDate;
 
+    //TODO how to store weekdays? Right now it is list of string joined by comma
+    @Column( length = 14 )
+    @Size( max = 14, message = "There cannot be more than 7 days in week" )
+    private String weekDays;
+
+    @Column
+    @Nullable
+    private String offerInterval;
+
+    @Column
+    private String place;
+
+    @Column
+    private Boolean isPoznanOnly;
+
+    @Column
+    private Boolean isInsuranceNeeded;
+
     public Instant getStartDate()
     {
         return startDate.truncatedTo( ChronoUnit.SECONDS );
@@ -103,6 +125,9 @@ public class Offer implements OfferIf
 
     public Instant getEndDate()
     {
+        if ( this.endDate == null ) {
+            return null;
+        }
         return endDate.truncatedTo( ChronoUnit.SECONDS );
     }
 
