@@ -2,7 +2,7 @@ import { VerifyType } from 'src/app/features/institution-verify/institution-veri
 
 export class EndpointUrls {
   public static readonly login: string = '/login';
-  public static readonly refreshToken: string = 'refresh/token';
+  public static readonly refreshToken: string = '/refresh/token';
   public static readonly volunteerResource: string = '/volunteer';
   public static readonly registerVolunteer: string =
     EndpointUrls.volunteerResource.concat('/register');
@@ -17,11 +17,17 @@ export class EndpointUrls {
   public static getInstitutionVerify(operationType: VerifyType) {
     return this.institutionResource.concat('/', operationType);
   }
+  public static readonly advertisementResource = '/offer';
+  public static readonly advertisementType =
+    EndpointUrls.advertisementResource.concat('/type');
+  public static readonly advertisementBenefits =
+    EndpointUrls.advertisementResource.concat('/benefit');
   static readonly unauthorizedUrls = new Set<string>([
     EndpointUrls.institutionRegister,
     EndpointUrls.getInstitutionVerify(VerifyType.ACCEPT),
     EndpointUrls.getInstitutionVerify(VerifyType.REJECT),
     EndpointUrls.login,
     EndpointUrls.registerVolunteer,
+    EndpointUrls.refreshToken,
   ]);
 }

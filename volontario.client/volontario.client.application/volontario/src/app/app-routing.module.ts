@@ -12,6 +12,9 @@ import {
 } from 'src/app/core/guard/institution-registration.guard';
 import { RegisterContactPersonComponent } from 'src/app/features/register-contact-person/register-contact-person.component';
 import { MainPageComponent } from './features/main-page/main-page.component';
+import { AddAdvertisementComponent } from 'src/app/features/add-advertisement/add-advertisement.component';
+import { RoleDependentGuard } from 'src/app/core/guard/role-dependent.guard';
+import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -37,6 +40,22 @@ const routes: Routes = [
     ],
   },
   { path: '', component: MainPageComponent },
+  {
+    path: 'advertisement',
+    children: [
+      {
+        path: 'add',
+        component: AddAdvertisementComponent,
+        canActivate: [RouterGuard, RoleDependentGuard],
+        data: {
+          roles: [
+            UserRoleEnum.InstitutionWorker,
+            UserRoleEnum.InstitutionAdmin,
+          ],
+        },
+      },
+    ],
+  },
 ];
 
 @NgModule({

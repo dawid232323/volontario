@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SecurityService } from 'src/app/core/service/security/security.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/core/service/user.service';
+import { User } from 'src/app/core/model/user.model';
+import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 
 @Component({
   selector: 'app-home-page',
@@ -15,9 +17,11 @@ export class HomePageComponent implements OnInit {
     private userService: UserService
   ) {}
 
+  public loggedUser?: User;
+
   ngOnInit(): void {
     this.userService.getCurrentUserData().subscribe({
-      next: result => console.log(result),
+      next: result => (this.loggedUser = result),
       error: err => console.log(err),
     });
   }
@@ -26,4 +30,10 @@ export class HomePageComponent implements OnInit {
     this.authService.logout();
     this.router.navigate(['login']);
   }
+
+  routeToAddAdvertisement() {
+    this.router.navigate(['advertisement/add']);
+  }
+
+  protected readonly UserRoleEnum = UserRoleEnum;
 }

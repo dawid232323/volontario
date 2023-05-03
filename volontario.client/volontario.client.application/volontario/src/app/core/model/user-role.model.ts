@@ -1,5 +1,9 @@
 export enum UserRoleEnum {
-  Volunteer = 1,
+  InstitutionWorker = 1,
+  InstitutionAdmin = 2,
+  Volunteer = 3,
+  Admin = 4,
+  Moderator = 5,
 }
 
 export class UserRole {

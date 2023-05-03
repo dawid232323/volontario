@@ -15,6 +15,8 @@ import { RegisterInstitutionModule } from 'src/app/features/register-institution
 import { InstitutionVerifyModule } from 'src/app/features/institution-verify/institution-verify.module';
 import { MainPageModule } from './features/main-page/main-page.module';
 import { RegisterContactPersonModule } from 'src/app/features/register-contact-person/register-contact-person.module';
+import { AddAdvertisementModule } from './features/add-advertisement/add-advertisement.module';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +33,8 @@ import { RegisterContactPersonModule } from 'src/app/features/register-contact-p
     InstitutionVerifyModule,
     MainPageModule,
     RegisterContactPersonModule,
+    AddAdvertisementModule,
+    MatNativeDateModule,
   ],
   providers: [
     {
@@ -43,6 +47,7 @@ import { RegisterContactPersonModule } from 'src/app/features/register-contact-p
       useClass: HttpErrorInterceptor,
       multi: true,
     },
+    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
   ],
   bootstrap: [AppComponent],
 })

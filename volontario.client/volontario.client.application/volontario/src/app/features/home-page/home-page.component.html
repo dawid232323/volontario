@@ -1,2 +1,8 @@
 <p>home-page works!</p>
 <button (click)="onLogout()">Wyloguj</button>
+<br />
+<button
+  *ngIf="loggedUser?.hasUserRole(UserRoleEnum.InstitutionAdmin)"
+  (click)="routeToAddAdvertisement()">
+  Dodaj ogłoszenie
+</button>

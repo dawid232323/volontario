@@ -1,0 +1,69 @@
+<div>
+  <form [formGroup]="optionalInfoFormGroup" (submit)="formSubmitEvent.emit()">
+    <div class="flex flex-col lg:flex-row items-stretch">
+      <mat-slide-toggle
+        class="flex pt-9 pb-3 flex-col w-full lg:mr-3"
+        formControlName="isInsuranceNeeded"
+        color="accent"
+        >Czy wymagasz ubezpieczenia?</mat-slide-toggle
+      >
+    </div>
+    <div class="flex flex-col lg:flex-row items-stretch">
+      <mat-slide-toggle
+        class="flex pt-9 pb-3 flex-col w-full lg:mr-3"
+        formControlName="isPoznanOnly"
+        color="accent"
+        (change)="onIsPoznanOnlyChange($event)"
+        >Wydarzenie tylko w Poznaniu</mat-slide-toggle
+      >
+    </div>
+    <div class="flex flex-col lg:flex-row items-stretch">
+      <mat-form-field
+        class="flex pt-9 pb-3 flex-col w-full lg:mr-3"
+        appearance="standard"
+        color="accent">
+        <mat-label>Lokalizacje wydarzenia</mat-label>
+        <mat-icon matPrefix color="accent">location_on</mat-icon>
+        <mat-hint
+          *ngIf="
+            optionalInfoFormGroup.controls['eventPlace'].hasError('required')
+          "
+          >Podaj miejsca odbywania się wydarzenia</mat-hint
+        >
+        <input matInput formControlName="eventPlace" />
+      </mat-form-field>
+    </div>
+    <div class="flex flex-col lg:flex-row items-stretch">
+      <mat-form-field
+        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+        appearance="standard"
+        color="accent">
+        <mat-label>Dodatkowe korzyści</mat-label>
+        <mat-icon matPrefix color="accent">loyalty</mat-icon>
+        <mat-select multiple formControlName="benefits">
+          <mat-option *ngFor="let benefit of benefits" [value]="benefit.id">
+            {{ benefit.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex flex-row items-center gap-x-5 justify-between pt-10">
+      <button
+        mat-raised-button
+        matStepperPrevious
+        type="button"
+        class="w-1/2 h-full"
+        color="primary">
+        Wstecz
+      </button>
+      <button
+        mat-raised-button
+        type="submit"
+        class="w-1/2 h-full"
+        color="accent"
+        [disabled]="!canSubmitForm">
+        Zapisz
+      </button>
+    </div>
+  </form>
+</div>
