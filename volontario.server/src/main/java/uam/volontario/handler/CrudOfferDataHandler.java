@@ -10,11 +10,17 @@ import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.BenefitService;
 import uam.volontario.crud.service.OfferService;
 import uam.volontario.crud.service.OfferTypeService;
+import uam.volontario.crud.specification.OfferSpecification;
 import uam.volontario.dto.OfferDto;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.offer.impl.Offer;
+import uam.volontario.model.offer.impl.OfferSearchQuery;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.OfferValidationService;
+
+import org.springframework.data.domain.Pageable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Handler class for {@linkplain uam.volontario.model.offer.impl.Offer} data fetching.
@@ -57,6 +63,52 @@ public class CrudOfferDataHandler
      * Logger.
      */
     private static final Logger LOGGER = LogManager.getLogger( CrudOfferDataHandler.class );
+
+    /**
+     * Loads base offers info from the system, filtered by given criteria.
+     *
+     * @return Response Entity with code 200 and list of offers or Response Entity with code 500 when error
+     *         occurred during fetching offers.
+     *
+     * @param aOfferTypeId offer type id.
+     *
+     * @param aStartDate start date - will return offers that start after given time.
+     *
+     * @param aEndDate end date - will return offers that end before given time.
+     *
+     * @param aInterestCategoryIds interest categories id - will return offers with at least one matching.
+     *
+     * @param aOfferWeekDays week days - will return offers with at least one matching.
+     *
+     * @param aOfferPlace offer place - will return offers where saved place contains this substring.
+     *
+     * @param aExperienceLevelId experience level id - will return offers with matching or lower required experience level.
+     *
+     * @param isPoznanOnly whether offer is Poznan only - will return matching.
+     *
+     * @param isInsuranceNeeded wheter insurance is needed - will return matching.
+     */
+    public ResponseEntity< ? > loadBaseOffersInfoFiltered( String aTitle, Long aOfferTypeId, Date aStartDate, Date aEndDate,
+                                                          List<Long> aInterestCategoryIds, List<Integer> aOfferWeekDays,
+                                                          String aOfferPlace, Long aExperienceLevelId, Boolean isPoznanOnly,
+                                                          Boolean isInsuranceNeeded, Long aInstitutionId, Long aContactPersonId,
+                                                            Pageable pageable )
+    {
+        OfferSearchQuery query = new OfferSearchQuery( aTitle, aOfferTypeId, aStartDate, aEndDate, aInterestCategoryIds,
+                aOfferWeekDays, aOfferPlace, aExperienceLevelId, isPoznanOnly, isInsuranceNeeded, aInstitutionId, aContactPersonId );
+        OfferSpecification specification = new OfferSpecification( query );
+
+        try
+        {
+            return ResponseEntity.ok( offerService.findFiltered( specification, pageable ).map( dtoService::createBaseInfoDtoOfOffer ) );
+        }
+        catch ( Exception aE )
+        {
+            LOGGER.error( "Error on loading offers: {}", aE.getMessage() );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
 
     /**
      * Loads all offers in the system.

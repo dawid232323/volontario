@@ -3,11 +3,14 @@ package uam.volontario.crud.service.impl;
 import com.google.common.collect.Lists;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.repository.OfferRepository;
 import uam.volontario.crud.service.OfferService;
+import uam.volontario.crud.specification.OfferSpecification;
 import uam.volontario.model.offer.impl.Offer;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +38,12 @@ public class OfferServiceImpl implements OfferService
     {
         return tryLoadEntity( aOfferId )
                 .orElseThrow( NoResultException::new );
+    }
+
+    @Override
+    public Page< Offer > findFiltered( OfferSpecification aSpecification, Pageable aPageable )
+    {
+        return offerRepository.findAll( aSpecification, aPageable );
     }
 
     @Override

@@ -1,11 +1,16 @@
 package uam.volontario.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.OfferDto;
 import uam.volontario.handler.CrudOfferDataHandler;
+
+import org.springframework.data.domain.Pageable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Controller for API related to {@linkplain uam.volontario.model.offer.impl.Offer}s.
@@ -39,6 +44,33 @@ public class OfferController
     public ResponseEntity< ? > loadAllOffers()
     {
         return crudOfferDataHandler.loadAllOffers();
+    }
+
+    /**
+     * Loads offers from the system, filtered by passed criteria.
+     *
+     * @return Response Entity with code 200 and list of offers or Response Entity with code 500 when error
+     *         occurred during fetching offers.
+     */
+    @GetMapping( "/search" )
+    public ResponseEntity< ? > loadBaseOffersInfoFiltered( @RequestParam( required = false ) String aTitle,
+                                                           @RequestParam( required = false ) Long aOfferTypeId,
+                                                           @RequestParam( required = false ) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date aStartDate,
+                                                           @RequestParam( required = false ) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date aEndDate,
+                                                           @RequestParam( required = false ) List<Long> aInterestCategoryIds,
+                                                           @RequestParam( required = false ) List<Integer> aOfferWeekDays,
+                                                           @RequestParam( required = false ) String aOfferPlace,
+                                                           @RequestParam( required = false ) Long aExperienceLevelId,
+                                                           @RequestParam( required = false ) Boolean isPoznanOnly,
+                                                           @RequestParam( required = false ) Boolean isInsuranceNeeded,
+                                                           @RequestParam( required = false ) Long aInstitutionId,
+                                                           @RequestParam( required = false ) Long aContactPersonId,
+                                                           Pageable aPageable
+                                                           )
+    {
+        return crudOfferDataHandler.loadBaseOffersInfoFiltered( aTitle, aOfferTypeId, aStartDate, aEndDate,
+                aInterestCategoryIds, aOfferWeekDays, aOfferPlace, aExperienceLevelId, isPoznanOnly, isInsuranceNeeded,
+                aInstitutionId, aContactPersonId, aPageable );
     }
 
     /**

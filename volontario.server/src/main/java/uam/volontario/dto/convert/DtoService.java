@@ -20,6 +20,7 @@ import uam.volontario.model.volunteer.impl.VolunteerData;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -214,5 +215,18 @@ public class DtoService
         createdOffer.setBenefits( benefits );
         createdOffer.setIsInsuranceNeeded( aOfferDto.getIsInsuranceNeeded() );
         return createdOffer;
+    }
+
+    /**
+     * Maps {@linkplain Offer} to {@linkplain OfferBaseInfoDto}
+     *
+     * @param aOffer dto to be mapped.
+     *
+     * @return dto containing base offer information.
+     */
+    public OfferBaseInfoDto createBaseInfoDtoOfOffer( final Offer aOffer )
+    {
+        return new OfferBaseInfoDto( aOffer.getId(), aOffer.getTitle(), Date.from( aOffer.getExpirationDate() ),
+                aOffer.getOfferType().getId(), Date.from( aOffer.getStartDate() ), aOffer.getPlace());
     }
 }

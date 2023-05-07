@@ -1,0 +1,20 @@
+{
+    "offerTitle": "Pierwsze ogłoszenie",
+    "offerExpirationDate": "2023-05-15",
+    "contactPersonId": 2,
+    "offerTypeId": 2,
+    "startDate": "2023-05-20",
+    "endDate": null,
+    "offerWeekDays": [0, 1, 2],
+    "durationUnit": "DAYS",
+    "durationValue": 3,
+    "offerInterval": null,
+    "interestCategoryIds": [1, 2, 3],
+    "isExperienceRequired": true,
+    "experienceLevelId": 1,
+    "offerDescription": "Krótki testowy opis dla pierwszego ogłoszenia",
+    "offerPlace": "Poznań",
+    "isPoznanOnly": true,
+    "offerBenefitIds": null,
+    "isInsuranceNeeded": false
+}
