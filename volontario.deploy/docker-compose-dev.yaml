@@ -6,11 +6,11 @@ services:
     volumes:
       - ./nginx/templates:/etc/nginx/templates
     environment:
-      - VOLONTARIO_DOMAIN=localhost # change to 'volontario.me' for production
+      - VOLONTARIO_DOMAIN=localhost
     ports:
       - '80:80'
       # https to be configured once we get new environment
-      # - '443:443' 
+      # - '443:443'
   volontario-front:
     image: volontario-front:latest
     restart: always
@@ -19,7 +19,9 @@ services:
     build:
       context: ../volontario.client/volontario.client.application/volontario
       args:
-        CLIENT_ENVIRONMENT: localdev # change to 'production' when deploying to prod
+        CLIENT_ENVIRONMENT: localdev
+    ports:
+      - '4200:4200'
   volontario-back:
     image: volontario-back:latest
     restart: always
@@ -28,19 +30,25 @@ services:
       - volontario-mailserver
     build:
       context: ../volontario.server
+    ports:
+      - '8080:8080'
     env_file: 'variables.env'
   volontario-db:
     image: postgres:15.2-alpine
     restart: always
     env_file: 'variables.env'
-    volumes: 
+    volumes:
       - volontario-db:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
   volontario-mailserver:
     image: mwader/postfix-relay:1.1
     restart: always
     environment:
       - POSTFIX_myhostname=smtp.domain.tld
       - OPENDKIM_DOMAINS=smtp.domain.tld
+    ports:
+      - '25:25'
     hostname: volontario.me # placeholder domain, to be changed later
 volumes:
   volontario-db:
