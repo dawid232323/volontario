@@ -1,0 +1,19 @@
+
+
+.mat-menu-item {
+  .mat-icon.checked {
+    display: none;
+    pointer-events: none;
+  }
+  .mat-icon.empty {
+    pointer-events: none;
+  }
+}
+.mat-menu-item.selected {
+  .mat-icon.empty {
+    display: none;
+  }
+  .mat-icon.checked {
+    display: unset;
+  }
+}

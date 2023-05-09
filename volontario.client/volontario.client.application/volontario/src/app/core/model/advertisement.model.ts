@@ -208,3 +208,29 @@ export class AdvertisementDto implements AdvertisementDtoIf {
     public isInsuranceNeeded?: boolean
   ) {}
 }
+
+export class AdvertisementPreview {
+  constructor(
+    public id: number,
+    public offerTitle: string,
+    public startDate: Date,
+    public endDate: Date,
+    public offerPlace: string,
+    public isPoznanOnly: boolean,
+    public offerExpirationDate: Date,
+    public offerTypeName: string
+  ) {}
+
+  public static fromPayload(payload?: any): AdvertisementPreview {
+    return new AdvertisementPreview(
+      payload?.id,
+      payload?.offerTitle,
+      payload?.startDate,
+      payload?.endDate,
+      payload?.offerPlace,
+      payload?.isPoznanOnly,
+      payload?.offerExpirationDate,
+      payload?.offerTypeName
+    );
+  }
+}

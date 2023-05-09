@@ -17,6 +17,7 @@ import { MainPageModule } from './features/main-page/main-page.module';
 import { RegisterContactPersonModule } from 'src/app/features/register-contact-person/register-contact-person.module';
 import { AddAdvertisementModule } from './features/add-advertisement/add-advertisement.module';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { InstitutionAdvertisementPanelModule } from './features/institution-advertisement-panel/institution-advertisement-panel.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,6 +36,7 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
     RegisterContactPersonModule,
     AddAdvertisementModule,
     MatNativeDateModule,
+    InstitutionAdvertisementPanelModule,
   ],
   providers: [
     {

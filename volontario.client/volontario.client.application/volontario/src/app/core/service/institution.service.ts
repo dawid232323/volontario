@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
 import {
-  InstitutionModel,
+  InstitutionRegisterModel,
   InstitutionModelBuilder,
 } from 'src/app/core/model/institution.model';
 import { Observable } from 'rxjs';
@@ -17,7 +17,7 @@ export class InstitutionService {
   constructor(private restService: VolontarioRestService) {}
 
   public createInstitution(
-    institutionModel: InstitutionModel
+    institutionModel: InstitutionRegisterModel
   ): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const options: HttpOptionsInterface = {
@@ -62,7 +62,7 @@ export class InstitutionService {
   public getInstitutionModelFromFormData(
     basicInfoValue: any,
     additionalInfoValue: any
-  ): InstitutionModel {
+  ): InstitutionRegisterModel {
     const contactPerson = new InstitutionContactPersonModel(
       basicInfoValue.registerPersonName,
       basicInfoValue.registerPersonLastName,

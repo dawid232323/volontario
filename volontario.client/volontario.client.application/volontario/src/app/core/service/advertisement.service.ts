@@ -4,10 +4,28 @@ import {
   AdvertisementBenefit,
   AdvertisementDto,
   AdvertisementDtoBuilder,
+  AdvertisementPreview,
   AdvertisementType,
 } from 'src/app/core/model/advertisement.model';
 import { EndpointUrls } from 'src/app/utils/url.util';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
+import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
+import { PageableModelInterface } from 'src/app/core/model/pageable.model';
+import { isNil } from 'lodash';
+
+/**
+ * Object that stores information about user filter preferences on the advertisement panel list.
+ */
+export interface AdvertisementFilterIf {
+  institutionId: number;
+  contactPersonId?: number;
+  title?: string;
+  startDate?: Date | string;
+  endDate?: Date | string;
+  interestCategoryIds?: number[];
+  typeIds?: number[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class AdvertisementService {
@@ -29,6 +47,28 @@ export class AdvertisementService {
 
   public createNewAdvertisement(body: AdvertisementDto): Observable<any> {
     return this.restService.post(EndpointUrls.advertisementResource, body);
+  }
+
+  public getAdvertisementPreviews(
+    filters: AdvertisementFilterIf,
+    pageNumber?: number,
+    pageSize?: number
+  ): Observable<PageableModelInterface<AdvertisementPreview>> {
+    if (isNil(pageNumber)) {
+      pageNumber = 0;
+    }
+    if (isNil(pageSize)) {
+      pageSize = 5;
+    }
+    const params = new HttpParams({
+      fromObject: { page: pageNumber, limit: pageSize, ...(<any>filters) },
+    });
+    const options: HttpOptionsInterface = { params: params };
+    return this.restService
+      .get(EndpointUrls.advertisementSearch, options)
+      .pipe(
+        map(result => <PageableModelInterface<AdvertisementPreview>>result)
+      );
   }
 
   /**

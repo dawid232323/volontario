@@ -1,6 +1,7 @@
 import { InstitutionContactPersonModel } from 'src/app/core/model/InstitutionContactPerson.model';
 
 interface InstitutionInterface {
+  id?: number;
   name?: string;
   contactPerson?: InstitutionContactPersonModel;
   krsNumber?: string;
@@ -60,8 +61,8 @@ export class InstitutionModelBuilder implements InstitutionInterface {
     return this;
   }
 
-  public build(): InstitutionModel {
-    return new InstitutionModel(
+  public build(): InstitutionRegisterModel {
+    return new InstitutionRegisterModel(
       this.name,
       this.contactPerson,
       this.krsNumber,
@@ -72,7 +73,7 @@ export class InstitutionModelBuilder implements InstitutionInterface {
     );
   }
 }
-export class InstitutionModel implements InstitutionInterface {
+export class InstitutionRegisterModel implements InstitutionInterface {
   constructor(
     public name?: string,
     public contactPerson?: InstitutionContactPersonModel,
@@ -83,8 +84,34 @@ export class InstitutionModel implements InstitutionInterface {
     public localization?: string
   ) {}
 
-  public static fromPayload(payload?: any): InstitutionModel {
-    return new InstitutionModel(
+  public static fromPayload(payload?: any): InstitutionRegisterModel {
+    return new InstitutionRegisterModel(
+      payload?.name,
+      InstitutionContactPersonModel.fromPayload(payload?.contactPerson),
+      payload?.krsNumber,
+      payload?.headquartersAddress,
+      payload?.tags,
+      payload?.description,
+      payload?.localization
+    );
+  }
+}
+
+export class Institution implements InstitutionInterface {
+  constructor(
+    public id?: number,
+    public name?: string,
+    public contactPerson?: InstitutionContactPersonModel,
+    public krsNumber?: string,
+    public headquartersAddress?: string,
+    public tags?: string[],
+    public description?: string,
+    public localization?: string
+  ) {}
+
+  public static fromPayload(payload?: any): Institution {
+    return new Institution(
+      payload?.id,
       payload?.name,
       InstitutionContactPersonModel.fromPayload(payload?.contactPerson),
       payload?.krsNumber,

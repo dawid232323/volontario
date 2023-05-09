@@ -226,7 +226,14 @@ public class DtoService
      */
     public OfferBaseInfoDto createBaseInfoDtoOfOffer( final Offer aOffer )
     {
+        // there are cases where end date is null so Date.form method throws an exception
+        Date endDate = null;
+        if ( aOffer.getEndDate() != null )
+        {
+            endDate = Date.from( aOffer.getEndDate() );
+        }
         return new OfferBaseInfoDto( aOffer.getId(), aOffer.getTitle(), Date.from( aOffer.getExpirationDate() ),
-                aOffer.getOfferType().getId(), Date.from( aOffer.getStartDate() ), aOffer.getPlace());
+                aOffer.getOfferType().getName(), Date.from( aOffer.getStartDate() ),
+                endDate, aOffer.getPlace() );
     }
 }

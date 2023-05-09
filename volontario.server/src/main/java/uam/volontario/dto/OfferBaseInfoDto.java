@@ -18,7 +18,8 @@ public class OfferBaseInfoDto
     private Long id;
     private String offerTitle;
     private Date offerExpirationDate;
-    private Long offerTypeId;
+    private String offerTypeName;
     private Date startDate;
+    private Date endDate;
     private String offerPlace;
 }

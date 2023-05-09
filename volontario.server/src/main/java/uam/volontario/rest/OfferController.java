@@ -53,24 +53,24 @@ public class OfferController
      *         occurred during fetching offers.
      */
     @GetMapping( "/search" )
-    public ResponseEntity< ? > loadBaseOffersInfoFiltered( @RequestParam( required = false ) String aTitle,
-                                                           @RequestParam( required = false ) Long aOfferTypeId,
-                                                           @RequestParam( required = false ) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date aStartDate,
-                                                           @RequestParam( required = false ) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date aEndDate,
-                                                           @RequestParam( required = false ) List<Long> aInterestCategoryIds,
-                                                           @RequestParam( required = false ) List<Integer> aOfferWeekDays,
-                                                           @RequestParam( required = false ) String aOfferPlace,
-                                                           @RequestParam( required = false ) Long aExperienceLevelId,
+    public ResponseEntity< ? > loadBaseOffersInfoFiltered( @RequestParam( required = false ) String title,
+                                                           @RequestParam( required = false ) Long offerTypeId,
+                                                           @RequestParam( required = false ) @DateTimeFormat( iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                                           @RequestParam( required = false ) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
+                                                           @RequestParam( required = false ) List<Long> interestCategoryIds,
+                                                           @RequestParam( required = false ) List<Integer> offerWeekDays,
+                                                           @RequestParam( required = false ) String offerPlace,
+                                                           @RequestParam( required = false ) Long experienceLevelId,
                                                            @RequestParam( required = false ) Boolean isPoznanOnly,
                                                            @RequestParam( required = false ) Boolean isInsuranceNeeded,
-                                                           @RequestParam( required = false ) Long aInstitutionId,
-                                                           @RequestParam( required = false ) Long aContactPersonId,
+                                                           @RequestParam( required = false ) Long institutionId,
+                                                           @RequestParam( required = false ) Long contactPersonId,
                                                            Pageable aPageable
                                                            )
     {
-        return crudOfferDataHandler.loadBaseOffersInfoFiltered( aTitle, aOfferTypeId, aStartDate, aEndDate,
-                aInterestCategoryIds, aOfferWeekDays, aOfferPlace, aExperienceLevelId, isPoznanOnly, isInsuranceNeeded,
-                aInstitutionId, aContactPersonId, aPageable );
+        return crudOfferDataHandler.loadBaseOffersInfoFiltered(title, offerTypeId, startDate, endDate,
+                interestCategoryIds, offerWeekDays, offerPlace, experienceLevelId, isPoznanOnly, isInsuranceNeeded,
+                institutionId, contactPersonId, aPageable );
     }
 
     /**

@@ -1,0 +1,113 @@
+<div class="pt-10 flex flex-col">
+  <section
+    id="desktopFilterSection"
+    class="hidden lg:flex flex-col w-full border-b-4">
+    <section
+      id="inputFields"
+      class="flex flex-row w-full justify-between items-stretch space-x-6">
+      <mat-form-field appearance="standard" class="flex w-full">
+        <mat-icon matPrefix color="accent">search</mat-icon>
+        <mat-icon
+          *ngIf="
+            typedTitleSearch !== null &&
+            typedTitleSearch !== undefined &&
+            typedTitleSearch !== ''
+          "
+          (click)="onSearchTitleClear()"
+          matSuffix
+          class="text-gray-300 hover:text-gray-500"
+          >cancel</mat-icon
+        >
+        <input
+          matInput
+          placeholder="Wyszukaj po nazwie"
+          [(ngModel)]="typedTitleSearch"
+          (keyup.enter)="onSearchClicked()" />
+      </mat-form-field>
+      <mat-form-field appearance="standard" class="flex w-full">
+        <mat-label>Data rozpoczęcia wydarzenia</mat-label>
+        <input
+          matInput
+          [matDatepicker]="startDatePicker"
+          (dateChange)="onStartDateSearchChange($event)" />
+        <mat-datepicker-toggle
+          matPrefix
+          [for]="startDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #startDatePicker color="accent"></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="standard" class="flex w-full">
+        <mat-label>Data zakończenia wydarzenia</mat-label>
+        <input
+          matInput
+          [matDatepicker]="endDatePicker"
+          (dateChange)="onEndDateSearchChange($event)" />
+        <mat-datepicker-toggle
+          matPrefix
+          [for]="endDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #endDatePicker color="accent"></mat-datepicker>
+      </mat-form-field>
+    </section>
+    <section class="flex flex-row w-full h-full pb-5 pt-7" id="buttons">
+      <div
+        id="menuButtons"
+        class="flex flex-row items-end justify-start w-full space-x-6">
+        <button
+          mat-raised-button
+          class="flex flex-row"
+          color="accent"
+          [matMenuTriggerFor]="categoryMenu">
+          <mat-icon matPrefix>menu</mat-icon>
+          Kategorie <b>{{ selectedCategoriesSize }}</b>
+        </button>
+        <mat-menu #categoryMenu="matMenu">
+          <button
+            *ngFor="let category of interestCategories"
+            [matTooltip]="category.name"
+            mat-menu-item
+            (click)="onCategorySelect($event, category.id)">
+            <mat-icon *ngIf="!isCategorySelected(category.id)"
+              >check_box_outline_blank</mat-icon
+            >
+            <mat-icon *ngIf="isCategorySelected(category.id)"
+              >check_box</mat-icon
+            >
+            {{ category.name }}
+          </button>
+        </mat-menu>
+        <button
+          mat-raised-button
+          class="flex flex-row"
+          color="accent"
+          [matMenuTriggerFor]="typeMenu">
+          <mat-icon matPrefix>menu</mat-icon>
+          Typy ogłoszeń <b>{{ selectedTypesSize }}</b>
+        </button>
+        <mat-menu #typeMenu="matMenu">
+          <button
+            *ngFor="let type of advertisementType"
+            [matTooltip]="type.name"
+            mat-menu-item
+            (click)="onTypeSelect($event, type.id)">
+            <mat-icon *ngIf="!isTypeSelected(type.id)"
+              >check_box_outline_blank</mat-icon
+            >
+            <mat-icon *ngIf="isTypeSelected(type.id)">check_box</mat-icon>
+            {{ type.name }}
+          </button>
+        </mat-menu>
+      </div>
+      <div
+        id="controlButtons"
+        class="flex flex-row items-end justify-end w-full h-full">
+        <button
+          (click)="onSearchClicked()"
+          mat-raised-button
+          color="primary"
+          class="flex-col w-1/2 h-full hover:bg-btnAccentHoverPrimary">
+          <mat-icon matPrefix>search</mat-icon>Szukaj
+        </button>
+      </div>
+    </section>
+  </section>
+  <section id="mobileFilterSection" class="flex lg:hidden"></section>
+</div>

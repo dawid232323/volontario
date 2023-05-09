@@ -14,8 +14,10 @@ export class UserService {
     if (!isNil(this.userData)) {
       return of(this.userData);
     }
-    return this.restService
-      .get(EndpointUrls.userData)
-      .pipe(map(userResult => User.fromPayload(userResult)));
+    return this.restService.get(EndpointUrls.userData).pipe(
+      map(userResult => {
+        return User.fromPayload(userResult);
+      })
+    );
   }
 }

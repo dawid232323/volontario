@@ -18,6 +18,8 @@ export class EndpointUrls {
     return this.institutionResource.concat('/', operationType);
   }
   public static readonly advertisementResource = '/offer';
+  public static readonly advertisementSearch =
+    EndpointUrls.advertisementResource.concat('/search');
   public static readonly advertisementType =
     EndpointUrls.advertisementResource.concat('/type');
   public static readonly advertisementBenefits =

@@ -1,6 +1,7 @@
 import { UserRole, UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { VolunteerData } from 'src/app/core/model/volunteer-data.model';
 import { isNil } from 'lodash';
+import { Institution } from 'src/app/core/model/institution.model';
 
 export class User {
   constructor(
@@ -11,7 +12,8 @@ export class User {
     public contactEmailAddress: string,
     public phoneNumber: string,
     public roles: UserRole[],
-    public volunteerData: VolunteerData
+    public volunteerData?: VolunteerData,
+    public institution?: Institution
   ) {}
 
   public hasUserRole(desiredRole: UserRoleEnum): boolean {
@@ -31,7 +33,8 @@ export class User {
       payload?.contactEmailAddress,
       payload?.phoneNumber,
       payload?.roles,
-      VolunteerData.fromPayload(payload?.volunteerData)
+      VolunteerData.fromPayload(payload?.volunteerData),
+      Institution.fromPayload(payload?.institution)
     );
   }
 }

@@ -15,6 +15,7 @@ import { MainPageComponent } from './features/main-page/main-page.component';
 import { AddAdvertisementComponent } from 'src/app/features/add-advertisement/add-advertisement.component';
 import { RoleDependentGuard } from 'src/app/core/guard/role-dependent.guard';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
+import { InstitutionAdvertisementPanelComponent } from 'src/app/features/institution-advertisement-panel/institution-advertisement-panel.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -36,6 +37,17 @@ const routes: Routes = [
         component: RegisterContactPersonComponent,
         canActivate: [InstitutionRegistrationGuard],
         data: { stage: InstitutionRegistrationStage.ContactPersonRegistration },
+      },
+      {
+        path: 'advertisement-panel',
+        component: InstitutionAdvertisementPanelComponent,
+        canActivate: [RouterGuard, RoleDependentGuard],
+        data: {
+          roles: [
+            UserRoleEnum.InstitutionWorker,
+            UserRoleEnum.InstitutionAdmin,
+          ],
+        },
       },
     ],
   },

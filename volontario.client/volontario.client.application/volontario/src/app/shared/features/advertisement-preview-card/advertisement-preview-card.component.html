@@ -1,0 +1,49 @@
+<mat-card class="flex border-4">
+  <mat-card-header>
+    <mat-icon mat-card-avatar color="accent">receipt_long</mat-icon>
+    <mat-card-title class="text-xl">{{
+      advertisement?.offerTitle
+    }}</mat-card-title>
+    <mat-card-subtitle>Aktualna liczba aplikacji: 0</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <span class="flex flex-col">
+      <span>
+        <p>
+          Czas trwania wydarzenia:
+          {{ getFormattedDate(advertisement?.startDate) }} -
+          {{ getFormattedDate(advertisement?.endDate) }}
+        </p>
+      </span>
+      <span class="flex flex-row w-full justify-between pt-6">
+        <span class="flex flex-row space-x-3">
+          <mat-icon>location_on</mat-icon>
+          <p>{{ advertisement?.offerPlace }}</p>
+        </span>
+        <span class="flex flex-row space-x-3">
+          <mat-icon>tune</mat-icon>
+          <p>Typ wydarzenia: {{ advertisement?.offerTypeName }}</p></span
+        >
+        <span class="flex flex-row space-x-3">
+          <mat-icon>calendar_today</mat-icon>
+          <p>
+            Data wygaśnięcia oferty:
+            {{ getFormattedDate(advertisement?.offerExpirationDate) }}
+          </p>
+        </span>
+      </span>
+    </span>
+    <mat-divider></mat-divider>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-button>
+      <mat-icon color="primary">arrow_forward</mat-icon>
+    </button>
+    <button mat-button>
+      <mat-icon color="accent">edit</mat-icon>
+    </button>
+    <button mat-button>
+      <mat-icon color="warn">delete</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>
