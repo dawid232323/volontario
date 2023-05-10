@@ -1,9 +1,18 @@
+INSERT INTO public.institution_contact_people
+VALUES (1, 'januszex@januszex.pl', 'Jan', 'Uszex', '123456789'),
+       (2, 'Ola@wolontariat.pl', 'Ola', 'Wolontariacka', '123456788'),
+       (3, 'ktoswazny@amu.edu.pl', 'Ktos', 'Wazny', '123456787'),
+       (4, 'typ@niema.pl', 'Zamknal', 'Instytucje', '123456786'),
+       (5, 'pan@warszawka.pl', 'Pan', 'Warszawski', '123456785');
+
+SELECT setval('institution_contact_people_id_seq', 6, true);
+
 INSERT INTO public.institutions
-VALUES  (1, 'Januszex', 'Towarowa', true, '1111111111', 'Poznań', 'Januszex', null),
-        (2, 'Wolontariaty', 'Wolontariacka', true, '2222222222', 'Poznań', 'Wolontariat', null),
-        (3, 'UAM', 'Wieniawskiego 1', true, '3333333333', 'Poznań', 'UAM', null),
-        (4, 'Zamknięte', 'Zamknięta', false, '444444444', 'Poznań', 'Zamknięte', null),
-        (5, 'Niepoznań', 'Warszawska', true, '5555555555', 'Warszawa', 'Niepoznań', null);
+VALUES  (1, 'Januszex', 'Towarowa', true, '1111111111', 'Poznań', 'Januszex', null, null, 1),
+        (2, 'Wolontariaty', 'Wolontariacka', true, '2222222222', 'Poznań', 'Wolontariat', null, null, 2),
+        (3, 'UAM', 'Wieniawskiego 1', true, '3333333333', 'Poznań', 'UAM', null, null, 3),
+        (4, 'Zamknięte', 'Zamknięta', false, '444444444', 'Poznań', 'Zamknięte', null, null, 4),
+        (5, 'Niepoznań', 'Warszawska', true, '5555555555', 'Warszawa', 'Niepoznań', null, null, 5);
 
 SELECT setval('institutions_id_seq', 6, true);
 
@@ -25,16 +34,7 @@ VALUES (1, 'januszex@januszex.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3N
        (6, 'janwolontariusz@gmail.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Kowalski', '123456784', null, 1),
        (7, 'adamwolontariusz@gmail.pl', 'Adam', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '123456783', null, 2);
 
-SELECT setval('users_id_seq', 3, true);
-
-INSERT INTO public.institution_contact_people
-VALUES (1, 'januszex@januszex.pl', 'Jan', 'Uszex', '123456789'),
-       (2, 'Ola@wolontariat.pl', 'Ola', 'Wolontariacka', '123456788'),
-       (3, 'ktoswazny@amu.edu.pl', 'Ktos', 'Wazny', '123456787'),
-       (4, 'typ@niema.pl', 'Zamknal', 'Instytucje', '123456786'),
-       (5, 'pan@warszawka.pl', 'Pan', 'Warszawski', '123456785');
-
-SELECT setval('institution_contact_people_id_seq', 6, true);
+SELECT setval('users_id_seq', 7, true);
 
 INSERT INTO public.offers(
     id, description, duration, end_date, expiration_date, is_experience_required, is_insurance_needed, is_poznan_only, offer_interval, place, start_date, title, week_days, contact_person_id, institution_id, minimum_experience_id, offer_type_id)
@@ -76,10 +76,3 @@ VALUES (1, 1),
        (1, 2),
        (1, 3),
        (2, 4);
-
-INSERT INTO public.institution_contact_people
-VALUES (1, 1),
-       (2, 2),
-       (3, 3),
-       (4, 4),
-       (5, 5);
