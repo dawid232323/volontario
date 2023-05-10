@@ -1,8 +1,24 @@
-<p>home-page works!</p>
-<button (click)="onLogout()">Wyloguj</button>
-<br />
-<button
-  *ngIf="loggedUser?.hasUserRole(UserRoleEnum.InstitutionAdmin)"
-  (click)="routeToAddAdvertisement()">
-  Dodaj ogłoszenie
-</button>
+<main class="max-w-screen-2xl mx-auto my-10 py-3">
+  <div>
+    <div class="my-3">
+      <h1 class="py-3">Twoje najnowsze ogłoszenia:</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <app-offer-card></app-offer-card>
+        <app-offer-card></app-offer-card>
+        <app-offer-card></app-offer-card>
+        <app-offer-card></app-offer-card>
+        <app-offer-card></app-offer-card>
+      </div>
+    </div>
+    <div class="my-3">
+      <h1 class="py-3">Najnowsze ogłoszenia twojej instytucji:</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <app-offer-card></app-offer-card>
+        <app-offer-card></app-offer-card>
+        <app-offer-card></app-offer-card>
+        <app-offer-card></app-offer-card>
+        <app-offer-card></app-offer-card>
+      </div>
+    </div>
+  </div>
+</main>

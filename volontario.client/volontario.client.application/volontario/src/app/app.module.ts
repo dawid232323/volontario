@@ -18,6 +18,8 @@ import { RegisterContactPersonModule } from 'src/app/features/register-contact-p
 import { AddAdvertisementModule } from './features/add-advertisement/add-advertisement.module';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { InstitutionAdvertisementPanelModule } from './features/institution-advertisement-panel/institution-advertisement-panel.module';
+import { FooterModule } from './shared/features/footer/footer.module';
+import { NavModule } from './shared/features/nav/nav.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,6 +39,8 @@ import { InstitutionAdvertisementPanelModule } from './features/institution-adve
     AddAdvertisementModule,
     MatNativeDateModule,
     InstitutionAdvertisementPanelModule,
+    FooterModule,
+    NavModule,
   ],
   providers: [
     {

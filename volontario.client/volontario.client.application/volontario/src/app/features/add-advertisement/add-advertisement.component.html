@@ -1,5 +1,5 @@
 <div>
-  <div class="flex flex-col justify-between items-center h-screen bg-gray-100">
+  <div class="flex flex-col justify-between items-center bg-gray-100">
     <section
       id="spinnerSection"
       *ngIf="isAddingAdvertisement"
@@ -11,7 +11,7 @@
     <section
       *ngIf="!isAddingAdvertisement && !hasAddedAdvertisement"
       id="formContent"
-      class="flex flex-col items-center justify-center w-full border-4 border-solid lg:w-3/4 bg-white pb-5">
+      class="my-10 py-4 flex flex-col items-center justify-center w-full border-4 border-solid lg:w-3/4 bg-white pb-5">
       <span class="flex flex-row lg:space-x-5 pt-24 pb-24">
         <div class="lg:flex hidden">
           <mat-icon class="scale-150 pt-1" color="accent">task</mat-icon>
@@ -58,20 +58,6 @@
           'Twoje ogłoszenie będzie widoczne dla wszystkich zarejetrowanych wolontariuszy'
         "
         [buttonText]="'Lista ogłoszeń'"></app-success-info-card>
-    </section>
-    <section id="footer-section" class="h-10 w-full bg-gray-100">
-      <div class="bg-gray-100">
-        <svg
-          data-name="Layer 1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none">
-          <path
-            d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
-            class="fill-bgPrimary"></path>
-        </svg>
-      </div>
-      <app-footer></app-footer>
     </section>
   </div>
 </div>

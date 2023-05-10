@@ -1,0 +1,146 @@
+<header class="bg-bgPrimary">
+  <div class="md:hidden"><app-logo></app-logo></div>
+  <div class="hidden md:block">
+    <header aria-label="Site Header" class="bg-bgPrimary relative w-full z-50">
+      <div class="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-20 items-center justify-between">
+          <div class="md:flex md:items-center md:gap-12">
+            <a
+              class="text-teal-600 w-[250px] md:w-[380px] flex justify-center"
+              routerLink="/home">
+              <app-logo></app-logo>
+            </a>
+          </div>
+          <div class="hidden md:block">
+            <nav aria-label="Site Nav">
+              <ul
+                *ngIf="loggedUser?.hasUserRoles([UserRoleEnum.Volunteer])"
+                class="flex items-center gap-6 text-sm">
+                <li>
+                  <a
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
+                    routerLink="/home">
+                    Pulpit
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
+                    Lista ogłoszeń dla wolontariusza
+                  </a>
+                </li>
+              </ul>
+              <ul
+                *ngIf="
+                  loggedUser?.hasUserRoles([
+                    UserRoleEnum.InstitutionWorker,
+                    UserRoleEnum.InstitutionAdmin
+                  ])
+                "
+                class="flex items-center gap-6 text-sm">
+                <li>
+                  <a
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
+                    routerLink="/home">
+                    Pulpit
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
+                    routerLink="/institution/advertisement-panel">
+                    Lista Ogłoszeń
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
+                    Zarchiwizowane ogłoszenia
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="flex items-center gap-4">
+            <div
+              class="sm:flex sm:gap-4"
+              *ngIf="
+                loggedUser?.hasUserRoles([
+                  UserRoleEnum.InstitutionWorker,
+                  UserRoleEnum.InstitutionAdmin
+                ])
+              "
+              (click)="routeToAddAdvertisement()">
+              <button mat-raised-button color="accent">
+                <i class="fa-solid fa-plus"></i>Dodaj ogłoszenie
+              </button>
+            </div>
+            <div
+              [matMenuTriggerFor]="menu"
+              class="relative w-12 h-12 rounded-full flex items-center justify-center bg-bgWhite hover:bg-btnAccentHover transition">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <mat-menu #menu="matMenu">
+              <ul mat-menu-item>
+                <i class="fa-solid fa-address-card"></i>
+                Zobacz profil
+              </ul>
+              <ul mat-menu-item (click)="onLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Wyloguj się
+              </ul>
+            </mat-menu>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <div class="fixed bottom-0 bg-bgPrimary left-0 w-full block md:hidden z-50">
+    <div
+      class="flex flex-row items-center justify-center gap-y-10 py-1 text-white font-semibold text-[10px]">
+      <a
+        class="flex flex-col justify-center items-center w-1/4 p-1"
+        routerLink="/home">
+        <i class="fa-solid fa-house text-lg"></i>
+        Pulpit
+      </a>
+      <a
+        class="flex flex-col justify-center items-center w-1/4 p-1"
+        routerLink="/institution/advertisement-panel">
+        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        Ogłoszenia
+      </a>
+      <a
+        class="flex flex-col justify-center items-center w-1/4 p-1"
+        *ngIf="
+          loggedUser?.hasUserRoles([
+            UserRoleEnum.InstitutionWorker,
+            UserRoleEnum.InstitutionAdmin
+          ])
+        "
+        (click)="routeToAddAdvertisement()">
+        <i class="fa-solid fa-plus text-lg"></i>
+        Dodaj ogłoszenie
+      </a>
+      <a
+        class="flex flex-col justify-center items-center w-1/4 p-1"
+        [matMenuTriggerFor]="menuMobile">
+        <i class="fa-solid fa-gear text-lg"></i>
+        Ustawienia
+      </a>
+      <mat-menu #menuMobile="matMenu">
+        <ul mat-menu-item>
+          <i class="fa-solid fa-address-card"></i>
+          Zobacz profil
+        </ul>
+        <ul mat-menu-item (click)="onLogout()">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Wyloguj się
+        </ul>
+      </mat-menu>
+    </div>
+  </div>
+</header>
