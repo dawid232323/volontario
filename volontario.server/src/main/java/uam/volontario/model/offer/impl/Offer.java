@@ -17,6 +17,7 @@ import uam.volontario.model.volunteer.impl.InterestCategory;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -140,6 +141,15 @@ public class Offer implements OfferIf
     public OfferTypeEnum getOfferTypeAsEnum()
     {
         return OfferTypeEnum.mapOfferTypeToOfferTypeEnum( offerType );
+    }
+
+    public List< Integer > getOfferWeekDaysAsList()
+    {
+        List< Integer > weekDaysList = new ArrayList<>();
+        for (String s : weekDays.split(",") ) {
+            weekDaysList.add( Integer.valueOf( s ) );
+        }
+        return weekDaysList;
     }
 
     @Override

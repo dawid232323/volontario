@@ -236,4 +236,41 @@ public class DtoService
                 aOffer.getOfferType().getName(), Date.from( aOffer.getStartDate() ),
                 endDate, aOffer.getPlace() );
     }
+
+    public Object createOfferDetailsDto( Offer aOffer )
+    {
+        InstitutionContactPersonDto institutionContactPersonDto = contactPersonToDto(aOffer.getContactPerson());
+        OfferTypeDto offerTypeDto = offerTypeToDto( aOffer.getOfferType() );
+        List< InterestCategoryDto > interestCategoryDtos =
+                aOffer.getInterestCategories().stream().map( this::interestCategoryToDto ).toList();
+        ExperienceLevelDto experienceLevelDto = aOffer.getMinimumExperience() != null
+                ? volunteerExperienceToDto( aOffer.getMinimumExperience() ) : null;
+        List< BenefitDto > benefitDtos = aOffer.getBenefits().stream().map( this::benefitToDto ).toList();
+
+        Date expirationDate = aOffer.getExpirationDate() != null ? Date.from( aOffer.getExpirationDate() ) : null;
+        Date startDate = aOffer.getStartDate() != null ? Date.from( aOffer.getStartDate() ) : null;
+        Date endDate = aOffer.getEndDate() != null ? Date.from( aOffer.getEndDate() ) : null;
+
+        return new OfferDetailsDto( aOffer.getId(), aOffer.getTitle(), expirationDate, institutionContactPersonDto,
+                offerTypeDto, startDate, endDate, aOffer.getOfferWeekDaysAsList(), aOffer.getOfferInterval(),
+                interestCategoryDtos, aOffer.getIsExperienceRequired(), experienceLevelDto,
+                aOffer.getDescription(), aOffer.getPlace(), aOffer.getIsPoznanOnly(),
+                benefitDtos, aOffer.getIsInsuranceNeeded() );
+    }
+
+    private BenefitDto benefitToDto( Benefit aBenefit )
+    {
+        return new BenefitDto( aBenefit.getId(), aBenefit.getName() );
+    }
+
+    private OfferTypeDto offerTypeToDto( OfferType offerType )
+    {
+        return new OfferTypeDto( offerType.getId(), offerType.getName() );
+    }
+
+    private InstitutionContactPersonDto contactPersonToDto( User contactPerson )
+    {
+        return new InstitutionContactPersonDto( contactPerson.getId(), contactPerson.getFirstName(), contactPerson.getLastName(),
+                contactPerson.getPhoneNumber(), contactPerson.getContactEmailAddress() );
+    }
 }

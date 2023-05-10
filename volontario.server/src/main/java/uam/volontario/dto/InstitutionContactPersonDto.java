@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InstitutionContactPersonDto
 {
+    private Long id;
+
     private String firstName;
 
     private String lastName;

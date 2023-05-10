@@ -21,6 +21,7 @@ import uam.volontario.validation.service.entity.OfferValidationService;
 import org.springframework.data.domain.Pageable;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Handler class for {@linkplain uam.volontario.model.offer.impl.Offer} data fetching.
@@ -198,6 +199,49 @@ public class CrudOfferDataHandler
         catch ( Exception aE )
         {
             aE.printStackTrace();
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    public ResponseEntity< ? > updateOffer(Long aId, OfferDto aOfferDto)
+    {
+        try
+        {
+            Offer offer = this.dtoService.createOfferFromDto( aOfferDto );
+            final ValidationResult offerValidationResult = this.offerValidationService
+                    .validateEntity( offer );
+            if ( offerValidationResult.isValidated() ) {
+                offer.setId( offerService.loadEntity( aId ).getId() ) ; //To check if entity being updated exists
+                offer = this.offerService.saveOrUpdate( offer );
+                return ResponseEntity.status( HttpStatus.OK )
+                        .body( offer );
+            }
+            return ResponseEntity.status( HttpStatus.BAD_REQUEST )
+                    .body( offerValidationResult.getValidationViolations() );
+        }
+        catch ( Exception aE )
+        {
+            aE.printStackTrace();
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    public ResponseEntity<?> loadOfferDetails( Long aId )
+    {
+        try
+        {
+            Optional<Offer> offer = offerService.tryLoadEntity(aId);
+            if ( offer.isPresent() )
+            {
+                return ResponseEntity.ok( dtoService.createOfferDetailsDto( offer.get() ) );
+            }
+            return ResponseEntity.status( HttpStatus.NOT_FOUND ).body( "Offer of id " + aId + "not found" );
+        }
+        catch ( Exception aE )
+        {
+            LOGGER.error( "Error on loading offer types: {}", aE.getMessage() );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }

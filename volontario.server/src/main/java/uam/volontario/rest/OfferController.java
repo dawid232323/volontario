@@ -102,4 +102,16 @@ public class OfferController
     {
         return this.crudOfferDataHandler.createNewOffer( aOfferDto );
     }
+
+    @PutMapping( value = "/{id}" )
+    public ResponseEntity< ? > updateOffer( @PathVariable( "id" ) Long aId, @RequestBody final OfferDto aOfferDto )
+    {
+        return this.crudOfferDataHandler.updateOffer( aId, aOfferDto );
+    }
+
+    @GetMapping( value = "/details/{id}" )
+            public ResponseEntity< ? > getOffer( @PathVariable( "id" ) Long aId )
+    {
+        return this.crudOfferDataHandler.loadOfferDetails( aId );
+    }
 }
