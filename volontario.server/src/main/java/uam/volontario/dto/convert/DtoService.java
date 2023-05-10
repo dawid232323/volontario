@@ -237,7 +237,7 @@ public class DtoService
                 endDate, aOffer.getPlace() );
     }
 
-    public Object createOfferDetailsDto( Offer aOffer )
+    public OfferDetailsDto createOfferDetailsDto( Offer aOffer )
     {
         InstitutionContactPersonDto institutionContactPersonDto = contactPersonToDto(aOffer.getContactPerson());
         OfferTypeDto offerTypeDto = offerTypeToDto( aOffer.getOfferType() );
