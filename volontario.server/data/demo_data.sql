@@ -1,7 +1,3 @@
-INSERT INTO public.benefits
-VALUES (1, 'owocowe czwartki'),
-       (2, 'średnia hawajska dla każdego');
-
 INSERT INTO public.institutions
 VALUES  (1, 'Januszex', 'Towarowa', true, '1111111111', 'Poznań', 'Januszex', null),
         (2, 'Wolontariaty', 'Wolontariacka', true, '2222222222', 'Poznań', 'Wolontariat', null),
@@ -9,21 +5,27 @@ VALUES  (1, 'Januszex', 'Towarowa', true, '1111111111', 'Poznań', 'Januszex', n
         (4, 'Zamknięte', 'Zamknięta', false, '444444444', 'Poznań', 'Zamknięte', null),
         (5, 'Niepoznań', 'Warszawska', true, '5555555555', 'Warszawa', 'Niepoznań', null);
 
+SELECT setval('institutions_id_seq', 6, true);
+
 INSERT INTO public.volunteer_data
 VALUES (1, 'janwolontariusz@st.amu.edu.pl', 'Lubię ludzi', 1),
        (2, 'adamwolontariusz@st.amu.edu.pl', 'Nudzi mi się', 2);
+
+SELECT setval('volunteer_data_id_seq', 3, true);
 
 --
 -- Password for all is SecurePassword123_
 --
 INSERT INTO public.users
-VALUES (1, 'januszex@januszex.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Uszex', '123456789', 1, null  ),
-       (2, 'Ola@wolontariat.pl', 'Ola', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Wolontariacka', '123456788', 2, null  ),
-       (3, 'ktoswazny@amu.edu.pl', 'Ktos', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Wazny', '123456787', 3, null ),
+VALUES (1, 'januszex@januszex.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Uszex', '123456789', 1, null),
+       (2, 'Ola@wolontariat.pl', 'Ola', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Wolontariacka', '123456788', 2, null),
+       (3, 'ktoswazny@amu.edu.pl', 'Ktos', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Wazny', '123456787', 3, null),
        (4, 'typ@niema.pl', 'Zamknal', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Instytucje', '123456786', 4, null),
        (5, 'pan@warszawka.pl', 'Pan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Warszawski', '123456785', 5, null),
        (6, 'janwolontariusz@gmail.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Kowalski', '123456784', null, 1),
        (7, 'adamwolontariusz@gmail.pl', 'Adam', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '123456783', null, 2);
+
+SELECT setval('users_id_seq', 3, true);
 
 INSERT INTO public.institution_contact_people
 VALUES (1, 'januszex@januszex.pl', 'Jan', 'Uszex', '123456789'),
@@ -31,6 +33,8 @@ VALUES (1, 'januszex@januszex.pl', 'Jan', 'Uszex', '123456789'),
        (3, 'ktoswazny@amu.edu.pl', 'Ktos', 'Wazny', '123456787'),
        (4, 'typ@niema.pl', 'Zamknal', 'Instytucje', '123456786'),
        (5, 'pan@warszawka.pl', 'Pan', 'Warszawski', '123456785');
+
+SELECT setval('institution_contact_people_id_seq', 6, true);
 
 INSERT INTO public.offers(
     id, description, duration, end_date, expiration_date, is_experience_required, is_insurance_needed, is_poznan_only, offer_interval, place, start_date, title, week_days, contact_person_id, institution_id, minimum_experience_id, offer_type_id)
@@ -42,6 +46,8 @@ VALUES (1, 'Pomoc w domu dla starców i sierocińcu', 259200000000000, '2023-05-
         true, NULL, NULL, '2023-06-17 22:00:00+00', 'Pomoc dla niepełnosprawnej pani', '1', 2, 2, NULL, 1),
        (4, 'Wolontariat w szkole specjalnej', 3600000000000, '2023-05-28 22:00:00+00', '2023-05-31 22:00:00+00', true, false,
         true, NULL, 'Poznań', NULL, 'Wolontariat w szkole specjalnej', '1', 2, 2, 2, 3);
+
+SELECT setval('offers_id_seq', 5, true);
 
 INSERT INTO public.offer_benefits
 VALUES (1, 1),

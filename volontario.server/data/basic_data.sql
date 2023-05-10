@@ -5,10 +5,14 @@ VALUES  (1, 'Pracownik Instytucji'),
         (4, 'Administrator'),
         (5, 'Moderator');
 
+SELECT setval('roles_id_seq', 6, true);
+
 INSERT INTO public.experience_level
 VALUES  (1, 'Początkujący', 'Początkujący', 10),
         (2, 'Średniozaawansowany', 'Średniozaawansowany', 20),
         (3, 'Weteran', 'Weteran', 30);
+
+SELECT setval('experience_level_id_seq', 4, true);
 
 INSERT INTO public.interest_categories
 VALUES  (1, 'Praca z osobami starszymi', 'Praca z osobami starszymi'),
@@ -20,7 +24,19 @@ VALUES  (1, 'Praca z osobami starszymi', 'Praca z osobami starszymi'),
         (7, 'Pomoc organizacyjna przy wydarzeniach', 'Pomoc organizacyjna przy wydarzeniach'),
         (8, 'Dzielenie się wiedzą i umiejętnościami', 'Dzielenie się wiedzą i umiejętnościami');
 
+SELECT setval('interest_categories_id_seq', 9, true);
+
 INSERT INTO public.offer_types
 VALUES (1, 'Jednorazowy'),
        (2, 'Cykliczny'),
        (3, 'Ciągły');
+
+SELECT setval('offer_types_id_seq', 4, true);
+
+INSERT INTO public.benefits
+VALUES (1, 'Nocleg'),
+       (2, 'Transport'),
+       (3, 'Pokrycie kosztów dojazdu'),
+       (4, 'Posiłki');
+
+SELECT setval('benefits_id_seq', 5, true);
