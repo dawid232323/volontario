@@ -19,3 +19,8 @@ VALUES  (1, 'Praca z osobami starszymi', 'Praca z osobami starszymi'),
         (6, 'Praca ze zwierzętami', 'Praca ze zwierzętami'),
         (7, 'Pomoc organizacyjna przy wydarzeniach', 'Pomoc organizacyjna przy wydarzeniach'),
         (8, 'Dzielenie się wiedzą i umiejętnościami', 'Dzielenie się wiedzą i umiejętnościami');
+
+INSERT INTO public.offer_types
+VALUES (1, 'Jednorazowy'),
+       (2, 'Cykliczny'),
+       (3, 'Ciągły');
