@@ -16,7 +16,7 @@
         <div class="lg:flex hidden">
           <mat-icon class="scale-150 pt-1" color="accent">task</mat-icon>
         </div>
-        <div class="text-4xl font-bold text-center">Dodaj nowe ogłoszenie</div>
+        <div class="text-4xl font-bold text-center">{{ formTitle }}</div>
       </span>
       <div class="w-full lg:w-3/4">
         <mat-stepper labelPosition="end" color="accent" class="pb-5">
@@ -53,10 +53,8 @@
         class="h-full w-3/4"
         *ngIf="hasAddedAdvertisement"
         (cardButtonClicked)="onSuccessSubmit()"
-        [titleMessage]="'Pomyślnie dodano nowe ogłoszenie'"
-        [cardContent]="
-          'Twoje ogłoszenie będzie widoczne dla wszystkich zarejetrowanych wolontariuszy'
-        "
+        [titleMessage]="successTitleMessage"
+        [cardContent]="successContentMessage"
         [buttonText]="'Lista ogłoszeń'"></app-success-info-card>
     </section>
   </div>

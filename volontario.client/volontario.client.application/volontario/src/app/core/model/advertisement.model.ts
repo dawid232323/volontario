@@ -1,4 +1,7 @@
 import { ObjectBuilderIf } from 'src/app/core/interface/object-builder.interface';
+import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
+import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
+import { isNil } from 'lodash';
 
 export enum AdvertisementTypeEnum {
   SingleUse = 1,
@@ -44,7 +47,7 @@ interface AdvertisementDtoIf {
 }
 
 export class AdvertisementDtoBuilder
-  implements AdvertisementDtoIf, ObjectBuilderIf<AdvertisementDto>
+  implements AdvertisementDtoIf, ObjectBuilderIf<AdvertisementUpdateCreateDto>
 {
   contactPersonId?: number;
   durationUnit?: string;
@@ -69,8 +72,8 @@ export class AdvertisementDtoBuilder
     return new AdvertisementDtoBuilder();
   }
 
-  public build(): AdvertisementDto {
-    return new AdvertisementDto(
+  public build(): AdvertisementUpdateCreateDto {
+    return new AdvertisementUpdateCreateDto(
       this.offerTitle,
       this.offerExpirationDate,
       this.contactPersonId,
@@ -186,7 +189,7 @@ export class AdvertisementDtoBuilder
 /**
  * Object that represents dto to create and update advertisement
  */
-export class AdvertisementDto implements AdvertisementDtoIf {
+export class AdvertisementUpdateCreateDto implements AdvertisementDtoIf {
   constructor(
     public offerTitle?: string,
     public offerExpirationDate?: Date,
@@ -232,5 +235,128 @@ export class AdvertisementPreview {
       payload?.offerExpirationDate,
       payload?.offerTypeName
     );
+  }
+}
+
+export class AdvertisementDto {
+  constructor(
+    public id: number,
+    public offerTitle: string,
+    public offerExpirationDate: Date,
+    public contactPerson: any,
+    public offerType: AdvertisementType,
+    public startDate: Date,
+    public endDate: Date,
+    public offerWeekDays: number[],
+    public offerInterval: string,
+    public interestCategories: InterestCategoryDTO[],
+    public isExperienceRequired: boolean,
+    public experienceLevel: VolunteerExperience,
+    public offerDescription: string,
+    public offerPlace: string,
+    public isPoznanOnly: boolean,
+    public offerBenefitIds: AdvertisementBenefit[],
+    public isInsuranceNeeded: boolean
+  ) {}
+
+  public static fromPayload(payload?: any): AdvertisementDto {
+    return new AdvertisementDto(
+      payload?.id,
+      payload?.offerTitle,
+      payload?.offerExpirationDate,
+      payload?.contactPerson,
+      payload?.offerType,
+      payload?.startDate,
+      payload?.endDate,
+      payload?.offerWeekDays,
+      payload?.offerInterval,
+      payload?.interestCategories,
+      payload?.isExperienceRequired,
+      payload?.experienceLevel,
+      payload?.offerDescription,
+      payload?.offerPlace,
+      payload?.isPoznanOnly,
+      payload?.offerBenefitIds,
+      payload?.isInsuranceNeeded
+    );
+  }
+}
+
+export class AdvertisementBasicInfo {
+  constructor(
+    public title: string,
+    public contactPerson: number,
+    public expirationDate: Date,
+    public advertisementType: number,
+    public startDate: Date,
+    public endDate: Date,
+    public daysOfWeek: number[],
+    public interval: string | null,
+    public durationUnit: string,
+    public durationValue: number
+  ) {}
+
+  public static fromAdvertisementDto(
+    advertisement: AdvertisementDto
+  ): AdvertisementBasicInfo {
+    return new AdvertisementBasicInfo(
+      advertisement?.offerTitle,
+      advertisement?.contactPerson?.id,
+      advertisement?.offerExpirationDate,
+      advertisement?.offerType?.id,
+      advertisement?.startDate,
+      advertisement?.endDate,
+      advertisement?.offerWeekDays,
+      advertisement?.offerInterval,
+      '',
+      1
+    );
+  }
+}
+
+export class AdvertisementAdditionalInfo {
+  constructor(
+    public advertisementCategories: number[],
+    public isExperienceRequired: boolean,
+    public experienceLevel: number,
+    public description: string
+  ) {}
+
+  public static fromAdvertisementDto(
+    advertisement: AdvertisementDto
+  ): AdvertisementAdditionalInfo {
+    return new AdvertisementAdditionalInfo(
+      advertisement.interestCategories.map(category => category.id),
+      advertisement?.isExperienceRequired,
+      advertisement?.experienceLevel?.id,
+      advertisement?.offerDescription
+    );
+  }
+}
+
+export class AdvertisementOptionalInfo {
+  constructor(
+    public isPoznanOnly: boolean,
+    public eventPlace: string,
+    public benefits: number[],
+    public isInsuranceNeeded: boolean
+  ) {}
+
+  public static fromAdvertisementDto(
+    advertisement: AdvertisementDto
+  ): AdvertisementOptionalInfo {
+    return new AdvertisementOptionalInfo(
+      advertisement?.isPoznanOnly,
+      advertisement?.offerPlace,
+      this.getBenefitIds(advertisement?.offerBenefitIds),
+      advertisement?.isInsuranceNeeded
+    );
+  }
+
+  private static getBenefitIds(benefits?: AdvertisementBenefit[]): number[] {
+    if (isNil(benefits)) {
+      return [];
+    }
+    return benefits.map(benefit => benefit.id);
   }
 }

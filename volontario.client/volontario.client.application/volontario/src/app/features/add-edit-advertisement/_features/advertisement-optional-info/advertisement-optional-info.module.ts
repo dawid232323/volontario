@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdvertisementOptionalInfoComponent } from 'src/app/features/add-advertisement/_features/advertisement-optional-info/advertisement-optional-info.component';
+import { AdvertisementOptionalInfoComponent } from 'src/app/features/add-edit-advertisement/_features/advertisement-optional-info/advertisement-optional-info.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';

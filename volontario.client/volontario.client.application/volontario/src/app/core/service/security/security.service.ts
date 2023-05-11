@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from './token.service';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { VolunteerRegisterDTO } from '../../model/volunteer.model';
 import {
   LoginInterface,
@@ -18,6 +18,8 @@ export class SecurityService {
   private readonly endpointBaseUrl: string;
 
   private isLoggedIn = false;
+
+  public loginEvent = new Subject<void>();
 
   constructor(
     private httpClient: HttpClient,
@@ -47,6 +49,7 @@ export class SecurityService {
         const loginResult = <TokenPairInterface>result;
         this.tokenService.saveToken(loginResult.token);
         this.tokenService.saveRefreshToken(loginResult.refresh_token);
+        this.loginEvent.next();
         this.isLoggedIn = true;
       })
     );

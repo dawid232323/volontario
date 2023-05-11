@@ -12,7 +12,10 @@ import {
 } from 'src/app/core/guard/institution-registration.guard';
 import { RegisterContactPersonComponent } from 'src/app/features/register-contact-person/register-contact-person.component';
 import { MainPageComponent } from './features/main-page/main-page.component';
-import { AddAdvertisementComponent } from 'src/app/features/add-advertisement/add-advertisement.component';
+import {
+  AddEditAdvertisementComponent,
+  AdvertisementCrudOperationType,
+} from 'src/app/features/add-edit-advertisement/add-edit-advertisement.component';
 import { RoleDependentGuard } from 'src/app/core/guard/role-dependent.guard';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { InstitutionAdvertisementPanelComponent } from 'src/app/features/institution-advertisement-panel/institution-advertisement-panel.component';
@@ -57,13 +60,26 @@ const routes: Routes = [
     children: [
       {
         path: 'add',
-        component: AddAdvertisementComponent,
+        component: AddEditAdvertisementComponent,
         canActivate: [RouterGuard, RoleDependentGuard],
         data: {
           roles: [
             UserRoleEnum.InstitutionWorker,
             UserRoleEnum.InstitutionAdmin,
           ],
+          operationType: AdvertisementCrudOperationType.Add,
+        },
+      },
+      {
+        path: 'edit/:adv_id',
+        component: AddEditAdvertisementComponent,
+        canActivate: [RouterGuard, RoleDependentGuard],
+        data: {
+          roles: [
+            UserRoleEnum.InstitutionWorker,
+            UserRoleEnum.InstitutionAdmin,
+          ],
+          operationType: AdvertisementCrudOperationType.Edit,
         },
       },
     ],

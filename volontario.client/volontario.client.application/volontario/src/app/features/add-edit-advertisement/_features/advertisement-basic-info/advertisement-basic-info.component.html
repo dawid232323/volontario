@@ -53,9 +53,7 @@
         color="accent">
         <mat-label>Typ ogłoszenia</mat-label>
         <mat-icon matPrefix color="accent">format_list_bulleted</mat-icon>
-        <mat-select
-          formControlName="advertisementType"
-          (selectionChange)="onAdvertisementTypeChange($event)">
+        <mat-select formControlName="advertisementType">
           <mat-option
             *ngFor="let type of advertisementTypes"
             [value]="type.id"

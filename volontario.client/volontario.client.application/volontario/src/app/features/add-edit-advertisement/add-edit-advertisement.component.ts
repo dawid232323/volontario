@@ -5,25 +5,37 @@ import { UserService } from 'src/app/core/service/user.service';
 import { forkJoin } from 'rxjs';
 import { AdvertisementService } from 'src/app/core/service/advertisement.service';
 import {
+  AdvertisementAdditionalInfo,
+  AdvertisementBasicInfo,
   AdvertisementBenefit,
+  AdvertisementOptionalInfo,
   AdvertisementType,
 } from 'src/app/core/model/advertisement.model';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
-import { Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  Router,
+} from '@angular/router';
 import {
   dateBeforeAfterValidator,
   DateValidatorUsageEnum,
 } from 'src/app/utils/validator.utils';
 
+export enum AdvertisementCrudOperationType {
+  Add,
+  Edit,
+}
+
 @Component({
   selector: 'app-add-advertisement',
-  templateUrl: './add-advertisement.component.html',
-  styleUrls: ['./add-advertisement.component.scss'],
+  templateUrl: './add-edit-advertisement.component.html',
+  styleUrls: ['./add-edit-advertisement.component.scss'],
 })
-export class AddAdvertisementComponent implements OnInit {
+export class AddEditAdvertisementComponent implements OnInit {
   public basicInfoFormGroup: FormGroup = new FormGroup<any>({});
   public additionalInfoFormGroup: FormGroup = new FormGroup<any>({});
   public optionalInfoFormGroup: FormGroup = new FormGroup<any>({});
@@ -33,9 +45,13 @@ export class AddAdvertisementComponent implements OnInit {
   public interestCategories: InterestCategoryDTO[] = [];
   public experienceLevel: VolunteerExperience[] = [];
   public advertisementBenefits: AdvertisementBenefit[] = [];
+  private operationType: AdvertisementCrudOperationType =
+    AdvertisementCrudOperationType.Add;
 
   public isAddingAdvertisement = false;
   public hasAddedAdvertisement = false;
+
+  private editedAdvertisementId = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,10 +59,12 @@ export class AddAdvertisementComponent implements OnInit {
     private advertisementService: AdvertisementService,
     private interestCategoryService: InterestCategoryService,
     private experienceService: VolunteerExperienceService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.operationType = this.route.snapshot.data['operationType'];
     this.initializeBasicInfoFormGroup();
     this.initializeAdditionalInfoFormGroup();
     this.initializeOptionalInfoFormGroup();
@@ -119,23 +137,59 @@ export class AddAdvertisementComponent implements OnInit {
         ...this.optionalInfoFormGroup.value,
       });
     this.isAddingAdvertisement = true;
-    this.advertisementService
-      .createNewAdvertisement(advertisementDto)
-      .subscribe({
-        next: () => {
-          this.isAddingAdvertisement = false;
-          this.hasAddedAdvertisement = true;
-        },
-        error: error => {
-          this.isAddingAdvertisement = false;
-          console.log(error);
-          alert(JSON.stringify(error.error));
-        },
-      });
+    let advertisementCrudCallback;
+    if (this.operationType === AdvertisementCrudOperationType.Add) {
+      advertisementCrudCallback =
+        this.advertisementService.createNewAdvertisement(advertisementDto);
+    } else {
+      advertisementCrudCallback = this.advertisementService.updateAdvertisement(
+        this.editedAdvertisementId,
+        advertisementDto
+      );
+    }
+
+    advertisementCrudCallback.subscribe({
+      next: () => {
+        this.isAddingAdvertisement = false;
+        this.hasAddedAdvertisement = true;
+      },
+      error: error => {
+        this.isAddingAdvertisement = false;
+        console.log(error);
+        alert(JSON.stringify(error.error));
+      },
+    });
   }
 
   public onSuccessSubmit() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/institution', 'advertisement-panel']);
+  }
+
+  private setAdvertisementToEdit() {
+    this.editedAdvertisementId = +this.route.snapshot.params['adv_id'];
+    this.advertisementService
+      .getAdvertisement(this.editedAdvertisementId)
+      .subscribe(result => {
+        this.basicInfoFormGroup.setValue(
+          AdvertisementBasicInfo.fromAdvertisementDto(result)
+        );
+        this.additionalInfoFormGroup.setValue(
+          AdvertisementAdditionalInfo.fromAdvertisementDto(result)
+        );
+        this.optionalInfoFormGroup.setValue(
+          AdvertisementOptionalInfo.fromAdvertisementDto(result)
+        );
+        this.basicInfoFormGroup.updateValueAndValidity();
+        this.additionalInfoFormGroup.updateValueAndValidity();
+        this.optionalInfoFormGroup.updateValueAndValidity();
+        this.basicInfoFormGroup.controls[
+          'advertisementType'
+        ].updateValueAndValidity({ onlySelf: true, emitEvent: true });
+        this.optionalInfoFormGroup.controls[
+          'isPoznanOnly'
+        ].updateValueAndValidity({ onlySelf: true, emitEvent: true });
+        this.isAddingAdvertisement = false;
+      });
   }
 
   private downloadData() {
@@ -158,10 +212,36 @@ export class AddAdvertisementComponent implements OnInit {
         this.interestCategories = categories;
         this.experienceLevel = experiences;
         this.advertisementBenefits = benefits;
-        // default contact person should be currently logged-in user
-        this.basicInfoFormGroup?.controls['contactPerson']?.setValue(user.id);
+        if (this.operationType === AdvertisementCrudOperationType.Add) {
+          // default contact person should be currently logged-in user
+          this.basicInfoFormGroup?.controls['contactPerson']?.setValue(user.id);
+          this.isAddingAdvertisement = false;
+        } else {
+          this.setAdvertisementToEdit();
+        }
       },
       error => console.log(error)
     );
+  }
+
+  public get successTitleMessage(): string {
+    if (this.operationType === AdvertisementCrudOperationType.Add) {
+      return 'Pomyślnie dodano nowe ogłoszenie';
+    }
+    return 'Pomyślnie zaktualizowano ogłoszenie';
+  }
+
+  public get successContentMessage(): string {
+    if (this.operationType === AdvertisementCrudOperationType.Add) {
+      return 'Twoje ogłoszenie będzie widoczne dla wszystkich zarejetrowanych wolontariuszy';
+    }
+    return 'Zaktualizowane dane są widoczne dla użytkowników systemu';
+  }
+
+  public get formTitle(): string {
+    if (this.operationType === AdvertisementCrudOperationType.Add) {
+      return 'Dodaj nowe ogłoszenie';
+    }
+    return 'Edytuj ogłoszenie';
   }
 }

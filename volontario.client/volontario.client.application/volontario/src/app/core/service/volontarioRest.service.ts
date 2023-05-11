@@ -57,7 +57,7 @@ export class VolontarioRestService {
     body: any,
     options?: HttpOptionsInterface
   ): Observable<any> {
-    return this.httpClient.post(
+    return this.httpClient.put(
       this.getEnvironmentUrl() + endpoint,
       body,
       options

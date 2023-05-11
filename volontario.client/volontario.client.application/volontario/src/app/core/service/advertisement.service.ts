@@ -2,17 +2,18 @@ import { Injectable } from '@angular/core';
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
 import {
   AdvertisementBenefit,
-  AdvertisementDto,
+  AdvertisementUpdateCreateDto,
   AdvertisementDtoBuilder,
   AdvertisementPreview,
   AdvertisementType,
+  AdvertisementDto,
 } from 'src/app/core/model/advertisement.model';
 import { EndpointUrls } from 'src/app/utils/url.util';
 import { map, Observable, of } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 import { PageableModelInterface } from 'src/app/core/model/pageable.model';
-import { isNil } from 'lodash';
+import { isNil, result } from 'lodash';
 
 /**
  * Object that stores information about user filter preferences on the advertisement panel list.
@@ -45,8 +46,20 @@ export class AdvertisementService {
       .pipe(map(result => result.map(AdvertisementBenefit.fromPayload)));
   }
 
-  public createNewAdvertisement(body: AdvertisementDto): Observable<any> {
+  public createNewAdvertisement(
+    body: AdvertisementUpdateCreateDto
+  ): Observable<any> {
     return this.restService.post(EndpointUrls.advertisementResource, body);
+  }
+
+  public updateAdvertisement(
+    advertisementId: number,
+    body: AdvertisementUpdateCreateDto
+  ): Observable<any> {
+    return this.restService.put(
+      `${EndpointUrls.advertisementResource}/${advertisementId}`,
+      body
+    );
   }
 
   public getAdvertisementPreviews(
@@ -71,6 +84,14 @@ export class AdvertisementService {
       );
   }
 
+  public getAdvertisement(
+    advertisementId: number
+  ): Observable<AdvertisementDto> {
+    return this.restService
+      .get(`${EndpointUrls.advertisementDetails}/${advertisementId}`)
+      .pipe(map(result => AdvertisementDto.fromPayload(result)));
+  }
+
   /**
    * Creates advertisement dto from combined form values
    *
@@ -78,7 +99,9 @@ export class AdvertisementService {
    *
    * @return returns valid dto that can be processed later on
    */
-  public getAdvertisementDtoFromValue(value: any): AdvertisementDto {
+  public getAdvertisementDtoFromValue(
+    value: any
+  ): AdvertisementUpdateCreateDto {
     return AdvertisementDtoBuilder.builder()
       .setContactPersonId(value.contactPerson)
       .setDurationUnit(value.durationUnit)

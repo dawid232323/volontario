@@ -15,7 +15,7 @@ import { RegisterInstitutionModule } from 'src/app/features/register-institution
 import { InstitutionVerifyModule } from 'src/app/features/institution-verify/institution-verify.module';
 import { MainPageModule } from './features/main-page/main-page.module';
 import { RegisterContactPersonModule } from 'src/app/features/register-contact-person/register-contact-person.module';
-import { AddAdvertisementModule } from './features/add-advertisement/add-advertisement.module';
+import { AddEditAdvertisementModule } from 'src/app/features/add-edit-advertisement/add-edit-advertisement.module';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { InstitutionAdvertisementPanelModule } from './features/institution-advertisement-panel/institution-advertisement-panel.module';
 import { FooterModule } from './shared/features/footer/footer.module';
@@ -36,7 +36,7 @@ import { NavModule } from './shared/features/nav/nav.module';
     InstitutionVerifyModule,
     MainPageModule,
     RegisterContactPersonModule,
-    AddAdvertisementModule,
+    AddEditAdvertisementModule,
     MatNativeDateModule,
     InstitutionAdvertisementPanelModule,
     FooterModule,
