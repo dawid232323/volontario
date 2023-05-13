@@ -4,13 +4,14 @@ import com.google.common.collect.Lists;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.repository.OfferRepository;
 import uam.volontario.crud.service.OfferService;
 import uam.volontario.crud.specification.OfferSpecification;
+import uam.volontario.model.common.impl.User;
 import uam.volontario.model.offer.impl.Offer;
 
-import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,5 +69,17 @@ public class OfferServiceImpl implements OfferService
     public void deleteEntity( final Long aOfferId )
     {
         offerRepository.deleteById( aOfferId );
+    }
+
+    @Override
+    public List< Offer > findAllOffersAssignedToModerator( final User aModerator )
+    {
+        return offerRepository.findAllByAssignedModerator( aModerator );
+    }
+
+    @Override
+    public List< Offer > findAllUnassignedOffers()
+    {
+        return offerRepository.findAllByAssignedModeratorIsNull();
     }
 }

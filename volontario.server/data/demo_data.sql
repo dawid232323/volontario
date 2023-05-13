@@ -32,7 +32,8 @@ VALUES (1, 'januszex@januszex.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3N
        (4, 'typ@niema.pl', 'Zamknal', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Instytucje', '123456786', 4, null),
        (5, 'pan@warszawka.pl', 'Pan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Warszawski', '123456785', 5, null),
        (6, 'janwolontariusz@gmail.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Kowalski', '123456784', null, 1),
-       (7, 'adamwolontariusz@gmail.pl', 'Adam', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '123456783', null, 2);
+       (7, 'adamwolontariusz@gmail.pl', 'Adam', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '123456783', null, 2),
+       (8, 'MODERATOR@gmail.pl', 'Moderator', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '333456783', null, null);
 
 SELECT setval('users_id_seq', 7, true);
 
@@ -69,7 +70,8 @@ VALUES (1, 2),
        (4, 2),
        (5, 2),
        (6, 3),
-       (7, 3);
+       (7, 3),
+       (8, 5);
 
 INSERT INTO public.volunteer_interests
 VALUES (1, 1),

@@ -56,6 +56,12 @@ public class Offer implements OfferIf
 
     @JsonManagedReference
     @ManyToOne
+    @JoinColumn( name = "assigned_moderator_id" )
+    @Nullable
+    private User assignedModerator;
+
+    @JsonManagedReference
+    @ManyToOne
     @JoinColumn( name = "institution_id" )
     private Institution institution;
 
@@ -121,7 +127,12 @@ public class Offer implements OfferIf
 
     public Instant getStartDate()
     {
-        return startDate.truncatedTo( ChronoUnit.SECONDS );
+        if( startDate != null )
+        {
+            return startDate.truncatedTo( ChronoUnit.SECONDS );
+        }
+
+        return null;
     }
 
     public Instant getEndDate()
@@ -134,7 +145,12 @@ public class Offer implements OfferIf
 
     public Instant getExpirationDate()
     {
-        return expirationDate.truncatedTo( ChronoUnit.SECONDS );
+        if( expirationDate != null )
+        {
+            return expirationDate.truncatedTo( ChronoUnit.SECONDS );
+        }
+
+        return null;
     }
 
     @Override

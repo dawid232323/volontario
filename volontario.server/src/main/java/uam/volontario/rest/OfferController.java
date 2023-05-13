@@ -7,6 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.OfferDto;
 import uam.volontario.handler.CrudOfferDataHandler;
+import uam.volontario.handler.OfferAssignmentHandler;
+import uam.volontario.model.common.UserRole;
+import uam.volontario.model.common.impl.User;
+
+import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import java.util.Date;
@@ -23,15 +28,21 @@ public class OfferController
 {
     private final CrudOfferDataHandler crudOfferDataHandler;
 
+    private final OfferAssignmentHandler offerAssignmentHandler;
+
     /**
      * CDI constructor.
      *
      * @param aOfferDataHandler fetch offer data handler.
+     *
+     * @param aOfferAssignmentHandler offer assignment handler.
      */
     @Autowired
-    public OfferController( final CrudOfferDataHandler aOfferDataHandler )
+    public OfferController( final CrudOfferDataHandler aOfferDataHandler,
+                            final OfferAssignmentHandler aOfferAssignmentHandler )
     {
         crudOfferDataHandler = aOfferDataHandler;
+        offerAssignmentHandler = aOfferAssignmentHandler;
     }
 
     /**
@@ -97,10 +108,69 @@ public class OfferController
         return crudOfferDataHandler.loadAllOfferTypes();
     }
 
+    /**
+     * Creates new Offer.
+     *
+     * @param aOfferDto Offer DTO.
+     *
+     * @return Response with status 201 with body of newly created offer object or
+     *         status of 400 if request had wrong data and 500 in case of any other errors.
+     */
     @PostMapping
     public ResponseEntity< ? > createNewOffer( @RequestBody final OfferDto aOfferDto )
     {
-        return this.crudOfferDataHandler.createNewOffer( aOfferDto );
+        return crudOfferDataHandler.createNewOffer( aOfferDto );
+    }
+
+    /**
+     * Assigns Offer to {@linkplain User} of role {@linkplain UserRole#MOD}.
+     *
+     * @param aIdsMap map which should contain keys "offerId" and "moderatorId" mapped to their respective ids.
+     *
+     * @return Response Entity with assigned Offer and status 200,
+     *         Response Entity with status 400 if:
+     *
+     *              - there is no User with given id.
+     *              - User with given id is not Moderator.
+     *              - Offer with given id was not found.
+     *
+     *        or Response Entity with status 500 if an unexpected error occurred.
+     */
+    @PostMapping( value = "/assign" )
+    public ResponseEntity< ? > assignOffer( @RequestBody final Map< String, Long > aIdsMap )
+    {
+        return offerAssignmentHandler.assignOffer( aIdsMap.get( "offerId" ), aIdsMap.get( "moderatorId" ) );
+    }
+
+    /**
+     * Loads all Offers assigned to Moderator with given id.
+     *
+     * @param aModeratorId id of Moderator.
+     *
+     * @return Response Entity with Offers assigned to Moderator and status 200,
+     *         Response Entity with status 400 if:
+     *
+     *              - there is no User with given id.
+     *              - User with given id is not Moderator.
+     *
+     *        or Response Entity with status 500 if an unexpected error occurred.
+     */
+    @GetMapping( "/assigned" )
+    public ResponseEntity< ? > loadOffersAssignedToModerator( @RequestParam( value = "mod" ) final Long aModeratorId )
+    {
+        return offerAssignmentHandler.loadOffersAssignedToModerator( aModeratorId );
+    }
+
+    /**
+     * Loads all unassigned Offers.
+     *
+     * @return Response Entity with all unassigned Offers and status 200,
+     *        or Response Entity with status 500 if an unexpected error occurred.
+     */
+    @GetMapping( "/unassigned" )
+    public ResponseEntity< ? > loadUnassignedOffers()
+    {
+        return offerAssignmentHandler.loadAllUnassignedOffers();
     }
 
     @PutMapping( value = "/{id}" )

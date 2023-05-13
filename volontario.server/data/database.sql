@@ -275,6 +275,7 @@ CREATE TABLE public.offers (
                                title character varying(100),
                                week_days character varying(14),
                                contact_person_id bigint,
+                               assigned_moderator_id bigint,
                                institution_id bigint,
                                minimum_experience_id bigint,
                                offer_type_id bigint
