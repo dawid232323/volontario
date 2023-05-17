@@ -45,7 +45,7 @@ export class AddEditAdvertisementComponent implements OnInit {
   public interestCategories: InterestCategoryDTO[] = [];
   public experienceLevel: VolunteerExperience[] = [];
   public advertisementBenefits: AdvertisementBenefit[] = [];
-  private operationType: AdvertisementCrudOperationType =
+  public operationType: AdvertisementCrudOperationType =
     AdvertisementCrudOperationType.Add;
 
   public isAddingAdvertisement = false;

@@ -37,6 +37,7 @@
           </mat-step>
           <mat-step label="Informacje opcjonalne">
             <app-advertisement-optional-info
+              [operationType]="operationType"
               [optionalInfoFormGroup]="optionalInfoFormGroup!"
               [benefits]="advertisementBenefits"
               [canSubmitForm]="canSubmitForm"

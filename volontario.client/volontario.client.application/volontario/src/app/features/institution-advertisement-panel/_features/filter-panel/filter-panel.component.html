@@ -1,11 +1,9 @@
-<div class="pt-10 flex flex-col">
-  <section
-    id="desktopFilterSection"
-    class="hidden lg:flex flex-col w-full border-b-4">
+<div class="lg:pt-10 flex flex-col">
+  <section id="desktopFilterSection" class="flex flex-col w-full border-b-4">
     <section
       id="inputFields"
-      class="flex flex-row w-full justify-between items-stretch space-x-6">
-      <mat-form-field appearance="standard" class="flex w-full">
+      class="flex flex-col lg:flex-row w-full justify-center lg:justify-between items-stretch lg:space-x-6">
+      <mat-form-field appearance="outline" color="accent" class="flex w-full">
         <mat-icon matPrefix color="accent">search</mat-icon>
         <mat-icon
           *ngIf="
@@ -24,89 +22,76 @@
           [(ngModel)]="typedTitleSearch"
           (keyup.enter)="onSearchClicked()" />
       </mat-form-field>
-      <mat-form-field appearance="standard" class="flex w-full">
+      <mat-form-field appearance="outline" color="accent" class="flex w-full">
         <mat-label>Data rozpoczęcia wydarzenia</mat-label>
         <input
           matInput
           [matDatepicker]="startDatePicker"
-          (dateChange)="onStartDateSearchChange($event)" />
+          (click)="startDatePicker.open()"
+          [(ngModel)]="selectedStartDate" />
         <mat-datepicker-toggle
           matPrefix
           [for]="startDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #startDatePicker color="accent"></mat-datepicker>
       </mat-form-field>
-      <mat-form-field appearance="standard" class="flex w-full">
+      <mat-form-field appearance="outline" color="accent" class="flex w-full">
         <mat-label>Data zakończenia wydarzenia</mat-label>
         <input
           matInput
           [matDatepicker]="endDatePicker"
-          (dateChange)="onEndDateSearchChange($event)" />
+          (click)="endDatePicker.open()"
+          [(ngModel)]="selectedEndDate" />
         <mat-datepicker-toggle
           matPrefix
           [for]="endDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #endDatePicker color="accent"></mat-datepicker>
       </mat-form-field>
     </section>
-    <section class="flex flex-row w-full h-full pb-5 pt-7" id="buttons">
-      <div
-        id="menuButtons"
-        class="flex flex-row items-end justify-start w-full space-x-6">
-        <button
-          mat-raised-button
-          class="flex flex-row"
-          color="accent"
-          [matMenuTriggerFor]="categoryMenu">
-          <mat-icon matPrefix>menu</mat-icon>
-          Kategorie <b>{{ selectedCategoriesSize }}</b>
-        </button>
-        <mat-menu #categoryMenu="matMenu">
-          <button
-            *ngFor="let category of interestCategories"
-            [matTooltip]="category.name"
-            mat-menu-item
-            (click)="onCategorySelect($event, category.id)">
-            <mat-icon *ngIf="!isCategorySelected(category.id)"
-              >check_box_outline_blank</mat-icon
+    <section
+      id="searchBottomSection"
+      class="flex flex-col lg:flex-row w-full h-full lg:pb-5 lg:pt-7 items-center">
+      <section
+        class="flex flex-col lg:flex-row w-full lg:w-1/2 h-full lg:space-x-6"
+        id="multipleSelects">
+        <mat-form-field appearance="outline" class="flex w-full" color="accent">
+          <mat-label>Kategorie zainteresowań</mat-label>
+          <mat-select multiple [(ngModel)]="selectedCategories">
+            <mat-option
+              *ngFor="let category of interestCategories"
+              [value]="category.id"
+              >{{ category.name }}</mat-option
             >
-            <mat-icon *ngIf="isCategorySelected(category.id)"
-              >check_box</mat-icon
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex w-full" color="accent">
+          <mat-label>Typy ogłoszeń</mat-label>
+          <mat-select multiple [(ngModel)]="selectedTypes">
+            <mat-option
+              *ngFor="let type of advertisementType"
+              [value]="type.id"
+              >{{ type.name }}</mat-option
             >
-            {{ category.name }}
-          </button>
-        </mat-menu>
-        <button
-          mat-raised-button
-          class="flex flex-row"
-          color="accent"
-          [matMenuTriggerFor]="typeMenu">
-          <mat-icon matPrefix>menu</mat-icon>
-          Typy ogłoszeń <b>{{ selectedTypesSize }}</b>
-        </button>
-        <mat-menu #typeMenu="matMenu">
-          <button
-            *ngFor="let type of advertisementType"
-            [matTooltip]="type.name"
-            mat-menu-item
-            (click)="onTypeSelect($event, type.id)">
-            <mat-icon *ngIf="!isTypeSelected(type.id)"
-              >check_box_outline_blank</mat-icon
-            >
-            <mat-icon *ngIf="isTypeSelected(type.id)">check_box</mat-icon>
-            {{ type.name }}
-          </button>
-        </mat-menu>
-      </div>
-      <div
+          </mat-select>
+        </mat-form-field>
+      </section>
+      <section
         id="controlButtons"
-        class="flex flex-row items-end justify-end w-full h-full">
+        class="flex flex-col lg:flex-row justify-center items-stretch lg:justify-end w-full lg:w-1/2 h-full lg:space-x-6 space-y-4 lg:space-y-0">
+        <button
+          *ngIf="filterHasValue"
+          (click)="clearPanel()"
+          mat-raised-button
+          class="lg:w-1/5 w-full h-full hover:bg-btnAccentHover">
+          <mat-icon matPrefix>delete</mat-icon>Usuń filtry
+        </button>
         <button
           (click)="onSearchClicked()"
           mat-raised-button
-          color="primary"
-          class="flex-col w-1/2 h-full hover:bg-btnAccentHoverPrimary">
+          color="accent"
+          class="lg:w-1/5 w-full h-full hover:bg-btnAccentHover">
           <mat-icon matPrefix>search</mat-icon>Szukaj
         </button>
-      </div>
+      </section>
     </section>
   </section>
   <section id="mobileFilterSection" class="flex lg:hidden"></section>

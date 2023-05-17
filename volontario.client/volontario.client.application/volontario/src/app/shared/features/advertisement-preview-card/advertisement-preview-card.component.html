@@ -1,11 +1,19 @@
-<mat-card class="flex border-4">
-  <mat-card-header>
-    <mat-icon mat-card-avatar color="accent">receipt_long</mat-icon>
-    <mat-card-title class="text-xl">{{
-      advertisement?.offerTitle
-    }}</mat-card-title>
-    <mat-card-subtitle>Aktualna liczba aplikacji: 0</mat-card-subtitle>
-  </mat-card-header>
+<mat-card class="flex border-2 border-gray-300 shadow">
+  <div class="flex flex-row w-full h-full">
+    <mat-card-header class="basis-1/2">
+      <mat-icon mat-card-avatar color="accent">receipt_long</mat-icon>
+      <mat-card-title class="text-xl">{{
+        advertisement?.offerTitle
+      }}</mat-card-title>
+      <mat-card-subtitle>Aktualna liczba aplikacji: 0</mat-card-subtitle>
+    </mat-card-header>
+    <div class="flex flex-row basis-1/2 items-start justify-end">
+      <button mat-button [matMenuTriggerFor]="quickMenu">
+        <i
+          class="fa-solid fa-ellipsis-vertical text-gray-400 hover:text-black scale-150"></i>
+      </button>
+    </div>
+  </div>
   <mat-card-content>
     <span class="flex flex-col">
       <span>
@@ -15,7 +23,7 @@
           {{ getFormattedDate(advertisement?.endDate) }}
         </p>
       </span>
-      <span class="flex flex-row w-full justify-between pt-6">
+      <span class="flex lg:flex-row flex-col w-full justify-between pt-6">
         <span class="flex flex-row space-x-3">
           <mat-icon>location_on</mat-icon>
           <p>{{ advertisement?.offerPlace }}</p>
@@ -33,17 +41,15 @@
         </span>
       </span>
     </span>
-    <mat-divider></mat-divider>
   </mat-card-content>
-  <mat-card-actions align="end">
-    <button mat-button>
-      <mat-icon color="primary">arrow_forward</mat-icon>
+  <mat-menu #quickMenu>
+    <button mat-menu-item (click)="goToEditAdvertisement()">
+      <mat-icon matPrefix color="accent">edit</mat-icon>
+      Edytuj
     </button>
-    <button mat-button>
-      <mat-icon color="accent" (click)="goToEditAdvertisement()">edit</mat-icon>
+    <button mat-menu-item>
+      <mat-icon matPrefix color="warn">delete</mat-icon>
+      Usuń
     </button>
-    <button mat-button>
-      <mat-icon color="warn">delete</mat-icon>
-    </button>
-  </mat-card-actions>
+  </mat-menu>
 </mat-card>

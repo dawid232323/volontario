@@ -1,0 +1,11 @@
+.mat-card-header-avatar-right {
+  justify-content: space-between;
+  &::ng-deep {
+    .mat-card-header-text {
+      margin-left: 0 !important;
+    }
+  }
+  .mat-card-avatar {
+    order: 1;
+  }
+}

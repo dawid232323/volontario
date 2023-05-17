@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [FilterPanelComponent],
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
     MatMenuModule,
     MatTooltipModule,
     FormsModule,
+    MatSelectModule,
   ],
   exports: [FilterPanelComponent],
 })

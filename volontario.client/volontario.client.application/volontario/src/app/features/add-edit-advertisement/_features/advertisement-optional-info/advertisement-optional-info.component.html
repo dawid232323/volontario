@@ -61,7 +61,11 @@
         class="w-1/2 h-full"
         color="accent"
         [disabled]="!canSubmitForm">
-        Zapisz
+        {{
+          operationType === AdvertisementCrudOperationType.Add
+            ? 'Dodaj ogłoszenie'
+            : 'Edytuj ogłoszenie'
+        }}
       </button>
     </div>
   </form>

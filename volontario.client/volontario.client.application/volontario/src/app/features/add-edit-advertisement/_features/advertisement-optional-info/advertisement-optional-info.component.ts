@@ -10,6 +10,7 @@ import { AdvertisementBenefit } from 'src/app/core/model/advertisement.model';
 import { FormGroup, Validators } from '@angular/forms';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Subscription } from 'rxjs';
+import { AdvertisementCrudOperationType } from 'src/app/features/add-edit-advertisement/add-edit-advertisement.component';
 
 @Component({
   selector: 'app-advertisement-optional-info',
@@ -20,6 +21,7 @@ export class AdvertisementOptionalInfoComponent implements OnInit, OnDestroy {
   @Input() benefits: AdvertisementBenefit[] = [];
   @Input() optionalInfoFormGroup = new FormGroup<any>({});
   @Input() canSubmitForm: boolean = false;
+  @Input() operationType = AdvertisementCrudOperationType.Add;
   @Output() formSubmitEvent = new EventEmitter<any>();
 
   private subscriptions = new Subscription();
@@ -55,4 +57,7 @@ export class AdvertisementOptionalInfoComponent implements OnInit, OnDestroy {
       ]);
     }
   }
+
+  protected readonly AdvertisementCrudOperationType =
+    AdvertisementCrudOperationType;
 }

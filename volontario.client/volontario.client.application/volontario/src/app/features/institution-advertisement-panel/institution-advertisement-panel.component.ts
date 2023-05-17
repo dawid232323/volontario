@@ -39,9 +39,9 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
   public loggedUser?: User;
   private _pageableData?: PageableModel<AdvertisementPreview>;
   private _filterData?: AdvertisementFilterIf;
+  private _shouldShowFilterPanel = false;
 
-  public assignedFilterClearEvent = new EventEmitter<void>();
-  public allFilterClearEvent = new EventEmitter<void>();
+  public filterClearEvent = new EventEmitter<void>();
 
   constructor(
     private interestCategoryService: InterestCategoryService,
@@ -63,11 +63,9 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
       institutionId: this.loggedUser!.institution!.id!,
     };
     if (this.selectedTab === AdvertisementPanelTabEnum.Assigned) {
-      this.allFilterClearEvent.emit();
       filterOptions.contactPersonId = this.loggedUser?.id;
-    } else {
-      this.assignedFilterClearEvent.emit();
     }
+    this.filterClearEvent.emit();
     this._filterData = filterOptions;
     this.loadListData();
   }
@@ -103,6 +101,10 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
     this.router.navigate(['advertisement', 'add']);
   }
 
+  public onShowFilterPanel() {
+    this._shouldShowFilterPanel = !this._shouldShowFilterPanel;
+  }
+
   private downloadInitialData() {
     forkJoin([
       this.interestCategoryService.getAllInterestCategories(),
@@ -125,5 +127,9 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
       return 0;
     }
     return this._pageableData!.totalElements;
+  }
+
+  public get shouldShowFilterPanel(): boolean {
+    return this._shouldShowFilterPanel;
   }
 }

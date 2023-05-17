@@ -30,10 +30,10 @@ export class FilterPanelComponent implements OnInit, OnDestroy {
 
   @Output() searchTriggered = new EventEmitter<AdvertisementFilterIf>();
 
-  private selectedCategories = new Set<number>();
-  private selectedTypes = new Set<number>();
-  private selectedStartDate: Date | null = null;
-  private selectedEndDate: Date | null = null;
+  public selectedCategories = [];
+  public selectedTypes = [];
+  public selectedStartDate: Date | null = null;
+  public selectedEndDate: Date | null = null;
   public typedTitleSearch: string | null = null;
 
   private subscriptions = new Subscription();
@@ -49,14 +49,6 @@ export class FilterPanelComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public isCategorySelected(categoryId: number): boolean {
-    return this.selectedCategories.has(categoryId);
-  }
-
-  public isTypeSelected(typeId: number): boolean {
-    return this.selectedTypes.has(typeId);
-  }
-
   public onSearchClicked() {
     const searchFilterParams: AdvertisementFilterIf = {
       institutionId: this.loggedUser!.institution!.id!,
@@ -64,10 +56,10 @@ export class FilterPanelComponent implements OnInit, OnDestroy {
     if (this.selectedTab === AdvertisementPanelTabEnum.Assigned) {
       searchFilterParams.contactPersonId = this.loggedUser?.id;
     }
-    if (this.selectedTypes.size > 0) {
+    if (this.selectedTypes.length > 0) {
       searchFilterParams.typeIds = [...this.selectedTypes.values()];
     }
-    if (this.selectedCategories.size > 0) {
+    if (this.selectedCategories.length > 0) {
       searchFilterParams.interestCategoryIds = [
         ...this.selectedCategories.values(),
       ];
@@ -93,54 +85,30 @@ export class FilterPanelComponent implements OnInit, OnDestroy {
     this.onSearchClicked();
   }
 
-  public onStartDateSearchChange(event: any) {
-    this.selectedStartDate = event.value;
-  }
-
-  public onEndDateSearchChange(event: any) {
-    this.selectedEndDate = event.value;
-  }
-
-  public onCategorySelect(event: any, selectedId: number) {
-    event.stopPropagation();
-    event.preventDefault();
-    this.onIdSelected(selectedId, this.selectedCategories);
-  }
-
-  public onTypeSelect(event: any, selectedId: number) {
-    event.stopPropagation();
-    event.preventDefault();
-    this.onIdSelected(selectedId, this.selectedTypes);
-  }
-
-  private onIdSelected(selectedId: number, targetSet: Set<number>) {
-    if (targetSet.has(selectedId)) {
-      targetSet.delete(selectedId);
-    } else {
-      targetSet.add(selectedId);
-    }
-  }
-
-  public get selectedCategoriesSize(): string {
-    return this.getSelectionSize(this.selectedCategories);
-  }
-
-  public get selectedTypesSize(): string {
-    return this.getSelectionSize(this.selectedTypes);
-  }
-
-  private getSelectionSize(targetSet: Set<number>): string {
-    if (targetSet.size === 0) {
-      return '';
-    }
-    return `(${targetSet.size})`;
-  }
-
-  private clearPanel() {
+  public clearPanel() {
     this.selectedEndDate = null;
     this.selectedStartDate = null;
     this.typedTitleSearch = null;
-    this.selectedCategories.clear();
-    this.selectedTypes.clear();
+    this.selectedCategories = [];
+    this.selectedTypes = [];
+  }
+
+  public get filterHasValue(): boolean {
+    if (!isNil(this.selectedEndDate)) {
+      return true;
+    }
+    if (!isNil(this.selectedStartDate)) {
+      return true;
+    }
+    if (!isNil(this.typedTitleSearch) && this.typedTitleSearch !== '') {
+      return true;
+    }
+    if (this.selectedCategories.length > 0) {
+      return true;
+    }
+    if (this.selectedTypes.length > 0) {
+      return true;
+    }
+    return false;
   }
 }
