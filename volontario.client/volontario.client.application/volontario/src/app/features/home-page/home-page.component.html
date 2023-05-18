@@ -2,12 +2,17 @@
   <div>
     <div class="my-3">
       <h1 class="py-3">Twoje najnowsze ogłoszenia:</h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <app-offer-card></app-offer-card>
-        <app-offer-card></app-offer-card>
-        <app-offer-card></app-offer-card>
-        <app-offer-card></app-offer-card>
-        <app-offer-card></app-offer-card>
+      <div
+        *ngIf="isLoadingData"
+        class="flex flex-row w-full h-full items-center justify-center">
+        <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+      </div>
+      <div
+        *ngIf="!isLoadingData"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let advertisement of advertisements">
+          <app-offer-card [advertisement]="advertisement"></app-offer-card>
+        </div>
       </div>
     </div>
     <div class="my-3">
