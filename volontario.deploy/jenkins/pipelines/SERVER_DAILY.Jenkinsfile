@@ -1,11 +1,16 @@
 pipeline {
     agent {
-        label 'jdk-17'
+        docker {
+            cloud 'docker' 
+            label 'jdk-17'
+        }
     }
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                dir('volontario.server') {
+                    sh 'mvn clean install' // Run the Maven command inside the "volontario.server" directory
+                }
             }
         }
     }
