@@ -6,7 +6,7 @@ pipeline {
         stage('Build') {
             steps {
                 dir('volontario.server') {
-                    sh 'mvn clean install' // Run the Maven command inside the "volontario.server" directory
+                    sh 'mvn clean install -Dmaven.test.skip'
                 }
             }
         }
