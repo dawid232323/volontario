@@ -10,9 +10,7 @@ import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
-import uam.volontario.model.offer.impl.Benefit;
-import uam.volontario.model.offer.impl.Offer;
-import uam.volontario.model.offer.impl.OfferType;
+import uam.volontario.model.offer.impl.*;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
@@ -44,6 +42,8 @@ public class DtoService
 
     private final OfferTypeService offerTypeService;
 
+    private final OfferStateService offerStateService;
+
     /**
      * CDI constructor.
      *
@@ -55,7 +55,7 @@ public class DtoService
     public DtoService( final InterestCategoryService aInterestCategoryService, final ExperienceLevelService
             aExperienceLevelService, final RoleService aRoleService, final BenefitService aBenefitService,
             final OfferService aOfferService, final UserService aUserService,
-            final OfferTypeService aOfferTypeService )
+            final OfferTypeService aOfferTypeService, final OfferStateService aOfferStateService )
     {
         interestCategoryService = aInterestCategoryService;
         experienceLevelService = aExperienceLevelService;
@@ -64,6 +64,7 @@ public class DtoService
         offerService = aOfferService;
         userService = aUserService;
         offerTypeService = aOfferTypeService;
+        offerStateService = aOfferStateService;
     }
 
     /**
@@ -166,7 +167,7 @@ public class DtoService
      *
      * @return entity based on dto
      */
-    public Offer createOfferFromDto(final OfferDto aOfferDto )
+    public Offer createOfferFromDto( final OfferDto aOfferDto )
     {
         final Offer createdOffer = new Offer();
 
@@ -175,6 +176,10 @@ public class DtoService
                 .findByIds( aOfferDto.getInterestCategoryIds() );
         final OfferType offerType = this.offerTypeService
                 .loadEntity( aOfferDto.getOfferTypeId() );
+
+        final OfferState offerState = offerStateService.tryLoadByState( OfferStateEnum
+                        .mapOfferStateEnumToOfferStateName( OfferStateEnum.NEW ) )
+                .orElseThrow();
 
         ExperienceLevel offerMinExperience = null;
         List< Benefit > benefits = null;
@@ -214,6 +219,7 @@ public class DtoService
         createdOffer.setIsPoznanOnly( aOfferDto.getIsPoznanOnly() );
         createdOffer.setBenefits( benefits );
         createdOffer.setIsInsuranceNeeded( aOfferDto.getIsInsuranceNeeded() );
+        createdOffer.setOfferState( offerState );
         return createdOffer;
     }
 

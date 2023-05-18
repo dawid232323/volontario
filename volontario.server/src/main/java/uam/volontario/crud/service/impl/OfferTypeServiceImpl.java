@@ -5,7 +5,6 @@ import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.repository.OfferTypeRepository;
-import uam.volontario.crud.service.BenefitService;
 import uam.volontario.crud.service.OfferTypeService;
 import uam.volontario.model.offer.impl.OfferType;
 
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Basic implementation for {@linkplain BenefitService}.
+ * Basic implementation for {@linkplain OfferTypeService}.
  */
 @Service
 public class OfferTypeServiceImpl implements OfferTypeService

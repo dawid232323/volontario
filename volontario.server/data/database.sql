@@ -278,7 +278,8 @@ CREATE TABLE public.offers (
                                assigned_moderator_id bigint,
                                institution_id bigint,
                                minimum_experience_id bigint,
-                               offer_type_id bigint
+                               offer_type_id bigint,
+                               offer_state_id bigint
 );
 
 
@@ -303,6 +304,34 @@ ALTER TABLE public.offers_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.offers_id_seq OWNED BY public.offers.id;
+
+CREATE TABLE public.offer_states(
+                                    id bigint NOT NULL,
+                                    state character varying(64) NOT NULL
+);
+
+
+ALTER TABLE public.offer_states OWNER TO postgres;
+
+--
+-- Name: offers_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.offer_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.offer_states_id_seq OWNER TO postgres;
+
+--
+-- Name: offers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.offer_states_id_seq OWNED BY public.offer_states.id;
 
 
 --
@@ -736,6 +765,9 @@ ALTER TABLE ONLY public.interest_categories
 ALTER TABLE ONLY public.offer_types
     ADD CONSTRAINT offer_types_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.offer_states
+    ADD CONSTRAINT offer_states_pkey PRIMARY KEY (id);
+
 
 --
 -- Name: offers offers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -887,6 +919,9 @@ ALTER TABLE ONLY public.offer_benefits
 
 ALTER TABLE ONLY public.offers
     ADD CONSTRAINT fknbx2yjxkl8bjt9o2mn8s2r1jd FOREIGN KEY (offer_type_id) REFERENCES public.offer_types(id);
+
+ALTER TABLE ONLY public.offers
+    ADD CONSTRAINT fknbx2yjxkl8bjt9o2mn8s2r1jc FOREIGN KEY (offer_state_id) REFERENCES public.offer_states(id);
 
 
 --

@@ -7,6 +7,15 @@ VALUES  (1, 'Pracownik Instytucji'),
 
 SELECT setval('roles_id_seq', 6, true);
 
+INSERT INTO public.offer_states
+VALUES  (1, 'Nowe'),
+        (2, 'W trakcie weryfikacji'),
+        (3, 'Odrzucone'),
+        (4, 'Opublikowane'),
+        (5, 'Zamknięte');
+
+SELECT setval('offer_states_id_seq', 6, true);
+
 INSERT INTO public.experience_level
 VALUES  (1, 'Początkujący', 'Początkujący', 10),
         (2, 'Średniozaawansowany', 'Średniozaawansowany', 20),

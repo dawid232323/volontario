@@ -89,6 +89,12 @@ public class Offer implements OfferIf
     private ExperienceLevel minimumExperience;
 
     @JsonManagedReference
+    @ManyToOne
+    @Nullable
+    @JoinColumn( name = "offer_state_id" )
+    private OfferState offerState;
+
+    @JsonManagedReference
     @ManyToMany( fetch = FetchType.EAGER )
     @JoinTable( name = "offer_categories",
             joinColumns = { @JoinColumn( name = "offer_id" ) },
@@ -166,6 +172,12 @@ public class Offer implements OfferIf
             weekDaysList.add( Integer.valueOf( s ) );
         }
         return weekDaysList;
+    }
+
+    @Override
+    public OfferStateEnum getOfferStateAsEnum()
+    {
+        return OfferStateEnum.mapOfferStateToOfferStateEnum( offerState );
     }
 
     @Override

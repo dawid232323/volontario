@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.OfferService;
+import uam.volontario.crud.service.OfferStateService;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.offer.impl.Offer;
+import uam.volontario.model.offer.impl.OfferState;
+import uam.volontario.model.offer.impl.OfferStateEnum;
 
 import java.util.Optional;
 
@@ -22,6 +25,8 @@ public class OfferAssignmentHandler
 
     private final UserService userService;
 
+    private final OfferStateService offerStateService;
+
     /**
      * Constructor.
      *
@@ -30,10 +35,12 @@ public class OfferAssignmentHandler
      * @param aUserService user service.
      */
     @Autowired
-    public OfferAssignmentHandler( final OfferService aOfferService, final UserService aUserService )
+    public OfferAssignmentHandler( final OfferService aOfferService, final UserService aUserService,
+                                   final OfferStateService aOfferStateService )
     {
         offerService = aOfferService;
         userService = aUserService;
+        offerStateService = aOfferStateService;
     }
 
     /**
@@ -68,6 +75,7 @@ public class OfferAssignmentHandler
                     {
                         final Offer offer = optionalOffer.get();
                         offer.setAssignedModerator( user );
+                        offer.setOfferState( getUnderVerificationOfferState() );
                         offerService.saveOrUpdate( offer );
 
                         return ResponseEntity.ok( offer );
@@ -158,5 +166,12 @@ public class OfferAssignmentHandler
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
+    }
+
+    private OfferState getUnderVerificationOfferState()
+    {
+        return offerStateService.tryLoadByState( OfferStateEnum
+                        .mapOfferStateEnumToOfferStateName( OfferStateEnum.UNDER_VERIFICATION ) )
+                .orElseThrow();
     }
 }
