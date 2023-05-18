@@ -1,9 +1,6 @@
 pipeline {
     agent {
-        docker {
-            cloud 'docker' 
-            label 'jdk-17'
-        }
+        label 'jdk-17'
     }
     stages {
         stage('Build') {
