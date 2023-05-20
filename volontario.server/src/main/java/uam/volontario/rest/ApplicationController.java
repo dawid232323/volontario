@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.ApplicationDto;
 import uam.volontario.handler.ApplicationProcessingHandler;
+import uam.volontario.model.offer.impl.ApplicationStateEnum;
 
 /**
  * Controller for API related to {@linkplain uam.volontario.model.offer.impl.Application}s.
@@ -78,5 +79,39 @@ public class ApplicationController
     public ResponseEntity< ? > createApplication( @RequestBody final ApplicationDto aDto )
     {
         return applicationProcessingHandler.createApplication( aDto );
+    }
+
+    /**
+     * Sets Application's state to {@linkplain ApplicationStateEnum#ACCEPTED} and informs Volunteer about it
+     * via contact email.
+     *
+     * @param aApplicationId id of Application to accept.
+     *
+     *
+     * @return
+     *          - Response Entity with accepted Application and 200 code, if everything went well.
+     *          - Response Entity with code 400, if there is no Application with given id.
+     */
+    @PostMapping( "/accept/{applicationId}" )
+    public ResponseEntity< ? > acceptApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
+    {
+        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.ACCEPTED );
+    }
+
+    /**
+     * Sets Application's state to {@linkplain ApplicationStateEnum#DECLINED} and informs Volunteer about it
+     * via contact email.
+     *
+     * @param aApplicationId id of Application to decline.
+     *
+     *
+     * @return
+     *          - Response Entity with declined Application and 200 code, if everything went well.
+     *          - Response Entity with code 400, if there is no Application with given id.
+     */
+    @PostMapping( "/decline/{applicationId}" )
+    public ResponseEntity< ? > declineApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
+    {
+        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.DECLINED );
     }
 }

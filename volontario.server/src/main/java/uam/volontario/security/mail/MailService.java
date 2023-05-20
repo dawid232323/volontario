@@ -168,6 +168,74 @@ public class MailService
         mailSender.send( message );
     }
 
+    /**
+     * Sens Email to Volunteer about his/her Application being accepted.
+     *
+     * @param aVolunteerContactEmail Volunteer's contact email.
+     *
+     * @param aOfferName name of offer from Application.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendEmailAboutApplicationBeingAccepted( final String aVolunteerContactEmail, final String aOfferName )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final String sender = "Volontario";
+        final String mailSubject = "Your application has been accepted!";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( aVolunteerContactEmail );
+        helper.setSubject( mailSubject );
+
+        String content = Resources.toString( Resources.getResource( "emails/applicationAccepted.html" ),
+                StandardCharsets.UTF_8 );
+        content = content.replaceAll( "\\|offerName\\|", aOfferName );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
+    }
+
+    /**
+     * Sens Email to Volunteer about his/her Application being declined.
+     *
+     * @param aVolunteerContactEmail Volunteer's contact email.
+     *
+     * @param aOfferName name of offer from Application.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendEmailAboutApplicationBeingDeclined( final String aVolunteerContactEmail, final String aOfferName )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final String sender = "Volontario";
+        final String mailSubject = "Sorry, your application has been declined...";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( aVolunteerContactEmail );
+        helper.setSubject( mailSubject );
+
+        String content = Resources.toString( Resources.getResource( "emails/applicationDeclined.html" ),
+                StandardCharsets.UTF_8 );
+        content = content.replaceAll( "\\|offerName\\|", aOfferName );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
+    }
+
     private String buildMailContentForInstitutionRegistration( final Institution aInstitution )
             throws IOException
     {

@@ -100,7 +100,7 @@ public class ApplicationProcessingHandler
                     .offer( optionalOffer.get() )
                     .isStarred( false )
                     .participationMotivation( aDto.getParticipationMotivation() )
-                    .state( getAwaitingApplicationState() )
+                    .state( getApplicationState( ApplicationStateEnum.AWAITING ) )
                     .build();
 
             final ValidationResult validationResult = applicationValidationService.validateEntity( application );
@@ -163,10 +163,70 @@ public class ApplicationProcessingHandler
         }
     }
 
-    private ApplicationState getAwaitingApplicationState()
+    /**
+     * Resolves Application's final state to either {@linkplain ApplicationStateEnum#ACCEPTED}
+     * or {@linkplain ApplicationStateEnum#DECLINED}. After Application is resolved, Volunteer is informed
+     * via his contact email about Institution's decision.
+     *
+     * @param aApplicationId id of Application to resolve.
+     *
+     * @param aDecision acceptance or decline.
+     *
+     * @return
+     *          - Response Entity with modified Application's state and 200 code, if everything went well.
+     *          - Response Entity with code 400, if there is no Application with given id.
+     *          - Response Entity with code 500, if aDecision is {@linkplain ApplicationStateEnum#AWAITING} or any
+     *            other unexpected error occurs.
+     */
+    public ResponseEntity< ? > resolveApplication( final Long aApplicationId, final ApplicationStateEnum aDecision )
+    {
+        try
+        {
+            final Optional< Application > optionalApplication = applicationService.tryLoadEntity( aApplicationId );
+            if( optionalApplication.isPresent() )
+            {
+                final Application application = optionalApplication.get();
+
+                final Offer offer = application.getOffer();
+                final User volunteer = application.getVolunteer();
+
+                switch ( aDecision )
+                {
+                    case AWAITING -> throw new IllegalArgumentException( "Awaiting state is not a proper resolve." );
+                    case ACCEPTED ->
+                    {
+                        application.setState( getApplicationState( ApplicationStateEnum.ACCEPTED ) );
+                        applicationService.saveOrUpdate( application );
+                        mailService.sendEmailAboutApplicationBeingAccepted( volunteer.getContactEmailAddress(),
+                                offer.getTitle() );
+                    }
+                    case DECLINED ->
+                    {
+                        application.setState( getApplicationState( ApplicationStateEnum.DECLINED ) );
+                        applicationService.saveOrUpdate( application );
+                        mailService.sendEmailAboutApplicationBeingDeclined( volunteer.getContactEmailAddress(),
+                                offer.getTitle() );
+                    }
+                }
+                return ResponseEntity.ok( application );
+            }
+            else
+            {
+                return ResponseEntity.badRequest()
+                        .body( "Application with id " + aApplicationId + " was not found." );
+            }
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .build();
+        }
+    }
+
+    private ApplicationState getApplicationState( final ApplicationStateEnum aApplicationStateEnum )
     {
         return applicationStateService.tryLoadByName( ApplicationStateEnum
-                        .mapApplicationStateEnumToApplicationStateName( ApplicationStateEnum.AWAITING ) )
+                        .mapApplicationStateEnumToApplicationStateName( aApplicationStateEnum ) )
                 .orElseThrow();
     }
 }
