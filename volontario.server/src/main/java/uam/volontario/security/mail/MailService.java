@@ -4,16 +4,22 @@ import com.google.common.io.Resources;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
+import uam.volontario.model.offer.impl.Application;
+import uam.volontario.model.offer.impl.Benefit;
+import uam.volontario.model.offer.impl.Offer;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Service for sending emails from backend.
@@ -23,16 +29,25 @@ public class MailService
 {
     private final JavaMailSender mailSender;
 
+    private final DateTimeFormatter instantFormatter;
+
+    private final String noReplyVolontarioEmailAddress;
+
     /**
      * CDI constructor.
      * 
      * @param aJavaMailSender
      *                            mail sender.
+     * @param aNoReplyVolontarioEmailAddress no reply volontario email address
      */
     @Autowired
-    public MailService( final JavaMailSender aJavaMailSender )
+    public MailService( final JavaMailSender aJavaMailSender,
+                        final @Value("${volontarioNoReplyEmailAddress}") String aNoReplyVolontarioEmailAddress )
     {
         mailSender = aJavaMailSender;
+        noReplyVolontarioEmailAddress = aNoReplyVolontarioEmailAddress;
+        instantFormatter = DateTimeFormatter.ofPattern( "dd.MM.yyyy" )
+                .withZone( ZoneId.systemDefault() );
     }
 
     /**
@@ -53,14 +68,44 @@ public class MailService
 
         // TODO: email fields need to be verified with prostecki.
         final String moderatorEmail = "s464891@wmi.amu.edu.pl";
-        final String volontarioAddress = "no-reply@volontario.com";
         final String sender = "Volontario";
         final String mailSubject = aInstitution.getName() + " asks for verification.";
 
-        helper.setFrom( volontarioAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( moderatorEmail );
         helper.setSubject( mailSubject );
         helper.setText( buildMailContentForInstitutionRegistration( aInstitution ), true );
+
+        mailSender.send( message );
+    }
+
+    /**
+     * Sends email to Volunteer after he/she made an application for offer.
+     *
+     * @param aApplication
+     *                            application.
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendApplicationCreatedMailToVolunteer( final Application aApplication )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final Offer offer = aApplication.getOffer();
+
+        final String volunteerContactEmail = aApplication.getVolunteer()
+                .getContactEmailAddress();
+        final String sender = "Volontario";
+        final String mailSubject = "Application for offer: " + offer.getTitle() + " has been made!";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( volunteerContactEmail );
+        helper.setSubject( mailSubject );
+        helper.setText( createContentForApplicationMadeEmail( aApplication.getOffer() ), true );
 
         mailSender.send( message );
     }
@@ -81,13 +126,12 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String volontarioAddress = "no-reply@volontario.com";
         final String sender = "Volontario";
         final String mailSubject = "Your institution " + aInstitution.getName() + " has been verified by Volontario.";
 
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
 
-        helper.setFrom( volontarioAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( contactPerson.getContactEmail() );
         helper.setSubject( mailSubject );
         helper.setText( buildMailContentForInstitutionAccepted( aInstitution ), true );
@@ -111,13 +155,12 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String volontarioAddress = "no-reply@volontario.com";
         final String sender = "Volontario";
         final String mailSubject = aInstitution.getName() + " verification rejected.";
 
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
 
-        helper.setFrom( volontarioAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( contactPerson.getContactEmail() );
         helper.setSubject( mailSubject );
         helper.setText( buildMailContentForInstitutionRejected( aInstitution ), true );
@@ -136,7 +179,7 @@ public class MailService
 
         URL url = Resources.getResource( "emails/institutionRegistration.html" );
 
-        String content = formatSharedMailContent(aInstitution, contactPerson, url);
+        String content = createContentForInstitutionAcceptanceMail(aInstitution, contactPerson, url);
         content = content.replaceAll( "\\|verificationUrl\\|", acceptUrl);
         content = content.replaceAll( "\\|rejectUrl\\|", rejectUrl);
 
@@ -151,7 +194,7 @@ public class MailService
 
         URL url = Resources.getResource( "emails/institutionRegistrationAccepted.html" );
 
-        String content = formatSharedMailContent (aInstitution, contactPerson, url );
+        String content = createContentForInstitutionAcceptanceMail(aInstitution, contactPerson, url );
         content = content.replaceAll( "\\|proceedUrl\\|", proceedUrl );
 
         return content;
@@ -165,15 +208,15 @@ public class MailService
 
         URL url = Resources.getResource( "emails/institutionRegistrationRejected.html" );
 
-        String content = formatSharedMailContent( aInstitution, contactPerson, url );
+        String content = createContentForInstitutionAcceptanceMail( aInstitution, contactPerson, url );
         content = content.replaceAll( "\\|rejectionReason\\|", rejectionReason );
 
         return content;
     }
 
 
-    private String formatSharedMailContent( Institution aInstitution, InstitutionContactPerson aContactPerson,
-                                           URL aUrl ) throws IOException
+    private String createContentForInstitutionAcceptanceMail(Institution aInstitution, InstitutionContactPerson aContactPerson,
+                                                             URL aUrl ) throws IOException
     {
         String content = Resources.toString(aUrl, StandardCharsets.UTF_8 );
         content = content.replaceAll( "\\|institutionName\\|", aInstitution.getName() );
@@ -186,6 +229,25 @@ public class MailService
         content = content.replaceAll( "\\|lastName\\|", aContactPerson.getLastName() );
         content = content.replaceAll( "\\|contactEmail\\|", aContactPerson.getContactEmail() );
         content = content.replaceAll( "\\|phoneNumber\\|", aContactPerson.getPhoneNumber() );
+        return content;
+    }
+
+    private String createContentForApplicationMadeEmail( final Offer aOffer ) throws IOException
+    {
+        String content = Resources.toString( Resources.getResource( "emails/applicationMade.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|offerName\\|", aOffer.getTitle() );
+        content = content.replaceAll( "\\|offerDescription\\|", aOffer.getDescription() );
+        content = content.replaceAll( "\\|institutionName\\|", aOffer.getInstitution().getName() );
+        content = content.replaceAll( "\\|offerTypeName\\|", aOffer.getOfferType().getName() );
+        content = content.replaceAll( "\\|offerStartDate\\|", instantFormatter.format( aOffer.getStartDate() ) );
+        content = content.replaceAll( "\\|offerEndDate\\|", aOffer.getEndDate() != null ? instantFormatter.format( aOffer.getEndDate() ) : "No end date defined in the offer." );
+        content = content.replaceAll( "\\|offerBenefits\\|", String.join( ",", aOffer.getBenefits().stream()
+                .map( Benefit::getName )
+                .toList() ) );
+        content = content.replaceAll( "\\|offerPlace\\|", aOffer.getPlace() );
+        content = content.replaceAll( "\\|offerInsurance\\|", aOffer.getIsInsuranceNeeded() ? "yes" : "no" );
         return content;
     }
 }

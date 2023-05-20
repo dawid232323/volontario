@@ -260,6 +260,34 @@ ALTER SEQUENCE public.offer_types_id_seq OWNED BY public.offer_types.id;
 -- Name: offers; Type: TABLE; Schema: public; Owner: postgres
 --
 
+CREATE TABLE public.applications(
+    id bigint NOT NULL,
+    volunteer_id bigint NOT NULL,
+    offer_id bigint NOT NULL,
+    state_id bigint NOT NULL,
+    participation_motivation character varying(300),
+    is_starred boolean
+);
+
+ALTER TABLE public.applications OWNER TO postgres;
+
+CREATE SEQUENCE public.applications_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.applications_id_seq OWNER TO postgres;
+
+--
+-- Name: offers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.applications_id_seq OWNED BY public.applications.id;
+
+
 CREATE TABLE public.offers (
                                id bigint NOT NULL,
                                description character varying(500),
@@ -332,6 +360,34 @@ ALTER TABLE public.offer_states_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.offer_states_id_seq OWNED BY public.offer_states.id;
+
+CREATE TABLE public.application_states(
+                                    id bigint NOT NULL,
+                                    name character varying(64) NOT NULL
+);
+
+
+ALTER TABLE public.application_states OWNER TO postgres;
+
+--
+-- Name: offers_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.application_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.application_states_id_seq OWNER TO postgres;
+
+--
+-- Name: offers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.application_states_id_seq OWNED BY public.application_states.id;
 
 
 --
@@ -528,6 +584,9 @@ ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
+ALTER TABLE ONLY public.applications ALTER COLUMN id SET DEFAULT nextval('public.applications_id_seq'::regclass);
+
+ALTER TABLE ONLY public.application_states ALTER COLUMN id SET DEFAULT nextval('public.application_states_id_seq'::regclass);
 
 --
 -- Name: volunteer_data id; Type: DEFAULT; Schema: public; Owner: postgres
@@ -725,6 +784,9 @@ SELECT pg_catalog.setval('public.volunteer_data_id_seq', 1, false);
 ALTER TABLE ONLY public.benefits
     ADD CONSTRAINT benefits_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.application_states
+    ADD CONSTRAINT application_states_pkey PRIMARY KEY (id);
+
 
 --
 -- Name: experience_level experience_level_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -775,6 +837,9 @@ ALTER TABLE ONLY public.offer_states
 
 ALTER TABLE ONLY public.offers
     ADD CONSTRAINT offers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.applications
+    ADD CONSTRAINT applications_pkey PRIMARY KEY (id);
 
 
 --
@@ -831,6 +896,15 @@ ALTER TABLE ONLY public.offers
 
 ALTER TABLE ONLY public.offers
     ADD CONSTRAINT fk5si9fb7efgpdsmh7bi124tmv1 FOREIGN KEY (minimum_experience_id) REFERENCES public.experience_level(id);
+
+ALTER TABLE ONLY public.applications
+    ADD CONSTRAINT fk8si9fb7efgpdsmh7bi124tmv1 FOREIGN KEY (volunteer_id) REFERENCES public.users(id);
+
+ALTER TABLE ONLY public.applications
+    ADD CONSTRAINT fk4si9fb7efgpdsmh7bi124tmv1 FOREIGN KEY (offer_id) REFERENCES public.offers(id);
+
+ALTER TABLE ONLY public.applications
+    ADD CONSTRAINT fk6si9fb7efgpdsmh7bi124tmv1 FOREIGN KEY (application_states_id) REFERENCES public.application_states(id);
 
 
 --
