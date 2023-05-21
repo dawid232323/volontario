@@ -15,12 +15,9 @@ import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service for DTO operations.
@@ -35,8 +32,6 @@ public class DtoService
     private final RoleService roleService;
 
     private final BenefitService benefitService;
-
-    private final OfferService offerService;
 
     private final UserService userService;
 
@@ -54,14 +49,12 @@ public class DtoService
     @Autowired
     public DtoService( final InterestCategoryService aInterestCategoryService, final ExperienceLevelService
             aExperienceLevelService, final RoleService aRoleService, final BenefitService aBenefitService,
-            final OfferService aOfferService, final UserService aUserService,
-            final OfferTypeService aOfferTypeService, final OfferStateService aOfferStateService )
+             final UserService aUserService, final OfferTypeService aOfferTypeService, final OfferStateService aOfferStateService )
     {
         interestCategoryService = aInterestCategoryService;
         experienceLevelService = aExperienceLevelService;
         roleService = aRoleService;
         benefitService = aBenefitService;
-        offerService = aOfferService;
         userService = aUserService;
         offerTypeService = aOfferTypeService;
         offerStateService = aOfferStateService;
@@ -197,10 +190,6 @@ public class DtoService
         if ( aOfferDto.getEndDate() != null ) {
             offerEndDate = aOfferDto.getEndDate().toInstant();
         }
-        ChronoUnit durationUnit = ChronoUnit.valueOf( aOfferDto.getDurationUnit() );
-        Duration durationValue = Duration.of( aOfferDto.getDurationValue(), durationUnit );
-        String weekDays = aOfferDto.getOfferWeekDays()
-                .stream().map(Object::toString).collect(Collectors.joining(","));
         createdOffer.setTitle( aOfferDto.getOfferTitle() );
         createdOffer.setExpirationDate( aOfferDto.getOfferExpirationDate().toInstant() );
         createdOffer.setContactPerson( contactPerson );
@@ -208,9 +197,7 @@ public class DtoService
         createdOffer.setOfferType( offerType );
         createdOffer.setStartDate( aOfferDto.getStartDate().toInstant() );
         createdOffer.setEndDate( offerEndDate );
-        createdOffer.setWeekDays( weekDays );
-        createdOffer.setDuration( durationValue );
-        createdOffer.setOfferInterval( aOfferDto.getOfferInterval() );
+        createdOffer.setPeriodicDescription( aOfferDto.getPeriodicDescription() );
         createdOffer.setInterestCategories( offerCategories );
         createdOffer.setIsExperienceRequired( aOfferDto.getIsExperienceRequired() );
         createdOffer.setMinimumExperience( offerMinExperience );
@@ -218,8 +205,8 @@ public class DtoService
         createdOffer.setPlace( aOfferDto.getOfferPlace() );
         createdOffer.setIsPoznanOnly( aOfferDto.getIsPoznanOnly() );
         createdOffer.setBenefits( benefits );
-        createdOffer.setIsInsuranceNeeded( aOfferDto.getIsInsuranceNeeded() );
         createdOffer.setOfferState( offerState );
+        createdOffer.setIsHidden( false );
         return createdOffer;
     }
 
@@ -258,10 +245,9 @@ public class DtoService
         Date endDate = aOffer.getEndDate() != null ? Date.from( aOffer.getEndDate() ) : null;
 
         return new OfferDetailsDto( aOffer.getId(), aOffer.getTitle(), expirationDate, institutionContactPersonDto,
-                offerTypeDto, startDate, endDate, aOffer.getOfferWeekDaysAsList(), aOffer.getOfferInterval(),
-                interestCategoryDtos, aOffer.getIsExperienceRequired(), experienceLevelDto,
-                aOffer.getDescription(), aOffer.getPlace(), aOffer.getIsPoznanOnly(),
-                benefitDtos, aOffer.getIsInsuranceNeeded() );
+                offerTypeDto, startDate, endDate, interestCategoryDtos, aOffer.getIsExperienceRequired(),
+                experienceLevelDto, aOffer.getDescription(), aOffer.getPlace(), aOffer.getPeriodicDescription(),
+                aOffer.getIsPoznanOnly(), benefitDtos );
     }
 
     private BenefitDto benefitToDto( Benefit aBenefit )

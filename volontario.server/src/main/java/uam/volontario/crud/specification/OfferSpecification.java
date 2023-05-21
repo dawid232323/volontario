@@ -29,11 +29,10 @@ public class OfferSpecification implements Specification< Offer >
         Path< Instant > startDate = aRoot.get( "startDate" );
         Path< Instant > endDate = aRoot.get( "endDate" );
         Path< List< Long > > interestCategoryIds = aRoot.join( "interestCategories" ).get( "id" );
-        Path< String > weekDays = aRoot.get( "weekDays" );
         Path< String > offerPlace = aRoot.get( "place" );
         Path< Long > experienceLevelId = aRoot.get( "minimumExperience" ).get( "id" );
         Path< Boolean > isPoznanOnly = aRoot.get( "isPoznanOnly" );
-        Path< Boolean > isInsuranceNeeded = aRoot.get( "isInsuranceNeeded" );
+        Path< Boolean > isHidden = aRoot.get( "isHidden" );
         Path< Long > institutionId = aRoot.get( "institution" ).get( "id" );
         Path< Long > contactPersonId = aRoot.get( "contactPerson" ).get("id");
 
@@ -60,16 +59,6 @@ public class OfferSpecification implements Specification< Offer >
         {
             predicateList.add(interestCategoryIds.in( query.getInterestCategoryIds() ) );
         }
-        if ( query.getOfferWeekDays() != null && !query.getOfferWeekDays().isEmpty() )
-        {
-            List< Integer > offerWeekDays = query.getOfferWeekDays();
-            List< Predicate > alternativesList = new ArrayList<>();
-            for ( Integer day : offerWeekDays )
-            {
-                alternativesList.add( aCriteriaBuilder.like( weekDays, "%" + day.toString() + "%" ) );
-            }
-            predicateList.add( aCriteriaBuilder.or( alternativesList.toArray( new Predicate[0] ) ) );
-        }
         if ( query.getOfferPlace() != null )
         {
             predicateList.add( aCriteriaBuilder.like( aCriteriaBuilder.lower( offerPlace ),
@@ -83,9 +72,9 @@ public class OfferSpecification implements Specification< Offer >
         {
             predicateList.add( aCriteriaBuilder.equal( isPoznanOnly, query.getIsPoznanOnly() ) );
         }
-        if ( query.getIsInsuranceNeeded() != null )
+        if ( query.getIsHidden() != null )
         {
-            predicateList.add( aCriteriaBuilder.equal( isInsuranceNeeded, query.getIsInsuranceNeeded() ) );
+            predicateList.add( aCriteriaBuilder.equal( isHidden, query.getIsHidden() ) );
         }
         if ( query.getInstitutionId() != null )
         {

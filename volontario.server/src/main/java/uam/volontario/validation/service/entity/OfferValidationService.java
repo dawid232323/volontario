@@ -19,7 +19,6 @@ public class OfferValidationService extends AbstractValidationService< Offer >
         this.doValidateOfferDates( offerTypeEnum, aEntity );
         this.doValidateOfferExperience( aEntity.getIsExperienceRequired(),
                 aEntity.getMinimumExperience() );
-        this.doValidateInterval( offerTypeEnum, aEntity.getOfferInterval() );
     }
 
     private void doValidateOfferDates( final OfferTypeEnum aOfferType, final Offer aOffer )
@@ -35,6 +34,11 @@ public class OfferValidationService extends AbstractValidationService< Offer >
             this.validationViolations.put( offerDatesKey,
                     "End date should be specified" );
         }
+        if ( aOffer.getExpirationDate().isAfter( aOffer.getEndDate() ) )
+        {
+            this.validationViolations.put( offerDatesKey,
+                    "Expiration date should not be later than end date" );
+        }
     }
 
     private void doValidateOfferExperience( final Boolean aIsExperienceRequired,
@@ -48,22 +52,6 @@ public class OfferValidationService extends AbstractValidationService< Offer >
         if ( !aIsExperienceRequired && aOfferExperience != null )
         {
             this.validationViolations.put( experienceKey, "Experience should not be specified" );
-        }
-    }
-
-    private void doValidateInterval( final OfferTypeEnum aOfferType,
-                                     final String aInterval )
-    {
-        final String intervalKey = "interval";
-        if ( aOfferType.equals( OfferTypeEnum.REGULAR ) && aInterval == null )
-        {
-            this.validationViolations.put( intervalKey,
-                    "Interval shoud be specified" );
-        }
-        if ( !aOfferType.equals( OfferTypeEnum.REGULAR ) && aInterval != null )
-        {
-            this.validationViolations.put( intervalKey,
-                    "Interval shoud not be specified" );
         }
     }
 }

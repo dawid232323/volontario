@@ -14,10 +14,8 @@ import uam.volontario.model.offer.OfferIf;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,10 +42,6 @@ public class Offer implements OfferIf
     @Column( length = 500 )
     @Size( max = 500, message = "Offer description must be 500 characters long at most." )
     private String description;
-
-    @Column
-    @NotNull( message = "Duration of Offer has to be defined." )
-    private Duration duration;
 
     @JsonManagedReference
     @ManyToOne
@@ -113,14 +107,8 @@ public class Offer implements OfferIf
     @Column
     private Instant expirationDate;
 
-    //TODO how to store weekdays? Right now it is list of string joined by comma
-    @Column( length = 14 )
-    @Size( max = 14, message = "There cannot be more than 7 days in week" )
-    private String weekDays;
-
     @Column
-    @Nullable
-    private String offerInterval;
+    private String periodicDescription;
 
     @Column
     private String place;
@@ -129,7 +117,7 @@ public class Offer implements OfferIf
     private Boolean isPoznanOnly;
 
     @Column
-    private Boolean isInsuranceNeeded;
+    private Boolean isHidden;
 
     public Instant getStartDate()
     {
@@ -163,15 +151,6 @@ public class Offer implements OfferIf
     public OfferTypeEnum getOfferTypeAsEnum()
     {
         return OfferTypeEnum.mapOfferTypeToOfferTypeEnum( offerType );
-    }
-
-    public List< Integer > getOfferWeekDaysAsList()
-    {
-        List< Integer > weekDaysList = new ArrayList<>();
-        for (String s : weekDays.split(",") ) {
-            weekDaysList.add( Integer.valueOf( s ) );
-        }
-        return weekDaysList;
     }
 
     @Override

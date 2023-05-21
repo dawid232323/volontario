@@ -16,23 +16,18 @@ import java.util.List;
 @NoArgsConstructor
 public class OfferDto
 {
-
     private String offerTitle;
     private Date offerExpirationDate;
     private Long contactPersonId;
     private Long offerTypeId;
     private Date startDate;
     private Date endDate;
-    private List<Integer> offerWeekDays;
-    private String durationUnit;
-    private Long durationValue;
-    private String offerInterval;
     private List<Long> interestCategoryIds;
     private Boolean isExperienceRequired;
     private Long experienceLevelId;
     private String offerDescription;
     private String offerPlace;
+    private String periodicDescription;
     private Boolean isPoznanOnly;
     private List<Long> offerBenefitIds;
-    private Boolean isInsuranceNeeded;
 }

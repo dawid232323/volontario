@@ -315,7 +315,7 @@ public class MailService
                 .map( Benefit::getName )
                 .toList() ) );
         content = content.replaceAll( "\\|offerPlace\\|", aOffer.getPlace() );
-        content = content.replaceAll( "\\|offerInsurance\\|", aOffer.getIsInsuranceNeeded() ? "yes" : "no" );
+        content = content.replaceAll( "\\|periodicDescription\\|", aOffer.getPeriodicDescription() );
         return content;
     }
 }

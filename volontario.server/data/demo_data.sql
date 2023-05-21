@@ -38,15 +38,21 @@ VALUES (1, 'januszex@januszex.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3N
 SELECT setval('users_id_seq', 9, true);
 
 INSERT INTO public.offers(
-    id, description, duration, end_date, expiration_date, is_experience_required, is_insurance_needed, is_poznan_only, offer_interval, place, start_date, title, week_days, contact_person_id, institution_id, minimum_experience_id, offer_type_id, offer_state_id, assigned_moderator_id)
-VALUES (1, 'Pomoc w domu dla starców i sierocińcu', 259200000000000, '2023-05-25 00:00:00+00', '2023-05-15 00:00:00+00', true, false,
-        true, NULL, 'Poznań', '2023-05-20 00:00:00+00', 'Pomoc w domu dla starców i sierocińcu', '0,1,2', 1, 1, 1, 1, 1, NULL),
-       (2, 'Zbiórka na biednych', 259200000000000, '2023-07-20 00:00:00+00', '2023-05-15 00:00:00+00',
-        true, false, true, NULL, 'Poznań', '2023-05-20 00:00:00+00', 'Zbiórka na biednych', '0,1,2', 2, 2, 1, 2, 1, NULL),
-       (3, 'Pomoc dla niepełnosprawnej pani', 3600000000000, '2023-06-20 22:00:00+00', '2023-06-03 22:00:00+00', false, false,
-        true, NULL, NULL, '2023-06-17 22:00:00+00', 'Pomoc dla niepełnosprawnej pani', '1', 2, 2, NULL, 1, 1, NULL),
-       (4, 'Wolontariat w szkole specjalnej', 3600000000000, '2023-05-28 22:00:00+00', '2023-05-31 22:00:00+00', true, false,
-        true, NULL, 'Poznań', NULL, 'Wolontariat w szkole specjalnej', '1', 2, 2, 2, 3, 2, 8);
+    id, description, end_date, expiration_date, is_experience_required, is_poznan_only,
+    place, start_date, title, contact_person_id, institution_id, minimum_experience_id,
+    offer_type_id, offer_state_id, assigned_moderator_id, is_hidden, periodic_description)
+VALUES (1, 'Pomoc w domu dla starców i sierocińcu', '2023-05-25 00:00:00+00', '2023-05-15 00:00:00+00', true,
+        true, 'Poznań', '2023-05-20 00:00:00+00', 'Pomoc w domu dla starców i sierocińcu', 1, 1, 1, 1, 1, NULL, false,
+        NULL),
+       (2, 'Zbiórka na biednych', '2023-07-20 00:00:00+00', '2023-05-15 00:00:00+00',
+        true, false, 'Gniezno', '2023-05-20 00:00:00+00', 'Zbiórka na biednych', 2, 2, 1, 2, 1, NULL, false,
+        'Co tydzień o 17 w piątek'),
+       (3, 'Pomoc dla niepełnosprawnej pani', '2023-06-20 22:00:00+00', '2023-06-03 22:00:00+00', false,
+        true, 'Poznań', '2023-06-17 22:00:00+00', 'Pomoc dla niepełnosprawnej pani', 2, 2, NULL, 1, 1, NULL, false,
+        NULL),
+       (4, 'Wolontariat w szkole specjalnej', '2023-06-31 22:00:00+00', '2023-05-31 22:00:00+00', true,
+        true, 'Poznań', '2023-05-28 22:00:00+00', 'Wolontariat w szkole specjalnej', 2, 2, 2, 3, 2, 8, true,
+        'Każdego tygodnia od 8 do 16 w dni robocze');
 
 SELECT setval('offers_id_seq', 5, true);
 

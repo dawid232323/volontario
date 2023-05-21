@@ -68,35 +68,24 @@ public class CrudOfferDataHandler
     /**
      * Loads base offers info from the system, filtered by given criteria.
      *
-     * @return Response Entity with code 200 and list of offers or Response Entity with code 500 when error
-     *         occurred during fetching offers.
-     *
-     * @param aOfferTypeId offer type id.
-     *
-     * @param aStartDate start date - will return offers that start after given time.
-     *
-     * @param aEndDate end date - will return offers that end before given time.
-     *
+     * @param aOfferTypeId         offer type id.
+     * @param aStartDate           start date - will return offers that start after given time.
+     * @param aEndDate             end date - will return offers that end before given time.
      * @param aInterestCategoryIds interest categories id - will return offers with at least one matching.
-     *
-     * @param aOfferWeekDays week days - will return offers with at least one matching.
-     *
-     * @param aOfferPlace offer place - will return offers where saved place contains this substring.
-     *
-     * @param aExperienceLevelId experience level id - will return offers with matching or lower required experience level.
-     *
-     * @param isPoznanOnly whether offer is Poznan only - will return matching.
-     *
-     * @param isInsuranceNeeded wheter insurance is needed - will return matching.
+     * @param aOfferPlace          offer place - will return offers where saved place contains this substring.
+     * @param aExperienceLevelId   experience level id - will return offers with matching or lower required experience level.
+     * @param isPoznanOnly         whether offer is Poznan only - will return matching.
+     * @return Response Entity with code 200 and list of offers or Response Entity with code 500 when error
+     * occurred during fetching offers.
      */
-    public ResponseEntity< ? > loadBaseOffersInfoFiltered( String aTitle, Long aOfferTypeId, Date aStartDate, Date aEndDate,
-                                                          List<Long> aInterestCategoryIds, List<Integer> aOfferWeekDays,
-                                                          String aOfferPlace, Long aExperienceLevelId, Boolean isPoznanOnly,
-                                                          Boolean isInsuranceNeeded, Long aInstitutionId, Long aContactPersonId,
-                                                            Pageable pageable )
+    public ResponseEntity< ? > loadBaseOffersInfoFiltered(String aTitle, Long aOfferTypeId, Date aStartDate, Date aEndDate,
+                                                          List<Long> aInterestCategoryIds, String aOfferPlace,
+                                                          Long aExperienceLevelId, Boolean isPoznanOnly,
+                                                          Long aInstitutionId, Long aContactPersonId,
+                                                          String aVisibility, Pageable pageable )
     {
         OfferSearchQuery query = new OfferSearchQuery( aTitle, aOfferTypeId, aStartDate, aEndDate, aInterestCategoryIds,
-                aOfferWeekDays, aOfferPlace, aExperienceLevelId, isPoznanOnly, isInsuranceNeeded, aInstitutionId, aContactPersonId );
+                aOfferPlace, aExperienceLevelId, isPoznanOnly, aVisibility, aInstitutionId, aContactPersonId );
         OfferSpecification specification = new OfferSpecification( query );
 
         try

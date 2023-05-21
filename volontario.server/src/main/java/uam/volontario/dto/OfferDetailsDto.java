@@ -19,14 +19,12 @@ public class OfferDetailsDto
     private OfferTypeDto offerType;
     private Date startDate;
     private Date endDate;
-    private List< Integer > offerWeekDays;
-    private String offerInterval;
     private List< InterestCategoryDto > interestCategories;
     private Boolean isExperienceRequired;
     private ExperienceLevelDto experienceLevel;
     private String offerDescription;
     private String offerPlace;
+    private String periodicDescription;
     private Boolean isPoznanOnly;
     private List< BenefitDto > offerBenefits;
-    private Boolean isInsuranceNeeded;
 }

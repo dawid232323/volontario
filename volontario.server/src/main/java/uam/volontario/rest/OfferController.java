@@ -69,19 +69,18 @@ public class OfferController
                                                            @RequestParam( required = false ) @DateTimeFormat( iso = DateTimeFormat.ISO.DATE) Date startDate,
                                                            @RequestParam( required = false ) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
                                                            @RequestParam( required = false ) List<Long> interestCategoryIds,
-                                                           @RequestParam( required = false ) List<Integer> offerWeekDays,
                                                            @RequestParam( required = false ) String offerPlace,
                                                            @RequestParam( required = false ) Long experienceLevelId,
                                                            @RequestParam( required = false ) Boolean isPoznanOnly,
-                                                           @RequestParam( required = false ) Boolean isInsuranceNeeded,
                                                            @RequestParam( required = false ) Long institutionId,
                                                            @RequestParam( required = false ) Long contactPersonId,
+                                                           @RequestParam( required = false ) String visibility,
                                                            Pageable aPageable
                                                            )
     {
         return crudOfferDataHandler.loadBaseOffersInfoFiltered(title, offerTypeId, startDate, endDate,
-                interestCategoryIds, offerWeekDays, offerPlace, experienceLevelId, isPoznanOnly, isInsuranceNeeded,
-                institutionId, contactPersonId, aPageable );
+                interestCategoryIds, offerPlace, experienceLevelId, isPoznanOnly,
+                institutionId, contactPersonId, visibility, aPageable );
     }
 
     /**
