@@ -5,6 +5,7 @@ services:
     ports:
       - 50000:50000
     user: root
+    restart: always
     privileged: true
     volumes:
       - /root/jenkins_home:/var/jenkins_home
