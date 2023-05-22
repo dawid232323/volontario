@@ -15,7 +15,7 @@ pipeline {
                     sh 'docker build -t jenkins.volontario.me:5000/volontario-front:latest --build-arg CLIENT_ENVIRONMENT=production .'
                 }
                 echo 'Clean old images...'
-                sh 'docker rmi $(docker images | grep none | tr -s ' ' | cut -d ' ' -f3)'
+                sh "docker rmi \$(docker images | grep none | tr -s ' ' | cut -d ' ' -f3) || true"
                 echo 'Pushing images...'
                 sh 'docker push jenkins.volontario.me:5000/volontario-back:latest && docker push jenkins.volontario.me:5000/volontario-front:latest'
             }
@@ -23,7 +23,7 @@ pipeline {
         stage('Deploy on dev') {
             steps {
                 echo 'Deploying...'
-                sh "ssh -o StrictHostKeyChecking=no volontario@dev.volontario.me 'docker compose down -v && docker volume rm $(docker volume ls -q) && docker compose pull && docker compose up -d'"
+                sh "ssh -o StrictHostKeyChecking=no volontario@dev.volontario.me 'docker compose down -v && docker volume rm \$(docker volume ls -q) | true && docker compose pull && docker compose up -d && docker rmi \$(docker images | grep none | tr -s \' \' | cut -d \' \' -f3) || true'"
             }
         }
     }
