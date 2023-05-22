@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.scss'],
+  styleUrls: ['./nav.component.scss', '../../styles/material-styles.scss'],
 })
 export class NavComponent implements OnInit, OnDestroy {
   constructor(

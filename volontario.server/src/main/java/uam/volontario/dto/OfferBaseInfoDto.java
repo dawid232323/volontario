@@ -22,4 +22,6 @@ public class OfferBaseInfoDto
     private Date startDate;
     private Date endDate;
     private String offerPlace;
+    private String institutionName;
+    private Boolean isPoznanOnly;
 }

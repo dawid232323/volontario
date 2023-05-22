@@ -26,7 +26,10 @@ export enum AdvertisementPanelTabEnum {
 @Component({
   selector: 'app-institution-advertisement-panel',
   templateUrl: './institution-advertisement-panel.component.html',
-  styleUrls: ['./institution-advertisement-panel.component.scss'],
+  styleUrls: [
+    './institution-advertisement-panel.component.scss',
+    '../../shared/styles/material-styles.scss',
+  ],
 })
 export class InstitutionAdvertisementPanelComponent implements OnInit {
   public selectedTab = AdvertisementPanelTabEnum.Assigned;

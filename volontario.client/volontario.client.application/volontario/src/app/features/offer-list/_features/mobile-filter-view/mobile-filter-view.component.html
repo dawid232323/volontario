@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>Filtry</h1>
+<div mat-dialog-content>
+  <div class="flex flex-col !space-y-4">
+    <app-top-filter-panel
+      [(offerName)]="typedText"
+      [(offerStartDate)]="dateFrom"
+      [(offerEndDate)]="dateTo"></app-top-filter-panel>
+    <app-side-filter-panel
+      [selectedCategories]="selectedCategories"
+      [selectedTypes]="selectedTypes"
+      [interestCategories]="interestCategories"
+      [offerTypes]="offerTypes"></app-side-filter-panel>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button
+    mat-raised-button
+    mat-dialog-close="true"
+    class="hover:bg-btnAccentHover">
+    <mat-icon matPrefix>close</mat-icon>
+    Anuluj
+  </button>
+  <button
+    mat-raised-button
+    color="accent"
+    class="hover:bg-btnAccentHover"
+    (click)="onDialogClose()">
+    <mat-icon matPrefix>search</mat-icon>
+    Szukaj
+  </button>
+</div>

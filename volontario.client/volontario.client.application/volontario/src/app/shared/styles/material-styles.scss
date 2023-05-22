@@ -1,0 +1,16 @@
+::ng-deep .mat-card{
+
+  //border: 10px solid #000;
+  border-radius: 10px !important;
+  box-shadow: -10px 0 black, 0 10px black, 10px 0 black, 0 -10px black;
+}
+
+::ng-deep .mat-raised-button{
+
+  //border: 10px solid #000;
+  border-radius: 10px !important;
+}
+
+::ng-deep .mat-paginator {
+  border-radius: 10px !important;
+}

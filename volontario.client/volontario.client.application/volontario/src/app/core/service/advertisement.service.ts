@@ -19,7 +19,7 @@ import { isNil, result } from 'lodash';
  * Object that stores information about user filter preferences on the advertisement panel list.
  */
 export interface AdvertisementFilterIf {
-  institutionId: number;
+  institutionId?: number;
   contactPersonId?: number;
   title?: string;
   startDate?: Date | string;

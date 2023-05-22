@@ -227,7 +227,7 @@ public class DtoService
         }
         return new OfferBaseInfoDto( aOffer.getId(), aOffer.getTitle(), Date.from( aOffer.getExpirationDate() ),
                 aOffer.getOfferType().getName(), Date.from( aOffer.getStartDate() ),
-                endDate, aOffer.getPlace() );
+                endDate, aOffer.getPlace(), aOffer.getInstitution().getName(), aOffer.getIsPoznanOnly() );
     }
 
     public OfferDetailsDto createOfferDetailsDto( Offer aOffer )

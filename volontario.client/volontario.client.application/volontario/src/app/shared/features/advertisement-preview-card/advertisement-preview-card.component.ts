@@ -8,7 +8,10 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-advertisement-preview-card',
   templateUrl: './advertisement-preview-card.component.html',
-  styleUrls: ['./advertisement-preview-card.component.scss'],
+  styleUrls: [
+    './advertisement-preview-card.component.scss',
+    '../../styles/material-styles.scss',
+  ],
 })
 export class AdvertisementPreviewCardComponent implements OnInit {
   @Input() advertisement: AdvertisementPreview | undefined = undefined;

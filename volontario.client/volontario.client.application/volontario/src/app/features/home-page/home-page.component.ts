@@ -20,7 +20,7 @@ export class HomePageComponent implements OnInit {
   public currentlySelectedPageSize: number = 5;
   public isLoadingData: boolean = false;
   public advertisements: AdvertisementPreview[] = [];
-  private _filterData?: AdvertisementFilterIf;
+  private _filterData?: AdvertisementFilterIf = {};
 
   constructor(
     private authService: SecurityService,
@@ -35,10 +35,18 @@ export class HomePageComponent implements OnInit {
     this.userService.getCurrentUserData().subscribe({
       next: result => {
         this.loggedUser = result;
-        this._filterData = {
-          institutionId: this.loggedUser!.institution!.id!,
-          contactPersonId: this.loggedUser?.id,
-        };
+        // TODO add filter handling for volunteer
+        if (
+          this.loggedUser.hasUserRoles([
+            UserRoleEnum.InstitutionAdmin,
+            UserRoleEnum.InstitutionWorker,
+          ])
+        ) {
+          this._filterData = {
+            institutionId: this.loggedUser!.institution!.id!,
+            contactPersonId: this.loggedUser?.id,
+          };
+        }
         this.getAdvertisements();
       },
       error: err => console.log(err),

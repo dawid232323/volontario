@@ -1,0 +1,70 @@
+<div
+  class="flex flex-col bg-gray-100 min-h-screen justify-items-center items-center">
+  <div class="flex flex-col mx-3 lg:w-3/4 pt-20">
+    <section
+      id="mobile-filter-button"
+      class="flex flex-col lg:hidden space-y-4">
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="openMobileFilterDialog()">
+        <mat-icon matPrefix>filter_list</mat-icon>
+        Filtruj
+      </button>
+      <button
+        *ngIf="hasActiveFilters"
+        class="hover:bg-btnAccentHoverWhite"
+        (click)="onClearFilters()"
+        mat-raised-button>
+        <mat-icon matPrefix>delete</mat-icon>
+        Usuń filtry
+      </button>
+    </section>
+    <section id="top-filter-panel" class="py-5 hidden lg:block">
+      <app-top-filter-panel
+        [hasActiveFilters]="hasActiveFilters"
+        (searchClicked)="onSearchClicked()"
+        (filtersCleared)="onClearFilters()"
+        [(offerName)]="typedText!"
+        [(offerStartDate)]="dateFrom!"
+        [(offerEndDate)]="dateTo!"></app-top-filter-panel>
+    </section>
+    <div
+      class="flex flex-row lg:space-x-3 min-h-screen"
+      id="middle-list-section">
+      <section id="side-filter-panel" class="lg:basis-1/3 py-5 h-full">
+        <app-side-filter-panel
+          class="hidden lg:block"
+          (searchTriggered)="onSearchClicked()"
+          [selectedTypes]="selectedTypes"
+          [selectedCategories]="selectedCategories"
+          [interestCategories]="interestCategories"
+          [offerTypes]="offerTypes"></app-side-filter-panel>
+      </section>
+      <section
+        *ngIf="isLoadingData"
+        class="flex flex-col justify-center items-center lg:basis-2/3 py-10 h-full w-full">
+        <div class="flex flex-col justify-center items-center h-full w-full">
+          <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+        </div>
+      </section>
+      <section
+        *ngIf="!isLoadingData"
+        id="advertisement-cards"
+        class="lg:basis-2/3 py-5 h-full">
+        <div class="pb-5" *ngFor="let offer of offerPreviews">
+          <app-offer-card [advertisement]="offer"></app-offer-card>
+        </div>
+        <mat-paginator
+          color="accent"
+          (page)="onPaginatorDataChange($event)"
+          [pageSize]="currentPageSize"
+          [length]="totalElementsNumber"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="[5, 10, 15]"
+          aria-label="WYbierz stronę">
+        </mat-paginator>
+      </section>
+    </div>
+  </div>
+</div>

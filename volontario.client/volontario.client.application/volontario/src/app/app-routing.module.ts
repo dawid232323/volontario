@@ -19,6 +19,7 @@ import {
 import { RoleDependentGuard } from 'src/app/core/guard/role-dependent.guard';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { InstitutionAdvertisementPanelComponent } from 'src/app/features/institution-advertisement-panel/institution-advertisement-panel.component';
+import { OfferListComponent } from 'src/app/features/offer-list/offer-list.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -58,6 +59,11 @@ const routes: Routes = [
   {
     path: 'advertisement',
     children: [
+      {
+        path: 'list',
+        component: OfferListComponent,
+        canActivate: [RouterGuard],
+      },
       {
         path: 'add',
         component: AddEditAdvertisementComponent,

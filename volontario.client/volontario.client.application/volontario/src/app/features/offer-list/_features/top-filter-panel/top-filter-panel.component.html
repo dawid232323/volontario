@@ -1,0 +1,62 @@
+<div
+  class="flex lg:flex-row flex-col bg-white lg:shadow-md lg:rounded-xl lg:border-2 lg:border-gray-200">
+  <section
+    id="search-fields-section"
+    class="flex lg:flex-row flex-col lg:justify-start items-stretch lg:space-x-3 lg:basis-2/3 px-5 pt-5 pb-3">
+    <mat-form-field appearance="outline" color="accent">
+      <mat-icon matPrefix color="accent">search</mat-icon>
+      <mat-label>Nazwa ogłoszenia</mat-label>
+      <input
+        matInput
+        [ngModel]="offerName"
+        (ngModelChange)="onOfferNameChange($event)" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Data rozpoczęcia wydarzenia</mat-label>
+      <input
+        matInput
+        [ngModel]="offerStartDate"
+        (ngModelChange)="onStartDateChange($event)"
+        [matDatepicker]="startDatePicker"
+        (click)="startDatePicker.open()" />
+      <mat-datepicker-toggle
+        matPrefix
+        [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker color="accent"></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Data zakończenia wydarzenia</mat-label>
+      <input
+        matInput
+        [ngModel]="offerEndDate"
+        (ngModelChange)="onEndDateChange($event)"
+        [matDatepicker]="endDatePicker"
+        (click)="endDatePicker.open()"
+        [(ngModel)]="offerEndDate" />
+      <mat-datepicker-toggle
+        matPrefix
+        [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker color="accent"></mat-datepicker>
+    </mat-form-field>
+  </section>
+  <section
+    id="buttons-section"
+    class="hidden lg:flex lg:space-x-3 flex-row justify-end items-center basis-1/3 px-5 py-3">
+    <button
+      *ngIf="hasActiveFilters"
+      class="hover:bg-btnAccentHoverWhite"
+      (click)="filtersCleared.emit()"
+      mat-raised-button>
+      <mat-icon matPrefix>delete</mat-icon>
+      Usuń filtry
+    </button>
+    <button
+      mat-raised-button
+      color="accent"
+      class="hover:bg-btnAccentHover"
+      (click)="onSearchClicked()">
+      <mat-icon matPrefix>search</mat-icon>
+      Szukaj
+    </button>
+  </section>
+</div>

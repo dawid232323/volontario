@@ -20,6 +20,8 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { InstitutionAdvertisementPanelModule } from './features/institution-advertisement-panel/institution-advertisement-panel.module';
 import { FooterModule } from './shared/features/footer/footer.module';
 import { NavModule } from './shared/features/nav/nav.module';
+import { OfferListModule } from 'src/app/features/offer-list/offer-list.module';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,6 +43,8 @@ import { NavModule } from './shared/features/nav/nav.module';
     InstitutionAdvertisementPanelModule,
     FooterModule,
     NavModule,
+    OfferListModule,
+    MatDialogModule,
   ],
   providers: [
     {

@@ -221,7 +221,8 @@ export class AdvertisementPreview {
     public offerPlace: string,
     public isPoznanOnly: boolean,
     public offerExpirationDate: Date,
-    public offerTypeName: string
+    public offerTypeName: string,
+    public institutionName: string
   ) {}
 
   public static fromPayload(payload?: any): AdvertisementPreview {
@@ -233,7 +234,8 @@ export class AdvertisementPreview {
       payload?.offerPlace,
       payload?.isPoznanOnly,
       payload?.offerExpirationDate,
-      payload?.offerTypeName
+      payload?.offerTypeName,
+      payload?.institutionName
     );
   }
 }
