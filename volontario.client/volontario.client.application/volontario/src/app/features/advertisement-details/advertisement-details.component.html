@@ -1,0 +1,146 @@
+<main
+  class="min-h-screen max-w-screen-lg mx-auto pt-16 flex flex-col md:flex-row">
+  <div class="min-h-screen max-w-screen-md mx-auto">
+    <mat-card class="my-8">
+      <mat-card-title>
+        <h1>{{ advertisementData?.offerTitle }}</h1>
+      </mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-card-content class="py-3">
+        <div class="w-full grid grid-cols-1 md:grid-cols-2">
+          <div class="flex items-center flex-row py-3">
+            <div
+              class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <i class="fa-solid fa-calendar-day text-lg"></i>
+            </div>
+            <div class="flex justify-center flex-col px-2">
+              <p class="font-semibold text-base !m-0">Typ wydarzenia</p>
+              <p class="text-bgPrimary font-bold text-sm !m-0">
+                {{ advertisementData?.offerType?.name }}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center flex-row py-3">
+            <div
+              class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <i class="fa-solid fa-calendar-day text-lg"></i>
+            </div>
+            <div class="flex justify-center flex-col px-2">
+              <p class="font-semibold text-base !m-0">Czas wygaśnięcia</p>
+              <p class="text-bgPrimary font-bold text-sm !m-0">
+                {{ convertDate(advertisementData?.offerExpirationDate) }}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center flex-row py-3">
+            <div
+              class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <i class="fa-solid fa-hand-point-up text-lg"></i>
+            </div>
+            <div class="flex justify-center flex-col px-2">
+              <p class="font-semibold text-base !m-0">Poziom doświadczenia</p>
+              <p class="text-bgPrimary font-bold text-sm !m-0">
+                {{
+                  !advertisementData?.isExperienceRequired
+                    ? 'Każdy poziom doświadczenia'
+                    : advertisementData?.experienceLevel?.name
+                }}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center flex-row py-3">
+            <div
+              class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <i class="fa-solid fa-location-dot text-lg"></i>
+            </div>
+            <div class="flex justify-center flex-col px-2">
+              <p class="font-semibold text-base !m-0">Miejsce wydarzenia</p>
+              <p class="text-bgPrimary font-bold text-sm !m-0">
+                {{
+                  advertisementData?.isPoznanOnly
+                    ? 'Poznań'
+                    : advertisementData?.offerPlace
+                }}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center flex-row py-3">
+            <div
+              class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <i class="fa-solid fa-calendar-check text-lg"></i>
+            </div>
+            <div class="flex justify-center flex-col px-2">
+              <p class="font-semibold text-base !m-0">Data rozpoczęcia</p>
+              <p class="text-bgPrimary font-bold text-sm !m-0">
+                {{ convertDate(advertisementData?.startDate) }}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center flex-row py-3">
+            <div
+              class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <i class="fa-solid fa-calendar-xmark text-lg"></i>
+            </div>
+            <div class="flex justify-center flex-col px-2">
+              <p class="font-semibold text-base !m-0">Data zakończenia</p>
+              <p class="text-bgPrimary font-bold text-sm !m-0">
+                {{ convertDate(advertisementData?.endDate) }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="my-8">
+      <mat-card-title><h1>Kategorie wydarzenia</h1></mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-card-content class="py-3">
+        <mat-chip-list>
+          <mat-chip
+            *ngFor="let category of advertisementData?.interestCategories"
+            class="!bg-btnAccentHover text-xs md:text-base"
+            >{{ category.name }}</mat-chip
+          >
+        </mat-chip-list>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="my-8">
+      <mat-card-title><h1>Opis</h1></mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-card-content class="py-3">{{
+        advertisementData?.offerDescription
+      }}</mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="advertisementData?.offerBenefitIds" class="my-8">
+      <mat-card-title>
+        <h1>Dodatkowe korzyści</h1>
+      </mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-card-content class="py-3">
+        <mat-chip-list>
+          <mat-chip
+            *ngFor="let benefits of advertisementData?.offerBenefitIds"
+            class="!bg-btnAccentHover text-xs md:text-base"
+            >{{ benefits.name }}</mat-chip
+          >
+        </mat-chip-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <mat-card
+    class="w-full md:h-[200px] md:w-[200px] my-8"
+    *ngIf="
+      !loggedUser?.hasUserRoles([
+        UserRoleEnum.InstitutionWorker,
+        UserRoleEnum.InstitutionAdmin
+      ])
+    "
+    ><mat-card-title><h3>Aplikuj na ogłoszenie</h3></mat-card-title
+    ><mat-card-content
+      ><app-primary-button
+        [buttonLabel]="'Aplikuj'"></app-primary-button></mat-card-content
+  ></mat-card>
+</main>

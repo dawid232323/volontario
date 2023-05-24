@@ -2,9 +2,12 @@
   <div class="flex flex-row w-full h-full">
     <mat-card-header class="basis-1/2">
       <mat-icon mat-card-avatar color="accent">receipt_long</mat-icon>
-      <mat-card-title class="text-xl">{{
-        advertisement?.offerTitle
-      }}</mat-card-title>
+      <mat-card-title
+        class="text-xl transition hover:bg-btnAccentHover rounded-md bg-opacity-40 hover:cursor-pointer"
+        matTooltip="Zobacz podgląd ogłoszenia"
+        routerLink="/advertisement/{{ advertisement?.id }} "
+        >{{ advertisement?.offerTitle }}</mat-card-title
+      >
       <mat-card-subtitle>Aktualna liczba aplikacji: 0</mat-card-subtitle>
     </mat-card-header>
     <div class="flex flex-row basis-1/2 items-start justify-end">

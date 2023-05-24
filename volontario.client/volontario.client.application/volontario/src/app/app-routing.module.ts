@@ -20,6 +20,7 @@ import { RoleDependentGuard } from 'src/app/core/guard/role-dependent.guard';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { InstitutionAdvertisementPanelComponent } from 'src/app/features/institution-advertisement-panel/institution-advertisement-panel.component';
 import { OfferListComponent } from 'src/app/features/offer-list/offer-list.component';
+import { AdvertisementDetailsComponent } from './features/advertisement-details/advertisement-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -87,6 +88,11 @@ const routes: Routes = [
           ],
           operationType: AdvertisementCrudOperationType.Edit,
         },
+      },
+      {
+        path: ':adv_id',
+        component: AdvertisementDetailsComponent,
+        canActivate: [RouterGuard],
       },
     ],
   },

@@ -21,7 +21,8 @@ import { InstitutionAdvertisementPanelModule } from './features/institution-adve
 import { FooterModule } from './shared/features/footer/footer.module';
 import { NavModule } from './shared/features/nav/nav.module';
 import { OfferListModule } from 'src/app/features/offer-list/offer-list.module';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AdvertisementDetailsModule } from './features/advertisement-details/advertisement-details.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,6 +46,7 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
     NavModule,
     OfferListModule,
     MatDialogModule,
+    AdvertisementDetailsModule,
   ],
   providers: [
     {

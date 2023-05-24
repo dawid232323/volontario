@@ -8,6 +8,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
+import { RouterLink } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [AdvertisementPreviewCardComponent],
@@ -20,6 +22,8 @@ import { MatInputModule } from '@angular/material/input';
     MatToolbarModule,
     MatMenuModule,
     MatInputModule,
+    RouterLink,
+    MatTooltipModule,
   ],
   exports: [AdvertisementPreviewCardComponent],
 })
