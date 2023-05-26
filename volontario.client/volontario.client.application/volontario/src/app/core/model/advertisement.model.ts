@@ -32,10 +32,6 @@ interface AdvertisementDtoIf {
   offerTypeId?: number;
   startDate?: Date;
   endDate?: Date;
-  offerWeekDays?: number[];
-  durationUnit?: string;
-  durationValue?: number;
-  offerInterval?: string;
   interestCategoryIds?: number[];
   isExperienceRequired?: boolean;
   experienceLevelId?: number;
@@ -43,30 +39,26 @@ interface AdvertisementDtoIf {
   offerPlace?: string;
   isPoznanOnly?: boolean;
   offerBenefitIds?: number[];
-  isInsuranceNeeded?: boolean;
+  periodicDescription?: string;
 }
 
 export class AdvertisementDtoBuilder
   implements AdvertisementDtoIf, ObjectBuilderIf<AdvertisementUpdateCreateDto>
 {
   contactPersonId?: number;
-  durationUnit?: string;
-  durationValue?: number;
   endDate?: Date;
   experienceLevelId?: number;
   interestCategoryIds?: number[];
   isExperienceRequired?: boolean;
-  isInsuranceNeeded?: boolean;
   isPoznanOnly?: boolean;
   offerBenefitIds?: number[];
   offerDescription?: string;
   offerExpirationDate?: Date;
-  offerInterval?: string;
   offerPlace?: string;
   offerTitle?: string;
   offerTypeId?: number;
-  offerWeekDays?: number[];
   startDate?: Date;
+  periodicDescription?: string;
 
   public static builder(): AdvertisementDtoBuilder {
     return new AdvertisementDtoBuilder();
@@ -80,10 +72,6 @@ export class AdvertisementDtoBuilder
       this.offerTypeId,
       this.startDate,
       this.endDate,
-      this.offerWeekDays,
-      this.durationUnit,
-      this.durationValue,
-      this.offerInterval,
       this.interestCategoryIds,
       this.isExperienceRequired,
       this.experienceLevelId,
@@ -91,7 +79,7 @@ export class AdvertisementDtoBuilder
       this.offerPlace,
       this.isPoznanOnly,
       this.offerBenefitIds,
-      this.isInsuranceNeeded
+      this.periodicDescription
     );
   }
 
@@ -122,26 +110,6 @@ export class AdvertisementDtoBuilder
 
   public setEndDate(date: Date): AdvertisementDtoBuilder {
     this.endDate = date;
-    return this;
-  }
-
-  public setOfferWeekDays(days: number[]): AdvertisementDtoBuilder {
-    this.offerWeekDays = days;
-    return this;
-  }
-
-  public setDurationUnit(unit: string): AdvertisementDtoBuilder {
-    this.durationUnit = unit;
-    return this;
-  }
-
-  public setDurationValue(value: number): AdvertisementDtoBuilder {
-    this.durationValue = value;
-    return this;
-  }
-
-  public setOfferInterval(interval: string): AdvertisementDtoBuilder {
-    this.offerInterval = interval;
     return this;
   }
 
@@ -180,8 +148,8 @@ export class AdvertisementDtoBuilder
     return this;
   }
 
-  public setIsInsuranceNeeded(isInsNeeded: boolean): AdvertisementDtoBuilder {
-    this.isInsuranceNeeded = isInsNeeded;
+  public setPeriodicDescription(description: string): AdvertisementDtoBuilder {
+    this.periodicDescription = description;
     return this;
   }
 }
@@ -197,10 +165,6 @@ export class AdvertisementUpdateCreateDto implements AdvertisementDtoIf {
     public offerTypeId?: number,
     public startDate?: Date,
     public endDate?: Date,
-    public offerWeekDays?: number[],
-    public durationUnit?: string,
-    public durationValue?: number,
-    public offerInterval?: string,
     public interestCategoryIds?: number[],
     public isExperienceRequired?: boolean,
     public experienceLevelId?: number,
@@ -208,7 +172,7 @@ export class AdvertisementUpdateCreateDto implements AdvertisementDtoIf {
     public offerPlace?: string,
     public isPoznanOnly?: boolean,
     public offerBenefitIds?: number[],
-    public isInsuranceNeeded?: boolean
+    public periodicDescription?: string
   ) {}
 }
 
@@ -249,8 +213,6 @@ export class AdvertisementDto {
     public offerType: AdvertisementType,
     public startDate: Date,
     public endDate: Date,
-    public offerWeekDays: number[],
-    public offerInterval: string,
     public interestCategories: InterestCategoryDTO[],
     public isExperienceRequired: boolean,
     public experienceLevel: VolunteerExperience,
@@ -258,7 +220,7 @@ export class AdvertisementDto {
     public offerPlace: string,
     public isPoznanOnly: boolean,
     public offerBenefitIds: AdvertisementBenefit[],
-    public isInsuranceNeeded: boolean
+    public periodicDescription: string
   ) {}
 
   public static fromPayload(payload?: any): AdvertisementDto {
@@ -270,16 +232,14 @@ export class AdvertisementDto {
       payload?.offerType,
       payload?.startDate,
       payload?.endDate,
-      payload?.offerWeekDays,
-      payload?.offerInterval,
       payload?.interestCategories,
       payload?.isExperienceRequired,
       payload?.experienceLevel,
       payload?.offerDescription,
       payload?.offerPlace,
       payload?.isPoznanOnly,
-      payload?.offerBenefitIds,
-      payload?.isInsuranceNeeded
+      payload?.offerBenefits,
+      payload?.periodicDescription
     );
   }
 }
@@ -292,10 +252,7 @@ export class AdvertisementBasicInfo {
     public advertisementType: number,
     public startDate: Date,
     public endDate: Date,
-    public daysOfWeek: number[],
-    public interval: string | null,
-    public durationUnit: string,
-    public durationValue: number
+    public periodicDescription: string
   ) {}
 
   public static fromAdvertisementDto(
@@ -308,10 +265,7 @@ export class AdvertisementBasicInfo {
       advertisement?.offerType?.id,
       advertisement?.startDate,
       advertisement?.endDate,
-      advertisement?.offerWeekDays,
-      advertisement?.offerInterval,
-      '',
-      1
+      advertisement?.periodicDescription
     );
   }
 }
@@ -320,7 +274,7 @@ export class AdvertisementAdditionalInfo {
   constructor(
     public advertisementCategories: number[],
     public isExperienceRequired: boolean,
-    public experienceLevel: number,
+    public experienceLevel: number | null,
     public description: string
   ) {}
 
@@ -330,7 +284,9 @@ export class AdvertisementAdditionalInfo {
     return new AdvertisementAdditionalInfo(
       advertisement.interestCategories.map(category => category.id),
       advertisement?.isExperienceRequired,
-      advertisement?.experienceLevel?.id,
+      isNil(advertisement?.experienceLevel?.id)
+        ? null
+        : advertisement?.experienceLevel?.id,
       advertisement?.offerDescription
     );
   }
@@ -340,8 +296,7 @@ export class AdvertisementOptionalInfo {
   constructor(
     public isPoznanOnly: boolean,
     public eventPlace: string,
-    public benefits: number[],
-    public isInsuranceNeeded: boolean
+    public benefits: number[]
   ) {}
 
   public static fromAdvertisementDto(
@@ -350,8 +305,7 @@ export class AdvertisementOptionalInfo {
     return new AdvertisementOptionalInfo(
       advertisement?.isPoznanOnly,
       advertisement?.offerPlace,
-      this.getBenefitIds(advertisement?.offerBenefitIds),
-      advertisement?.isInsuranceNeeded
+      this.getBenefitIds(advertisement?.offerBenefitIds)
     );
   }
 

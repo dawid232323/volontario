@@ -12,8 +12,18 @@
       </p>
     </mat-card-content>
     <mat-card-actions align="end">
-      <button mat-button color="accent" (click)="cardButtonClicked.emit()">
+      <button
+        mat-button
+        color="accent"
+        (click)="cardButtonClicked.emit(SuccessInfoCardButtonEnum.Primary)">
         {{ buttonText }}
+      </button>
+      <button
+        *ngIf="!isNil(secondaryButtonText)"
+        mat-button
+        color="accent"
+        (click)="cardButtonClicked.emit(SuccessInfoCardButtonEnum.Secondary)">
+        {{ secondaryButtonText }}
       </button>
     </mat-card-actions>
   </mat-card>

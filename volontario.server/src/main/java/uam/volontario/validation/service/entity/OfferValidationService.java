@@ -14,30 +14,18 @@ public class OfferValidationService extends AbstractValidationService< Offer >
     @Override
     protected void validateEntityByCustomConstraints( Offer aEntity )
     {
-        final OfferTypeEnum offerTypeEnum = OfferTypeEnum
-                .mapOfferTypeToOfferTypeEnum( aEntity.getOfferType() );
-        this.doValidateOfferDates( offerTypeEnum, aEntity );
+        this.doValidateOfferDates( aEntity );
         this.doValidateOfferExperience( aEntity.getIsExperienceRequired(),
                 aEntity.getMinimumExperience() );
     }
 
-    private void doValidateOfferDates( final OfferTypeEnum aOfferType, final Offer aOffer )
+    private void doValidateOfferDates( final Offer aOffer )
     {
         final String offerDatesKey = "offerDates";
-        if ( aOfferType.equals( OfferTypeEnum.REGULAR ) && aOffer.getEndDate() != null )
+        if ( aOffer.getExpirationDate().isBefore( aOffer.getEndDate() ) )
         {
             this.validationViolations.put( offerDatesKey,
-                    "End date should not be specified when offer type is regular" );
-        }
-        if ( !aOfferType.equals( OfferTypeEnum.REGULAR ) && aOffer.getEndDate() == null )
-        {
-            this.validationViolations.put( offerDatesKey,
-                    "End date should be specified" );
-        }
-        if ( aOffer.getExpirationDate().isAfter( aOffer.getEndDate() ) )
-        {
-            this.validationViolations.put( offerDatesKey,
-                    "Expiration date should not be later than end date" );
+                    "Expiration date should not be earlier than end date" );
         }
     }
 

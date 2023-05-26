@@ -114,6 +114,19 @@
       }}</mat-card-content>
     </mat-card>
 
+    <mat-card
+      *ngIf="
+        !isNil(advertisementData?.periodicDescription) &&
+        advertisementData?.periodicDescription !== ''
+      "
+      class="my-8">
+      <mat-card-title><h1>Opis cykliczności</h1></mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-card-content class="py-3">{{
+        advertisementData?.periodicDescription
+      }}</mat-card-content>
+    </mat-card>
+
     <mat-card *ngIf="advertisementData?.offerBenefitIds" class="my-8">
       <mat-card-title>
         <h1>Dodatkowe korzyści</h1>

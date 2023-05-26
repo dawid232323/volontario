@@ -32,7 +32,7 @@ function dateBeforeValidator(
   masterDate: Moment,
   dependentDate: Moment
 ): ValidationErrors | null {
-  if (masterDate.isBefore(dependentDate)) {
+  if (masterDate.isSameOrBefore(dependentDate)) {
     return null;
   }
   return { [DateValidatorUsageEnum.Before]: true };
@@ -42,7 +42,7 @@ function dateAfterValidator(
   masterDate: Moment,
   dependentDate: Moment
 ): ValidationErrors | null {
-  if (masterDate.isAfter(dependentDate)) {
+  if (masterDate.isSameOrAfter(dependentDate)) {
     return null;
   }
   return { [DateValidatorUsageEnum.After]: true };

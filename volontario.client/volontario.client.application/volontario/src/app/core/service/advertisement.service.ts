@@ -104,15 +104,11 @@ export class AdvertisementService {
   ): AdvertisementUpdateCreateDto {
     return AdvertisementDtoBuilder.builder()
       .setContactPersonId(value.contactPerson)
-      .setDurationUnit(value.durationUnit)
-      .setDurationValue(value.durationValue)
       .setOfferTitle(value.title)
       .setExpirationDate(value.expirationDate)
       .setOfferTypeId(value.advertisementType)
       .setStartDate(value.startDate)
       .setEndDate(value.endDate)
-      .setOfferWeekDays(value.daysOfWeek)
-      .setOfferInterval(value.interval)
       .setInterestCategoriesIds(value.advertisementCategories)
       .setIsExperienceRequired(value.isExperienceRequired)
       .setExperienceLevelId(value.experienceLevel)
@@ -120,7 +116,7 @@ export class AdvertisementService {
       .setIsPoznanOnly(value.isPoznanOnly)
       .setOfferPlace(value.eventPlace)
       .setBenefitIds(value.benefits)
-      .setIsInsuranceNeeded(value.isInsuranceNeeded)
+      .setPeriodicDescription(value.periodicDescription)
       .build();
   }
 }

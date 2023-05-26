@@ -15,15 +15,13 @@ import { InterestCategoryService } from 'src/app/core/service/interestCategory.s
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
-import {
-  ActivatedRoute,
-  ActivatedRouteSnapshot,
-  Router,
-} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   dateBeforeAfterValidator,
   DateValidatorUsageEnum,
 } from 'src/app/utils/validator.utils';
+import { ViewportScroller } from '@angular/common';
+import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
 
 export enum AdvertisementCrudOperationType {
   Add,
@@ -51,7 +49,7 @@ export class AddEditAdvertisementComponent implements OnInit {
   public isAddingAdvertisement = false;
   public hasAddedAdvertisement = false;
 
-  private editedAdvertisementId = 0;
+  private currentOfferId = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -60,7 +58,8 @@ export class AddEditAdvertisementComponent implements OnInit {
     private interestCategoryService: InterestCategoryService,
     private experienceService: VolunteerExperienceService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private viewPort: ViewportScroller
   ) {}
 
   ngOnInit(): void {
@@ -80,10 +79,7 @@ export class AddEditAdvertisementComponent implements OnInit {
         advertisementType: [null, [Validators.required]],
         startDate: [null, [Validators.required]],
         endDate: [null, [Validators.required]],
-        daysOfWeek: [[], [Validators.required]],
-        interval: [null, []],
-        durationUnit: [null, [Validators.required]],
-        durationValue: [null, [Validators.required]],
+        periodicDescription: [null, [Validators.maxLength(200)]],
       },
       {
         validators: [
@@ -94,8 +90,8 @@ export class AddEditAdvertisementComponent implements OnInit {
           ),
           dateBeforeAfterValidator(
             DateValidatorUsageEnum.After,
-            'startDate',
-            'expirationDate'
+            'expirationDate',
+            'endDate'
           ),
         ],
       }
@@ -114,11 +110,14 @@ export class AddEditAdvertisementComponent implements OnInit {
       isPoznanOnly: [true, []],
       eventPlace: [null, []],
       benefits: [[], []],
-      isInsuranceNeeded: [false, []],
     });
     this.optionalInfoFormGroup.controls['eventPlace'].disable({
       onlySelf: true,
     });
+  }
+
+  public onMatStepperChange() {
+    this.viewPort.scrollToPosition([0, 0]);
   }
 
   public get canSubmitForm(): boolean {
@@ -143,13 +142,14 @@ export class AddEditAdvertisementComponent implements OnInit {
         this.advertisementService.createNewAdvertisement(advertisementDto);
     } else {
       advertisementCrudCallback = this.advertisementService.updateAdvertisement(
-        this.editedAdvertisementId,
+        this.currentOfferId,
         advertisementDto
       );
     }
 
     advertisementCrudCallback.subscribe({
-      next: () => {
+      next: createdOffer => {
+        this.currentOfferId = createdOffer.id;
         this.isAddingAdvertisement = false;
         this.hasAddedAdvertisement = true;
       },
@@ -161,14 +161,21 @@ export class AddEditAdvertisementComponent implements OnInit {
     });
   }
 
-  public onSuccessSubmit() {
-    this.router.navigate(['/institution', 'advertisement-panel']);
+  public onSuccessSubmit(buttonType: SuccessInfoCardButtonEnum) {
+    if (buttonType === SuccessInfoCardButtonEnum.Primary) {
+      this.router.navigate(['/institution', 'advertisement-panel']);
+      return;
+    }
+    if (buttonType === SuccessInfoCardButtonEnum.Secondary) {
+      this.router.navigate(['advertisement', this.currentOfferId]);
+      return;
+    }
   }
 
   private setAdvertisementToEdit() {
-    this.editedAdvertisementId = +this.route.snapshot.params['adv_id'];
+    this.currentOfferId = +this.route.snapshot.params['adv_id'];
     this.advertisementService
-      .getAdvertisement(this.editedAdvertisementId)
+      .getAdvertisement(this.currentOfferId)
       .subscribe(result => {
         this.basicInfoFormGroup.setValue(
           AdvertisementBasicInfo.fromAdvertisementDto(result)

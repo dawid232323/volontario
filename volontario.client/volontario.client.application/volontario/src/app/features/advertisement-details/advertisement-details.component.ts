@@ -6,6 +6,7 @@ import { User } from '../../core/model/user.model';
 import { UserService } from '../../core/service/user.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { isNil } from 'lodash';
 
 @Component({
   selector: 'app-advertisement-details',
@@ -43,4 +44,6 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
+
+  protected readonly isNil = isNil;
 }
