@@ -27,4 +27,10 @@ public class ApplicationValidationService extends AbstractValidationService< App
             validationViolations.put( "volunteer", "User of id " + aUser.getId() + " is not a Volunteer" );
         }
     }
+
+    @Override
+    protected void postProcessValidation( final Application aApplication )
+    {
+        // no post process validation for Application entity.
+    }
 }

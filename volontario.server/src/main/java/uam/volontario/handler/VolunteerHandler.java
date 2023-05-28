@@ -21,6 +21,7 @@ import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.UserValidationService;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service for handling operations related to {@linkplain uam.volontario.model.common.impl.User}s of type
@@ -158,7 +159,7 @@ public class VolunteerHandler
                     Optional.ofNullable( aPatchDto.getInterestCategoriesIds() )
                             .ifPresent( idList -> volunteerData.setInterestCategories( idList.stream()
                                     .map( interestCategoryService::loadEntity )
-                                    .toList() ) );
+                                    .collect( Collectors.toList() ) ) );
                     Optional.ofNullable( aPatchDto.getExperienceId() )
                             .ifPresent( id -> volunteerData.setExperience( experienceLevelService.loadEntity( id ) ) );
 

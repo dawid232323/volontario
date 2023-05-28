@@ -3,6 +3,9 @@ package uam.volontario.security.mail;
 import com.google.common.io.Resources;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,6 +23,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 /**
  * Service for sending emails from backend.
@@ -48,6 +52,23 @@ public class MailService
         noReplyVolontarioEmailAddress = aNoReplyVolontarioEmailAddress;
         instantFormatter = DateTimeFormatter.ofPattern( "dd.MM.yyyy" )
                 .withZone( ZoneId.systemDefault() );
+    }
+
+    /**
+     * Logger.
+     */
+    private static final Logger LOGGER = LogManager.getLogger( MailService.class );
+
+    private void trySendMail( final Runnable aMailRunnable )
+    {
+        try
+        {
+            aMailRunnable.run();
+        }
+        catch ( Exception aE )
+        {
+            LOGGER.warn( "Error while sending mail: " + aE.getMessage() );
+        }
     }
 
     /**
@@ -107,7 +128,7 @@ public class MailService
         helper.setSubject( mailSubject );
         helper.setText( createContentForApplicationMadeEmail( aApplication.getOffer() ), true );
 
-        mailSender.send( message );
+        trySendMail( () -> mailSender.send( message ) );
     }
 
     /**
@@ -283,7 +304,7 @@ public class MailService
     }
 
 
-    private String createContentForInstitutionAcceptanceMail(Institution aInstitution, InstitutionContactPerson aContactPerson,
+    private String createContentForInstitutionAcceptanceMail( Institution aInstitution, InstitutionContactPerson aContactPerson,
                                                              URL aUrl ) throws IOException
     {
         String content = Resources.toString(aUrl, StandardCharsets.UTF_8 );
@@ -292,7 +313,6 @@ public class MailService
         content = content.replaceAll( "\\|headQuartersAddress\\|", aInstitution.getHeadquarters() );
         content = content.replaceAll( "\\|localization\\|", aInstitution.getLocalization() );
         content = content.replaceAll( "\\|description\\|", aInstitution.getDescription() );
-//        content = content.replaceAll( "\\|tags\\|", StringUtils.join( aInstitution.getTags(), ", " ) );
         content = content.replaceAll( "\\|firstName\\|", aContactPerson.getFirstName() );
         content = content.replaceAll( "\\|lastName\\|", aContactPerson.getLastName() );
         content = content.replaceAll( "\\|contactEmail\\|", aContactPerson.getContactEmail() );
@@ -314,8 +334,10 @@ public class MailService
         content = content.replaceAll( "\\|offerBenefits\\|", String.join( ",", aOffer.getBenefits().stream()
                 .map( Benefit::getName )
                 .toList() ) );
-        content = content.replaceAll( "\\|offerPlace\\|", aOffer.getPlace() );
-        content = content.replaceAll( "\\|periodicDescription\\|", aOffer.getPeriodicDescription() );
+        content = content.replaceAll( "\\|offerPlace\\|", Optional.ofNullable( aOffer.getPlace() )
+                .orElse( aOffer.getIsPoznanOnly() ? "Poznań" : StringUtils.EMPTY ) );
+        content = content.replaceAll( "\\|periodicDescription\\|", Optional.ofNullable( aOffer.getPeriodicDescription() )
+                .orElse( StringUtils.EMPTY ) );
         return content;
     }
 }

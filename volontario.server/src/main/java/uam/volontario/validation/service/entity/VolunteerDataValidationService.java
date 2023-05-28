@@ -17,4 +17,10 @@ public class VolunteerDataValidationService extends AbstractValidationService< V
     {
         // no custom validations for volunteer data entity.
     }
+
+    @Override
+    protected void postProcessValidation( final VolunteerData aVolunteerData )
+    {
+        // no post process validation for volunteer data entity.
+    }
 }

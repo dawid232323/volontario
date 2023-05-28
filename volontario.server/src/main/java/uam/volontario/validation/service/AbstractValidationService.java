@@ -23,6 +23,7 @@ public abstract class AbstractValidationService< T > implements ValidationServic
     {
         validateEntityByAnnotations( aEntity );
         validateEntityByCustomConstraints( aEntity );
+        postProcessValidation( aEntity );
         return createResult( aEntity );
     }
 
@@ -38,6 +39,13 @@ public abstract class AbstractValidationService< T > implements ValidationServic
      * @param aEntity entity to validate.
      */
     protected abstract void validateEntityByCustomConstraints( final T aEntity );
+
+    /**
+     * Post processes validation.
+     *
+     * @param aEntity entity to validate.
+     */
+    protected abstract void postProcessValidation( final T aEntity );
 
     private void validateEntityByAnnotations( final T aEntity )
     {

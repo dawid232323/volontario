@@ -1,5 +1,6 @@
 package uam.volontario.validation.service.entity;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
@@ -11,8 +12,10 @@ import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.validation.service.AbstractValidationService;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -58,7 +61,18 @@ public class UserValidationService extends AbstractValidationService< User >
         }
     }
 
-    private void validateVolunteerData( final User aUser )
+    @Override
+    protected void postProcessValidation( final User aUser )
+    {
+        if( Objects.isNull( aUser.getPassword() ) && Objects.nonNull( aUser.getId() ) )
+        {
+            // we ignore validation of 'password' property while patching other User properties.
+            final Collection< String > violatedPasswordConstraints = Lists.newArrayList( validationViolations.get( "password" ) );
+            violatedPasswordConstraints.forEach( violation -> validationViolations.remove( "password", violation ) );
+        }
+    }
+
+    private void validateVolunteerData(final User aUser )
     {
         volunteerDataValidationService.validateEntity( aUser.getVolunteerData() )
                 .getValidationViolations()
@@ -69,6 +83,10 @@ public class UserValidationService extends AbstractValidationService< User >
     {
         final List< User > allUsers = userService.loadAllEntities();
         final List< InstitutionContactPerson > allContactPeople = institutionContactPersonService.loadAllEntities();
+
+        // if user is already persisted, then we exclude him from uniqueness validation.
+        Optional.ofNullable( aUser.getId() )
+                .ifPresent( id -> allUsers.remove( aUser ) );
 
         if( aUser.hasUserRole( UserRole.VOLUNTEER ) )
         {

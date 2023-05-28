@@ -7,7 +7,6 @@ import uam.volontario.crud.service.InstitutionContactPersonService;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
-import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.validation.service.AbstractValidationService;
 
@@ -65,5 +64,11 @@ public class InstitutionContactPersonValidationService extends AbstractValidatio
                 .findAny()
                 .ifPresent( phoneNumber -> validationViolations.put( "phoneNumber",
                         phoneNumber + " belongs to already registered User or Contact Person." ) );
+    }
+
+    @Override
+    protected void postProcessValidation( final InstitutionContactPerson aInstitutionContactPerson )
+    {
+        // no post process validation for Institution Contact Person entity.
     }
 }

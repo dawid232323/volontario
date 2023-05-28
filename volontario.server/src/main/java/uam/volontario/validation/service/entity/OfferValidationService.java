@@ -3,7 +3,6 @@ package uam.volontario.validation.service.entity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 import uam.volontario.model.offer.impl.Offer;
-import uam.volontario.model.offer.impl.OfferTypeEnum;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.validation.service.AbstractValidationService;
 
@@ -17,6 +16,12 @@ public class OfferValidationService extends AbstractValidationService< Offer >
         this.doValidateOfferDates( aEntity );
         this.doValidateOfferExperience( aEntity.getIsExperienceRequired(),
                 aEntity.getMinimumExperience() );
+    }
+
+    @Override
+    protected void postProcessValidation( final Offer aOffer )
+    {
+        // no post process validation for offer entity.
     }
 
     private void doValidateOfferDates( final Offer aOffer )
