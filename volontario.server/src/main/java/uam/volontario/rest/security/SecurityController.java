@@ -7,15 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.LoginDto;
-import uam.volontario.dto.VolunteerDto;
-import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.rest.VolunteerController;
 import uam.volontario.security.jwt.JWTService;
-import uam.volontario.validation.ValidationResult;
-import uam.volontario.validation.service.entity.UserValidationService;
 
 import java.util.Map;
 import java.util.Optional;
@@ -30,10 +30,6 @@ import java.util.Optional;
         produces = MediaType.APPLICATION_JSON_VALUE )
 public class SecurityController
 {
-    private final DtoService dtoService;
-
-    private final UserValidationService userValidationService;
-
     private final UserService userService;
 
     private final JWTService jwtService;
@@ -43,10 +39,6 @@ public class SecurityController
     /**
      * CDI constructor.
      *
-     * @param aDtoService dto service.
-     *
-     * @param aUserValidationService volunteer validation service.
-     *
      * @param aUserService user service.
      *
      * @param aJwtService jwt service.
@@ -54,12 +46,9 @@ public class SecurityController
      * @param aPasswordEncoder password encoder.
      */
     @Autowired
-    public SecurityController( final DtoService aDtoService, final UserValidationService aUserValidationService,
-                               final UserService aUserService, final JWTService aJwtService,
+    public SecurityController( final UserService aUserService, final JWTService aJwtService,
                                final PasswordEncoder aPasswordEncoder )
     {
-        dtoService = aDtoService;
-        userValidationService = aUserValidationService;
         userService = aUserService;
         jwtService = aJwtService;
         passwordEncoder = aPasswordEncoder;
@@ -68,50 +57,7 @@ public class SecurityController
     /**
      * Logger.
      */
-    private static final Logger LOGGER = LogManager.getLogger( SecurityController.class );
-
-    /**
-     * Registers volunteer.
-     *
-     * @param aDto dto containing registration data.
-     *
-     * @return if volunteer passes validation, then ResponseEntity with 201 status and volunteer. If volunteer did not
-     *         pass validation then ResponseEntity with 400 status and constraints violated. If there was an error,
-     *         then ResponseEntity with 500 status and error message.
-     */
-    @PostMapping( value = "/volunteer/register" )
-    public ResponseEntity< ? > registerVolunteer( @RequestBody final VolunteerDto aDto )
-    {
-        try
-        {
-            final User user = dtoService.createVolunteerFromDto( aDto );
-            final ValidationResult validationResult = userValidationService.validateEntity( user );
-
-            if( validationResult.isValidated() )
-            {
-                user.setHashedPassword( passwordEncoder.encode( user.getPassword() ) );
-                userService.saveOrUpdate( user );
-
-                LOGGER.debug( "A new user has been registered for contact email {}, userId: {}",
-                        user.getContactEmailAddress(), user.getId() );
-
-                return ResponseEntity.status( HttpStatus.CREATED )
-                        .body( validationResult.getValidatedEntity() );
-            }
-
-            LOGGER.debug( "Validation failed for new user with contact email {}, violations: {}", aDto.getContactEmail(),
-                    validationResult.getValidationViolations().values() );
-
-            return ResponseEntity.badRequest()
-                    .body( validationResult.getValidationViolations() );
-        }
-        catch ( Exception aE )
-        {
-            LOGGER.error( "Exception occurred during registration of volunteer: {}", aE.getMessage(), aE );
-            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-                    .body( aE.getMessage() );
-        }
-    }
+    private static final Logger LOGGER = LogManager.getLogger( VolunteerController.class );
 
     /**
      * Performs login operation on user.
