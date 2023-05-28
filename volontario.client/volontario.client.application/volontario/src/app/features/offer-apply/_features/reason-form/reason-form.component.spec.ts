@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MainPageComponent } from './main-page.component';
+import { ReasonFormComponent } from './reason-form.component';
 
-describe('MainPageComponent', () => {
-  let component: MainPageComponent;
-  let fixture: ComponentFixture<MainPageComponent>;
+describe('ReasonFormComponent', () => {
+  let component: ReasonFormComponent;
+  let fixture: ComponentFixture<ReasonFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MainPageComponent],
+      declarations: [ReasonFormComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MainPageComponent);
+    fixture = TestBed.createComponent(ReasonFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

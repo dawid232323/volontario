@@ -23,6 +23,7 @@ import { NavModule } from './shared/features/nav/nav.module';
 import { OfferListModule } from 'src/app/features/offer-list/offer-list.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AdvertisementDetailsModule } from './features/advertisement-details/advertisement-details.module';
+import { OfferApplyModule } from 'src/app/features/offer-apply/offer-apply.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,6 +48,7 @@ import { AdvertisementDetailsModule } from './features/advertisement-details/adv
     OfferListModule,
     MatDialogModule,
     AdvertisementDetailsModule,
+    OfferApplyModule,
   ],
   providers: [
     {

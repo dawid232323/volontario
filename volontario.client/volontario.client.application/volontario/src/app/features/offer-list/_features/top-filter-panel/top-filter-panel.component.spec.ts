@@ -8,9 +8,8 @@ describe('TopFilterPanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TopFilterPanelComponent ]
-    })
-    .compileComponents();
+      declarations: [TopFilterPanelComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TopFilterPanelComponent);
     component = fixture.componentInstance;

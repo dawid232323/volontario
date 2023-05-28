@@ -64,6 +64,18 @@ export class VolontarioRestService {
     );
   }
 
+  public patch(
+    endpoint: string,
+    body: any,
+    options?: HttpOptionsInterface
+  ): Observable<any> {
+    return this.httpClient.patch(
+      this.getEnvironmentUrl() + endpoint,
+      body,
+      options
+    );
+  }
+
   public delete(
     endpoint: string,
     options?: HttpOptionsInterface

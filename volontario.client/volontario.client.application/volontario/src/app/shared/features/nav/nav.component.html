@@ -117,7 +117,14 @@
       </a>
       <a
         class="flex flex-col justify-center items-center w-1/4 p-1"
-        routerLink="/institution/advertisement-panel">
+        [routerLink]="
+          loggedUser?.hasUserRoles([
+            UserRoleEnum.InstitutionWorker,
+            UserRoleEnum.InstitutionAdmin
+          ])
+            ? '/institution/advertisement-panel'
+            : 'advertisement/list'
+        ">
         <i class="fa-solid fa-magnifying-glass text-lg"></i>
         Ogłoszenia
       </a>

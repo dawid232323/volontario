@@ -21,6 +21,7 @@ import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { InstitutionAdvertisementPanelComponent } from 'src/app/features/institution-advertisement-panel/institution-advertisement-panel.component';
 import { OfferListComponent } from 'src/app/features/offer-list/offer-list.component';
 import { AdvertisementDetailsComponent } from './features/advertisement-details/advertisement-details.component';
+import { OfferApplyComponent } from 'src/app/features/offer-apply/offer-apply.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -93,6 +94,14 @@ const routes: Routes = [
         path: ':adv_id',
         component: AdvertisementDetailsComponent,
         canActivate: [RouterGuard],
+      },
+      {
+        path: ':adv_id/apply',
+        component: OfferApplyComponent,
+        canActivate: [RouterGuard, RoleDependentGuard],
+        data: {
+          roles: [UserRoleEnum.Volunteer],
+        },
       },
     ],
   },

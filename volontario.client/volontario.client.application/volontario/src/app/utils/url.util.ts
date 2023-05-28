@@ -26,6 +26,7 @@ export class EndpointUrls {
     EndpointUrls.advertisementResource.concat('/type');
   public static readonly advertisementBenefits =
     EndpointUrls.advertisementResource.concat('/benefit');
+  public static readonly offerApplicationResource = '/application';
   static readonly unauthorizedUrls = new Set<string>([
     EndpointUrls.institutionRegister,
     EndpointUrls.getInstitutionVerify(VerifyType.ACCEPT),

@@ -6,6 +6,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { PrimaryButtonModule } from '../../shared/features/primary-button/primary-button.module';
+import { RouterLink } from '@angular/router';
 
 @NgModule({
   declarations: [AdvertisementDetailsComponent],
@@ -16,6 +17,7 @@ import { PrimaryButtonModule } from '../../shared/features/primary-button/primar
     MatListModule,
     MatChipsModule,
     PrimaryButtonModule,
+    RouterLink,
   ],
   exports: [AdvertisementDetailsComponent],
 })

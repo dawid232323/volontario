@@ -120,7 +120,7 @@ public class ApplicationProcessingHandler
         catch ( Exception aE )
         {
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-                    .build();
+                    .body( aE.getMessage() );
         }
     }
 

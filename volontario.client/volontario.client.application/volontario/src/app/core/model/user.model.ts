@@ -38,3 +38,17 @@ export class User {
     );
   }
 }
+
+export class PatchUserDto {
+  constructor(
+    public contactEmailAddress: string,
+    public phoneNumber: string,
+    public interestCategoriesIds?: number[],
+    public experienceId?: number,
+    public participationMotivation?: string
+  ) {}
+
+  public static fromApplyFormVerification(formValue: any): PatchUserDto {
+    return new PatchUserDto(formValue.contactEmail, formValue.phoneNumber);
+  }
+}

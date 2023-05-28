@@ -1,0 +1,56 @@
+<div>
+  <form [formGroup]="reasonFormGroup">
+    <div class="flex flex-col lg:flex-row justify-between">
+      <mat-form-field
+        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+        appearance="standard"
+        color="accent">
+        <mat-label>Motywacja do uczestnictwa</mat-label>
+        <mat-icon matPrefix color="accent">email</mat-icon>
+        <input
+          matInput
+          formControlName="reason"
+          placeholder="Podaj tytuł ogłoszenia" />
+        <mat-hint
+          >W kilku słowach powiedz nam dlaczego chcesz uczestniczyć w tym
+          wydarzeniu</mat-hint
+        >
+        <mat-error
+          *ngIf="reasonFormGroup.controls['reason'].hasError('maxlength')"
+          >Opis powinien być krótszy niż
+          {{
+            reasonFormGroup.controls['reason'].getError('maxlength')
+              .requiredLength
+          }}
+          znaków</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div
+      class="flex flex-col space-y-4 lg:space-y-0 lg:flex-row items-center gap-x-5 justify-between pt-10">
+      <button
+        class="w-1/2 h-full"
+        mat-raised-button
+        color="primary"
+        [routerLink]="['/advertisement', currentOfferId]">
+        Powrót do ogłoszenia
+      </button>
+      <button
+        class="w-1/2 h-full"
+        mat-raised-button
+        color="primary"
+        matStepperPrevious>
+        Poprzednia strona
+      </button>
+      <button
+        [disabled]="!canSubmitForm"
+        class="w-1/2 h-full"
+        mat-raised-button
+        matStepperNext
+        (click)="formSubmit.emit()"
+        color="accent">
+        Aplikuj
+      </button>
+    </div>
+  </form>
+</div>

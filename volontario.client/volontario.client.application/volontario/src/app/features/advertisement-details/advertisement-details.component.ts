@@ -36,7 +36,7 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   }
 
   public convertDate(getDate: any | undefined) {
-    return getDate.split('T')[0];
+    return getDate?.split('T')[0];
   }
 
   protected readonly UserRoleEnum = UserRoleEnum;

@@ -1,0 +1,52 @@
+<div>
+  <div
+    class="flex flex-col justify-between items-center bg-gray-100 min-h-screen">
+    <section
+      id="spinnerSection"
+      *ngIf="isLoadingData"
+      class="flex flex-col items-center justify-center lg:w-full min-h-screen">
+      <mat-progress-spinner
+        [mode]="'indeterminate'"
+        [color]="'accent'"></mat-progress-spinner>
+    </section>
+    <section
+      *ngIf="!isLoadingData && !hasAppliedForOffer"
+      class="my-10 py-4 flex flex-col items-center justify-center w-full border-4 rounded-xl border-solid lg:w-3/4 bg-white pb-5">
+      <span class="flex flex-row lg:space-x-5 pt-24 pb-24 mx-2 lg:mx-0">
+        <div class="text-4xl font-bold text-center">Aplikuj na ogłoszenie</div>
+      </span>
+      <div class="w-full lg:w-3/4">
+        <mat-stepper labelPosition="end" color="accent" class="pb-5">
+          <mat-step label="Zweryfikuj dane kontaktowe">
+            <app-contact-info-form
+              [currentOfferId]="offerId"
+              [contactFormGroup]="contactFormGroup"></app-contact-info-form>
+          </mat-step>
+          <mat-step label="Podaj swoją motywację">
+            <app-reason-form
+              (formSubmit)="onFormSubmit()"
+              [currentOfferId]="offerId"
+              [canSubmitForm]="canSubmitForm"
+              [reasonFormGroup]="reasonFormGroup"></app-reason-form>
+          </mat-step>
+        </mat-stepper>
+        <section
+          id="successSection"
+          class="flex flex-col items-center justify-center w-full"></section>
+      </div>
+    </section>
+    <section
+      class="flex flex-col items-center justify-center lg:w-full min-h-screen">
+      <app-success-info-card
+        class="h-full w-3/4"
+        *ngIf="hasAppliedForOffer"
+        (cardButtonClicked)="onSuccessCardButtonClicked($event)"
+        [titleMessage]="'Aplikacja na ogłoszenie powiodła się'"
+        [cardContent]="
+          'Twoja aplikacja jest widoczna dla prowadzącego ogłoszenie'
+        "
+        [buttonText]="'Szczegóły aplikacji'"
+        [secondaryButtonText]="'Szczegóły ogłoszenia'"></app-success-info-card>
+    </section>
+  </div>
+</div>

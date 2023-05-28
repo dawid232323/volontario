@@ -8,9 +8,8 @@ describe('RegisterAdditionalInfoFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RegisterAdditionalInfoFormComponent ]
-    })
-    .compileComponents();
+      declarations: [RegisterAdditionalInfoFormComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterAdditionalInfoFormComponent);
     component = fixture.componentInstance;

@@ -8,9 +8,8 @@ describe('MobileFilterViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MobileFilterViewComponent ]
-    })
-    .compileComponents();
+      declarations: [MobileFilterViewComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MobileFilterViewComponent);
     component = fixture.componentInstance;
