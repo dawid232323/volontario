@@ -116,4 +116,52 @@ $volontario-theme: mat.define-light-theme((
 html, body { height: 100%; scroll-behavior: smooth;  }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.mat-slide-toggle .mat-slide-toggle-bar,
+.mat-slide-toggle.mat-checked.reversed .mat-slide-toggle-bar {
+  background-color: #df1a1a55 !important;
+}
+
+.mat-slide-toggle .mat-slide-toggle-thumb,
+.mat-slide-toggle.mat-checked.reversed .mat-slide-toggle-thumb {
+  background-color: #df1a1a !important;
+}
+
+.mat-slide-toggle:not(.mat-disabled) .mat-slide-toggle-thumb:before{
+  content: "\2715";
+  font: normal normal normal 14px/1 FontAwesome;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.mat-slide-toggle.mat-checked.reversed:not(.mat-disabled) .mat-slide-toggle-thumb:before {
+  content: "\f00c";
+  font: normal normal normal 14px/1 FontAwesome;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb:before {
+  content: "\f00c";
+  font: normal normal normal 14px/1 FontAwesome;
+  padding:3px;
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar,
+.mat-slide-toggle.reversed .mat-slide-toggle-bar {
+  background-color: #49c55a55 !important;
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-thumb,
+.mat-slide-toggle.reversed .mat-slide-toggle-thumb {
+  background-color: #49c55a !important;
+}
+
+
+
+
 
