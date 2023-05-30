@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uam.volontario.dto.InstitutionDto;
+import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.handler.InstitutionRegistrationHandler;
 
 import java.util.Map;

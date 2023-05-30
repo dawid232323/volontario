@@ -1,10 +1,11 @@
 package uam.volontario.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uam.volontario.dto.ApplicationDto;
+import uam.volontario.dto.Application.ApplicationDto;
 import uam.volontario.handler.ApplicationProcessingHandler;
 import uam.volontario.model.offer.impl.ApplicationStateEnum;
 
@@ -113,5 +114,52 @@ public class ApplicationController
     public ResponseEntity< ? > declineApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
         return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.DECLINED );
+    }
+
+    /**
+     * Loads application details from the system, filtered by passed criteria.
+     *
+     * @return Response Entity with code 200 and list of detailed application info or Response Entity with code 500 when error
+     *         occurred during fetching offers.
+     */
+    @GetMapping( "/searchDetails" )
+    public ResponseEntity< ? > loadApplicationInfoFilteredDetails( @RequestParam( required = false ) String state,
+                                                            @RequestParam( required = false ) Boolean isStarred,
+                                                            @RequestParam( required = false ) Long offerId,
+                                                            @RequestParam( required = false ) Long volunteerId,
+                                                            @RequestParam( required = false ) Long institutionId,
+                                                            Pageable aPageable
+    )
+    {
+        return applicationProcessingHandler.loadApplicationInfoFiltered( state, isStarred, offerId, volunteerId,
+                institutionId, aPageable, true );
+    }
+
+    /**
+     * Loads application base info from the system, filtered by passed criteria.
+     *
+     * @return Response Entity with code 200 and list of base application info or Response Entity with code 500 when error
+     *         occurred during fetching offers.
+     */
+    @GetMapping( "/search" )
+    public ResponseEntity< ? > loadApplicationInfoFiltered( @RequestParam( required = false ) String state,
+                                                            @RequestParam( required = false ) Boolean isStarred,
+                                                            @RequestParam( required = false ) Long offerId,
+                                                            @RequestParam( required = false ) Long volunteerId,
+                                                            @RequestParam( required = false ) Long institutionId,
+                                                            Pageable aPageable
+    )
+    {
+        return applicationProcessingHandler.loadApplicationInfoFiltered( state, isStarred, offerId, volunteerId,
+                institutionId, aPageable, false );
+    }
+
+    /**
+     * Find if a given volunteer applied for an offer and if he did, what is the application status.
+     */
+    @GetMapping( "/checkState" )
+    public ResponseEntity< ? > checkState( @RequestParam Long offerId, @RequestParam Long volunteerId )
+    {
+        return applicationProcessingHandler.checkState( offerId, volunteerId );
     }
 }

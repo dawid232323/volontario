@@ -1,6 +1,9 @@
 package uam.volontario.handler;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -8,12 +11,12 @@ import uam.volontario.crud.service.ApplicationService;
 import uam.volontario.crud.service.ApplicationStateService;
 import uam.volontario.crud.service.OfferService;
 import uam.volontario.crud.service.UserService;
-import uam.volontario.dto.ApplicationDto;
+import uam.volontario.crud.specification.ApplicationSpecification;
+import uam.volontario.dto.Application.ApplicationDto;
+import uam.volontario.dto.Application.ApplicationStateCheckDto;
+import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.common.impl.User;
-import uam.volontario.model.offer.impl.Application;
-import uam.volontario.model.offer.impl.ApplicationState;
-import uam.volontario.model.offer.impl.ApplicationStateEnum;
-import uam.volontario.model.offer.impl.Offer;
+import uam.volontario.model.offer.impl.*;
 import uam.volontario.security.mail.MailService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.ApplicationValidationService;
@@ -37,6 +40,7 @@ public class ApplicationProcessingHandler
     private final OfferService offerService;
 
     private final MailService mailService;
+    private final DtoService dtoService;
 
     /**
      * CDI constructor.
@@ -56,7 +60,7 @@ public class ApplicationProcessingHandler
                                          final UserService aUserService,
                                          final ApplicationStateService aApplicationStateService,
                                          final ApplicationValidationService aApplicationValidationService,
-                                         final MailService aMailService )
+                                         final MailService aMailService, final DtoService aDtoService )
     {
         applicationService = aApplicationService;
         offerService = aOfferService;
@@ -64,6 +68,7 @@ public class ApplicationProcessingHandler
         applicationStateService = aApplicationStateService;
         applicationValidationService = aApplicationValidationService;
         mailService = aMailService;
+        dtoService = aDtoService;
     }
 
     /**
@@ -228,5 +233,69 @@ public class ApplicationProcessingHandler
         return applicationStateService.tryLoadByName( ApplicationStateEnum
                         .mapApplicationStateEnumToApplicationStateName( aApplicationStateEnum ) )
                 .orElseThrow();
+    }
+
+
+    /**
+     * Logger.
+     */
+    private static final Logger LOGGER = LogManager.getLogger( CrudOfferDataHandler.class );
+
+    public ResponseEntity< ? > loadApplicationInfoFiltered( String state, Boolean isStarred, Long offerId,
+                                                            Long volunteerId, Long institutionId, Pageable aPageable,
+                                                            boolean withDetails )
+    {
+        ApplicationSearchQuery query = new ApplicationSearchQuery( state, isStarred, offerId, volunteerId, institutionId );
+        ApplicationSpecification specification = new ApplicationSpecification( query );
+
+        try
+        {
+            if ( withDetails )
+            {
+                return ResponseEntity.ok( applicationService.findFiltered( specification, aPageable )
+                        .map( dtoService::createApplicationDetailsDto ) );
+            }
+            return ResponseEntity.ok( applicationService.findFiltered( specification, aPageable )
+                    .map( dtoService::createApplicationBaseInfosDto ) );
+        }
+        catch ( Exception aE )
+        {
+            LOGGER.error( "Error on loading applications: {}", aE.getMessage() );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    public ResponseEntity< ? > checkState( Long offerId, Long volunteerId )
+    {
+        try {
+            Optional< Offer > offer = offerService.tryLoadEntity(offerId);
+            if ( offer.isEmpty())
+            {
+                return ResponseEntity.badRequest()
+                        .body( "Offer with id " + offerId + " was not found." );
+            }
+            Optional< User > volunteer = userService.tryLoadEntity( volunteerId );
+            if ( volunteer.isEmpty() )
+            {
+                return ResponseEntity.badRequest()
+                        .body( "Volunteer with id " + volunteerId + " was not found." );
+            }
+
+            ApplicationSearchQuery query = new ApplicationSearchQuery( null, null, offerId, volunteerId, null );
+            ApplicationSpecification specification = new ApplicationSpecification( query );
+
+            Optional<Application> application = applicationService.findFiltered(specification, Pageable.unpaged()).get().findFirst();
+
+            return application.map( value -> ResponseEntity.ok(
+                    new ApplicationStateCheckDto( application.get().getId(), true, value.getState().getName() ) ) )
+                    .orElseGet( () -> ResponseEntity.ok(new ApplicationStateCheckDto( application.get().getId(), false, null) ) );
+        }
+        catch ( Exception aE )
+        {
+            LOGGER.error( "Error on checking state: {}", aE.getMessage() );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
     }
 }

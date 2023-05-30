@@ -3,9 +3,12 @@ package uam.volontario.crud.service.impl;
 import com.google.common.collect.Lists;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.repository.ApplicationRepository;
 import uam.volontario.crud.service.ApplicationService;
+import uam.volontario.crud.specification.ApplicationSpecification;
 import uam.volontario.model.offer.impl.Application;
 
 import java.util.List;
@@ -59,5 +62,11 @@ public class ApplicationServiceImpl implements ApplicationService
     public void deleteEntity( final Long aApplicationId )
     {
         applicationRepository.deleteById( aApplicationId );
+    }
+
+    @Override
+    public Page< Application > findFiltered(ApplicationSpecification aSpecification, Pageable aPageable )
+    {
+        return applicationRepository.findAll( aSpecification, aPageable );
     }
 }

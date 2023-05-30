@@ -5,7 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uam.volontario.dto.OfferDto;
+import uam.volontario.dto.Offer.OfferDto;
 import uam.volontario.handler.CrudOfferDataHandler;
 import uam.volontario.handler.OfferAssignmentHandler;
 import uam.volontario.model.common.UserRole;

@@ -11,7 +11,7 @@ import uam.volontario.crud.service.BenefitService;
 import uam.volontario.crud.service.OfferService;
 import uam.volontario.crud.service.OfferTypeService;
 import uam.volontario.crud.specification.OfferSpecification;
-import uam.volontario.dto.OfferDto;
+import uam.volontario.dto.Offer.OfferDto;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.model.offer.impl.OfferSearchQuery;

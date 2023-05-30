@@ -1,4 +1,4 @@
-package uam.volontario.dto;
+package uam.volontario.dto.Institution;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package uam.volontario.dto;
+package uam.volontario.dto.Offer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,24 +7,27 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Data Transfer Object for {@linkplain uam.volontario.model.offer.impl.Offer}.
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OfferDetailsDto
+public class OfferDto
 {
-    private Long id;
     private String offerTitle;
     private Date offerExpirationDate;
-    private InstitutionContactPersonDto contactPerson;
-    private OfferTypeDto offerType;
+    private Long contactPersonId;
+    private Long offerTypeId;
     private Date startDate;
     private Date endDate;
-    private List< InterestCategoryDto > interestCategories;
+    private List<Long> interestCategoryIds;
     private Boolean isExperienceRequired;
-    private ExperienceLevelDto experienceLevel;
+    private Long experienceLevelId;
     private String offerDescription;
     private String offerPlace;
     private String periodicDescription;
     private Boolean isPoznanOnly;
-    private List< BenefitDto > offerBenefits;
+    private List<Long> offerBenefitIds;
 }
