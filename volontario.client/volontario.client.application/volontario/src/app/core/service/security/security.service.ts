@@ -12,6 +12,7 @@ import { VolontarioRestService } from '../volontarioRest.service';
 import { isNil } from 'lodash';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 import { EndpointUrls } from 'src/app/utils/url.util';
+import { UserService } from 'src/app/core/service/user.service';
 
 @Injectable({ providedIn: 'root' })
 export class SecurityService {
@@ -24,7 +25,8 @@ export class SecurityService {
   constructor(
     private httpClient: HttpClient,
     private tokenService: TokenService,
-    private volRestService: VolontarioRestService
+    private volRestService: VolontarioRestService,
+    private userService: UserService
   ) {
     this.endpointBaseUrl = this.volRestService.getEnvironmentUrl();
   }
@@ -57,6 +59,7 @@ export class SecurityService {
 
   public logout() {
     this.tokenService.logout();
+    this.userService.logout();
     this.isLoggedIn = false;
   }
 

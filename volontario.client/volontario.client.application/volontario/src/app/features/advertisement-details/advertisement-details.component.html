@@ -1,6 +1,6 @@
 <main
   class="min-h-screen max-w-screen-lg mx-auto pt-16 flex flex-col md:flex-row">
-  <div class="min-h-screen max-w-screen-md mx-auto">
+  <div class="min-h-screen w-full mx-auto">
     <mat-card class="my-8">
       <mat-card-title>
         <h1>{{ advertisementData?.offerTitle }}</h1>
@@ -142,9 +142,18 @@
         </mat-chip-list>
       </mat-card-content>
     </mat-card>
+    <mat-card *ngIf="canManageOffer" class="my-8">
+      <mat-card-title>
+        <h1>Osoby które zaaplikowały</h1>
+      </mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-card-content class="py-3">
+        <app-application-list></app-application-list>
+      </mat-card-content>
+    </mat-card>
   </div>
   <mat-card
-    class="w-full md:h-[200px] md:w-[200px] my-8"
+    class="w-full md:h-[200px] md:w-[200px] my-8 mx-4"
     *ngIf="
       !loggedUser?.hasUserRoles([
         UserRoleEnum.InstitutionWorker,

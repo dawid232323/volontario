@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
 import {
   AdvertisementBenefit,
-  AdvertisementUpdateCreateDto,
+  AdvertisementDto,
   AdvertisementDtoBuilder,
   AdvertisementPreview,
   AdvertisementType,
-  AdvertisementDto,
+  AdvertisementUpdateCreateDto,
 } from 'src/app/core/model/advertisement.model';
 import { EndpointUrls } from 'src/app/utils/url.util';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 import { PageableModelInterface } from 'src/app/core/model/pageable.model';
-import { isNil, result } from 'lodash';
+import { isNil } from 'lodash';
+import { User } from 'src/app/core/model/user.model';
+import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 
 /**
  * Object that stores information about user filter preferences on the advertisement panel list.
@@ -118,5 +120,30 @@ export class AdvertisementService {
       .setBenefitIds(value.benefits)
       .setPeriodicDescription(value.periodicDescription)
       .build();
+  }
+
+  public canManageOffer(
+    advertisement: AdvertisementDto | null,
+    loggedUser?: User
+  ): boolean {
+    if (isNil(loggedUser) || isNil(advertisement)) {
+      return false;
+    }
+    if (loggedUser.hasUserRoles([UserRoleEnum.Admin, UserRoleEnum.Moderator])) {
+      return true;
+    }
+    if (
+      loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin) &&
+      advertisement.institutionId === loggedUser.institution?.id
+    ) {
+      return true;
+    }
+    if (
+      loggedUser.hasUserRole(UserRoleEnum.InstitutionWorker) &&
+      advertisement.contactPerson.id === loggedUser.id
+    ) {
+      return true;
+    }
+    return false;
   }
 }

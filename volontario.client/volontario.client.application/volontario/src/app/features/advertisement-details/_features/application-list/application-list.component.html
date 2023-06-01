@@ -1,0 +1,57 @@
+<mat-table
+  matSort
+  [dataSource]="dataSource"
+  matSortActive="starred"
+  matSortDirection="desc"
+  class="!table-fixed !border-spacing-2 w-full">
+  <ng-container matColumnDef="firstName">
+    <mat-header-cell mat-sort-header *matHeaderCellDef>Imię</mat-header-cell>
+    <mat-cell *matCellDef="let element" (click)="onRowClick(element.id)">
+      {{ element.firstName }}
+    </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="lastName">
+    <mat-header-cell mat-sort-header *matHeaderCellDef
+      >Nazwisko</mat-header-cell
+    >
+    <mat-cell *matCellDef="let element" (click)="onRowClick(element.id)">
+      {{ element.lastName }}
+    </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="participationMotivation">
+    <mat-header-cell mat-sort-header *matHeaderCellDef>
+      Motywacja do uczestnictwa
+    </mat-header-cell>
+    <mat-cell *matCellDef="let element" (click)="onRowClick(element.id)">
+      {{ element.participationMotivation }}
+    </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="state">
+    <mat-header-cell mat-sort-header *matHeaderCellDef>Status</mat-header-cell>
+    <mat-cell *matCellDef="let element" (click)="onRowClick(element.id)">
+      {{ element.state }}
+    </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="starred">
+    <mat-cell
+      (click)="onIsStarredClick(element.id, element.starred)"
+      *matCellDef="let element">
+      <div class="block content-center text-center h-full">
+        <i
+          *ngIf="!element.starred"
+          class="fa-regular fa-star hover:bg-btnAccentHover hover:rounded-xl"></i>
+        <i
+          *ngIf="element.starred"
+          class="fa-solid fa-star text-yellow-300 hover:bg-btnAccentHover hover:rounded-xl"></i>
+      </div>
+    </mat-cell>
+    <mat-header-cell mat-sort-header *matHeaderCellDef
+      >Ulubione</mat-header-cell
+    >
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="visibleColumns"></mat-header-row>
+  <mat-row
+    class="hover:bg-rowAccentHover hover:cursor-pointer"
+    *matRowDef="let row; columns: visibleColumns"></mat-row>
+</mat-table>

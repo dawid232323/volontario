@@ -255,7 +255,7 @@ public class DtoService
         return new OfferDetailsDto(aOffer.getId(), aOffer.getTitle(), expirationDate, institutionContactPersonDto,
                 offerTypeDto, startDate, endDate, interestCategoryDtos, aOffer.getIsExperienceRequired(),
                 experienceLevelDto, aOffer.getDescription(), aOffer.getPlace(), aOffer.getPeriodicDescription(),
-                aOffer.getIsPoznanOnly(), benefitDtos);
+                aOffer.getIsPoznanOnly(), benefitDtos, aOffer.getInstitution().getId(), aOffer.getInstitution().getName() );
     }
 
     /**

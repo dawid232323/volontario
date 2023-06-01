@@ -7,6 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { PrimaryButtonModule } from '../../shared/features/primary-button/primary-button.module';
 import { RouterLink } from '@angular/router';
+import { ApplicationListModule } from 'src/app/features/advertisement-details/_features/application-list/application-list.module';
 
 @NgModule({
   declarations: [AdvertisementDetailsComponent],
@@ -18,6 +19,7 @@ import { RouterLink } from '@angular/router';
     MatChipsModule,
     PrimaryButtonModule,
     RouterLink,
+    ApplicationListModule,
   ],
   exports: [AdvertisementDetailsComponent],
 })

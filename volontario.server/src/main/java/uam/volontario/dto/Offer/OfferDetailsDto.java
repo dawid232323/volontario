@@ -30,5 +30,7 @@ public class OfferDetailsDto
     private String offerPlace;
     private String periodicDescription;
     private Boolean isPoznanOnly;
-    private List<BenefitDto> offerBenefits;
+    private List< BenefitDto > offerBenefits;
+    private Long institutionId;
+    private String institutionName;
 }

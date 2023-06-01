@@ -2,6 +2,7 @@ import { ObjectBuilderIf } from 'src/app/core/interface/object-builder.interface
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { isNil } from 'lodash';
+import { User } from 'src/app/core/model/user.model';
 
 export enum AdvertisementTypeEnum {
   SingleUse = 1,
@@ -209,7 +210,7 @@ export class AdvertisementDto {
     public id: number,
     public offerTitle: string,
     public offerExpirationDate: Date,
-    public contactPerson: any,
+    public contactPerson: User,
     public offerType: AdvertisementType,
     public startDate: Date,
     public endDate: Date,
@@ -220,7 +221,9 @@ export class AdvertisementDto {
     public offerPlace: string,
     public isPoznanOnly: boolean,
     public offerBenefitIds: AdvertisementBenefit[],
-    public periodicDescription: string
+    public periodicDescription: string,
+    public institutionId: number,
+    public institutionName: string
   ) {}
 
   public static fromPayload(payload?: any): AdvertisementDto {
@@ -239,7 +242,9 @@ export class AdvertisementDto {
       payload?.offerPlace,
       payload?.isPoznanOnly,
       payload?.offerBenefits,
-      payload?.periodicDescription
+      payload?.periodicDescription,
+      payload?.institutionId,
+      payload?.institutionName
     );
   }
 }

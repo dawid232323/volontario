@@ -10,13 +10,18 @@ export class UserService {
   private userData?: User;
   constructor(private restService: VolontarioRestService) {}
 
+  public logout() {
+    this.userData = undefined;
+  }
+
   public getCurrentUserData(): Observable<User> {
     if (!isNil(this.userData)) {
       return of(this.userData);
     }
     return this.restService.get(EndpointUrls.userData).pipe(
       map(userResult => {
-        return User.fromPayload(userResult);
+        this.userData = User.fromPayload(userResult);
+        return this.userData;
       })
     );
   }
@@ -24,10 +29,17 @@ export class UserService {
   public patchVolunteerData(
     userId: number,
     body: PatchUserDto
-  ): Observable<any> {
-    return this.restService.patch(
-      EndpointUrls.volunteerResource.concat('/', userId.toString()),
-      body
-    );
+  ): Observable<User> {
+    return this.restService
+      .patch(
+        EndpointUrls.volunteerResource.concat('/', userId.toString()),
+        body
+      )
+      .pipe(
+        map(updateResult => {
+          this.userData = User.fromPayload(updateResult);
+          return this.userData;
+        })
+      );
   }
 }

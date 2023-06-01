@@ -27,6 +27,14 @@ export class EndpointUrls {
   public static readonly advertisementBenefits =
     EndpointUrls.advertisementResource.concat('/benefit');
   public static readonly offerApplicationResource = '/application';
+  public static readonly offerApplicationSearchResource =
+    EndpointUrls.offerApplicationResource.concat('/search');
+  public static readonly offerApplicationSearchDetailsResource =
+    EndpointUrls.offerApplicationResource.concat('/searchDetails');
+  public static readonly offerApplicationMarkStarred =
+    EndpointUrls.offerApplicationResource.concat('/star');
+  public static readonly offerApplicationMarkUnStarred =
+    EndpointUrls.offerApplicationResource.concat('/unstar');
   static readonly unauthorizedUrls = new Set<string>([
     EndpointUrls.institutionRegister,
     EndpointUrls.getInstitutionVerify(VerifyType.ACCEPT),
