@@ -36,6 +36,7 @@ public class MailService
     private final DateTimeFormatter instantFormatter;
 
     private final String noReplyVolontarioEmailAddress;
+    private final String volontarioModeratorAddress; //TODO remove after implementing moderator roles properly
 
     /**
      * CDI constructor.
@@ -46,12 +47,14 @@ public class MailService
      */
     @Autowired
     public MailService( final JavaMailSender aJavaMailSender,
-                        final @Value("${volontarioNoReplyEmailAddress}") String aNoReplyVolontarioEmailAddress )
+                        final @Value("${volontarioNoReplyEmailAddress}") String aNoReplyVolontarioEmailAddress,
+                        final @Value("{volontarioModeratorEmailPlaceholder}") String aModeratorAddress )
     {
         mailSender = aJavaMailSender;
         noReplyVolontarioEmailAddress = aNoReplyVolontarioEmailAddress;
         instantFormatter = DateTimeFormatter.ofPattern( "dd.MM.yyyy" )
                 .withZone( ZoneId.systemDefault() );
+        volontarioModeratorAddress = aModeratorAddress;
     }
 
     /**
@@ -87,13 +90,11 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        // TODO: email fields need to be verified with prostecki.
-        final String moderatorEmail = "s464891@wmi.amu.edu.pl";
         final String sender = "Volontario";
         final String mailSubject = aInstitution.getName() + " asks for verification.";
 
         helper.setFrom( noReplyVolontarioEmailAddress, sender );
-        helper.setTo( moderatorEmail );
+        helper.setTo( volontarioModeratorAddress );
         helper.setSubject( mailSubject );
         helper.setText( buildMailContentForInstitutionRegistration( aInstitution ), true );
 

@@ -3,8 +3,6 @@ services:
   volontario-front:
     image: volontario-front:latest
     restart: always
-    depends_on:
-      - volontario-back
     build:
       context: ../volontario.client/volontario.client.application/volontario
       args:
@@ -14,20 +12,10 @@ services:
   volontario-db:
     image: postgres:15.2-alpine
     restart: always
-    env_file: 'variables.env'
+    env_file: '.env'
     volumes:
       - volontario-db:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-  volontario-mailserver:
-    image: mwader/postfix-relay:1.1
-    restart: always
-    environment:
-      - POSTFIX_myhostname=smtp.domain.tld
-      - OPENDKIM_DOMAINS=smtp.domain.tld
-    ports:
-      - '25:25'
-    hostname: volontario.me # placeholder domain, to be changed later
 volumes:
   volontario-db:
-    driver: local

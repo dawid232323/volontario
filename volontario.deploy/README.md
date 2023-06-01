@@ -2,6 +2,8 @@
 
 ## Docker
 
+### BEFORE DEPLOYING, MAKE SURE TO CREATE .env FILE OUT OF .env.tpl AND FILL IT WITH EMAIL CREDENTIALS
+
 ### Full deploy
 
 You can run the whole project with command `docker-compose up --build`
