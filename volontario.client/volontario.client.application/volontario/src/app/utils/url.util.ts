@@ -35,6 +35,8 @@ export class EndpointUrls {
     EndpointUrls.offerApplicationResource.concat('/star');
   public static readonly offerApplicationMarkUnStarred =
     EndpointUrls.offerApplicationResource.concat('/unstar');
+  public static readonly offerApplicationCheckState =
+    EndpointUrls.offerApplicationResource.concat('/checkState');
   static readonly unauthorizedUrls = new Set<string>([
     EndpointUrls.institutionRegister,
     EndpointUrls.getInstitutionVerify(VerifyType.ACCEPT),

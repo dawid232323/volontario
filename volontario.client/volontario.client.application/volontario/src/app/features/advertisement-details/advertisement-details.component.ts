@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AdvertisementService } from '../../core/service/advertisement.service';
 import { AdvertisementDto } from '../../core/model/advertisement.model';
 import { UserRoleEnum } from '../../core/model/user-role.model';
@@ -7,13 +7,7 @@ import { UserService } from '../../core/service/user.service';
 import { forkJoin, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'lodash';
-import { ApplicationBaseInfo } from 'src/app/core/model/application.model';
-import {
-  BaseApplicationFiltersIf,
-  OfferApplicationService,
-} from 'src/app/core/service/offer-application.service';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { OfferApplicationService } from 'src/app/core/service/offer-application.service';
 
 @Component({
   selector: 'app-advertisement-details',
@@ -25,9 +19,9 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   public loggedUser?: User;
   private subscriptions = new Subscription();
   private _canManageOffer = false;
+  private _hasAppliedForOffer = true;
+  private _applicationState?: string;
   private _advertisementId = <number>this.route.snapshot.params['adv_id'];
-
-  @ViewChild(MatSort) sort?: MatSort;
 
   constructor(
     private advertisementService: AdvertisementService,
@@ -47,6 +41,7 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
         this.advertisementData,
         this.loggedUser
       );
+      this.determineIfUserCanApply();
     });
   }
 
@@ -56,6 +51,30 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
 
   public get canManageOffer(): boolean {
     return this._canManageOffer;
+  }
+
+  public get canApplyForOffer(): boolean | undefined {
+    return (
+      !this._hasAppliedForOffer &&
+      this.loggedUser?.hasUserRole(UserRoleEnum.Volunteer)
+    );
+  }
+
+  public get applicationState(): string {
+    return `Zaaplikowałeś już na tę ofertę. Aktualnie jest ona w stanie: ${this._applicationState?.toLocaleLowerCase()}`;
+  }
+
+  private determineIfUserCanApply() {
+    if (this?.loggedUser?.hasUserRole(UserRoleEnum.Volunteer)) {
+      this.offerApplicationService
+        .checkApplicationState(this.loggedUser?.id, this._advertisementId)
+        .subscribe({
+          next: result => {
+            this._hasAppliedForOffer = result.applied;
+            this._applicationState = result.state;
+          },
+        });
+    }
   }
 
   protected readonly UserRoleEnum = UserRoleEnum;

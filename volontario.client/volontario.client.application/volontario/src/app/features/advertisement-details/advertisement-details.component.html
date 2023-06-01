@@ -161,9 +161,20 @@
       ])
     "
     ><mat-card-title><h3>Aplikuj na ogłoszenie</h3></mat-card-title
-    ><mat-card-content
-      ><app-primary-button
-        routerLink="apply"
-        [buttonLabel]="'Aplikuj'"></app-primary-button></mat-card-content
-  ></mat-card>
+    ><mat-card-content>
+      <div
+        class="w-full h-full"
+        [matTooltip]="applicationState"
+        [matTooltipDisabled]="canApplyForOffer">
+        <button
+          mat-raised-button
+          class="w-full hover:bg-btnAccentHover"
+          color="accent"
+          routerLink="apply"
+          [disabled]="!canApplyForOffer">
+          Aplikuj
+        </button>
+      </div>
+    </mat-card-content></mat-card
+  >
 </main>

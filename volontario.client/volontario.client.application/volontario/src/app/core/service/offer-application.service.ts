@@ -6,13 +6,14 @@ import {
 } from 'src/app/core/model/offerApplication.model';
 import { EndpointUrls } from 'src/app/utils/url.util';
 import { map, Observable } from 'rxjs';
-import { isNil } from 'lodash';
+import { isNil, result } from 'lodash';
 import { HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 import { PageableModel } from 'src/app/core/model/pageable.model';
 import {
   ApplicationBaseInfo,
   ApplicationDetails,
+  ApplicationStateCheck,
 } from 'src/app/core/model/application.model';
 import { throwUnknownPortalTypeError } from '@angular/cdk/portal/portal-errors';
 
@@ -87,5 +88,18 @@ export class OfferApplicationService {
       EndpointUrls.offerApplicationMarkUnStarred.concat(`/${applicationId}`),
       {}
     );
+  }
+
+  public checkApplicationState(
+    userId: number,
+    offerId: number
+  ): Observable<ApplicationStateCheck> {
+    const params = new HttpParams({
+      fromObject: { offerId: offerId, volunteerId: userId },
+    });
+    const options: HttpOptionsInterface = { params: params };
+    return this.restService
+      .get(EndpointUrls.offerApplicationCheckState, options)
+      .pipe(map(result => ApplicationStateCheck.fromPayload(result)));
   }
 }
