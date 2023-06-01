@@ -38,7 +38,7 @@ VALUES  (1, 'Praca z osobami starszymi', 'Praca z osobami starszymi'),
         (5, 'Praca z osobami z niepełnosprawnościami intelektualnymi', 'Praca z osobami z niepełnosprawnościami intelektualnymi'),
         (6, 'Praca ze zwierzętami', 'Praca ze zwierzętami'),
         (7, 'Pomoc organizacyjna przy wydarzeniach', 'Pomoc organizacyjna przy wydarzeniach'),
-        (8, 'Dzielenie się wiedzą i umiejętnościami', 'Dzielenie się wiedzą i umiejętnościami')
+        (8, 'Dzielenie się wiedzą i umiejętnościami', 'Dzielenie się wiedzą i umiejętnościami'),
         (9, 'Prace porządkowe', 'Prace porządkowe');
 
 SELECT setval('interest_categories_id_seq', 9, true);

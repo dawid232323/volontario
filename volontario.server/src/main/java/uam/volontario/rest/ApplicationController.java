@@ -120,7 +120,7 @@ public class ApplicationController
      * Loads application details from the system, filtered by passed criteria.
      *
      * @return Response Entity with code 200 and list of detailed application info or Response Entity with code 500 when error
-     *         occurred during fetching offers.
+     *         occurred during fetching application.
      */
     @GetMapping( "/searchDetails" )
     public ResponseEntity< ? > loadApplicationInfoFilteredDetails( @RequestParam( required = false ) String state,
@@ -133,6 +133,18 @@ public class ApplicationController
     {
         return applicationProcessingHandler.loadApplicationInfoFiltered( state, isStarred, offerId, volunteerId,
                 institutionId, aPageable, true );
+    }
+
+    /**
+     * Loads application details from the system by id.
+     *
+     * @return Response Entity with code 200 and detailed application info or Response Entity with code 400,
+     * if there is no Application with given id.
+     */
+    @GetMapping( "/details/{applicationId}" )
+    public ResponseEntity< ? > loadApplicationInfoFilteredDetails( @PathVariable( "applicationId" ) final Long aApplicationId )
+    {
+        return applicationProcessingHandler.loadApplicationDetails( aApplicationId );
     }
 
     /**

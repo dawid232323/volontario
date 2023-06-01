@@ -226,7 +226,7 @@ public class CrudOfferDataHandler
             {
                 return ResponseEntity.ok( dtoService.createOfferDetailsDto( offer.get() ) );
             }
-            return ResponseEntity.status( HttpStatus.NOT_FOUND ).body( "Offer of id " + aId + "not found" );
+            return ResponseEntity.status( HttpStatus.NOT_FOUND ).body( "Offer of id " + aId + " not found" );
         }
         catch ( Exception aE )
         {

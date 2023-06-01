@@ -298,4 +298,23 @@ public class ApplicationProcessingHandler
                     .body( aE.getMessage() );
         }
     }
+
+    public ResponseEntity<?> loadApplicationDetails( Long aApplicationId )
+    {
+        try {
+            Optional<Application> application = applicationService.tryLoadEntity( aApplicationId );
+            if ( application.isPresent() )
+            {
+                return ResponseEntity.ok( dtoService.createApplicationDetailsDto( application.get() ) );
+            }
+            return ResponseEntity.status( HttpStatus.NOT_FOUND )
+                    .body( "Application of id " + aApplicationId + " not found" );
+        }
+        catch ( Exception aE)
+        {
+            LOGGER.error( "Error on loading offer types: {}", aE.getMessage() );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
 }

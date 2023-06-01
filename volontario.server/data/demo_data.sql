@@ -50,7 +50,7 @@ VALUES (1, 'Pomoc w domu dla starców i sierocińcu', '2023-05-25 00:00:00+00', 
        (3, 'Pomoc dla niepełnosprawnej pani', '2023-06-20 22:00:00+00', '2023-06-03 22:00:00+00', false,
         true, 'Poznań', '2023-06-17 22:00:00+00', 'Pomoc dla niepełnosprawnej pani', 2, 2, NULL, 1, 1, NULL, false,
         NULL),
-       (4, 'Wolontariat w szkole specjalnej', '2023-06-31 22:00:00+00', '2023-05-31 22:00:00+00', true,
+       (4, 'Wolontariat w szkole specjalnej', '2023-06-30 22:00:00+00', '2023-05-31 22:00:00+00', true,
         true, 'Poznań', '2023-05-28 22:00:00+00', 'Wolontariat w szkole specjalnej', 2, 2, 2, 3, 2, 8, true,
         'Każdego tygodnia od 8 do 16 w dni robocze');
 
