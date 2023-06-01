@@ -28,7 +28,7 @@ public class OfferSpecification implements Specification< Offer >
         Path< Long > offerTypeId = aRoot.get( "offerType" ).get( "id" );
         Path< Instant > startDate = aRoot.get( "startDate" );
         Path< Instant > endDate = aRoot.get( "endDate" );
-        Path< List< Long > > interestCategoryIds = aRoot.join( "interestCategories" ).get( "id" );
+        Path< List< Long > > interestCategoryIds = aRoot.get( "interestCategories" ).get( "id" );
         Path< String > offerPlace = aRoot.get( "place" );
         Path< Long > experienceLevelId = aRoot.get( "minimumExperience" ).get( "id" );
         Path< Boolean > isPoznanOnly = aRoot.get( "isPoznanOnly" );
