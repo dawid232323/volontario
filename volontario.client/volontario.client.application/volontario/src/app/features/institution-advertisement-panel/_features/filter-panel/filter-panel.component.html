@@ -73,6 +73,20 @@
             >
           </mat-select>
         </mat-form-field>
+        <mat-form-field appearance="outline" class="flex w-full" color="accent">
+          <mat-label>Widoczność</mat-label>
+          <mat-select [(ngModel)]="selectedVisibility">
+            <mat-option [value]="AdvertisementVisibilityEnum.All"
+              >Wszystkie</mat-option
+            >
+            <mat-option [value]="AdvertisementVisibilityEnum.Active"
+              >Widoczne</mat-option
+            >
+            <mat-option [value]="AdvertisementVisibilityEnum.Hidden"
+              >Niewidoczne</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
       </section>
       <section
         id="controlButtons"

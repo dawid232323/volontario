@@ -33,8 +33,9 @@ export class OfferListComponent implements OnInit {
   private _selectedCategories: Set<number> = new Set<number>();
   private _selectedTypes: Set<number> = new Set<number>();
 
+  private _availablePageSizes = [5, 10, 15];
   private _selectedPageIndex = 0;
-  private _selectedPageSize = 5;
+  private _selectedPageSize = this._availablePageSizes[0];
 
   public typedText?: string | null = null;
   public dateFrom?: Date | null = null;
@@ -193,8 +194,12 @@ export class OfferListComponent implements OnInit {
     this.downloadOffers();
   }
 
-  public get currentPageSize(): number | undefined {
-    return this._pageableResult?.pageSize;
+  public get currentPageSize(): number {
+    return this._selectedPageSize;
+  }
+
+  public get availablePageSizes(): number[] {
+    return this._availablePageSizes;
   }
 
   public get totalPages(): number | undefined {

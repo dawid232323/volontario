@@ -74,9 +74,12 @@
                       *ngFor="let advertisement of advertisements"
                       class="w-full mb-5 mt-5">
                       <app-advertisement-preview-card
-                        [advertisement]="
-                          advertisement
-                        "></app-advertisement-preview-card>
+                        (visibilityChangedEvent)="
+                          onAdvertisementChangeVisibilityClicked($event)
+                        "
+                        [advertisement]="advertisement"
+                        [shouldShowContextMenu]="shouldShowContextMenu">
+                      </app-advertisement-preview-card>
                     </div>
                     <mat-paginator
                       color="accent"

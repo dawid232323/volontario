@@ -3,14 +3,16 @@
     <mat-card-header class="basis-1/2">
       <mat-icon mat-card-avatar color="accent">receipt_long</mat-icon>
       <mat-card-title
-        class="text-xl transition hover:bg-btnAccentHover rounded-md bg-opacity-40 hover:cursor-pointer"
+        class="text-xl transition hover:bg-rowAccentHover rounded-md bg-opacity-40 hover:cursor-pointer"
         matTooltip="Zobacz podgląd ogłoszenia"
         routerLink="/advertisement/{{ advertisement?.id }} "
         >{{ advertisement?.offerTitle }}</mat-card-title
       >
       <mat-card-subtitle>Aktualna liczba aplikacji: 0</mat-card-subtitle>
     </mat-card-header>
-    <div class="flex flex-row basis-1/2 items-start justify-end">
+    <div
+      *ngIf="shouldShowContextMenu"
+      class="flex flex-row basis-1/2 items-start justify-end">
       <button mat-button [matMenuTriggerFor]="quickMenu">
         <i
           class="fa-solid fa-ellipsis-vertical text-gray-400 hover:text-black scale-150"></i>
@@ -36,6 +38,12 @@
           <p>Typ wydarzenia: {{ advertisement?.offerTypeName }}</p></span
         >
         <span class="flex flex-row space-x-3">
+          <mat-icon>visibility</mat-icon>
+          <p>
+            Stan: {{ advertisement?.isHidden ? 'Ukryte' : 'Widoczne' }}
+          </p></span
+        >
+        <span class="flex flex-row space-x-3">
           <mat-icon>calendar_today</mat-icon>
           <p>
             Data wygaśnięcia oferty:
@@ -50,8 +58,17 @@
       <mat-icon matPrefix color="accent">edit</mat-icon>
       Edytuj
     </button>
-    <button mat-menu-item>
-      <mat-icon matPrefix color="warn">delete</mat-icon>
+    <button mat-menu-item (click)="onOfferVisibilityChange()">
+      <mat-icon *ngIf="advertisement?.isHidden" matPrefix color="primary"
+        >visibility</mat-icon
+      >
+      <mat-icon *ngIf="!advertisement?.isHidden" matPrefix color="primary"
+        >visibility_off</mat-icon
+      >
+      {{ advertisement?.isHidden ? 'Ustaw widoczne' : 'Ustaw niewidoczne' }}
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon disabled matPrefix color="warn">delete</mat-icon>
       Usuń
     </button>
   </mat-menu>

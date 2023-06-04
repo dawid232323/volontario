@@ -16,6 +16,7 @@ import { PageableModelInterface } from 'src/app/core/model/pageable.model';
 import { isNil } from 'lodash';
 import { User } from 'src/app/core/model/user.model';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
+import { OfferVisibilityInterface } from 'src/app/core/interface/offer-visibility.interface';
 
 /**
  * Object that stores information about user filter preferences on the advertisement panel list.
@@ -28,6 +29,13 @@ export interface AdvertisementFilterIf {
   endDate?: Date | string;
   interestCategoryIds?: number[];
   typeIds?: number[];
+  visibility?: AdvertisementVisibilityEnum;
+}
+
+export enum AdvertisementVisibilityEnum {
+  Active = 'active',
+  Hidden = 'hidden',
+  All = 'all',
 }
 
 @Injectable({ providedIn: 'root' })
@@ -76,7 +84,7 @@ export class AdvertisementService {
       pageSize = 5;
     }
     const params = new HttpParams({
-      fromObject: { page: pageNumber, limit: pageSize, ...(<any>filters) },
+      fromObject: { page: pageNumber, size: pageSize, ...(<any>filters) },
     });
     const options: HttpOptionsInterface = { params: params };
     return this.restService
@@ -92,6 +100,20 @@ export class AdvertisementService {
     return this.restService
       .get(`${EndpointUrls.advertisementDetails}/${advertisementId}`)
       .pipe(map(result => AdvertisementDto.fromPayload(result)));
+  }
+
+  public changeOfferVisibility(
+    offerId: number,
+    visibilityIf: OfferVisibilityInterface
+  ): Observable<AdvertisementPreview> {
+    return this.restService
+      .patch(
+        EndpointUrls.advertisementChangeVisibilityResource.concat(
+          `/${offerId}`
+        ),
+        visibilityIf
+      )
+      .pipe(map(result => AdvertisementPreview.fromPayload(result)));
   }
 
   /**

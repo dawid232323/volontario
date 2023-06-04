@@ -187,7 +187,8 @@ export class AdvertisementPreview {
     public isPoznanOnly: boolean,
     public offerExpirationDate: Date,
     public offerTypeName: string,
-    public institutionName: string
+    public institutionName: string,
+    public isHidden: boolean
   ) {}
 
   public static fromPayload(payload?: any): AdvertisementPreview {
@@ -200,7 +201,8 @@ export class AdvertisementPreview {
       payload?.isPoznanOnly,
       payload?.offerExpirationDate,
       payload?.offerTypeName,
-      payload?.institutionName
+      payload?.institutionName,
+      payload?.isHidden
     );
   }
 }

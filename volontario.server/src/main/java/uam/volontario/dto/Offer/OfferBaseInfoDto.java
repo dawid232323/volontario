@@ -24,4 +24,5 @@ public class OfferBaseInfoDto
     private String offerPlace;
     private String institutionName;
     private Boolean isPoznanOnly;
+    private Boolean isHidden;
 }

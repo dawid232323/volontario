@@ -287,6 +287,11 @@ public class ApplicationProcessingHandler
 
             Optional<Application> application = applicationService.findFiltered(specification, Pageable.unpaged()).get().findFirst();
 
+            if ( application.isEmpty() )
+            {
+                return ResponseEntity.ok( new ApplicationStateCheckDto( null, false, null ) );
+            }
+
             return application.map( value -> ResponseEntity.ok(
                     new ApplicationStateCheckDto( application.get().getId(), true, value.getState().getName() ) ) )
                     .orElseGet( () -> ResponseEntity.ok(new ApplicationStateCheckDto( application.get().getId(), false, null) ) );

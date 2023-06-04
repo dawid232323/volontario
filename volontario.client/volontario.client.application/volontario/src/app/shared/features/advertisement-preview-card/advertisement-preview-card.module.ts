@@ -10,6 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConfirmationAlertModule } from 'src/app/shared/features/confirmation-alert/confirmation-alert.module';
 
 @NgModule({
   declarations: [AdvertisementPreviewCardComponent],
@@ -24,6 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatInputModule,
     RouterLink,
     MatTooltipModule,
+    ConfirmationAlertModule,
   ],
   exports: [AdvertisementPreviewCardComponent],
 })

@@ -1,9 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AdvertisementPreview } from 'src/app/core/model/advertisement.model';
-import { formatDate } from '@angular/common';
 import { isNil } from 'lodash';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  ConfirmationAlertComponent,
+  ConfirmationAlertInitialData,
+  ConfirmationAlertResult,
+} from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
+import { AdvertisementPreviewActionIf } from 'src/app/features/institution-advertisement-panel/institution-advertisement-panel.component';
 
 @Component({
   selector: 'app-advertisement-preview-card',
@@ -15,7 +21,11 @@ import { Router } from '@angular/router';
 })
 export class AdvertisementPreviewCardComponent implements OnInit {
   @Input() advertisement: AdvertisementPreview | undefined = undefined;
-  constructor(private router: Router) {}
+  @Input() shouldShowContextMenu: boolean = false;
+
+  @Output() visibilityChangedEvent =
+    new EventEmitter<AdvertisementPreviewActionIf>();
+  constructor(private router: Router, private matDialog: MatDialog) {}
 
   ngOnInit(): void {}
 
@@ -28,6 +38,48 @@ export class AdvertisementPreviewCardComponent implements OnInit {
 
   public goToEditAdvertisement() {
     this.router.navigate(['advertisement', 'edit', this.advertisement?.id]);
+  }
+
+  public onOfferVisibilityChange() {
+    const dialogData: ConfirmationAlertInitialData = {
+      confirmationMessage: this.confirmationMessage,
+      confirmButtonLabel: this.confirmationConfirmLabel,
+      cancelButtonLabel: this.cancelLabel,
+    };
+    const dialogRef = this.matDialog.open(ConfirmationAlertComponent, {
+      data: dialogData,
+    });
+    dialogRef
+      .afterClosed()
+      .subscribe({ next: this.onAfterDialogClosed.bind(this) });
+  }
+
+  private onAfterDialogClosed(dialogResult: ConfirmationAlertResult) {
+    if (dialogResult === ConfirmationAlertResult.Accept) {
+      this.visibilityChangedEvent.emit({
+        isHidden: !this.advertisement?.isHidden,
+        advertisementId: this.advertisement!.id,
+      });
+      this.advertisement!.isHidden = !this.advertisement!.isHidden;
+    }
+  }
+
+  private get confirmationMessage() {
+    if (this?.advertisement?.isHidden) {
+      return 'Ogłoszenie stanie się widoczne dla wszystkich użytkowników';
+    }
+    return 'Ogłoszenie przestanie być widoczne dla wszystkich użytkowników';
+  }
+
+  private get confirmationConfirmLabel() {
+    if (this?.advertisement?.isHidden) {
+      return 'Uwidocznij ogłoszenie';
+    }
+    return 'Ukryj ogłoszenie';
+  }
+
+  private get cancelLabel() {
+    return 'Anuluj';
   }
 
   protected readonly undefined = undefined;

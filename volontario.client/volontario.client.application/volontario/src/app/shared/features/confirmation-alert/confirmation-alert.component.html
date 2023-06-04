@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Czy na pewno?</h1>
+<mat-dialog-content>
+  {{ confirmationMessage }}
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close color="primary">
+    {{ cancelButtonLabel }}
+  </button>
+  <button mat-raised-button color="warn" (click)="onConfirmButtonClicked()">
+    {{ confirmButtonLabel }}
+  </button>
+</mat-dialog-actions>

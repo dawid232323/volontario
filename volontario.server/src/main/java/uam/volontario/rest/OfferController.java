@@ -183,4 +183,23 @@ public class OfferController
     {
         return this.crudOfferDataHandler.loadOfferDetails( aId );
     }
+
+    /**
+     * Changes visibility of offer with given id.
+     *
+     * @param aOfferId Primary key of the offer which state should be changed
+     *
+     * @param aVisibilityMap {@linkplain Map} with single key isHidden
+     *
+     * @return {@linkplain ResponseEntity} with code 200 when visibility is changed correctly,
+ *                                      status 400 when offer with given id does not exist,
+     *
+     */
+    @PatchMapping( "changeVisibility/{offerId}" )
+    public ResponseEntity< ? > changeOfferVisibility( @PathVariable( "offerId" ) final Long aOfferId,
+                                                      @RequestBody final Map<String, Boolean> aVisibilityMap )
+    {
+        return this.crudOfferDataHandler.changeOfferVisibility( aOfferId,
+                aVisibilityMap.getOrDefault( "isHidden", false ) );
+    }
 }

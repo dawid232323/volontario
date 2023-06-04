@@ -9,7 +9,10 @@ import {
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { AdvertisementType } from 'src/app/core/model/advertisement.model';
 import { User } from 'src/app/core/model/user.model';
-import { AdvertisementFilterIf } from 'src/app/core/service/advertisement.service';
+import {
+  AdvertisementFilterIf,
+  AdvertisementVisibilityEnum,
+} from 'src/app/core/service/advertisement.service';
 import { isNil } from 'lodash';
 import { AdvertisementPanelTabEnum } from 'src/app/features/institution-advertisement-panel/institution-advertisement-panel.component';
 import { Subscription } from 'rxjs';
@@ -35,6 +38,8 @@ export class FilterPanelComponent implements OnInit, OnDestroy {
   public selectedStartDate: Date | null = null;
   public selectedEndDate: Date | null = null;
   public typedTitleSearch: string | null = null;
+  public selectedVisibility: AdvertisementVisibilityEnum =
+    AdvertisementVisibilityEnum.All;
 
   private subscriptions = new Subscription();
   constructor() {}
@@ -77,6 +82,7 @@ export class FilterPanelComponent implements OnInit, OnDestroy {
     if (!isNil(this.typedTitleSearch)) {
       searchFilterParams.title = this.typedTitleSearch;
     }
+    searchFilterParams.visibility = this.selectedVisibility;
     this.searchTriggered.emit(searchFilterParams);
   }
 
@@ -91,6 +97,7 @@ export class FilterPanelComponent implements OnInit, OnDestroy {
     this.typedTitleSearch = null;
     this.selectedCategories = [];
     this.selectedTypes = [];
+    this.selectedVisibility = AdvertisementVisibilityEnum.All;
   }
 
   public get filterHasValue(): boolean {
@@ -109,6 +116,11 @@ export class FilterPanelComponent implements OnInit, OnDestroy {
     if (this.selectedTypes.length > 0) {
       return true;
     }
+    if (this.selectedVisibility !== AdvertisementVisibilityEnum.All) {
+      return true;
+    }
     return false;
   }
+
+  protected readonly AdvertisementVisibilityEnum = AdvertisementVisibilityEnum;
 }

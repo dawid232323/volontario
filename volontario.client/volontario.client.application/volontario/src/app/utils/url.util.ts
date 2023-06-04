@@ -26,6 +26,8 @@ export class EndpointUrls {
     EndpointUrls.advertisementResource.concat('/type');
   public static readonly advertisementBenefits =
     EndpointUrls.advertisementResource.concat('/benefit');
+  public static readonly advertisementChangeVisibilityResource =
+    EndpointUrls.advertisementResource.concat('/changeVisibility');
   public static readonly offerApplicationResource = '/application';
   public static readonly offerApplicationSearchResource =
     EndpointUrls.offerApplicationResource.concat('/search');

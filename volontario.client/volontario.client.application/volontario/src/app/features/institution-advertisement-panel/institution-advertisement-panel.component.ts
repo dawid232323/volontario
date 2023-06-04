@@ -9,6 +9,7 @@ import { InterestCategoryService } from 'src/app/core/service/interestCategory.s
 import {
   AdvertisementFilterIf,
   AdvertisementService,
+  AdvertisementVisibilityEnum,
 } from 'src/app/core/service/advertisement.service';
 import { forkJoin } from 'rxjs';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
@@ -17,10 +18,17 @@ import { User } from 'src/app/core/model/user.model';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
+import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 
 export enum AdvertisementPanelTabEnum {
   Assigned = 0,
   All = 1,
+}
+
+export interface AdvertisementPreviewActionIf {
+  advertisementId: number;
+  isHidden?: boolean;
+  shouldBeDeleted?: boolean;
 }
 
 @Component({
@@ -67,6 +75,7 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
     };
     if (this.selectedTab === AdvertisementPanelTabEnum.Assigned) {
       filterOptions.contactPersonId = this.loggedUser?.id;
+      filterOptions.visibility = AdvertisementVisibilityEnum.All;
     }
     this.filterClearEvent.emit();
     this._filterData = filterOptions;
@@ -120,6 +129,7 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
       this._filterData = {
         institutionId: this.loggedUser!.institution!.id!,
         contactPersonId: this.loggedUser?.id,
+        visibility: AdvertisementVisibilityEnum.All,
       };
       this.loadListData();
     });
@@ -134,5 +144,30 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
 
   public get shouldShowFilterPanel(): boolean {
     return this._shouldShowFilterPanel;
+  }
+
+  public onAdvertisementChangeVisibilityClicked(
+    visibilityIf: AdvertisementPreviewActionIf
+  ) {
+    this.advertisementService
+      .changeOfferVisibility(visibilityIf.advertisementId, {
+        isHidden: visibilityIf.isHidden || false,
+      })
+      .subscribe({
+        error: error => {
+          throw new Error(error.error);
+        },
+      });
+  }
+
+  public get shouldShowContextMenu(): boolean {
+    return (
+      this.loggedUser?.hasUserRoles([
+        UserRoleEnum.InstitutionWorker,
+        UserRoleEnum.InstitutionAdmin,
+        UserRoleEnum.Moderator,
+        UserRoleEnum.Admin,
+      ]) || this.selectedTab === AdvertisementPanelTabEnum.Assigned
+    );
   }
 }

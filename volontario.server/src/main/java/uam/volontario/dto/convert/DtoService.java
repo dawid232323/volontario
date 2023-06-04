@@ -227,9 +227,10 @@ public class DtoService
         if (aOffer.getEndDate() != null) {
             endDate = Date.from(aOffer.getEndDate());
         }
-        return new OfferBaseInfoDto(aOffer.getId(), aOffer.getTitle(), Date.from(aOffer.getExpirationDate()),
+        return new OfferBaseInfoDto( aOffer.getId(), aOffer.getTitle(), Date.from(aOffer.getExpirationDate()),
                 aOffer.getOfferType().getName(), Date.from(aOffer.getStartDate()),
-                endDate, aOffer.getPlace(), aOffer.getInstitution().getName(), aOffer.getIsPoznanOnly());
+                endDate, aOffer.getPlace(), aOffer.getInstitution().getName(),
+                aOffer.getIsPoznanOnly(), aOffer.getIsHidden() );
     }
 
     /**

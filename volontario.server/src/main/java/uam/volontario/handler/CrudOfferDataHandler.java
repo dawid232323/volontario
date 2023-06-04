@@ -235,4 +235,27 @@ public class CrudOfferDataHandler
                     .body( aE.getMessage() );
         }
     }
+
+    public ResponseEntity< ? > changeOfferVisibility( final Long aOfferId, boolean isHidden )
+    {
+        Optional< Offer > optionalOfferToUpdate;
+        final Offer offerToUpdate;
+        try
+        {
+            optionalOfferToUpdate = this.offerService.tryLoadEntity( aOfferId );
+            if ( optionalOfferToUpdate.isEmpty() )
+            {
+                return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( "Offer with given id does not exist" );
+            }
+            offerToUpdate = optionalOfferToUpdate.get();
+        } catch ( Exception aException )
+        {
+            LOGGER.error( "Error on changing offer visibility " + aException.getMessage() );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aException.getMessage() );
+        }
+        offerToUpdate.setIsHidden( isHidden );
+        this.offerService.saveOrUpdate( offerToUpdate );
+        return ResponseEntity.ok( this.dtoService.createBaseInfoDtoOfOffer( offerToUpdate ) );
+    }
 }
