@@ -48,7 +48,7 @@ public class MailService
     @Autowired
     public MailService( final JavaMailSender aJavaMailSender,
                         final @Value("${volontarioNoReplyEmailAddress}") String aNoReplyVolontarioEmailAddress,
-                        final @Value("{volontarioModeratorEmailPlaceholder}") String aModeratorAddress )
+                        final @Value("${volontarioModeratorEmailPlaceholder}") String aModeratorAddress )
     {
         mailSender = aJavaMailSender;
         noReplyVolontarioEmailAddress = aNoReplyVolontarioEmailAddress;
