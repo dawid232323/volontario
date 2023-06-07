@@ -16,7 +16,7 @@ import {
 import { Injectable } from '@angular/core';
 import { TokenService } from '../service/security/token.service';
 import { SecurityService } from '../service/security/security.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EndpointUrls } from 'src/app/utils/url.util';
 
 @Injectable({ providedIn: 'root' })
@@ -65,7 +65,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         catchError(error => {
           this.isRefreshing = false;
           this.authService.logout();
-          this.router.navigate(['/login']);
+          this.router.navigate(['/login'], {
+            queryParams: { next: this.router.url },
+          });
           return throwError(error);
         })
       );

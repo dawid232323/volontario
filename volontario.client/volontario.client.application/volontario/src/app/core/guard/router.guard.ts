@@ -3,11 +3,13 @@ import {
   CanActivate,
   Router,
   RouterStateSnapshot,
+  UrlSerializer,
   UrlTree,
 } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { SecurityService } from '../service/security/security.service';
+import { isNil } from 'lodash';
 
 @Injectable({ providedIn: 'root' })
 export class RouterGuard implements CanActivate {
@@ -24,6 +26,13 @@ export class RouterGuard implements CanActivate {
     if (this.authService.isUserLoggedIn()) {
       return of(true);
     }
-    return this.router.navigate(['/login']);
+    const nextUrlTree = this.router.createUrlTree(
+      route.pathFromRoot
+        .filter(route => !isNil(route.url[0]?.path))
+        .map(route => route.url[0]?.path),
+      { queryParams: route.queryParams }
+    );
+    const nextUrl = this.router.serializeUrl(nextUrlTree);
+    return this.router.navigate(['/login'], { queryParams: { next: nextUrl } });
   }
 }
