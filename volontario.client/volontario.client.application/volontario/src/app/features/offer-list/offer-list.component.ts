@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MobileFilterViewComponent } from 'src/app/features/offer-list/_features/mobile-filter-view/mobile-filter-view.component';
 import { isNil } from 'lodash';
 import { PageEvent } from '@angular/material/paginator';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-offer-list',
@@ -120,10 +121,10 @@ export class OfferListComponent implements OnInit {
       filters.title = this.typedText;
     }
     if (!isNil(this.dateFrom)) {
-      filters.startDate = this.dateFrom;
+      filters.startDate = moment(this.dateFrom).format('YYYY-MM-DD');
     }
     if (!isNil(this.dateTo)) {
-      filters.endDate = this.dateTo;
+      filters.endDate = moment(this.dateTo).format('YYYY-MM-DD');
     }
     if (!isNil(this.selectedCategories) && this.selectedCategories.size > 0) {
       filters.interestCategoryIds = [...this.selectedCategories.values()];

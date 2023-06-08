@@ -25,7 +25,6 @@ export class TopFilterPanelComponent implements OnInit {
   ngOnInit(): void {}
 
   onSearchClicked() {
-    console.log(this.offerName);
     this.searchClicked.emit();
   }
 

@@ -41,18 +41,31 @@ INSERT INTO public.offers(
     id, description, end_date, expiration_date, is_experience_required, is_poznan_only,
     place, start_date, title, contact_person_id, institution_id, minimum_experience_id,
     offer_type_id, offer_state_id, assigned_moderator_id, is_hidden, periodic_description)
-VALUES (1, 'Pomoc w domu dla starców i sierocińcu', '2023-05-25 00:00:00+00', '2023-05-15 00:00:00+00', true,
-        true, 'Poznań', '2023-05-20 00:00:00+00', 'Pomoc w domu dla starców i sierocińcu', 1, 1, 1, 1, 1, NULL, false,
+VALUES (1, 'Pomagamy w jednym z domów spokojnej starości w Poznaniu. ' ||
+           'Nasza pomoc opiera się głównie na wsparciu personelu sprzątającego. Często pełnimy też rolę pomocy kuchennej.' ||
+           'Szukamy ciepłych, cierpliwych i wyrozumiałych osób. W zamian oferujemy szczery i piękny uśmiech naszych podopiecznych',
+        '2023-05-25 00:00:00+00', '2023-05-25 00:00:00+00', true,
+        true, 'Poznań', '2023-05-20 00:00:00+00', 'Pomoc w domu spokojnej starości', 1, 1, 1, 1, 1, NULL, false,
         NULL),
-       (2, 'Zbiórka na biednych', '2023-07-20 00:00:00+00', '2023-05-15 00:00:00+00',
-        true, false, 'Gniezno', '2023-05-20 00:00:00+00', 'Zbiórka na biednych', 2, 2, 1, 2, 1, NULL, false,
-        'Co tydzień o 17 w piątek'),
-       (3, 'Pomoc dla niepełnosprawnej pani', '2023-06-20 22:00:00+00', '2023-06-03 22:00:00+00', false,
-        true, 'Poznań', '2023-06-17 22:00:00+00', 'Pomoc dla niepełnosprawnej pani', 2, 2, NULL, 1, 1, NULL, false,
-        NULL),
-       (4, 'Wolontariat w szkole specjalnej', '2023-06-30 22:00:00+00', '2023-05-31 22:00:00+00', true,
-        true, 'Poznań', '2023-05-28 22:00:00+00', 'Wolontariat w szkole specjalnej', 2, 2, 2, 3, 2, 8, true,
-        'Każdego tygodnia od 8 do 16 w dni robocze');
+       (2, 'Potrzebujemy osoby, która pomoże naszej organizacji w przeprowadzaniu zbiórek datków dla osób potrzebujących.' ||
+           'Pomagamy głównie osobom poszkodowanym podczas wojny w Ukrainie. Wolontariat polega na zbieraniu datków w ' ||
+           'różnych miejscach Gniezna.',
+            '2023-07-20 00:00:00+00', '2023-05-15 00:00:00+00',
+        true, false, 'Gniezno', '2023-05-20 00:00:00+00', 'Pomoc w zbiórce dla potrzebujących', 2, 2, 1, 2, 1, NULL, false,
+        'Zbieramy się co tydzień w poniedziałki i soboty o godzinie 11 w sedzibie naszej organizacji na ulicy Poznańskiej'),
+       (3, 'Pomagamy jednej z podpiecznych naszej fundacji w wykonywaniu codziennych obowiązków. ' ||
+           'Ze względu na trudności w poruszaniu się, pani Grażyna potrzebuje pomocy w czynnościach takich jak ' ||
+           'gotowanie, sprzątanie, robienie zakupów spożywczych. Wolontariuszom jesteśmy w stanie zapewnić zwrot ' ||
+           'kosztów zakupu biletów ZTM.',
+        '2023-06-20 22:00:00+00', '2023-06-03 22:00:00+00', false,
+        true, 'Poznań', '2023-06-17 22:00:00+00', 'Pomoc starszej Pani z niepełnosprawnością', 2, 2, NULL, 1, 1, NULL, false,
+        'Pani Grażyna oczekuje naszej pomocy dwa razy w tygodniu, w 3 dniowych odstępach. Mieszka na ulicy Grunwaldzkiej.'),
+       (4, 'Poszukujemy osoby lubiącej zabawę z dziećmi. Pomagamy w lokalnej szkole podstawowej, a konkretniej w świetlicy. ' ||
+           'Wolontariat polega na animowaniu czasu dzieciom przebywającym w świetlicy po lekcjach. Na miejscu dostępne są róznego ' ||
+           'rodzaju klocki, lalki, gry planszowe.',
+        '2023-06-30 22:00:00+00', '2023-05-31 22:00:00+00', true,
+        true, 'Poznań', '2023-05-28 22:00:00+00', 'Wolontariat w świetlicy szkoły podstawowej specjalnej', 2, 2, 2, 3, 2, 8, true,
+        'Do wyboru 2 dni szkolne w ciągu tygodnia, w godzinach od 13 do 17');
 
 SELECT setval('offers_id_seq', 5, true);
 
