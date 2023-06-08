@@ -5,7 +5,7 @@ import { UserRoleEnum } from '../../core/model/user-role.model';
 import { User } from '../../core/model/user.model';
 import { UserService } from '../../core/service/user.service';
 import { forkJoin, Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { isNil } from 'lodash';
 import { OfferApplicationService } from 'src/app/core/service/offer-application.service';
 
@@ -27,7 +27,8 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     private advertisementService: AdvertisementService,
     private offerApplicationService: OfferApplicationService,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +63,14 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
 
   public get applicationState(): string {
     return `Zaaplikowałeś już na tę ofertę. Aktualnie jest ona w stanie: ${this._applicationState?.toLocaleLowerCase()}`;
+  }
+
+  public onEditButtonClicked() {
+    return this.router.navigate([
+      'advertisement',
+      'edit',
+      this._advertisementId,
+    ]);
   }
 
   private determineIfUserCanApply() {

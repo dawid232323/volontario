@@ -3,6 +3,7 @@
   [dataSource]="dataSource"
   matSortActive="starred"
   matSortDirection="desc"
+  multiTemplateDataRows
   class="!table-fixed !border-spacing-2 w-full">
   <ng-container matColumnDef="firstName">
     <mat-header-cell mat-sort-header *matHeaderCellDef>Imię</mat-header-cell>
@@ -50,8 +51,32 @@
     >
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="visibleColumns"></mat-header-row>
+  <ng-container matColumnDef="expand">
+    <mat-header-cell mat-sort-header *matHeaderCellDef>Expand</mat-header-cell>
+    <mat-cell *matCellDef="let element"></mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <mat-cell
+      class="w-full"
+      [@detailExpand]="isElementExpanded(element.id) ? 'expanded' : 'collapsed'"
+      *matCellDef="let element"
+      [attr.colspan]="columnsToDisplayWithExpand.length">
+      <app-application-details-row
+        (applicationDetailsChange)="onApplicationStatusChange($event)"
+        class="w-full"
+        [applicationDetails]="element"></app-application-details-row>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row
+    *matHeaderRowDef="columnsToDisplayWithExpand"></mat-header-row>
   <mat-row
-    class="hover:bg-rowAccentHover hover:cursor-pointer"
+    class="hover:bg-rowAccentHover hover:cursor-pointer example-element-row"
     *matRowDef="let row; columns: visibleColumns"></mat-row>
+  <mat-row
+    *matRowDef="let element; columns: ['expandedDetail']"
+    class="example-detail-row"
+    [ngClass]="{ hidden: !isElementExpanded(element.id) }"
+    [class.example-expanded-row]="isElementExpanded(element.id)"></mat-row>
 </mat-table>

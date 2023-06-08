@@ -30,11 +30,11 @@ export class ConfirmationAlertComponent {
     @Inject(MAT_DIALOG_DATA) public data: ConfirmationAlertInitialData
   ) {
     this._confirmationMessage =
-      data.confirmationMessage || this._defaultConfirmationMessage;
+      data?.confirmationMessage || this._defaultConfirmationMessage;
     this._confirmButtonLabel =
-      data.confirmButtonLabel || this._defaultConfirmButtonLabel;
+      data?.confirmButtonLabel || this._defaultConfirmButtonLabel;
     this._cancelButtonLabel =
-      data.cancelButtonLabel || this._defaultCancelButtonLabel;
+      data?.cancelButtonLabel || this._defaultCancelButtonLabel;
   }
 
   get confirmationMessage(): string {

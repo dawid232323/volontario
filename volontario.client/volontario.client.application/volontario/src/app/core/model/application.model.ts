@@ -69,3 +69,9 @@ export class ApplicationStateCheck {
     return new ApplicationStateCheck(payload?.applied, payload?.state);
   }
 }
+
+export enum ApplicationStateEnumName {
+  Waiting = 'Oczekująca',
+  Accepted = 'Zaakceptowana',
+  Rejected = 'Odrzucona',
+}

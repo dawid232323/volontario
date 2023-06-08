@@ -14,7 +14,8 @@ module.exports = {
         btnAccentHoverPrimary: 'rgba(11,143,171,0.7)',
         btnAccentHoverWhite: 'rgba(215,215,215,0.7)',
         btnAccentDisabled: 'rgba(175,172,172,0.77)',
-        warnColor: 'rgba(255,71,71,0.77)'
+        warnColor: 'rgba(255,71,71,0.77)',
+        btnWarnHover: 'rgba(182,12,12,0.77)'
       },
     },
   },

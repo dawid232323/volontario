@@ -16,6 +16,7 @@ import {
   ApplicationStateCheck,
 } from 'src/app/core/model/application.model';
 import { throwUnknownPortalTypeError } from '@angular/cdk/portal/portal-errors';
+import { ApplicationActionTypeEnum } from 'src/app/core/interface/application.interface';
 
 export interface BaseApplicationFiltersIf {
   state?: number;
@@ -101,5 +102,15 @@ export class OfferApplicationService {
     return this.restService
       .get(EndpointUrls.offerApplicationCheckState, options)
       .pipe(map(result => ApplicationStateCheck.fromPayload(result)));
+  }
+
+  public changeApplicationState(
+    applicationId: number,
+    operationType: ApplicationActionTypeEnum
+  ): Observable<any> {
+    return this.restService.patch(
+      EndpointUrls.getApplicationStateCheckUrl(applicationId, operationType),
+      {}
+    );
   }
 }

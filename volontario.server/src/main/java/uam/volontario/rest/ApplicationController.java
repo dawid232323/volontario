@@ -93,7 +93,7 @@ public class ApplicationController
      *          - Response Entity with accepted Application and 200 code, if everything went well.
      *          - Response Entity with code 400, if there is no Application with given id.
      */
-    @PostMapping( "/accept/{applicationId}" )
+    @PatchMapping( "/accept/{applicationId}" )
     public ResponseEntity< ? > acceptApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
         return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.ACCEPTED );
@@ -110,7 +110,7 @@ public class ApplicationController
      *          - Response Entity with declined Application and 200 code, if everything went well.
      *          - Response Entity with code 400, if there is no Application with given id.
      */
-    @PostMapping( "/decline/{applicationId}" )
+    @PatchMapping( "/decline/{applicationId}" )
     public ResponseEntity< ? > declineApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
         return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.DECLINED );

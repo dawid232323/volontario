@@ -8,11 +8,30 @@ import {
 import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import { cloneDeep } from 'lodash';
+import { ApplicationActionIf } from 'src/app/core/interface/application.interface';
 
 @Component({
   selector: 'app-application-list',
   templateUrl: './application-list.component.html',
   styleUrls: ['./application-list.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
+    ]),
+  ],
 })
 export class ApplicationListComponent implements OnInit {
   @ViewChild(MatSort) sort?: MatSort;
@@ -28,6 +47,10 @@ export class ApplicationListComponent implements OnInit {
   private _offerApplications: ApplicationDetails[] = [];
   private _dataSource: MatTableDataSource<ApplicationDetails> =
     new MatTableDataSource<ApplicationDetails>();
+
+  public columnsToDisplayWithExpand = [...this._visibleColumns, 'expand'];
+  public expandedElementId?: null | number;
+  public expandedElementIds = new Set<number>();
   constructor(
     private offerApplicationService: OfferApplicationService,
     private route: ActivatedRoute
@@ -74,8 +97,27 @@ export class ApplicationListComponent implements OnInit {
     });
   }
 
-  // TODO add navigation to single application view
-  public onRowClick(applicationId: number) {}
+  public onRowClick(applicationId: number) {
+    if (this.expandedElementIds.has(applicationId)) {
+      this.expandedElementIds.delete(applicationId);
+      return;
+    }
+    this.expandedElementIds.add(applicationId);
+  }
+
+  public isElementExpanded(applicationId: number): boolean {
+    return this.expandedElementIds.has(applicationId);
+  }
+
+  public onApplicationStatusChange(event: ApplicationActionIf) {
+    this.offerApplicationService
+      .changeApplicationState(event.application.id, event.actionType)
+      .subscribe({
+        error: err => {
+          throw new Error(err);
+        },
+      });
+  }
 
   private getOfferApplications() {
     const filters: BaseApplicationFiltersIf = {

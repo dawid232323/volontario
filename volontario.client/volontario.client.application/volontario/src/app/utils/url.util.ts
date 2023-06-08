@@ -1,4 +1,5 @@
 import { VerifyType } from 'src/app/features/institution-verify/institution-verify.const';
+import { ApplicationActionTypeEnum } from 'src/app/core/interface/application.interface';
 
 export class EndpointUrls {
   public static readonly login: string = '/login';
@@ -39,7 +40,8 @@ export class EndpointUrls {
     EndpointUrls.offerApplicationResource.concat('/unstar');
   public static readonly offerApplicationCheckState =
     EndpointUrls.offerApplicationResource.concat('/checkState');
-  static readonly unauthorizedUrls = new Set<string>([
+
+  public static readonly unauthorizedUrls = new Set<string>([
     EndpointUrls.institutionRegister,
     EndpointUrls.getInstitutionVerify(VerifyType.ACCEPT),
     EndpointUrls.getInstitutionVerify(VerifyType.REJECT),
@@ -47,4 +49,20 @@ export class EndpointUrls {
     EndpointUrls.registerVolunteer,
     EndpointUrls.refreshToken,
   ]);
+
+  public static getApplicationStateCheckUrl(
+    applicationId: number,
+    operationType: ApplicationActionTypeEnum
+  ): string {
+    if (operationType === ApplicationActionTypeEnum.Accept) {
+      return EndpointUrls.offerApplicationResource.concat(
+        '/accept',
+        `/${applicationId}`
+      );
+    }
+    return EndpointUrls.offerApplicationResource.concat(
+      '/decline',
+      `/${applicationId}`
+    );
+  }
 }

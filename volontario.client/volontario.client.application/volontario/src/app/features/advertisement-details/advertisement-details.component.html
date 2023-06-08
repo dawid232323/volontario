@@ -154,15 +154,12 @@
   </div>
   <mat-card
     class="w-full md:h-[200px] md:w-[200px] my-8 mx-4"
-    *ngIf="
-      !loggedUser?.hasUserRoles([
-        UserRoleEnum.InstitutionWorker,
-        UserRoleEnum.InstitutionAdmin
-      ])
-    "
-    ><mat-card-title><h3>Aplikuj na ogłoszenie</h3></mat-card-title
+    *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer) || canManageOffer"
+    ><mat-card-title *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
+      ><h3>Aplikuj na ogłoszenie</h3></mat-card-title
     ><mat-card-content>
       <div
+        *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
         class="w-full h-full"
         [matTooltip]="applicationState"
         [matTooltipDisabled]="canApplyForOffer">
@@ -173,6 +170,15 @@
           routerLink="apply"
           [disabled]="!canApplyForOffer">
           Aplikuj
+        </button>
+      </div>
+      <div *ngIf="canManageOffer" class="w-full h-full">
+        <button
+          (click)="onEditButtonClicked()"
+          mat-raised-button
+          class="w-full hover:bg-btnAccentHover"
+          color="accent">
+          Edytuj ogłoszenie
         </button>
       </div>
     </mat-card-content></mat-card
