@@ -4,13 +4,13 @@ services:
     image: nginx:1.23-alpine
     restart: always
     volumes:
-      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/templates/${NGINX_CONFIG_TEMPLATE}:/etc/nginx/templates/default.conf.template
+      - ${NGINX_CERT_PATH}:/etc/letsencrypt
     environment:
-      - VOLONTARIO_DOMAIN=localhost # change to 'volontario.me' for production
+      - VOLONTARIO_DOMAIN=${VOLONTARIO_DOMAIN}
     ports:
       - '80:80'
-      # https to be configured once we get new environment
-      # - '443:443' 
+      - '443:443' 
   volontario-front:
     image: volontario-front:latest
     restart: always
@@ -19,7 +19,7 @@ services:
     build:
       context: ../volontario.client/volontario.client.application/volontario
       args:
-        CLIENT_ENVIRONMENT: localdev # change to 'production' when deploying to prod
+        CLIENT_ENVIRONMENT: ${CLIENT_ENVIRONMENT:-localdev}
   volontario-back:
     image: volontario-back:latest
     restart: always
