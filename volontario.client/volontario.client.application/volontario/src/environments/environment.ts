@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://dev.volontario.me/api',
+  apiUrl: 'https://dev.volontario.me/api',
 };
 
 /*

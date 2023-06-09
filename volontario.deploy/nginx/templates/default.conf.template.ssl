@@ -1,5 +1,5 @@
 # limiting requests to 25 per second per IP address
-limit_req_zone $binary_remote_addr zone=limit:10m rate=25r/s;
+#limit_req_zone $binary_remote_addr zone=limit:10m rate=25r/s;
 
 server {
 
@@ -24,13 +24,13 @@ server {
     proxy_set_header   X-Forwarded-Host $server_name;
 
     location / {
-        limit_req zone=limit;
+        #limit_req zone=limit;
         proxy_pass         http://volontario-front;
         proxy_redirect     off;
     }
 
     location /api {
-        limit_req zone=limit;
+        #limit_req zone=limit;
         proxy_pass         http://volontario-back:8080/api;
         proxy_redirect     off;
     }
