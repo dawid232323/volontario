@@ -1,0 +1,25 @@
+<div class="flex flex-col min-h-screen bg-gray-100 items-center space-y-10">
+  <section class="lg:w-3/4 bg-white lg:mt-10 rounded-xl" id="filter-section">
+    <app-applications-filter
+      (searchEvent)="onSearchButtonClicked()"
+      [(applicationState)]="offerState"
+      [(title)]="offerTitle"
+      [(startDate)]="offerStartDate"
+      [(endDate)]="offerEndDate"></app-applications-filter>
+  </section>
+  <section id="list-section" class="lg:w-3/4 space-y-4">
+    <app-applications-list
+      (listRowClicked)="onListRowClicked($event)"
+      [loggedUser]="loggedUser"
+      [applications]="applications"></app-applications-list>
+    <mat-paginator
+      color="accent"
+      (page)="onPaginatorDataChange($event)"
+      [pageSize]="currentPageSize"
+      [length]="totalElementsNumber"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="availablePageSizes"
+      aria-label="Wybierz stronę">
+    </mat-paginator>
+  </section>
+</div>

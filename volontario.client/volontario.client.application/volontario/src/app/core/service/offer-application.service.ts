@@ -15,11 +15,10 @@ import {
   ApplicationDetails,
   ApplicationStateCheck,
 } from 'src/app/core/model/application.model';
-import { throwUnknownPortalTypeError } from '@angular/cdk/portal/portal-errors';
 import { ApplicationActionTypeEnum } from 'src/app/core/interface/application.interface';
 
 export interface BaseApplicationFiltersIf {
-  state?: number;
+  state?: string;
   starred?: boolean;
   offerId?: number;
   volunteerId?: number;

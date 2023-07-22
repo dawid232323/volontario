@@ -30,6 +30,13 @@
                     Lista ogłoszeń
                   </a>
                 </li>
+                <li *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)">
+                  <a
+                    routerLink="/applications"
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
+                    Twoje aplikacje
+                  </a>
+                </li>
               </ul>
               <ul
                 *ngIf="
@@ -143,10 +150,16 @@
       <a
         class="flex flex-col justify-center items-center w-1/4 p-1"
         [matMenuTriggerFor]="menuMobile">
-        <i class="fa-solid fa-gear text-lg"></i>
-        Ustawienia
+        <i class="fa-solid fa-plus text-lg fa-angle-up"></i>
+        Więcej
       </a>
       <mat-menu #menuMobile="matMenu">
+        <ul
+          mat-menu-item
+          *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)">
+          <i class="fa-solid fa-address-card"></i>
+          Twoje aplikacje
+        </ul>
         <ul mat-menu-item>
           <i class="fa-solid fa-address-card"></i>
           Zobacz profil

@@ -22,6 +22,7 @@ import { InstitutionAdvertisementPanelComponent } from 'src/app/features/institu
 import { OfferListComponent } from 'src/app/features/offer-list/offer-list.component';
 import { AdvertisementDetailsComponent } from './features/advertisement-details/advertisement-details.component';
 import { OfferApplyComponent } from 'src/app/features/offer-apply/offer-apply.component';
+import { VolunteerApplicationsListComponent } from 'src/app/features/volunteer-applications-list/volunteer-applications-list.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -104,6 +105,14 @@ const routes: Routes = [
         },
       },
     ],
+  },
+  {
+    path: 'applications',
+    component: VolunteerApplicationsListComponent,
+    canActivate: [RouterGuard, RoleDependentGuard],
+    data: {
+      roles: [UserRoleEnum.Volunteer],
+    },
   },
   { path: '**', pathMatch: 'full', redirectTo: 'home' },
 ];

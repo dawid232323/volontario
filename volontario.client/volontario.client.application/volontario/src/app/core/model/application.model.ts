@@ -75,3 +75,33 @@ export enum ApplicationStateEnumName {
   Accepted = 'Zaakceptowana',
   Rejected = 'Odrzucona',
 }
+
+export interface ApplicationStateIf {
+  stateId: number;
+  stateName: ApplicationStateEnumName;
+  serverQueryStateName: string;
+}
+
+export class ApplicationStates {
+  static readonly Rejected: ApplicationStateIf = {
+    stateId: 1,
+    stateName: ApplicationStateEnumName.Rejected,
+    serverQueryStateName: 'declined',
+  };
+
+  static readonly Waiting: ApplicationStateIf = {
+    stateId: 2,
+    stateName: ApplicationStateEnumName.Waiting,
+    serverQueryStateName: 'awaiting',
+  };
+
+  static readonly Accepted: ApplicationStateIf = {
+    stateId: 3,
+    stateName: ApplicationStateEnumName.Accepted,
+    serverQueryStateName: 'accepted',
+  };
+
+  static get allStates(): ApplicationStateIf[] {
+    return [this.Rejected, this.Waiting, this.Accepted];
+  }
+}

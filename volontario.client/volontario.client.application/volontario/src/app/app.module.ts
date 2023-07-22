@@ -24,6 +24,7 @@ import { OfferListModule } from 'src/app/features/offer-list/offer-list.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AdvertisementDetailsModule } from './features/advertisement-details/advertisement-details.module';
 import { OfferApplyModule } from 'src/app/features/offer-apply/offer-apply.module';
+import { VolunteerApplicationsListModule } from './features/volunteer-applications-list/volunteer-applications-list.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -49,6 +50,7 @@ import { OfferApplyModule } from 'src/app/features/offer-apply/offer-apply.modul
     MatDialogModule,
     AdvertisementDetailsModule,
     OfferApplyModule,
+    VolunteerApplicationsListModule,
   ],
   providers: [
     {

@@ -1,0 +1,25 @@
+<mat-table
+  [dataSource]="dataSource"
+  class="!table-fixed !border-spacing-2 w-full border-2 rounded-xl">
+  <ng-container matColumnDef="offerTitle">
+    <mat-header-cell *matHeaderCellDef>Ogłoszenie</mat-header-cell>
+    <mat-cell *matCellDef="let application">{{
+      application.offer?.offerTitle
+    }}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="participationMotivation">
+    <mat-header-cell *matHeaderCellDef>Motywacja uczestnictwa</mat-header-cell>
+    <mat-cell *matCellDef="let application">{{
+      application.participationMotivation
+    }}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="state">
+    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+    <mat-cell *matCellDef="let application">{{ application.state }}</mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="visibleColumns"></mat-header-row>
+  <mat-row
+    (click)="onRowClick(row)"
+    class="hover:bg-rowAccentHover hover:cursor-pointer example-element-row"
+    *matRowDef="let row; columns: visibleColumns"></mat-row>
+</mat-table>
