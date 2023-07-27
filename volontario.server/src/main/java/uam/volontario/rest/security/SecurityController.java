@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,6 +69,7 @@ public class SecurityController
      *         give correct logging data then ResponseEntity with 400 status and reason. If there was an error,
      *         then ResponseEntity with 500 status and error message.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
     @PostMapping( value = "/login" )
     public ResponseEntity< ? > login( @RequestBody final LoginDto aDto )
     {
@@ -108,6 +110,7 @@ public class SecurityController
      * @return if token is valid, then Response Entity with 200 code and a pair of new JWTs. If token is invalid,
      *         then Response Entity with 400 code. If unexpected error occurred, then Response Entity with 500 code.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
     @PostMapping( value = "/refresh/token" )
     public ResponseEntity< ? > refreshJWT( @RequestBody final Map< String, String > aRefreshToken )
     {

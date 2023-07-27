@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +64,7 @@ public class FetchingController
      * @return Response Entity with 200 code with List of Interest Categories or Response Entity with 500 code when
      *         error on server side occurred.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
     @GetMapping( value = "/interestCategories" )
     public ResponseEntity< ? > loadInterestCategories()
     {
@@ -86,6 +88,7 @@ public class FetchingController
      * @return Response Entity with 200 code with List of Volunteer Experiences or Response Entity with 500 code when
      *         error on server side occurred.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
     @GetMapping( value = "/experienceLevels" )
     public ResponseEntity< ? > loadExperienceLevels()
     {
@@ -109,6 +112,7 @@ public class FetchingController
      * @return Response Entity with 200 code with data of User or Response Entity with 500 code when
      *         error on server side occurred.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
     @GetMapping( value = "/userData" )
     public ResponseEntity< ? > loadUserData( @RequestHeader( HttpHeaders.AUTHORIZATION ) final String aAuthenticationHeader )
     {

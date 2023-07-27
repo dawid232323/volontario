@@ -3,6 +3,7 @@ package uam.volontario.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.VolunteerPatchInfoDto;
@@ -40,6 +41,7 @@ public class VolunteerController
      *         pass validation then ResponseEntity with 400 status and constraints violated. If there was an error,
      *         then ResponseEntity with 500 status and error message.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
     @PostMapping( value = "/register" )
     public ResponseEntity< ? > registerVolunteer( @RequestBody final VolunteerDto aDto )
     {
@@ -64,6 +66,7 @@ public class VolunteerController
      *
      *        - Response Entity with code 500 when unexpected server-side error occurs.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteers( authentication.principal )" )
     @PatchMapping( "/{volunteerId}" )
     public ResponseEntity< ? > updateVolunteerInformation( @PathVariable( "volunteerId" ) final Long aVolunteerId,
                                                            @RequestBody final VolunteerPatchInfoDto aPatchDto )

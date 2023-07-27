@@ -3,6 +3,7 @@ package uam.volontario.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.handler.InstitutionRegistrationHandler;
@@ -40,6 +41,7 @@ public class InstitutionRegistrationController
      *         pass validation then ResponseEntity with 401 status and constraints violated. If there was an error,
      *         then ResponseEntity with 500 status and error message.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
     @PostMapping( value = "/register" )
     public ResponseEntity< ? > registerInstitution( @RequestBody final InstitutionDto aInstitutionDto )
     {
@@ -55,6 +57,7 @@ public class InstitutionRegistrationController
      *         registration token was invalid, and if any error occurs then Response Entity with code 500 and
      *         error message.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
     @PostMapping( value = "/accept" )
     public ResponseEntity< ? > acceptInstitution( @RequestParam( "token" ) final String aRegistrationToken )
     {
@@ -70,6 +73,7 @@ public class InstitutionRegistrationController
      *         registration token was invalid, and if any error occurs then Response Entity with code 500 and
      *         error message.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
     @PostMapping( value = "/reject" )
     public ResponseEntity< ? > rejectInstitution( @RequestParam( "token" ) final String aRegistrationToken )
     {
@@ -89,6 +93,7 @@ public class InstitutionRegistrationController
      *         Response Entity with code 500 and error message.
      *
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
     @PostMapping( value = "/register-contact-person" )
     public ResponseEntity< ? > registerInstitutionContactPerson( @RequestParam( "t" ) final String aRegistrationToken,
                                                                  @RequestBody final Map< String, String > aPassword )

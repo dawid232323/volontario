@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.Application.ApplicationDto;
 import uam.volontario.handler.ApplicationProcessingHandler;
@@ -42,6 +43,7 @@ public class ApplicationController
      *          - Response Entity with code 400, if there was no Application with given id.
      *          - Response Entity with code 501, if there was an unexpected server side error.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitution( authentication.principal )" )
     @PatchMapping( "/star/{applicationId}" )
     public ResponseEntity< ? > starApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
@@ -59,6 +61,7 @@ public class ApplicationController
      *          - Response Entity with code 400, if there was no Application with given id.
      *          - Response Entity with code 501, if there was an unexpected server side error.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitution( authentication.principal )" )
     @PatchMapping( "/unstar/{applicationId}" )
     public ResponseEntity< ? > unstarApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
@@ -76,6 +79,7 @@ public class ApplicationController
      *          newly created Application did not pass validation.
      *        - Response Entity with code 500, if there was an unexpected server-side error.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteers( authentication.principal )" )
     @PostMapping
     public ResponseEntity< ? > createApplication( @RequestBody final ApplicationDto aDto )
     {
@@ -93,6 +97,7 @@ public class ApplicationController
      *          - Response Entity with accepted Application and 200 code, if everything went well.
      *          - Response Entity with code 400, if there is no Application with given id.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheApplication( authentication.principal, #aApplicationId )" )
     @PatchMapping( "/accept/{applicationId}" )
     public ResponseEntity< ? > acceptApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
@@ -110,6 +115,7 @@ public class ApplicationController
      *          - Response Entity with declined Application and 200 code, if everything went well.
      *          - Response Entity with code 400, if there is no Application with given id.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheApplication( authentication.principal, #aApplicationId )" )
     @PatchMapping( "/decline/{applicationId}" )
     public ResponseEntity< ? > declineApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
@@ -122,6 +128,7 @@ public class ApplicationController
      * @return Response Entity with code 200 and list of detailed application info or Response Entity with code 500 when error
      *         occurred during fetching application.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitution( authentication.principal )" )
     @GetMapping( "/searchDetails" )
     public ResponseEntity< ? > loadApplicationInfoFilteredDetails( @RequestParam( required = false ) String state,
                                                             @RequestParam( required = false ) Boolean isStarred,
@@ -141,6 +148,7 @@ public class ApplicationController
      * @return Response Entity with code 200 and detailed application info or Response Entity with code 400,
      * if there is no Application with given id.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheApplication( authentication.principal, #aApplicationId )" )
     @GetMapping( "/details/{applicationId}" )
     public ResponseEntity< ? > loadApplicationInfoFilteredDetails( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
@@ -153,6 +161,7 @@ public class ApplicationController
      * @return Response Entity with code 200 and list of base application info or Response Entity with code 500 when error
      *         occurred during fetching offers.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
     @GetMapping( "/search" )
     public ResponseEntity< ? > loadApplicationInfoFiltered( @RequestParam( required = false ) String state,
                                                             @RequestParam( required = false ) Boolean isStarred,
@@ -169,6 +178,7 @@ public class ApplicationController
     /**
      * Find if a given volunteer applied for an offer and if he did, what is the application status.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
     @GetMapping( "/checkState" )
     public ResponseEntity< ? > checkState( @RequestParam Long offerId, @RequestParam Long volunteerId )
     {

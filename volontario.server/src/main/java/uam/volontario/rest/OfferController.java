@@ -1,9 +1,11 @@
 package uam.volontario.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.Offer.OfferDto;
 import uam.volontario.handler.CrudOfferDataHandler;
@@ -11,11 +13,9 @@ import uam.volontario.handler.OfferAssignmentHandler;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 
-import java.util.Map;
-
-import org.springframework.data.domain.Pageable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for API related to {@linkplain uam.volontario.model.offer.impl.Offer}s.
@@ -51,6 +51,7 @@ public class OfferController
      * @return Response Entity with code 200 and list of offers or Response Entity with code 500 when error
      *         occurred during fetching offers.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
     @GetMapping
     public ResponseEntity< ? > loadAllOffers()
     {
@@ -63,6 +64,7 @@ public class OfferController
      * @return Response Entity with code 200 and list of offers or Response Entity with code 500 when error
      *         occurred during fetching offers.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
     @GetMapping( "/search" )
     public ResponseEntity< ? > loadBaseOffersInfoFiltered( @RequestParam( required = false ) String title,
                                                            @RequestParam( required = false ) Long offerTypeId,
@@ -89,6 +91,7 @@ public class OfferController
      * @return Response Entity with code 200 and list of benefits or Response Entity with code 500 when error
      *         occurred during fetching benefits.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
     @GetMapping( value = "/benefit" )
     public ResponseEntity< ? > loadAllBenefits()
     {
@@ -101,6 +104,7 @@ public class OfferController
      * @return Response Entity with code 200 and list of offers types or Response Entity with code 500 when error
      *         occurred during fetching offers types.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
     @GetMapping( value = "/type" )
     public ResponseEntity< ? > loadAllOfferTypes()
     {
@@ -115,6 +119,7 @@ public class OfferController
      * @return Response with status 201 with body of newly created offer object or
      *         status of 400 if request had wrong data and 500 in case of any other errors.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitution( authentication.principal )" )
     @PostMapping
     public ResponseEntity< ? > createNewOffer( @RequestBody final OfferDto aOfferDto )
     {
@@ -135,6 +140,7 @@ public class OfferController
      *
      *        or Response Entity with status 500 if an unexpected error occurred.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
     @PostMapping( value = "/assign" )
     public ResponseEntity< ? > assignOffer( @RequestBody final Map< String, Long > aIdsMap )
     {
@@ -154,6 +160,7 @@ public class OfferController
      *
      *        or Response Entity with status 500 if an unexpected error occurred.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
     @GetMapping( "/assigned" )
     public ResponseEntity< ? > loadOffersAssignedToModerator( @RequestParam( value = "mod" ) final Long aModeratorId )
     {
@@ -166,18 +173,21 @@ public class OfferController
      * @return Response Entity with all unassigned Offers and status 200,
      *        or Response Entity with status 500 if an unexpected error occurred.
      */
+    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
     @GetMapping( "/unassigned" )
     public ResponseEntity< ? > loadUnassignedOffers()
     {
         return offerAssignmentHandler.loadAllUnassignedOffers();
     }
 
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheOffer( authentication.principal, #aId )" )
     @PutMapping( value = "/{id}" )
     public ResponseEntity< ? > updateOffer( @PathVariable( "id" ) Long aId, @RequestBody final OfferDto aOfferDto )
     {
         return this.crudOfferDataHandler.updateOffer( aId, aOfferDto );
     }
 
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
     @GetMapping( value = "/details/{id}" )
             public ResponseEntity< ? > getOffer( @PathVariable( "id" ) Long aId )
     {

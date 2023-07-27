@@ -1,26 +1,31 @@
 package uam.volontario.model.common;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import uam.volontario.model.common.impl.Role;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
  * Definition of role in the system. All the {@linkplain RoleIf} instances should be mapped to their
  * corresponding UserRole instances as they are easier to work with.
  */
+@AllArgsConstructor
+@Getter
 public enum UserRole
 {
-    ADMIN,
+    ADMIN( "Administrator" ),
 
-    MOD,
+    MOD( "Moderator" ),
 
-    VOLUNTEER,
+    VOLUNTEER( "Wolontariusz" ),
 
-    INSTITUTION_EMPLOYEE,
+    INSTITUTION_EMPLOYEE( "Pracownik Instytucji" ),
 
-    INSTITUTION_ADMIN;
+    INSTITUTION_ADMIN( "Administrator Instytucji" );
+
+    private final String translatedRoleName;
 
     /**
      * Maps entities of {@linkplain Role} type to more flexible UserRole instances.
@@ -46,33 +51,21 @@ public enum UserRole
     public static List< String > mapUserRolesToRoleNames( final List< UserRole > aUserRoles )
     {
         return aUserRoles.stream()
-                .map( userRoleToRoleNameMapper() )
+                .map( UserRole::getTranslatedRoleName )
                 .toList();
     }
 
     private static Function< Role, UserRole > roleToUserRoleMapper()
     {
-        return role -> switch ( role.getName() )
-        {
-            case "Pracownik Instytucji" -> INSTITUTION_EMPLOYEE;
-            case "Administrator Instytucji" -> INSTITUTION_ADMIN;
-            case "Wolontariusz" -> VOLUNTEER;
-            case "Administrator" -> ADMIN;
-            case "Moderator" -> MOD;
-
-            default -> throw new IllegalArgumentException( role.getName() + " is not a defined role in the system." );
-        };
-    }
-
-    private static Function< UserRole, String > userRoleToRoleNameMapper()
-    {
-        return userRole -> switch ( userRole )
-        {
-            case INSTITUTION_EMPLOYEE -> "Pracownik Instytucji";
-            case INSTITUTION_ADMIN -> "Administrator Instytucji";
-            case VOLUNTEER -> "Wolontariusz";
-            case ADMIN -> "Administrator";
-            case MOD -> "Moderator";
+        return role -> {
+            for( final UserRole userRole : UserRole.values() )
+            {
+                if( role.getName().equals( userRole.getTranslatedRoleName() ) )
+                {
+                    return userRole;
+                }
+            }
+            throw new IllegalArgumentException( role.getName() + " is not a defined role in the system." );
         };
     }
 }
