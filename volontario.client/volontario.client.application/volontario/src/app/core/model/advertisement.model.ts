@@ -188,7 +188,8 @@ export class AdvertisementPreview {
     public offerExpirationDate: Date,
     public offerTypeName: string,
     public institutionName: string,
-    public isHidden: boolean
+    public isHidden: boolean,
+    public applicationsCount: number
   ) {}
 
   public static fromPayload(payload?: any): AdvertisementPreview {
@@ -202,7 +203,8 @@ export class AdvertisementPreview {
       payload?.offerExpirationDate,
       payload?.offerTypeName,
       payload?.institutionName,
-      payload?.isHidden
+      payload?.isHidden,
+      payload?.applicationsCount
     );
   }
 }

@@ -5,6 +5,9 @@ import org.springframework.data.domain.Pageable;
 import uam.volontario.crud.specification.ApplicationSpecification;
 import uam.volontario.model.offer.impl.Application;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Injection interface for {@linkplain Application}'s service.
  */
@@ -18,4 +21,6 @@ public interface ApplicationService extends EntityService< Application >
      * @return Page with {@linkplain Application} entities.
      */
     Page< Application > findFiltered( ApplicationSpecification aSpecification, Pageable aPageable );
+
+    Map< Long, Long > getApplicationsCountForOffers( List< Long > aOfferIds );
 }

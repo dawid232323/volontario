@@ -12,7 +12,9 @@ import uam.volontario.crud.specification.ApplicationSpecification;
 import uam.volontario.model.offer.impl.Application;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Basic implementation for {@linkplain ApplicationService}.
@@ -68,5 +70,16 @@ public class ApplicationServiceImpl implements ApplicationService
     public Page< Application > findFiltered(ApplicationSpecification aSpecification, Pageable aPageable )
     {
         return applicationRepository.findAll( aSpecification, aPageable );
+    }
+
+    @Override
+    public Map<Long, Long> getApplicationsCountForOffers(List<Long> aOfferIds) {
+        return this.applicationRepository.getApplicationsCountByOffer( aOfferIds )
+                .stream()
+                .collect( Collectors
+                        .toMap( tuple -> (long) tuple.get( 0 ),
+                                tuple -> (long) tuple.get( 1 )
+                        )
+                );
     }
 }

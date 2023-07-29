@@ -1,6 +1,7 @@
 package uam.volontario.dto.Offer;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.Date;
  */
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class OfferBaseInfoDto
@@ -25,4 +27,5 @@ public class OfferBaseInfoDto
     private String institutionName;
     private Boolean isPoznanOnly;
     private Boolean isHidden;
+    private Long applicationsCount;
 }

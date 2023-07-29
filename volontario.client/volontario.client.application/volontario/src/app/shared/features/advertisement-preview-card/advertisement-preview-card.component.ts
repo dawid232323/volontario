@@ -83,4 +83,5 @@ export class AdvertisementPreviewCardComponent implements OnInit {
   }
 
   protected readonly undefined = undefined;
+  protected readonly isNil = isNil;
 }

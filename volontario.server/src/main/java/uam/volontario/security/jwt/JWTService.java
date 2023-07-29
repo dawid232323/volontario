@@ -6,6 +6,8 @@ import io.jsonwebtoken.security.SignatureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.model.common.impl.Role;
@@ -125,6 +127,18 @@ public class JWTService
     public String getTokenFromAuthorizationHeader( final String aAuthorizationHeader )
     {
         return aAuthorizationHeader.substring( 7 );
+    }
+
+    /**
+     * Retrieves current user email based on token principal
+     *
+     * @return email String value
+     */
+    public String getCurrentUserEmail()
+    {
+        final Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        return String.valueOf( authentication.getPrincipal() );
     }
 
     private String createToken( final User aUser, final int aExpirationOffsetFromNowInMinutes )

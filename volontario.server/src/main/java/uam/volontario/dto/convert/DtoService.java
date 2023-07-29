@@ -227,10 +227,18 @@ public class DtoService
         if (aOffer.getEndDate() != null) {
             endDate = Date.from(aOffer.getEndDate());
         }
-        return new OfferBaseInfoDto( aOffer.getId(), aOffer.getTitle(), Date.from(aOffer.getExpirationDate()),
-                aOffer.getOfferType().getName(), Date.from(aOffer.getStartDate()),
-                endDate, aOffer.getPlace(), aOffer.getInstitution().getName(),
-                aOffer.getIsPoznanOnly(), aOffer.getIsHidden() );
+        return OfferBaseInfoDto.builder()
+                .id( aOffer.getId() )
+                .offerTitle( aOffer.getTitle() )
+                .offerExpirationDate( Date.from( aOffer.getExpirationDate() ) )
+                .offerTypeName( aOffer.getOfferType().getName() )
+                .startDate( Date.from(aOffer.getStartDate()) )
+                .endDate( endDate )
+                .offerPlace(aOffer.getPlace() )
+                .institutionName( aOffer.getInstitution().getName() )
+                .isPoznanOnly( aOffer.getIsPoznanOnly() )
+                .isHidden( aOffer.getIsHidden() )
+                .build();
     }
 
     /**

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import uam.volontario.crud.repository.OfferRepository;
 import uam.volontario.crud.service.OfferService;
 import uam.volontario.crud.specification.OfferSpecification;
+import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.offer.impl.Offer;
 
 import java.util.List;
@@ -81,5 +83,29 @@ public class OfferServiceImpl implements OfferService
     public List< Offer > findAllUnassignedOffers()
     {
         return offerRepository.findAllByAssignedModeratorIsNull();
+    }
+
+    @Override
+    public Boolean isUserEntitledToOfferDetails(final User aLoggedUser, final Offer aOffer )
+    {
+        if ( aLoggedUser.hasUserRole( UserRole.VOLUNTEER ) )
+        {
+            return false;
+        }
+        if ( aLoggedUser.hasUserRole( UserRole.ADMIN ) || aLoggedUser.hasUserRole( UserRole.ADMIN ) )
+        {
+            return true;
+        }
+
+        final Institution offerInstitution = aOffer.getInstitution();
+        final Institution userInstitution = aLoggedUser.getInstitution();
+
+        if ( aLoggedUser.hasUserRole( UserRole.INSTITUTION_ADMIN ) && userInstitution.getId()
+                .equals( offerInstitution.getId() ) )
+        {
+            return true;
+        }
+
+        return aOffer.getContactPerson().getId().equals( aLoggedUser.getId() );
     }
 }

@@ -8,7 +8,10 @@
         routerLink="/advertisement/{{ advertisement?.id }} "
         >{{ advertisement?.offerTitle }}</mat-card-title
       >
-      <mat-card-subtitle>Aktualna liczba aplikacji: 0</mat-card-subtitle>
+      <mat-card-subtitle *ngIf="!isNil(advertisement?.applicationsCount)"
+        >Aktualna liczba aplikacji:
+        {{ advertisement?.applicationsCount }}</mat-card-subtitle
+      >
     </mat-card-header>
     <div
       *ngIf="shouldShowContextMenu"

@@ -39,4 +39,16 @@ public interface OfferService extends EntityService< Offer >
      * @return list of all unassigned Offers.
      */
     List< Offer > findAllUnassignedOffers();
+
+
+    /**
+     * Determines if logged user is entitled to see application details such as applications count.
+     *
+     * @param aLoggedUser currently logged {@linkplain User} entity
+     *
+     * @param aOffer {@linkplain Offer} that logged user needs to be checked against
+     *
+     * @return true if user is entitled for offer details, false if not
+     */
+    Boolean isUserEntitledToOfferDetails(User aLoggedUser, Offer aOffer );
 }

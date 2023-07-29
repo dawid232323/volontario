@@ -4,24 +4,27 @@ import jakarta.persistence.NoResultException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uam.volontario.crud.service.BenefitService;
-import uam.volontario.crud.service.OfferService;
-import uam.volontario.crud.service.OfferTypeService;
+import uam.volontario.crud.service.*;
 import uam.volontario.crud.specification.OfferSpecification;
+import uam.volontario.dto.Offer.OfferBaseInfoDto;
 import uam.volontario.dto.Offer.OfferDto;
 import uam.volontario.dto.convert.DtoService;
+import uam.volontario.model.common.UserRole;
+import uam.volontario.model.common.impl.User;
 import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.model.offer.impl.OfferSearchQuery;
+import uam.volontario.security.jwt.JWTService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.OfferValidationService;
 
 import org.springframework.data.domain.Pageable;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Handler class for {@linkplain uam.volontario.model.offer.impl.Offer} data fetching.
@@ -39,6 +42,10 @@ public class CrudOfferDataHandler
 
     private final OfferValidationService offerValidationService;
 
+    private final ApplicationService applicationService;
+    private final JWTService jwtService;
+    private final UserService userService;
+
     /**
      * CDI constructor.
      *
@@ -51,13 +58,18 @@ public class CrudOfferDataHandler
     @Autowired
     public CrudOfferDataHandler(final OfferService aOfferService, final OfferTypeService aOfferTypeService,
                                 final BenefitService aBenefitService, final DtoService aDtoService,
-                                final OfferValidationService aOfferValidationService )
+                                final OfferValidationService aOfferValidationService,
+                                final ApplicationService aApplicationService, final JWTService aJWTService,
+                                final UserService aUserService )
     {
         offerService = aOfferService;
         offerTypeService = aOfferTypeService;
         benefitService = aBenefitService;
         dtoService = aDtoService;
         offerValidationService = aOfferValidationService;
+        applicationService = aApplicationService;
+        jwtService = aJWTService;
+        userService = aUserService;
     }
 
     /**
@@ -90,7 +102,8 @@ public class CrudOfferDataHandler
 
         try
         {
-            return ResponseEntity.ok( offerService.findFiltered( specification, pageable ).map( dtoService::createBaseInfoDtoOfOffer ) );
+            final Page< Offer > filteredOffers = offerService.findFiltered( specification, pageable );
+            return ResponseEntity.ok( this.getProcessedOffers( filteredOffers ) );
         }
         catch ( Exception aE )
         {
@@ -257,5 +270,42 @@ public class CrudOfferDataHandler
         offerToUpdate.setIsHidden( isHidden );
         this.offerService.saveOrUpdate( offerToUpdate );
         return ResponseEntity.ok( this.dtoService.createBaseInfoDtoOfOffer( offerToUpdate ) );
+    }
+
+    private Page< OfferBaseInfoDto > getProcessedOffers( final Page< Offer > aOffers )
+    {
+        final String userEmail = this.jwtService.getCurrentUserEmail();
+        final Optional< User > loggedUserOptional = this.userService.tryToLoadByLogin( userEmail );
+
+        if ( loggedUserOptional.isEmpty() )
+        {
+            return aOffers.map( dtoService::createBaseInfoDtoOfOffer );
+        }
+
+        final User loggedUser = loggedUserOptional.get();
+
+        if ( !this.shouldLoadApplicationCount( loggedUser ) )
+        {
+            return aOffers.map( dtoService::createBaseInfoDtoOfOffer );
+        }
+
+        final Map< Long, Long > applicationsCount = this.applicationService
+                .getApplicationsCountForOffers( aOffers.stream().map( Offer::getId ).toList() );
+
+        return aOffers.map( offer -> {
+            final OfferBaseInfoDto mappedOffer = this.dtoService.createBaseInfoDtoOfOffer(offer);
+            if ( this.offerService.isUserEntitledToOfferDetails(loggedUser, offer) )
+            {
+                mappedOffer.setApplicationsCount( applicationsCount
+                        .getOrDefault(offer.getId(), 0L ) );
+            }
+            return mappedOffer;
+        });
+    }
+
+    private Boolean shouldLoadApplicationCount( final User aLoggedUser )
+    {
+        return Stream.of( UserRole.ADMIN, UserRole.INSTITUTION_EMPLOYEE, UserRole.INSTITUTION_ADMIN, UserRole.MOD )
+                .anyMatch( aLoggedUser::hasUserRole );
     }
 }
