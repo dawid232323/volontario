@@ -5,7 +5,6 @@ import org.springframework.data.jpa.domain.Specification;
 import uam.volontario.model.offer.impl.Application;
 import uam.volontario.model.offer.impl.ApplicationSearchQuery;
 import uam.volontario.model.offer.impl.ApplicationState;
-import uam.volontario.model.offer.impl.ApplicationStateEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class ApplicationSpecification implements Specification< Application >
         if( query.getState() != null )
         {
             predicateList.add( aCriteriaBuilder.equal( state,
-                    ApplicationStateEnum.mapApplicationStateEnumToApplicationStateName( query.getState() ) ) );
+                    query.getState().getTranslatedState() ) );
         }
         if ( query.getIsStarred() != null )
         {

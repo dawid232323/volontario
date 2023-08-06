@@ -23,6 +23,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,6 +37,7 @@ public class MailService
     private final DateTimeFormatter instantFormatter;
 
     private final String noReplyVolontarioEmailAddress;
+
     private final String volontarioModeratorAddress; //TODO remove after implementing moderator roles properly
 
     /**
@@ -256,6 +258,44 @@ public class MailService
         helper.setText( content, true );
 
         mailSender.send( message );
+    }
+
+    /**
+     * Send emails to all Contact People of expiring Offers.
+     *
+     * @param aExpiringOffers expiring Offers.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendEmailsAboutOffersExpiringSoon( final List< Offer > aExpiringOffers )
+            throws MessagingException, IOException
+    {
+        for( final Offer offer : aExpiringOffers )
+        {
+            final MimeMessage message = mailSender.createMimeMessage();
+            final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+            final String sender = "Volontario";
+            final String mailSubject = "Your offer is expiring soon...";
+
+            helper.setFrom( noReplyVolontarioEmailAddress, sender );
+            helper.setTo( offer.getContactPerson().getContactEmailAddress() );
+            helper.setSubject( mailSubject );
+
+            String content = Resources.toString( Resources.getResource( "emails/offerExpiring.html" ),
+                    StandardCharsets.UTF_8 );
+            content = content.replaceAll( "\\|offerName\\|", offer.getTitle() );
+            content = content.replaceAll( "\\|expirationDate\\|", instantFormatter.format( offer.getStartDate() ) );
+            content = content.replaceAll( "\\|offerEditUrl\\|",
+                    "http://localhost:4200/advertisement/edit/" + offer.getId() );
+
+            helper.setText( content, true );
+
+            trySendMail( () -> mailSender.send( message ) );
+        }
     }
 
     private String buildMailContentForInstitutionRegistration( final Institution aInstitution )

@@ -1,16 +1,23 @@
 package uam.volontario.model.offer.impl;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * Definition of application state in the system. All the {@linkplain ApplicationState} instances should be mapped to their
  * corresponding ApplicationStateEnums instances as they are easier to work with.
  */
+@AllArgsConstructor
+@Getter
 public enum ApplicationStateEnum
 {
-    AWAITING,
+    AWAITING( "Oczekująca" ),
 
-    ACCEPTED,
+    ACCEPTED( "Zaakceptowana" ),
 
-    DECLINED;
+    DECLINED( "Odrzucona" );
+
+    private final String translatedState;
 
     /**
      * Maps entity of {@linkplain uam.volontario.model.offer.impl.ApplicationState} type to more flexible ApplicationTypeEnum instance.
@@ -28,23 +35,6 @@ public enum ApplicationStateEnum
                     case "Odrzucona" -> DECLINED;
                     default -> throw new IllegalArgumentException( aApplicationState.getName() + " is not a " +
                             "defined application state in the system." );
-                };
-    }
-
-    /**
-     * Maps ApplicationStateEnum to name of {@linkplain ApplicationState} entity.
-     *
-     * @param aApplicationStateEnum application state enum.
-     *
-     * @return name of application state entity.
-     */
-    public static String mapApplicationStateEnumToApplicationStateName( final ApplicationStateEnum aApplicationStateEnum )
-    {
-        return switch ( aApplicationStateEnum )
-                {
-                    case ACCEPTED -> "Zaakceptowana";
-                    case AWAITING -> "Oczekująca";
-                    case DECLINED -> "Odrzucona";
                 };
     }
 }

@@ -51,4 +51,13 @@ public interface OfferService extends EntityService< Offer >
      * @return true if user is entitled for offer details, false if not
      */
     Boolean isUserEntitledToOfferDetails(User aLoggedUser, Offer aOffer );
+
+    /**
+     * Saves/creates given Offers.
+     *
+     * @param aOffers offers.
+     *
+     * @return saved/created offers.
+     */
+    List< Offer > saveAll( List< Offer > aOffers );
 }

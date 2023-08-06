@@ -10,6 +10,7 @@ import uam.volontario.crud.repository.ApplicationRepository;
 import uam.volontario.crud.service.ApplicationService;
 import uam.volontario.crud.specification.ApplicationSpecification;
 import uam.volontario.model.offer.impl.Application;
+import uam.volontario.model.offer.impl.Offer;
 
 import java.util.List;
 import java.util.Map;
@@ -81,5 +82,17 @@ public class ApplicationServiceImpl implements ApplicationService
                                 tuple -> (long) tuple.get( 1 )
                         )
                 );
+    }
+
+    @Override
+    public List< Application > findAllByOffers( final List< Offer > aOffers )
+    {
+        return applicationRepository.findAllByOfferIn( aOffers );
+    }
+
+    @Override
+    public List< Application > saveAll( final List< Application > aApplications )
+    {
+        return applicationRepository.saveAll( aApplications );
     }
 }

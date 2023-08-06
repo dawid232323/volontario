@@ -170,8 +170,7 @@ public class OfferAssignmentHandler
 
     private OfferState getUnderVerificationOfferState()
     {
-        return offerStateService.tryLoadByState( OfferStateEnum
-                        .mapOfferStateEnumToOfferStateName( OfferStateEnum.UNDER_VERIFICATION ) )
+        return offerStateService.tryLoadByState( OfferStateEnum.UNDER_VERIFICATION.getTranslatedState() )
                 .orElseThrow();
     }
 }

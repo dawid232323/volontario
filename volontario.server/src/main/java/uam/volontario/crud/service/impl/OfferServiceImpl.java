@@ -86,6 +86,12 @@ public class OfferServiceImpl implements OfferService
     }
 
     @Override
+    public List< Offer > saveAll( final List< Offer > aOffers )
+    {
+        return offerRepository.saveAll( aOffers );
+    }
+
+    @Override
     public Boolean isUserEntitledToOfferDetails(final User aLoggedUser, final Offer aOffer )
     {
         if ( aLoggedUser.hasUserRole( UserRole.VOLUNTEER ) )

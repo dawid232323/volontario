@@ -1,19 +1,28 @@
 package uam.volontario.model.offer.impl;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  *
  */
+@AllArgsConstructor
+@Getter
 public enum OfferStateEnum
 {
-    NEW,
+    NEW ( "Nowe" ),
 
-    UNDER_VERIFICATION,
+    UNDER_VERIFICATION( "W trakcie weryfikacji" ),
 
-    REJECTED,
+    REJECTED( "Odrzucone" ),
 
-    PUBLISHED,
+    PUBLISHED( "Opublikowane" ),
 
-    CLOSED;
+    EXPIRED( "Wygasłe" ),
+
+    CLOSED( "Zamknięte" );
+
+    private final String translatedState;
 
     /**
      * Maps entity of {@linkplain OfferState} type to more flexible OfferTypeEnum instance.
@@ -31,26 +40,8 @@ public enum OfferStateEnum
                     case "Odrzucone" -> REJECTED;
                     case "Opublikowane" -> PUBLISHED;
                     case "Zamknięte" -> CLOSED;
+                    case "Wygasłe" -> EXPIRED;
                     default -> throw new IllegalArgumentException( aOfferState.getState() + " is not a defined offer state in the system." );
-                };
-    }
-
-    /**
-     * Maps OfferStateEnum to name of {@linkplain OfferState} entity.
-     *
-     * @param aOfferStateEnum offer state enum.
-     *
-     * @return name of offer state entity.
-     */
-    public static String mapOfferStateEnumToOfferStateName( final OfferStateEnum aOfferStateEnum )
-    {
-        return switch ( aOfferStateEnum )
-                {
-                    case NEW -> "Nowe";
-                    case UNDER_VERIFICATION -> "W trakcie weryfikacji";
-                    case REJECTED -> "Odrzucone";
-                    case PUBLISHED -> "Opublikowane";
-                    case CLOSED -> "Zamknięte";
                 };
     }
 }

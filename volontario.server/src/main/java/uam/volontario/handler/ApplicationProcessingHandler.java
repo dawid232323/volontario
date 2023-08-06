@@ -230,8 +230,7 @@ public class ApplicationProcessingHandler
 
     private ApplicationState getApplicationState( final ApplicationStateEnum aApplicationStateEnum )
     {
-        return applicationStateService.tryLoadByName( ApplicationStateEnum
-                        .mapApplicationStateEnumToApplicationStateName( aApplicationStateEnum ) )
+        return applicationStateService.tryLoadByName( aApplicationStateEnum.getTranslatedState() )
                 .orElseThrow();
     }
 

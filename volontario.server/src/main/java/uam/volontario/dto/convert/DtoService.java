@@ -4,9 +4,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.*;
-import uam.volontario.dto.*;
 import uam.volontario.dto.Application.ApplicationBaseInfoDto;
 import uam.volontario.dto.Application.ApplicationDetailsDto;
+import uam.volontario.dto.BenefitDto;
+import uam.volontario.dto.ExperienceLevelDto;
 import uam.volontario.dto.Institution.InstitutionContactPersonDto;
 import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.dto.Institution.InterestCategoryDto;
@@ -14,6 +15,7 @@ import uam.volontario.dto.Offer.OfferBaseInfoDto;
 import uam.volontario.dto.Offer.OfferDetailsDto;
 import uam.volontario.dto.Offer.OfferDto;
 import uam.volontario.dto.Offer.OfferTypeDto;
+import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
@@ -28,7 +30,6 @@ import uam.volontario.model.volunteer.impl.VolunteerData;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service for DTO operations.
@@ -175,8 +176,7 @@ public class DtoService
         final OfferType offerType = this.offerTypeService
                 .loadEntity(aOfferDto.getOfferTypeId());
 
-        final OfferState offerState = offerStateService.tryLoadByState(OfferStateEnum
-                        .mapOfferStateEnumToOfferStateName(OfferStateEnum.NEW))
+        final OfferState offerState = offerStateService.tryLoadByState( OfferStateEnum.NEW.getTranslatedState() )
                 .orElseThrow();
 
         ExperienceLevel offerMinExperience = null;

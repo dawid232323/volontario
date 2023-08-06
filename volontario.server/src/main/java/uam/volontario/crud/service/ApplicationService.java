@@ -4,6 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import uam.volontario.crud.specification.ApplicationSpecification;
 import uam.volontario.model.offer.impl.Application;
+import uam.volontario.model.offer.impl.Offer;
+
+import java.util.List;
 
 import java.util.List;
 import java.util.Map;
@@ -23,4 +26,22 @@ public interface ApplicationService extends EntityService< Application >
     Page< Application > findFiltered( ApplicationSpecification aSpecification, Pageable aPageable );
 
     Map< Long, Long > getApplicationsCountForOffers( List< Long > aOfferIds );
+
+    /**
+     * Looks for all Application for given {@linkplain Offer}s.
+     *
+     * @param aOffers offers.
+     *
+     * @return Applications for given Offers.
+     */
+    List< Application > findAllByOffers( List< Offer > aOffers );
+
+    /**
+     * Creates/updates given Applications.
+     *
+     * @param aApplications applications.
+     *
+     * @return list of created or updated Applications.
+     */
+    List< Application > saveAll( List< Application > aApplications );
 }
