@@ -18,4 +18,13 @@ public interface RoleRepository extends CrudRepository< Role, Long >
      * @return roles with the one of the names from provided list.
      */
     List< Role > findByNameIn( List< String > aNames );
+
+    /**
+     * Looks for Roles with ids present in argument list.
+     *
+     * @param aIds role ids.
+     *
+     * @return roles with ids present in argument list.
+     */
+    List< Role > findByIdIn( List< Long > aIds );
 }

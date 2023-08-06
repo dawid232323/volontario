@@ -18,6 +18,7 @@ export class LoginFormComponent {
   @Output() registerInstitutionButtonClicked = new EventEmitter<void>();
   @Input() loginHasFailed: boolean = false;
   @Input() isLogging = false;
+  @Input() accountInactive = false;
 
   constructor() {}
 

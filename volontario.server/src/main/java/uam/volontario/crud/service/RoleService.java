@@ -19,4 +19,13 @@ public interface RoleService extends EntityService< Role >
      * @return roles with the one of the names from provided list.
      */
     List< Role > findByNameIn( List< String > aNames );
+
+    /**
+     * Looks for Roles with ids from given list.
+     *
+     * @param aIds role ids.
+     *
+     * @return roles with ids that are present in argument list.
+     */
+    List< Role > findByIdIn( List< Long > aIds );
 }

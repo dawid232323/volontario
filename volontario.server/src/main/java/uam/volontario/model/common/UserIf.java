@@ -7,7 +7,6 @@ import uam.volontario.model.common.impl.Role;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * User definition.
@@ -65,7 +64,7 @@ public interface UserIf extends VolontarioDomainElementIf, UserDetails
     @JsonIgnore
     default boolean isAccountNonLocked()
     {
-        return true; // TODO: decision must be made whether we want users' account to be locked under some circumstances.
+        return isVerified();
     }
 
     @Override

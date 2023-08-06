@@ -57,6 +57,11 @@ public class JWTRequestFilter extends OncePerRequestFilter
                 && SecurityContextHolder.getContext().getAuthentication() == null )
         {
             final UserDetails userDetails = userService.loadUserByUsername( contactEmail.get() );
+            if( !userDetails.isAccountNonLocked() )
+            {
+                aResponse.sendError( HttpServletResponse.SC_UNAUTHORIZED );
+                return;
+            }
 
             final UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken( userDetails.getUsername(), userDetails.getPassword(),

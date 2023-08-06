@@ -21,8 +21,16 @@
             class="text-l block pb-1 pl-7 w-full text-sm text-black-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer font-semibold" />
         </div>
       </div>
-      <span *ngIf="loginHasFailed" class="text-red-400 text-sm"
+      <span
+        *ngIf="loginHasFailed && !accountInactive"
+        class="text-red-400 text-sm"
         >Niepoprawna nazwa użytkownika lub hasło</span
+      >
+      <span
+        *ngIf="loginHasFailed && accountInactive"
+        class="text-red-400 text-sm"
+        >Twoje konto jest nieaktywne. Sprawdź swoją skrzynkę mailową bądź
+        skontaktuj się z administratorem</span
       >
       <div class="pb-3 pt-3">
         <label for="password" class="font-bold">Hasło</label>

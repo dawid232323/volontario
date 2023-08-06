@@ -14,6 +14,7 @@ import uam.volontario.dto.Offer.OfferBaseInfoDto;
 import uam.volontario.dto.Offer.OfferDetailsDto;
 import uam.volontario.dto.Offer.OfferDto;
 import uam.volontario.dto.Offer.OfferTypeDto;
+import uam.volontario.dto.user.AdministrativeUserDetailsDto;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
@@ -299,6 +300,25 @@ public class DtoService
         OfferBaseInfoDto offer = createBaseInfoDtoOfOffer( aApplication.getOffer() );
         return new ApplicationBaseInfoDto(aApplication.getId(), volunteer.getFirstName(), volunteer.getLastName(),
                 aApplication.getParticipationMotivation(), aApplication.isStarred(), aApplication.getState().getName(), offer );
+    }
+
+    /**
+     * Transforms {@linkplain User} entity to {@linkplain AdministrativeUserDetailsDto}
+     *
+     * @param aUser {@linkplain User} entity to be transformed
+     *
+     * @return {@linkplain AdministrativeUserDetailsDto} dto with user information
+     */
+    public AdministrativeUserDetailsDto getAdmUserDetailsDtoFromUser( final User aUser )
+    {
+        return AdministrativeUserDetailsDto.builder()
+                .userId( aUser.getId() )
+                .firstName( aUser.getFirstName() )
+                .lastName( aUser.getLastName() )
+                .email( aUser.getContactEmailAddress() )
+                .userRoles( aUser.getRoles() )
+                .verified( aUser.isVerified() )
+                .build();
     }
 
     private BenefitDto benefitToDto( Benefit aBenefit )

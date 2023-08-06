@@ -8,10 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.LoginDto;
 import uam.volontario.model.common.impl.User;
@@ -84,6 +81,12 @@ public class SecurityController
                                 + " is registered in the system." );
             }
 
+            if( !user.get().isAccountNonLocked() )
+            {
+                return ResponseEntity.status( HttpStatus.FORBIDDEN )
+                        .body( "User account is inactive. Please contact your administrator" );
+            }
+
             if( !passwordEncoder.matches( aDto.getPassword(), user.get().getHashedPassword() ) )
             {
                 return ResponseEntity.badRequest()
@@ -142,5 +145,39 @@ public class SecurityController
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
+    }
+
+    /**
+     * Changes password for selected user. Available for administrators only.
+     *
+     * @param aUserId id of user to change password.
+     *
+     * @param aPasswordMap map with single field "password" that should contain new password value.
+     *
+     * @return response with status 200 when user password is changed correctly,
+     * status 400 when user with given id doesn't exist or password doesn't meet validation requirements,
+     * status 500 when anything other goes wrong
+     */
+    @PatchMapping( "change-password/{user_id}" )
+    @PreAuthorize( "@permissionEvaluator.allowForAdministration( principal.authorities )" )
+    public ResponseEntity< ? > changePasswordForSelectedUser( @PathVariable( "user_id" ) final Long aUserId,
+                                                              @RequestBody final Map< String, String > aPasswordMap )
+    {
+        final Optional< User > optionalUser = this.userService.tryToFindById( aUserId );
+
+        if( optionalUser.isEmpty() )
+        {
+            return ResponseEntity.status( HttpStatus.BAD_REQUEST ).build();
+        }
+
+        final User user = optionalUser.get();
+        final String encodePassword = this.passwordEncoder
+                .encode( aPasswordMap.get( "password" ) );
+
+        user.setHashedPassword( encodePassword );
+        this.userService.saveOrUpdate( user );
+
+        return ResponseEntity.status( HttpStatus.OK )
+                .build();
     }
 }

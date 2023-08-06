@@ -3,12 +3,16 @@ package uam.volontario.crud.service.impl;
 import com.google.common.collect.Lists;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.repository.UserRepository;
 import uam.volontario.crud.service.UserService;
+import uam.volontario.crud.specification.UserSpecification;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.common.impl.UserSearchQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,5 +102,17 @@ public class UserServiceImpl implements UserService
         return tryToLoadByContactEmail( aContactEmail )
                 .orElseThrow( () -> new UsernameNotFoundException( "Contact email " + aContactEmail
                         + " was not found in the system." ) );
+    }
+
+    @Override
+    public Page< User > findFiltered( final UserSpecification aUserSpecification, final Pageable aPageable )
+    {
+        return this.userRepository.findAll( aUserSpecification, aPageable );
+    }
+
+    @Override
+    public Optional< User > tryToFindById( final Long aUserId )
+    {
+        return this.userRepository.findById( aUserId );
     }
 }
