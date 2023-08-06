@@ -66,11 +66,14 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onEditButtonClicked() {
-    return this.router.navigate([
-      'advertisement',
-      'edit',
-      this._advertisementId,
-    ]);
+    if (this.canManageOffer) {
+      return this.router.navigate([
+        'advertisement',
+        'edit',
+        this._advertisementId,
+      ]);
+    }
+    return;
   }
 
   private determineIfUserCanApply() {

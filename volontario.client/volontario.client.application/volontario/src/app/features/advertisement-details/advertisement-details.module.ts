@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
 import { ApplicationListModule } from 'src/app/features/advertisement-details/_features/application-list/application-list.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [AdvertisementDetailsComponent],
@@ -24,6 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ApplicationListModule,
     MatButtonModule,
     MatTooltipModule,
+    MatTabsModule,
   ],
   exports: [AdvertisementDetailsComponent],
 })
