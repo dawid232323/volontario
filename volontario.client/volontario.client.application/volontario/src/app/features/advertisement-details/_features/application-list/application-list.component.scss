@@ -15,32 +15,61 @@
 .demo-row-is-clicked {
   font-weight: bold;
 }
+@media (min-width: 1024px) {
+  .mat-column-participationMotivation {
+    flex: 0 0 50%;
+  }
 
-.mat-column-participationMotivation {
-  flex: 0 0 50%;
+  .mat-column-starred {
+    justify-content: start;
+    flex: 0 0 10%;
+  }
+
+  .mat-column-state {
+    justify-content: start;
+    flex: 0 0 15%;
+  }
+
+  .mat-column-firstName {
+    flex: 0 0 10%;
+  }
+
+  .mat-column-lastName {
+    flex: 0 0 10%;
+  }
+
+  .mat-column-expand {
+    flex: 0 0 0;
+  }
 }
 
-.mat-column-starred {
-  justify-content: center;
-  flex: 0 0 10%;
+@media (max-width: 768px) {
+  .mat-column-participationMotivation {
+    display: none;
+  }
+
+  .mat-column-starred {
+    justify-content: start;
+    flex: 0 0 15%;
+  }
+
+  .mat-column-state {
+    display: none;
+  }
+
+  .mat-column-firstName {
+    flex: 0 0 40%;
+  }
+
+  .mat-column-lastName {
+    flex: 0 0 40%;
+  }
+
+  .mat-column-expand {
+    flex: 0 0 0;
+  }
 }
 
-.mat-column-state {
-  justify-content: center;
-  flex: 0 0 10%;
-}
-
-.mat-column-firstName {
-  flex: 0 0 10%;
-}
-
-.mat-column-lastName {
-  flex: 0 0 10%;
-}
-
-.mat-column-expand {
-  flex: 0 0 10%;
-}
 
 .example-element-detail {
   overflow: hidden;
