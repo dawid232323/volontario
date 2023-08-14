@@ -23,6 +23,7 @@ import { OfferListComponent } from 'src/app/features/offer-list/offer-list.compo
 import { AdvertisementDetailsComponent } from './features/advertisement-details/advertisement-details.component';
 import { OfferApplyComponent } from 'src/app/features/offer-apply/offer-apply.component';
 import { VolunteerApplicationsListComponent } from 'src/app/features/volunteer-applications-list/volunteer-applications-list.component';
+import { adminRouting } from 'src/app/core/routing/admin.routing';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -114,6 +115,7 @@ const routes: Routes = [
       roles: [UserRoleEnum.Volunteer],
     },
   },
+  ...adminRouting,
   { path: '**', pathMatch: 'full', redirectTo: 'home' },
 ];
 

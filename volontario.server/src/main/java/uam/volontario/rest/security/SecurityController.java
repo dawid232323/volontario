@@ -158,8 +158,8 @@ public class SecurityController
      * status 400 when user with given id doesn't exist or password doesn't meet validation requirements,
      * status 500 when anything other goes wrong
      */
-    @PatchMapping( "change-password/{user_id}" )
-    @PreAuthorize( "@permissionEvaluator.allowForAdministration( principal.authorities )" )
+    @PatchMapping( "/change-password/{user_id}" )
+    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
     public ResponseEntity< ? > changePasswordForSelectedUser( @PathVariable( "user_id" ) final Long aUserId,
                                                               @RequestBody final Map< String, String > aPasswordMap )
     {

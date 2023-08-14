@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegisterContactPersonFormComponent } from './register-contact-person-form.component';
+import { SetPasswordComponent } from 'src/app/shared/features/set-password-form/set-password.component';
 
 describe('RegisterContactPersonFormComponent', () => {
-  let component: RegisterContactPersonFormComponent;
-  let fixture: ComponentFixture<RegisterContactPersonFormComponent>;
+  let component: SetPasswordComponent;
+  let fixture: ComponentFixture<SetPasswordComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RegisterContactPersonFormComponent],
+      declarations: [SetPasswordComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RegisterContactPersonFormComponent);
+    fixture = TestBed.createComponent(SetPasswordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

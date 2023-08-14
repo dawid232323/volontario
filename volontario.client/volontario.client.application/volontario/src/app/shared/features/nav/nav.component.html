@@ -76,6 +76,36 @@
                   </a>
                 </li>
               </ul>
+              <ul
+                class="flex items-center gap-6 text-sm"
+                *ngIf="
+                  loggedUser?.hasUserRoles([
+                    UserRoleEnum.Moderator,
+                    UserRoleEnum.Admin
+                  ])
+                ">
+                <li *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
+                  <a
+                    [matMenuTriggerFor]="adminMenu"
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
+                    Administrator
+                  </a>
+                </li>
+                <li *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Moderator)">
+                  <a
+                    [matMenuTriggerFor]="moderatorMenu"
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
+                    Moderator
+                  </a>
+                </li>
+                <li>
+                  <a
+                    routerLink="/advertisement/list"
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
+                    Lista ogłoszeń
+                  </a>
+                </li>
+              </ul>
             </nav>
           </div>
           <div class="flex items-center gap-4">
@@ -105,6 +135,21 @@
               <ul mat-menu-item (click)="onLogout()">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 Wyloguj się
+              </ul>
+            </mat-menu>
+            <mat-menu #adminMenu="matMenu">
+              <ul
+                (click)="routeToAdminUsers()"
+                mat-menu-item
+                *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
+                <i class="fa-solid fa-users"></i>
+                Zarządzaj użytkownikami
+              </ul>
+            </mat-menu>
+            <mat-menu #moderatorMenu="matMenu">
+              <ul mat-menu-item (click)="onLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Zarządzaj wartościami słownikowymi
               </ul>
             </mat-menu>
           </div>
@@ -146,6 +191,12 @@
         (click)="routeToAddAdvertisement()">
         <i class="fa-solid fa-plus text-lg"></i>
         Dodaj ogłoszenie
+      </a>
+      <a
+        class="flex flex-col justify-center items-center w-1/4 p-1"
+        [matMenuTriggerFor]="adminMenu">
+        <i class="fa-solid fa-gear text-lg"></i>
+        Administrator
       </a>
       <a
         class="flex flex-col justify-center items-center w-1/4 p-1"

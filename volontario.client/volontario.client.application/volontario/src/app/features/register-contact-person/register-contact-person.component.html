@@ -17,10 +17,10 @@
         class="pb-12">
         <div class="text-4xl font-bold text-center">Ustaw swoje hasło</div>
       </span>
-      <app-register-contact-person-form
+      <app-set-password-component
         *ngIf="!hasRegisteredCorrectly && !isPerformingRegistration"
         (formSubmitEvent)="registerUser($event)"
-        class="w-1/2"></app-register-contact-person-form>
+        class="w-1/2"></app-set-password-component>
       <app-success-info-card
         class="h-full w-3/4"
         titleMessage="Rejestracja przebiegła pomyślnie"

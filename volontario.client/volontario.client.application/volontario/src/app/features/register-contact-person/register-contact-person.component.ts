@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegisterContactPersonInterface } from 'src/app/core/interface/authorization.interface';
+import { SetPasswordInterface } from 'src/app/core/interface/authorization.interface';
 import { InstitutionService } from 'src/app/core/service/institution.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class RegisterContactPersonComponent implements OnInit {
     this.token = this.activatedRoute.snapshot.queryParams['t'];
   }
 
-  public registerUser(registerIf: RegisterContactPersonInterface) {
+  public registerUser(registerIf: SetPasswordInterface) {
     this._isPerformingRegistration = true;
     this.institutionService
       .registerContactPerson(this.token, registerIf)

@@ -48,9 +48,9 @@ public class UserController
     @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
     public ResponseEntity< ? > getFilteredUsersData(
             @RequestParam( value = "name", required = false ) final String aName,
-            @RequestParam( value = "last-name", required = false ) final String aLastName,
+            @RequestParam( value = "lastName", required = false ) final String aLastName,
             @RequestParam( value = "email", required = false ) final String aEmail,
-            @RequestParam( value = "role-ids", required = false ) final List< Long > aRoleIds,
+            @RequestParam( value = "roleIds", required = false ) final List< Long > aRoleIds,
             final Pageable aPageable
             )
     {

@@ -1,0 +1,87 @@
+<div class="flex flex-col w-full space-y-3">
+  <table
+    class="table-auto !border-spacing-2 w-full border-2 rounded-xl"
+    mat-table
+    [dataSource]="dataSource">
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef>Imię i nazwisko</th>
+      <td mat-cell *matCellDef="let row">{{ row.fullName }}</td>
+    </ng-container>
+    <ng-container matColumnDef="roles">
+      <th mat-header-cell class="hidden lg:table-cell" *matHeaderCellDef>
+        Role
+      </th>
+      <td mat-cell *matCellDef="let row" class="hidden lg:table-cell">
+        {{ row.rolesList }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="isActive">
+      <th mat-header-cell *matHeaderCellDef>Czy aktywny</th>
+      <td mat-cell *matCellDef="let row">
+        <i
+          *ngIf="row.verified"
+          class="fa-regular fa-circle-check"
+          style="color: #1ea902"></i>
+        <i
+          *ngIf="!row.verified"
+          class="fa-solid fa-ban"
+          style="color: #dd0303"></i></td
+    ></ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td
+        mat-cell
+        *matCellDef="let row"
+        [matMenuTriggerFor]="quickMenu"
+        [matMenuTriggerData]="{ user: row }"
+        class="hover:text-gray-500 hover:cursor-pointer">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: visibleColumns"></tr>
+  </table>
+  <mat-paginator
+    color="accent"
+    (page)="onPageEvent($event)"
+    [pageSizeOptions]="availablePageSizes"
+    [length]="totalElements"
+    [pageIndex]="currentPageIndex"
+    [pageSize]="currentPageSize"></mat-paginator>
+
+  <mat-menu #quickMenu>
+    <ng-template matMenuContent let-user="user">
+      <button
+        mat-menu-item
+        (click)="
+          onRowMenuClick(user, UserAdministrativeOperationType.ResetPassword)
+        ">
+        <mat-icon matPrefix color="accent">settings</mat-icon>
+        Zresetuj hasło
+      </button>
+      <button
+        mat-menu-item
+        (click)="
+          onRowMenuClick(user, UserAdministrativeOperationType.ChangeRoles)
+        ">
+        <mat-icon matPrefix color="primary">assignment_ind</mat-icon>
+        Edytuj role
+      </button>
+      <button
+        mat-menu-item
+        (click)="
+          onRowMenuClick(
+            user,
+            UserAdministrativeOperationType.ChangeActivityStatus
+          )
+        ">
+        <mat-icon *ngIf="user.verified" matPrefix color="warn">block</mat-icon>
+        <mat-icon *ngIf="!user.verified" matPrefix color="primary"
+          >check</mat-icon
+        >
+        {{ user.verified ? 'Zablokuj' : 'Odblokuj' }}
+      </button>
+    </ng-template>
+  </mat-menu>
+</div>

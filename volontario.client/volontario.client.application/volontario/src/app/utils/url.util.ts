@@ -1,5 +1,12 @@
 import { VerifyType } from 'src/app/features/institution-verify/institution-verify.const';
 import { ApplicationActionTypeEnum } from 'src/app/core/interface/application.interface';
+import {
+  ActivatedRoute,
+  Params,
+  QueryParamsHandling,
+  Router,
+} from '@angular/router';
+import { isNil } from 'lodash';
 
 export class EndpointUrls {
   public static readonly login: string = '/login';
@@ -40,6 +47,12 @@ export class EndpointUrls {
     EndpointUrls.offerApplicationResource.concat('/unstar');
   public static readonly offerApplicationCheckState =
     EndpointUrls.offerApplicationResource.concat('/checkState');
+  public static readonly userResource = '/user';
+  public static readonly changeUserActiveStatusUrl =
+    EndpointUrls.userResource.concat('/change-status');
+  public static readonly changeUserRolesUrl =
+    EndpointUrls.userResource.concat('/change-roles');
+  public static readonly changeUserPassword = '/change-password';
 
   public static readonly unauthorizedUrls = new Set<string>([
     EndpointUrls.institutionRegister,
@@ -65,4 +78,17 @@ export class EndpointUrls {
       `/${applicationId}`
     );
   }
+}
+
+export function updateActiveUrl(
+  router: Router,
+  activatedRoute: ActivatedRoute,
+  params: Params,
+  handling?: QueryParamsHandling
+) {
+  router.navigate([], {
+    relativeTo: activatedRoute,
+    queryParams: params,
+    queryParamsHandling: handling,
+  });
 }

@@ -52,3 +52,28 @@ export class PatchUserDto {
     return new PatchUserDto(formValue.contactEmail, formValue.phoneNumber);
   }
 }
+
+export class AdministrativeUserDetails {
+  public fullName: string;
+  public rolesList: string;
+  constructor(
+    public userId: number,
+    public firstName: string,
+    public lastName: string,
+    public userRoles: UserRole[],
+    public verified: boolean
+  ) {
+    this.fullName = this.firstName.concat(' ', this.lastName);
+    this.rolesList = this.userRoles.map(role => role.name).join(', ');
+  }
+
+  public static fromPayload(payload: any): AdministrativeUserDetails {
+    return new AdministrativeUserDetails(
+      payload?.userId,
+      payload?.firstName,
+      payload?.lastName,
+      payload?.userRoles?.map(UserRole.fromPayload),
+      payload?.verified
+    );
+  }
+}

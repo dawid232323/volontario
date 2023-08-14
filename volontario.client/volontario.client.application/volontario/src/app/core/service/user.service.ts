@@ -1,9 +1,16 @@
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
 import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
-import { PatchUserDto, User } from 'src/app/core/model/user.model';
+import {
+  AdministrativeUserDetails,
+  PatchUserDto,
+  User,
+} from 'src/app/core/model/user.model';
 import { isNil } from 'lodash';
 import { EndpointUrls } from 'src/app/utils/url.util';
+import { AdminUsersManagementQueryParamsIf } from 'src/app/features/admin-users-management/_features/users-filter-pane/users-filter-pane.component';
+import { PageableModel } from 'src/app/core/model/pageable.model';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -41,5 +48,56 @@ export class UserService {
           return this.userData;
         })
       );
+  }
+
+  public getAdministrativeUserDetails(
+    params?: AdminUsersManagementQueryParamsIf,
+    pageIndex?: number,
+    pageSize?: number
+  ): Observable<PageableModel<AdministrativeUserDetails>> {
+    if (isNil(pageIndex)) {
+      pageIndex = 0;
+    }
+    if (isNil(pageSize)) {
+      pageSize = 5;
+    }
+    const queryParams = new HttpParams({
+      fromObject: { page: pageIndex, size: pageSize, ...(<any>params) },
+    });
+    return this.restService.get(EndpointUrls.userResource, {
+      params: queryParams,
+    });
+  }
+
+  public changeUserActivityStatus(
+    userId: number,
+    isUserDisabled: boolean
+  ): Observable<void> {
+    return this.restService.patch(
+      EndpointUrls.changeUserActiveStatusUrl.concat(`/${userId}`),
+      {
+        isDeactivated: isUserDisabled,
+      }
+    );
+  }
+
+  public changeUserRoles(userId: number, roleIds: number[]): Observable<void> {
+    const rolesDto = roleIds.map(role => {
+      return { roleId: role };
+    });
+    return this.restService.patch(
+      EndpointUrls.changeUserRolesUrl.concat(`/${userId}`),
+      rolesDto
+    );
+  }
+
+  public changeUserPassword(
+    userId: number,
+    newPassword: string
+  ): Observable<void> {
+    return this.restService.patch(
+      EndpointUrls.changeUserPassword.concat(`/${userId}`),
+      { password: newPassword }
+    );
   }
 }

@@ -12,6 +12,6 @@ export interface RefreshTokenInterface {
   refresh_token: string | null;
 }
 
-export interface RegisterContactPersonInterface {
+export interface SetPasswordInterface {
   password: string;
 }

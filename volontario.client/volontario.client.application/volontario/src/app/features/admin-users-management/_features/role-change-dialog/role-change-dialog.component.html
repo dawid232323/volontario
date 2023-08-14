@@ -1,0 +1,26 @@
+<div class="flex flex-col w-full">
+  <h1 mat-dialog-title>Edytuj role użytkownika</h1>
+  <section id="roles-select-section">
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-select multiple [(ngModel)]="selectedRoles">
+          <mat-option *ngFor="let role of userRoles" [value]="role.id">{{
+            role.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-dialog-content>
+  </section>
+  <section
+    class="flex flex-col lg:flex-row justify-center items-stretch"
+    id="control-button-section">
+    <mat-dialog-actions>
+      <button mat-raised-button (click)="onModalCancel()" color="warn">
+        Anuluj
+      </button>
+      <button mat-raised-button (click)="onModalClose()" color="primary">
+        Zatwierdź
+      </button>
+    </mat-dialog-actions>
+  </section>
+</div>

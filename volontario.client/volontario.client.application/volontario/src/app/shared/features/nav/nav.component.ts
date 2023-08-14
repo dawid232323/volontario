@@ -48,5 +48,9 @@ export class NavComponent implements OnInit, OnDestroy {
     this.router.navigate(['advertisement/add']);
   }
 
+  public routeToAdminUsers() {
+    this.router.navigate(['admin', 'users']);
+  }
+
   protected readonly UserRoleEnum = UserRoleEnum;
 }
