@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,10 @@ import uam.volontario.security.jwt.JWTService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.OfferValidationService;
 
-import org.springframework.data.domain.Pageable;
-
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -128,26 +130,6 @@ public class CrudOfferDataHandler
         catch ( Exception aE )
         {
             LOGGER.error( "Error on loading offers: {}", aE.getMessage() );
-            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-                    .body( aE.getMessage() );
-        }
-    }
-
-    /**
-     * Loads all benefits in the system.
-     *
-     * @return Response Entity with code 200 and list of benefits or Response Entity with code 500 when error
-     *         occurred during fetching benefits.
-     */
-    public ResponseEntity< ? > loadAllBenefits()
-    {
-        try
-        {
-            return ResponseEntity.ok( benefitService.loadAllEntities() );
-        }
-        catch ( Exception aE )
-        {
-            LOGGER.error( "Error on loading benefits: {}", aE.getMessage() );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }

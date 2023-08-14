@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.Offer.OfferDto;
+import uam.volontario.handler.BenefitHandler;
 import uam.volontario.handler.CrudOfferDataHandler;
 import uam.volontario.handler.OfferAssignmentHandler;
 import uam.volontario.model.common.UserRole;
@@ -30,19 +31,24 @@ public class OfferController
 
     private final OfferAssignmentHandler offerAssignmentHandler;
 
+    private final BenefitHandler benefitHandler;
+
     /**
      * CDI constructor.
      *
      * @param aOfferDataHandler fetch offer data handler.
      *
      * @param aOfferAssignmentHandler offer assignment handler.
+     *
+     * @param aBenefitHandler benefit handler.
      */
     @Autowired
     public OfferController( final CrudOfferDataHandler aOfferDataHandler,
-                            final OfferAssignmentHandler aOfferAssignmentHandler )
+                            final OfferAssignmentHandler aOfferAssignmentHandler, final BenefitHandler aBenefitHandler )
     {
         crudOfferDataHandler = aOfferDataHandler;
         offerAssignmentHandler = aOfferAssignmentHandler;
+        benefitHandler = aBenefitHandler;
     }
 
     /**
@@ -95,7 +101,7 @@ public class OfferController
     @GetMapping( value = "/benefit" )
     public ResponseEntity< ? > loadAllBenefits()
     {
-        return crudOfferDataHandler.loadAllBenefits();
+        return benefitHandler.loadAllUsedBenefits();
     }
 
     /**

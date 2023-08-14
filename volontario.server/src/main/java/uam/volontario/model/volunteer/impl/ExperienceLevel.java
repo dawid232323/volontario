@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import uam.volontario.model.common.SoftDeletable;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 
 /**
@@ -19,7 +20,7 @@ import uam.volontario.model.common.VolontarioDomainElementIf;
 @Builder
 @Entity
 @Table( name = "experience_level" )
-public class ExperienceLevel implements VolontarioDomainElementIf
+public class ExperienceLevel implements VolontarioDomainElementIf, SoftDeletable
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -40,6 +41,9 @@ public class ExperienceLevel implements VolontarioDomainElementIf
     @NotNull
     @Column
     private Long value;
+
+    @Column
+    private boolean isUsed;
 
     @Override
     public int hashCode()

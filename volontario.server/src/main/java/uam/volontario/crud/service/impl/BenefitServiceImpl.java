@@ -62,7 +62,20 @@ public class BenefitServiceImpl implements BenefitService
     }
 
     @Override
-    public List<Benefit> findByIds(List<Long> aIds) {
-        return this.benefitRepository.findByIdIn( aIds );
+    public List< Benefit > findByIds( List< Long > aIds )
+    {
+        return benefitRepository.findByIdIn( aIds );
+    }
+
+    @Override
+    public List< Benefit > findAllUsed()
+    {
+        return benefitRepository.findAllByUsedTrue();
+    }
+
+    @Override
+    public List< Benefit > findAllNotUsed()
+    {
+        return benefitRepository.findAllByUsedFalse();
     }
 }

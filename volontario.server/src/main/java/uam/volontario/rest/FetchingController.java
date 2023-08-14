@@ -1,5 +1,6 @@
 package uam.volontario.rest;
 
+import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -11,11 +12,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uam.volontario.crud.service.ExperienceLevelService;
-import uam.volontario.crud.service.InterestCategoryService;
 import uam.volontario.dto.convert.DtoService;
+import uam.volontario.handler.ExperienceLevelHandler;
+import uam.volontario.handler.InterestCategoryHandler;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
+import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.security.jwt.JWTService;
+
+import java.util.List;
+import java.util.Optional;
 
 // TODO: this controller needs to be rethought.
 /**
@@ -29,30 +34,30 @@ public class FetchingController
 {
     private final DtoService dtoService;
 
-    private final InterestCategoryService interestCategoryService;
-
-    private final ExperienceLevelService experienceLevelService;
+    private final ExperienceLevelHandler experienceLevelHandler;
 
     private final JWTService jwtService;
+
+    private final InterestCategoryHandler interestCategoryHandler;
 
     /**
      * CDI constructor.
      *
      * @param aDtoService dto service.
      *
-     * @param aInterestCategoryService interest category service.
+     * @param aInterestCategoryHandler interest category handler.
      *
-     * @param aExperienceLevelService volunteer experience service.
+     * @param aExperienceLevelHandler volunteer experience handler.
      *
      * @param aJwtService jwt service.
      */
-    public FetchingController( final DtoService aDtoService, final InterestCategoryService aInterestCategoryService,
-                               final ExperienceLevelService aExperienceLevelService,
+    public FetchingController( final DtoService aDtoService, final InterestCategoryHandler aInterestCategoryHandler,
+                               final ExperienceLevelHandler aExperienceLevelHandler,
                                final JWTService aJwtService )
     {
         dtoService = aDtoService;
-        interestCategoryService = aInterestCategoryService;
-        experienceLevelService = aExperienceLevelService;
+        interestCategoryHandler = aInterestCategoryHandler;
+        experienceLevelHandler = aExperienceLevelHandler;
         jwtService = aJwtService;
     }
 
@@ -70,7 +75,13 @@ public class FetchingController
     {
         try
         {
-            return ResponseEntity.ok( interestCategoryService.loadAllEntities().stream()
+            final List< InterestCategory > interestCategories = Lists.newArrayList();
+            Optional.ofNullable( interestCategoryHandler.loadAllUsedInterestCategories().getBody() )
+                    .filter( List.class::isInstance )
+                    .map( List.class::cast )
+                    .ifPresent( interestCategories::addAll );
+
+            return ResponseEntity.ok( interestCategories.stream()
                     .map( dtoService::interestCategoryToDto )
                     .toList() );
         }
@@ -94,7 +105,13 @@ public class FetchingController
     {
         try
         {
-            return ResponseEntity.ok( experienceLevelService.loadAllEntities().stream()
+            final List< ExperienceLevel > experienceLevels = Lists.newArrayList();
+            Optional.ofNullable( experienceLevelHandler.loadAllUsedExperienceLevels().getBody() )
+                    .filter( List.class::isInstance )
+                    .map( List.class::cast )
+                    .ifPresent( experienceLevels::addAll );
+
+            return ResponseEntity.ok( experienceLevels.stream()
                     .map( dtoService::volunteerExperienceToDto )
                     .toList() );
         }

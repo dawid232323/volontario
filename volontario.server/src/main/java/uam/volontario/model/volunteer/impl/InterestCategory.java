@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import uam.volontario.model.common.SoftDeletable;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 import uam.volontario.model.offer.impl.Offer;
 
@@ -22,7 +23,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table( name = "interest_categories" )
-public class InterestCategory implements VolontarioDomainElementIf
+public class InterestCategory implements VolontarioDomainElementIf, SoftDeletable
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -44,6 +45,9 @@ public class InterestCategory implements VolontarioDomainElementIf
     @JsonIgnore
     @ManyToMany( mappedBy = "interestCategories" )
     private List< Offer > offers;
+
+    @Column
+    private boolean isUsed;
 
     @Override
     public int hashCode()

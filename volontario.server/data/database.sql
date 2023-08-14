@@ -96,7 +96,9 @@ ALTER SEQUENCE public.applications_id_seq OWNED BY public.applications.id;
 
 CREATE TABLE public.benefits (
                                  id bigint NOT NULL,
-                                 name character varying(255)
+                                 name character varying(255),
+                                 is_used boolean
+
 );
 
 
@@ -131,7 +133,8 @@ CREATE TABLE public.experience_level (
                                          id bigint NOT NULL,
                                          definition character varying(500),
                                          name character varying(255),
-                                         value bigint
+                                         value bigint,
+                                         is_used boolean
 );
 
 
@@ -242,7 +245,8 @@ ALTER SEQUENCE public.institutions_id_seq OWNED BY public.institutions.id;
 CREATE TABLE public.interest_categories (
                                             id bigint NOT NULL,
                                             description character varying(750),
-                                            name character varying(255)
+                                            name character varying(255),
+                                            is_used boolean
 );
 
 
@@ -995,4 +999,3 @@ ALTER TABLE ONLY public.applications
 --
 -- PostgreSQL database dump complete
 --
-

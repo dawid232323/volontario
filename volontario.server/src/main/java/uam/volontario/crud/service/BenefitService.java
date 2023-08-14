@@ -7,7 +7,14 @@ import java.util.List;
 /**
  * Injection interface for {@linkplain Benefit}'s service.
  */
-public interface BenefitService extends EntityService< Benefit >
+public interface BenefitService extends SoftDeletableEntityService< Benefit >
 {
-    List<Benefit> findByIds( List<Long> aIds );
+    /**
+     * Fetches all Benefits with given IDs.
+     *
+     * @param aIds IDs.
+     *
+     * @return all Benefits with given IDs.
+     */
+    List< Benefit > findByIds( List< Long > aIds );
 }

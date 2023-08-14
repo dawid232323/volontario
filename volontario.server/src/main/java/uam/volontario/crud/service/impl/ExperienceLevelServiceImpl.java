@@ -60,4 +60,16 @@ public class ExperienceLevelServiceImpl implements ExperienceLevelService
     {
         experienceLevelRepository.deleteById( aVolunteerExperienceId );
     }
+
+    @Override
+    public List< ExperienceLevel > findAllUsed()
+    {
+        return experienceLevelRepository.findAllByUsedTrue();
+    }
+
+    @Override
+    public List< ExperienceLevel > findAllNotUsed()
+    {
+        return experienceLevelRepository.findAllByUsedFalse();
+    }
 }

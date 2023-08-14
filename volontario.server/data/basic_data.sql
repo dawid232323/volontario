@@ -25,22 +25,22 @@ VALUES  (1, 'Nowe'),
 SELECT setval('offer_states_id_seq', 7, true);
 
 INSERT INTO public.experience_level
-VALUES  (1, 'Początkujący', 'Początkujący', 10),
-        (2, 'Średniozaawansowany', 'Średniozaawansowany', 20),
-        (3, 'Weteran', 'Weteran', 30);
+VALUES  (1, 'Początkujący', 'Początkujący', 10, true),
+        (2, 'Średniozaawansowany', 'Średniozaawansowany', 20, true),
+        (3, 'Weteran', 'Weteran', 30, true);
 
 SELECT setval('experience_level_id_seq', 4, true);
 
 INSERT INTO public.interest_categories
-VALUES  (1, 'Praca z osobami starszymi', 'Praca z osobami starszymi'),
-        (2, 'Praca z dziećmi', 'Praca z dziećmi'),
-        (3, 'Praca z osobami wykluczonymi', 'Praca z osobami wykluczonymi'),
-        (4, 'Praca z osobami z niepełnosprawnościami ruchowymi i fizycznymi', 'Praca z osobami z niepełnosprawnościami ruchowymi i fizycznymi'),
-        (5, 'Praca z osobami z niepełnosprawnościami intelektualnymi', 'Praca z osobami z niepełnosprawnościami intelektualnymi'),
-        (6, 'Praca ze zwierzętami', 'Praca ze zwierzętami'),
-        (7, 'Pomoc organizacyjna przy wydarzeniach', 'Pomoc organizacyjna przy wydarzeniach'),
-        (8, 'Dzielenie się wiedzą i umiejętnościami', 'Dzielenie się wiedzą i umiejętnościami'),
-        (9, 'Prace porządkowe', 'Prace porządkowe');
+VALUES  (1, 'Praca z osobami starszymi', 'Praca z osobami starszymi', true),
+        (2, 'Praca z dziećmi', 'Praca z dziećmi', true),
+        (3, 'Praca z osobami wykluczonymi', 'Praca z osobami wykluczonymi', true),
+        (4, 'Praca z osobami z niepełnosprawnościami ruchowymi i fizycznymi', 'Praca z osobami z niepełnosprawnościami ruchowymi i fizycznymi', true),
+        (5, 'Praca z osobami z niepełnosprawnościami intelektualnymi', 'Praca z osobami z niepełnosprawnościami intelektualnymi', true),
+        (6, 'Praca ze zwierzętami', 'Praca ze zwierzętami', true),
+        (7, 'Pomoc organizacyjna przy wydarzeniach', 'Pomoc organizacyjna przy wydarzeniach', true),
+        (8, 'Dzielenie się wiedzą i umiejętnościami', 'Dzielenie się wiedzą i umiejętnościami', true),
+        (9, 'Prace porządkowe', 'Prace porządkowe', true);
 
 SELECT setval('interest_categories_id_seq', 9, true);
 
@@ -52,9 +52,9 @@ VALUES (1, 'Jednorazowy'),
 SELECT setval('offer_types_id_seq', 4, true);
 
 INSERT INTO public.benefits
-VALUES (1, 'Nocleg'),
-       (2, 'Transport'),
-       (3, 'Pokrycie kosztów dojazdu'),
-       (4, 'Posiłki');
+VALUES (1, 'Nocleg', true),
+       (2, 'Transport', true),
+       (3, 'Pokrycie kosztów dojazdu', true),
+       (4, 'Posiłki', true);
 
 SELECT setval('benefits_id_seq', 5, true);

@@ -66,4 +66,16 @@ public class InterestCategoryServiceImpl implements InterestCategoryService
     {
         interestCategoryRepository.deleteById( aInterestCategoryId );
     }
+
+    @Override
+    public List< InterestCategory > findAllUsed()
+    {
+        return interestCategoryRepository.findAllByUsedTrue();
+    }
+
+    @Override
+    public List< InterestCategory > findAllNotUsed()
+    {
+        return interestCategoryRepository.findAllByUsedFalse();
+    }
 }
