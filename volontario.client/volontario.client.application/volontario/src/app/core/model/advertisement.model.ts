@@ -189,7 +189,8 @@ export class AdvertisementPreview {
     public offerTypeName: string,
     public institutionName: string,
     public isHidden: boolean,
-    public applicationsCount: number
+    public applicationsCount: number,
+    public institutionId: number
   ) {}
 
   public static fromPayload(payload?: any): AdvertisementPreview {
@@ -204,7 +205,8 @@ export class AdvertisementPreview {
       payload?.offerTypeName,
       payload?.institutionName,
       payload?.isHidden,
-      payload?.applicationsCount
+      payload?.applicationsCount,
+      payload?.institutionId
     );
   }
 }

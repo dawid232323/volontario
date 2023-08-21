@@ -10,7 +10,10 @@
     </mat-card-title>
     <mat-card-subtitle>
       <div class="flex flex-col">
-        <div class="flex flex-row space-x-3">
+        <div
+          class="flex flex-row space-x-3 hover:cursor-pointer hover:rounded-xl hover:bg-rowAccentHover transition"
+          *ngIf="shouldShowInstitution"
+          (click)="goToInstitutionDetails()">
           <i class="fa-sharp fa-solid fa-building"></i>
           <p>{{ advertisement?.institutionName }}</p>
         </div>

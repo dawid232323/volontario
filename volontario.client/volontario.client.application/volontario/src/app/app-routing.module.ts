@@ -24,41 +24,13 @@ import { AdvertisementDetailsComponent } from './features/advertisement-details/
 import { OfferApplyComponent } from 'src/app/features/offer-apply/offer-apply.component';
 import { VolunteerApplicationsListComponent } from 'src/app/features/volunteer-applications-list/volunteer-applications-list.component';
 import { adminRouting } from 'src/app/core/routing/admin.routing';
+import { institutionRouting } from 'src/app/core/routing/institution.routing';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomePageComponent, canActivate: [RouterGuard] },
   { path: 'institution', redirectTo: 'home' },
-  {
-    path: 'institution',
-    children: [
-      {
-        path: 'verify',
-        component: InstitutionVerifyComponent,
-        canActivate: [InstitutionRegistrationGuard],
-        data: { stage: InstitutionRegistrationStage.Verification },
-      },
-      { path: 'register', component: RegisterInstitutionComponent },
-      {
-        path: 'register-contact-person',
-        component: RegisterContactPersonComponent,
-        canActivate: [InstitutionRegistrationGuard],
-        data: { stage: InstitutionRegistrationStage.ContactPersonRegistration },
-      },
-      {
-        path: 'advertisement-panel',
-        component: InstitutionAdvertisementPanelComponent,
-        canActivate: [RouterGuard, RoleDependentGuard],
-        data: {
-          roles: [
-            UserRoleEnum.InstitutionWorker,
-            UserRoleEnum.InstitutionAdmin,
-          ],
-        },
-      },
-    ],
-  },
   { path: '', component: MainPageComponent },
   {
     path: 'advertisement',
@@ -115,6 +87,7 @@ const routes: Routes = [
       roles: [UserRoleEnum.Volunteer],
     },
   },
+  ...institutionRouting,
   ...adminRouting,
   { path: '**', pathMatch: 'full', redirectTo: 'home' },
 ];

@@ -11,6 +11,8 @@ import * as moment from 'moment/moment';
 })
 export class OfferCardComponent {
   @Input() advertisement: AdvertisementPreview | undefined = undefined;
+  @Input() shouldShowInstitution = true;
+
   constructor(private router: Router) {}
 
   public getFormattedDate(date?: Date): string {
@@ -22,6 +24,10 @@ export class OfferCardComponent {
 
   public goToEditAdvertisement() {
     this.router.navigate(['advertisement', 'edit', this.advertisement?.id]);
+  }
+
+  public goToInstitutionDetails() {
+    this.router.navigate(['institution', this.advertisement?.institutionId]);
   }
 
   public shortTitle(title: string | undefined) {

@@ -72,6 +72,9 @@ public class Institution implements VolontarioDomainElementIf
     @Column
     private String registrationToken;
 
+    @Column
+    private String institutionTags;
+
     @Override
     public int hashCode()
     {

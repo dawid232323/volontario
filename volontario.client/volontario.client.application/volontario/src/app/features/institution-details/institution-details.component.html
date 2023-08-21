@@ -1,0 +1,149 @@
+<main class="flex flex-col min-h-screen bg-gray-100 w-full items-center">
+  <div
+    class="flex flex-col lg:px-32 py-16 space-y-6 lg:w-3/4 w-full items-center">
+    <section
+      #mainDetailsSection
+      class="flex lg:flex-row flex-col space-y-6 lg:space-y-0 lg:space-x-6 w-full lg:items-start items-center">
+      <div
+        [ngClass]="{ 'lg:basis-3/4': canManageInstitution }"
+        class="flex w-full lg:justify-start">
+        <mat-card class="w-full h-full">
+          <mat-card-title>
+            <h1>{{ loadedInstitution?.name }}</h1>
+          </mat-card-title>
+          <mat-card-content>
+            <mat-divider></mat-divider>
+            <div class="w-full grid grid-cols-1 md:grid-cols-2">
+              <div class="flex items-center flex-row py-3">
+                <div
+                  class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+                  <i class="fa-solid fa-calendar-day text-lg"></i>
+                </div>
+                <div class="flex justify-center flex-col px-2">
+                  <p class="font-semibold text-base !m-0">Numer KRS</p>
+                  <p class="text-bgPrimary font-bold text-sm !m-0">
+                    {{ loadedInstitution?.krsNumber }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center flex-row py-3">
+                <div
+                  class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+                  <i class="fa-solid fa-calendar-day text-lg"></i>
+                </div>
+                <div class="flex justify-center flex-col px-2">
+                  <p class="font-semibold text-base !m-0">Adres</p>
+                  <p class="text-bgPrimary font-bold text-sm !m-0">
+                    {{ loadedInstitution?.headquartersAddress }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center flex-row py-3">
+                <div
+                  class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+                  <i class="fa-solid fa-calendar-day text-lg"></i>
+                </div>
+                <div class="flex justify-center flex-col px-2">
+                  <p class="font-semibold text-base !m-0">
+                    Obszar działalności
+                  </p>
+                  <p class="text-bgPrimary font-bold text-sm !m-0">
+                    {{ loadedInstitution?.localization }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div
+        [ngClass]="{ 'lg:basis-1/4': canManageInstitution }"
+        class="flex lg:justify-end w-full"
+        *ngIf="canManageInstitution">
+        <mat-card class="w-full">
+          <mat-card-title>
+            <h1>Zarządzaj instytucją</h1>
+          </mat-card-title>
+          <mat-card-content>
+            <mat-divider></mat-divider>
+            <div class="flex flex-col w-full px-5 py-5 space-y-6">
+              <button
+                class="hover:bg-btnAccentHover"
+                mat-raised-button
+                color="accent"
+                (click)="onEditInstitutionData()">
+                <mat-icon matPrefix>edit</mat-icon>Edytuj dane
+              </button>
+              <button
+                class="hover:bg-btnAccentHover"
+                mat-raised-button
+                color="accent"
+                (click)="onManageWorkers()">
+                <mat-icon matPrefix>group</mat-icon>
+                Zarządzaj pracownikami
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </section>
+    <section
+      #descriptionSection
+      class="grid lg:grid-cols-2 grid-cols-1 lg:space-x-6 space-y-6 lg:space-y-0 w-full">
+      <div class="flex basis-1/2 h-full">
+        <mat-card class="w-full">
+          <mat-card-title>
+            <h1>Opis</h1>
+          </mat-card-title>
+          <mat-card-content>
+            <mat-divider> </mat-divider>
+            <div class="py-6">
+              {{ loadedInstitution?.description }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="flex basis-1/2">
+        <mat-card class="w-full">
+          <mat-card-title>
+            <h1>Przedmioty działalności</h1>
+          </mat-card-title>
+          <mat-card-content>
+            <mat-divider class="pt-10"></mat-divider>
+            <div class="py-6">
+              <mat-chip-list>
+                <mat-chip
+                  *ngFor="let tag of loadedInstitution?.tags"
+                  class="!bg-btnAccentPrimary text-xs md:text-base"
+                  color="accent"
+                  >{{ tag }}</mat-chip
+                >
+              </mat-chip-list>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </section>
+    <section
+      #activeOffersSection
+      class="flex lg:flex-row flex-col lg:space-x-6 w-full lg:items-start items-center">
+      <mat-card class="w-full">
+        <mat-card-title>
+          <h1>Trwające ogłoszenia</h1>
+        </mat-card-title>
+        <mat-card-content>
+          <mat-divider> </mat-divider>
+          <div
+            class="lg:w-3/4 w-full py-6 space-y-3 lg:space-y-0 lg:space-x-3 space-x-0 grid grid-cols-1 md:grid-cols-3">
+            <div *ngIf="offers.length === 0">Brak trwających ogłoszeń</div>
+            <app-offer-card
+              class="w-full"
+              *ngFor="let offer of offers"
+              [advertisement]="offer"
+              [shouldShowInstitution]="false"></app-offer-card>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </section>
+  </div>
+</main>

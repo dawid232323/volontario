@@ -28,4 +28,5 @@ public class OfferBaseInfoDto
     private Boolean isPoznanOnly;
     private Boolean isHidden;
     private Long applicationsCount;
+    private Long institutionId;
 }

@@ -26,6 +26,7 @@ import { AdvertisementDetailsModule } from './features/advertisement-details/adv
 import { OfferApplyModule } from 'src/app/features/offer-apply/offer-apply.module';
 import { VolunteerApplicationsListModule } from './features/volunteer-applications-list/volunteer-applications-list.module';
 import { AdminUsersManagementModule } from './features/admin-users-management/admin-users-management.module';
+import { InstitutionDetailsModule } from 'src/app/features/institution-details/institution-details.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -53,6 +54,7 @@ import { AdminUsersManagementModule } from './features/admin-users-management/ad
     OfferApplyModule,
     VolunteerApplicationsListModule,
     AdminUsersManagementModule,
+    InstitutionDetailsModule,
   ],
   providers: [
     {

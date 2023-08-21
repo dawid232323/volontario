@@ -1,6 +1,7 @@
 package uam.volontario.dto.Institution;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,10 +11,12 @@ import java.util.List;
  * Data Transfer Object for {@linkplain uam.volontario.model.institution.impl.Institution}.
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class InstitutionDto
 {
+    private Long id;
     private String name;
 
     private InstitutionContactPersonDto contactPerson;

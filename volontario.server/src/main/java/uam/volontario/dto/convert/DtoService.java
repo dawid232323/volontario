@@ -28,6 +28,7 @@ import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -133,6 +134,33 @@ public class DtoService
                 .isActive(false)
                 .registrationToken(RandomStringUtils.randomAlphanumeric(64))
                 .institutionContactPerson(contactPerson)
+                .institutionTags( String.join( ",", aDto.getTags() ) )
+                .build();
+    }
+
+    /**
+     * Builds and returns dto object based on institution.
+     *
+     * @param aInstitution institution that the dto should be based on
+     *
+     * @return {@linkplain InstitutionDto with given institution data}
+     */
+    public InstitutionDto getDtoFromInstitution( final Institution aInstitution )
+    {
+        final List< String > institutionTags = new ArrayList<>();
+        if( aInstitution.getInstitutionTags() != null )
+        {
+            institutionTags.addAll( List.of( aInstitution
+                    .getInstitutionTags().split( "," ) ) );
+        }
+        return InstitutionDto.builder()
+                .id( aInstitution.getId() )
+                .tags( institutionTags )
+                .name( aInstitution.getName() )
+                .headquartersAddress( aInstitution.getHeadquarters() )
+                .localization( aInstitution.getLocalization() )
+                .krsNumber( aInstitution.getKrsNumber() )
+                .description( aInstitution.getDescription() )
                 .build();
     }
 
@@ -239,6 +267,9 @@ public class DtoService
                 .institutionName( aOffer.getInstitution().getName() )
                 .isPoznanOnly( aOffer.getIsPoznanOnly() )
                 .isHidden( aOffer.getIsHidden() )
+                .institutionId( aOffer
+                        .getInstitution()
+                        .getId() )
                 .build();
     }
 
