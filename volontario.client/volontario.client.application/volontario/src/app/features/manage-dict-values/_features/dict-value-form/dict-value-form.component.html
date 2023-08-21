@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>{{ formTitle }}</h1>
+<mat-dialog-content>
+  <form [formGroup]="dictValueFormGroup" class="w-full">
+    <mat-form-field appearance="outline" color="accent" class="w-full">
+      <mat-label>Nazwa</mat-label>
+      <input matInput formControlName="name" />
+      <mat-hint *ngIf="dictValueFormGroup.controls['name'].invalid"
+        >Pole jest wymagane</mat-hint
+      >
+    </mat-form-field>
+    <mat-form-field
+      appearance="outline"
+      color="accent"
+      class="w-full"
+      *ngIf="shouldShowDescription">
+      <mat-label>Opis</mat-label>
+      <input matInput formControlName="description" />
+      <mat-hint *ngIf="dictValueFormGroup.controls['description'].invalid"
+        >Pole jest wymagane</mat-hint
+      >
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button mat-dialog-close color="warn">Anuluj</button>
+  <button
+    mat-raised-button
+    color="accent"
+    (click)="onConfirmButtonClicked()"
+    [disabled]="dictValueFormGroup.invalid">
+    Zapisz
+  </button>
+</mat-dialog-actions>

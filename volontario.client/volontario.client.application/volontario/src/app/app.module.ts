@@ -27,6 +27,7 @@ import { OfferApplyModule } from 'src/app/features/offer-apply/offer-apply.modul
 import { VolunteerApplicationsListModule } from './features/volunteer-applications-list/volunteer-applications-list.module';
 import { AdminUsersManagementModule } from './features/admin-users-management/admin-users-management.module';
 import { InstitutionDetailsModule } from 'src/app/features/institution-details/institution-details.module';
+import { ManageDictValuesModule } from 'src/app/features/manage-dict-values/manage-dict-values.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -55,6 +56,7 @@ import { InstitutionDetailsModule } from 'src/app/features/institution-details/i
     VolunteerApplicationsListModule,
     AdminUsersManagementModule,
     InstitutionDetailsModule,
+    ManageDictValuesModule,
   ],
   providers: [
     {

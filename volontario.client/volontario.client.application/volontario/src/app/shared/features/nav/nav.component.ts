@@ -52,5 +52,9 @@ export class NavComponent implements OnInit, OnDestroy {
     this.router.navigate(['admin', 'users']);
   }
 
+  public routeToManageDictValues() {
+    this.router.navigate(['moderator', 'manage-dict-values']);
+  }
+
   protected readonly UserRoleEnum = UserRoleEnum;
 }

@@ -97,7 +97,7 @@ export class OfferListComponent implements OnInit {
 
   private downloadData() {
     forkJoin([
-      this.interestCategoryService.getAllInterestCategories(),
+      this.interestCategoryService.getUsedValues(),
       this.offerService.getAllAdvertisementTypes(),
       this.userService.getCurrentUserData(),
     ]).subscribe(([interestCategories, offerTypes, user]) => {

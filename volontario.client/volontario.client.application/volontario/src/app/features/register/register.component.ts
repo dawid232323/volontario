@@ -33,8 +33,8 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     forkJoin([
-      this.interestCategoryService.getAllInterestCategories(),
-      this.experienceService.getAllExperienceLevels(),
+      this.interestCategoryService.getUsedValues(),
+      this.experienceService.getUsedValues(),
     ]).subscribe(([categories, experiences]) => {
       this.interestCategories = categories.map(category => {
         return {

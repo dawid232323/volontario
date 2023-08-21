@@ -119,7 +119,7 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
 
   private downloadInitialData() {
     forkJoin([
-      this.interestCategoryService.getAllInterestCategories(),
+      this.interestCategoryService.getUsedValues(),
       this.advertisementService.getAllAdvertisementTypes(),
       this.userService.getCurrentUserData(),
     ]).subscribe(([categories, types, user]) => {

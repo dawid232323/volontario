@@ -99,6 +99,7 @@ public class InterestCategoryHandler
         {
             final InterestCategory interestCategory = InterestCategory.builder()
                     .name( aInterestCategoryDto.getName() )
+                    .description( aInterestCategoryDto.getDescription() )
                     .isUsed( true )
                     .build();
 
@@ -130,6 +131,7 @@ public class InterestCategoryHandler
                     .name( aInterestCategoryDto.getName() )
                     .isUsed( true )
                     .id( aInterestCategoryDto.getId() )
+                    .description( aInterestCategoryDto.getDescription() )
                     .build();
 
             // TODO: validation for InterestCategory update.

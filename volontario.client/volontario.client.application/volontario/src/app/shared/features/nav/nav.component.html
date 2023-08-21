@@ -147,7 +147,7 @@
               </ul>
             </mat-menu>
             <mat-menu #moderatorMenu="matMenu">
-              <ul mat-menu-item (click)="onLogout()">
+              <ul mat-menu-item (click)="routeToManageDictValues()">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 Zarządzaj wartościami słownikowymi
               </ul>
@@ -205,6 +205,13 @@
         Więcej
       </a>
       <mat-menu #menuMobile="matMenu">
+        <ul
+          *ngIf="loggedUser?.hasUserRoles([UserRoleEnum.Moderator])"
+          mat-menu-item
+          (click)="routeToManageDictValues()">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Zarządzaj wartościami słownikowymi
+        </ul>
         <ul
           mat-menu-item
           *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)">

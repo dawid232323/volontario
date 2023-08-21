@@ -1,0 +1,39 @@
+<div class="flex flex-col w-full items-center bg-gray-100 min-h-screen">
+  <div
+    class="flex flex-col lg:w-5/6 w-full lg:my-6 lg:mx-3 my-3 space-y-6 bg-white border-solid border-2 rounded-xl">
+    <div class="flex flex-col lg:mx-4 mx-2 my-8">
+      <h1 class="px-3">Zarządzaj wartościami słownikowymi</h1>
+      <div
+        *ngIf="isLoadingData"
+        class="flex items-center justify-center min-h-screen">
+        <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+      </div>
+      <mat-tab-group
+        *ngIf="!isLoadingData"
+        color="accent"
+        animationDuration="0ms">
+        <mat-tab label="Kategorie zainteresowań">
+          <app-dict-values-list
+            #interestCategoriesList
+            (operationEvent)="onOperationAction($event)"
+            [valueType]="DictionaryValueTypeEnum.InterestCategory"
+            [valuesList]="interestCategories"></app-dict-values-list>
+        </mat-tab>
+        <mat-tab label="Poziomy doświadczenia">
+          <app-dict-values-list
+            #experienceLevelsList
+            (operationEvent)="onOperationAction($event)"
+            [valueType]="DictionaryValueTypeEnum.ExpLevel"
+            [valuesList]="volunteerExperience"></app-dict-values-list>
+        </mat-tab>
+        <mat-tab label="Dodatkowe korzyści ogłoszenia">
+          <app-dict-values-list
+            #benefitsList
+            (operationEvent)="onOperationAction($event)"
+            [valueType]="DictionaryValueTypeEnum.AddBenefits"
+            [valuesList]="offerBenefits"></app-dict-values-list>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

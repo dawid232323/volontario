@@ -1,0 +1,87 @@
+<div class="flex flex-col w-full my-5 space-y-4">
+  <button
+    (click)="onAddValueClicked()"
+    mat-raised-button
+    class="lg:w-1/6 w-1/3 hover:bg-btnAccentHover hover:cursor-pointer"
+    color="accent">
+    Dodaj wartość
+  </button>
+  <table
+    mat-table
+    class="table-auto lg:table-fixed !border-spacing-5 w-full border-2 rounded-xl"
+    matSort
+    [dataSource]="dataSource">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="lg:w-1/3">
+        Nazwa
+      </th>
+      <td mat-cell *matCellDef="let row" class="lg:w-1/3">{{ row.name }}</td>
+    </ng-container>
+    <ng-container class="hidden lg:table-cell" matColumnDef="description">
+      <th
+        [ngClass]="{ 'description-hidden': !shouldShowDescription }"
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="hidden lg:table-cell lg:w-1/3">
+        Opis
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let row"
+        class="hidden lg:table-cell lg:w-1/3"
+        [ngClass]="{ 'description-hidden': !shouldShowDescription }">
+        {{ row.description }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="isActive">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="lg:w-1/6">
+        Czy aktywny
+      </th>
+      <td mat-cell *matCellDef="let row" class="lg:w-1/6">
+        <i
+          *ngIf="row.isUsed"
+          class="fa-regular fa-circle-check"
+          style="color: #1ea902"></i>
+        <i
+          *ngIf="!row.isUsed"
+          class="fa-solid fa-ban"
+          style="color: #dd0303"></i>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="action">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="lg:w-1/6"></th>
+      <td
+        mat-cell
+        *matCellDef="let row"
+        class="lg:w-1/6 hover:text-gray-500 hover:cursor-pointer"
+        [matMenuTriggerFor]="quickMenu"
+        [matMenuTriggerData]="{ dictValue: row }">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: visibleColumns"></tr>
+  </table>
+  <mat-paginator color="accent" [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
+
+  <mat-menu #quickMenu>
+    <ng-template matMenuContent let-value="dictValue">
+      <button mat-menu-item (click)="onEditValueClick(value)">
+        <mat-icon matPrefix color="accent">edit</mat-icon>
+        Edytuj
+      </button>
+      <button mat-menu-item (click)="onDisableEnableValueClick(value)">
+        <mat-icon *ngIf="value.isUsed" matPrefix color="warn">block</mat-icon>
+        <mat-icon *ngIf="!value.isUsed" matPrefix color="primary"
+          >check</mat-icon
+        >
+        {{ value.isUsed ? 'Dezaktywuj' : 'Aktywuj' }}
+      </button>
+    </ng-template>
+  </mat-menu>
+</div>

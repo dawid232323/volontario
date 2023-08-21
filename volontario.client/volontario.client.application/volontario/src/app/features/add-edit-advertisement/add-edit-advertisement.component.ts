@@ -22,6 +22,7 @@ import {
 } from 'src/app/utils/validator.utils';
 import { ViewportScroller } from '@angular/common';
 import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
+import { OfferBenefitService } from 'src/app/core/service/offer-benefit.service';
 
 export enum AdvertisementCrudOperationType {
   Add,
@@ -59,7 +60,8 @@ export class AddEditAdvertisementComponent implements OnInit {
     private experienceService: VolunteerExperienceService,
     private router: Router,
     private route: ActivatedRoute,
-    private viewPort: ViewportScroller
+    private viewPort: ViewportScroller,
+    private offerBenefitService: OfferBenefitService
   ) {}
 
   ngOnInit(): void {
@@ -203,9 +205,9 @@ export class AddEditAdvertisementComponent implements OnInit {
     forkJoin({
       currentUser: this.userService.getCurrentUserData(),
       advertisementTypes: this.advertisementService.getAllAdvertisementTypes(),
-      categories: this.interestCategoryService.getAllInterestCategories(),
-      experiences: this.experienceService.getAllExperienceLevels(),
-      benefits: this.advertisementService.getAllAdvertisementBenefits(),
+      categories: this.interestCategoryService.getUsedValues(),
+      experiences: this.experienceService.getUsedValues(),
+      benefits: this.offerBenefitService.getUsedValues(),
     }).subscribe(
       ({
         currentUser: user,

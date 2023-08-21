@@ -3,6 +3,7 @@ import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { isNil } from 'lodash';
 import { User } from 'src/app/core/model/user.model';
+import { DictionaryValueInterface } from 'src/app/core/interface/dictionary-value.interface';
 
 export enum AdvertisementTypeEnum {
   SingleUse = 1,
@@ -18,11 +19,11 @@ export class AdvertisementType {
   }
 }
 
-export class AdvertisementBenefit {
-  constructor(public id: number, public name: string) {}
+export class AdvertisementBenefit implements DictionaryValueInterface {
+  constructor(public id: number, public name: string, public isUsed: boolean) {}
 
   public static fromPayload(payload?: any): AdvertisementBenefit {
-    return new AdvertisementBenefit(payload?.id, payload?.name);
+    return new AdvertisementBenefit(payload?.id, payload?.name, payload?.used);
   }
 }
 

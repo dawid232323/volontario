@@ -50,12 +50,6 @@ export class AdvertisementService {
     );
   }
 
-  public getAllAdvertisementBenefits(): Observable<AdvertisementBenefit[]> {
-    return this.restService
-      .get(EndpointUrls.advertisementBenefits)
-      .pipe(map(result => result.map(AdvertisementBenefit.fromPayload)));
-  }
-
   public createNewAdvertisement(
     body: AdvertisementUpdateCreateDto
   ): Observable<any> {

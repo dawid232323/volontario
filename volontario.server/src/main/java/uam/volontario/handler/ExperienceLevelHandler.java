@@ -99,6 +99,7 @@ public class ExperienceLevelHandler
         {
             final ExperienceLevel experienceLevel = ExperienceLevel.builder()
                     .name( aExperienceLevelDto.getName() )
+                    .definition( aExperienceLevelDto.getDefinition() )
                     .isUsed( true )
                     .build();
 
@@ -130,6 +131,7 @@ public class ExperienceLevelHandler
                     .name( aExperienceLevelDto.getName() )
                     .isUsed( true )
                     .id( aExperienceLevelDto.getId() )
+                    .definition( aExperienceLevelDto.getDefinition() )
                     .build();
 
             // TODO: validation for ExperienceLevel update.
