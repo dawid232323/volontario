@@ -3,10 +3,9 @@ package uam.volontario.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.handler.InstitutionHandler;
 
 @RestController
@@ -36,5 +35,23 @@ public class InstitutionController
     public ResponseEntity< ? > getInstitutionDetails( @PathVariable( "institution_id" ) final Long aInstitutionId )
     {
         return this.institutionHandler.getInstitutionDetails( aInstitutionId );
+    }
+
+    /**
+     * Updates institution data.
+     *
+     * @param aInstitutionId primary key of institution to be updated
+     *
+     * @param aInstitutionDto dto with all necessary information
+     *
+     * @return response with status 200 and institution data body if everything works fine,
+     *          status 400 if institution with given id does not exist or status 500 in any other error
+     */
+    @PutMapping( "/{institution_id}" )
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionAdministrators( authentication.principal )" )
+    public ResponseEntity< ? > updateInstitutionData( @PathVariable( "institution_id" ) final Long aInstitutionId,
+                                                      @RequestBody final InstitutionDto aInstitutionDto )
+    {
+        return this.institutionHandler.updateInstitutionData( aInstitutionId, aInstitutionDto );
     }
 }

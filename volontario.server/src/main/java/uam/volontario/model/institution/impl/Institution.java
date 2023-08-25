@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor // for Hibernate.
 @Getter
 @Setter
-@Builder
+@Builder( toBuilder = true )
 @Entity
 @Table( name = "institutions" )
 public class Institution implements VolontarioDomainElementIf
