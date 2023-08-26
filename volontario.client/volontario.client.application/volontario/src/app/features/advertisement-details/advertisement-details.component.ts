@@ -76,6 +76,10 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     return;
   }
 
+  public onGoBackToOfferListButtonClicked() {
+    return this.router.navigate(['advertisement', 'list']);
+  }
+
   private determineIfUserCanApply() {
     if (this?.loggedUser?.hasUserRole(UserRoleEnum.Volunteer)) {
       this.offerApplicationService

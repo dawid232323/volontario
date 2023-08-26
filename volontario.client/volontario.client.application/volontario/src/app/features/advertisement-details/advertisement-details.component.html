@@ -1,6 +1,16 @@
-<main
-  class="min-h-screen max-w-screen-lg mx-auto pt-16 flex flex-col md:flex-row">
-  <mat-tab-group class="w-full" *ngIf="canManageOffer">
+<main class="min-h-screen max-w-screen-lg mx-auto pt-16 flex flex-col">
+  <div>
+    <button
+      mat-raised-button
+      class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5"
+      (click)="onGoBackToOfferListButtonClicked()"
+      color="accent">
+      <mat-icon matPrefix>arrow_back</mat-icon>
+      Wróć do listy ogłoszeń
+    </button>
+  </div>
+
+  <mat-tab-group class="w-full py-5" *ngIf="canManageOffer">
     <mat-tab label="Szczegóły ogłoszenia">
       <div class="flex lg:flex-row flex-col">
         <div *ngTemplateOutlet="advertisementDetailsMainPage"></div>
@@ -176,10 +186,11 @@
   <ng-template #sideButtonContainer>
     <mat-card
       class="w-full lg:h-[200px] lg:w-[200px] my-8 lg:mx-4"
-      *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer) || canManageOffer"
-      ><mat-card-title *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
+      *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer) || canManageOffer">
+      <mat-card-title *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
         ><h3>Aplikuj na ogłoszenie</h3></mat-card-title
-      ><mat-card-content>
+      >
+      <mat-card-content>
         <div
           *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
           class="w-full h-full"
@@ -203,7 +214,7 @@
             Edytuj ogłoszenie
           </button>
         </div>
-      </mat-card-content></mat-card
-    >
+      </mat-card-content>
+    </mat-card>
   </ng-template>
 </main>

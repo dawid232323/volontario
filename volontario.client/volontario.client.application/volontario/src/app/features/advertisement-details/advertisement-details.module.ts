@@ -11,6 +11,8 @@ import { ApplicationListModule } from 'src/app/features/advertisement-details/_f
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [AdvertisementDetailsComponent],
@@ -26,6 +28,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatButtonModule,
     MatTooltipModule,
     MatTabsModule,
+    MatFormFieldModule,
+    MatIconModule,
   ],
   exports: [AdvertisementDetailsComponent],
 })

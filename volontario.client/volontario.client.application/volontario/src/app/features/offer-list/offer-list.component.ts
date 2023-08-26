@@ -1,15 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { forkJoin } from 'rxjs';
-import {
-  AdvertisementFilterIf,
-  AdvertisementService,
-} from 'src/app/core/service/advertisement.service';
-import {
-  AdvertisementPreview,
-  AdvertisementType,
-} from 'src/app/core/model/advertisement.model';
+import { AdvertisementFilterIf, AdvertisementService } from 'src/app/core/service/advertisement.service';
+import { AdvertisementPreview, AdvertisementType } from 'src/app/core/model/advertisement.model';
 import { UserService } from 'src/app/core/service/user.service';
 import { User } from 'src/app/core/model/user.model';
 import { PageableModel } from 'src/app/core/model/pageable.model';
@@ -18,6 +12,9 @@ import { MobileFilterViewComponent } from 'src/app/features/offer-list/_features
 import { isNil } from 'lodash';
 import { PageEvent } from '@angular/material/paginator';
 import * as moment from 'moment';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { addQueryParamFromDate, addQueryParamFromNumber, addQueryParamFromSet, addQueryParamFromString, updateActiveUrl } from '../../utils/url.util';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-offer-list',
@@ -47,10 +44,17 @@ export class OfferListComponent implements OnInit {
     private interestCategoryService: InterestCategoryService,
     private offerService: AdvertisementService,
     private userService: UserService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    if (!isNil(this.offerService.offerListQueryParams)) {
+      this.initStateFromLastSavedQueryParams();
+    } else {
+      this.initStateFromQueryParamsAfterRefresh();
+    }
     this.downloadData();
   }
 
@@ -92,6 +96,77 @@ export class OfferListComponent implements OnInit {
   }
 
   public onSearchClicked() {
+    this.onSelectionChanged();
+    this.downloadOffers();
+  }
+
+  public onSelectionChanged() {
+    const httpParams: Params = new HttpParams();
+
+    addQueryParamFromSet('interestCategories', this.selectedCategories, httpParams);
+    addQueryParamFromSet('offerTypes', this.selectedTypes, httpParams);
+    addQueryParamFromNumber('page', this._selectedPageIndex, httpParams);
+    addQueryParamFromNumber('pageSize', this._selectedPageSize, httpParams);
+    addQueryParamFromString('text', this.typedText, httpParams);
+    addQueryParamFromDate('dateFrom', this.dateFrom, httpParams);
+    addQueryParamFromDate('dateTo', this.dateTo, httpParams);
+
+    delete httpParams['encoder']; // to get rid of obsolete http param.
+
+    this.offerService.offerListQueryParams = httpParams;
+    updateActiveUrl(this.router, this.activatedRoute, httpParams);
+  }
+
+  private initStateFromLastSavedQueryParams() {
+    if (!isNil(this.offerService.offerListQueryParams)) {
+      this.initStateFromQueryParams(this.offerService.offerListQueryParams);
+    }
+  }
+
+  private initStateFromQueryParamsAfterRefresh() {
+    const urlParams = Object.fromEntries(new URLSearchParams(location.search));
+
+    this.initStateFromQueryParams(urlParams);
+  }
+
+  private initStateFromQueryParams(urlParams: Params | { [p: string]: string }) {
+    this.unsetInitialData();
+
+    if (!isNil(urlParams['interestCategories'])) {
+      urlParams['interestCategories']
+        .split(',')
+        .map((id: string) => Number(id))
+        .forEach((id: number) => this._selectedCategories.add(id));
+    }
+
+    if (!isNil(urlParams['offerTypes'])) {
+      urlParams['offerTypes']
+        .split(',')
+        .map((id: string) => Number(id))
+        .forEach((id: number) => this.selectedTypes.add(id));
+    }
+
+    if (!isNil(urlParams['pageSize'])) {
+      this._selectedPageSize = Number(urlParams['pageSize']);
+    }
+
+    if (!isNil(urlParams['page'])) {
+      this._selectedPageIndex = Number(urlParams['page']);
+    }
+
+    if (!isNil(urlParams['text'])) {
+      this.typedText = urlParams['text'];
+    }
+
+    if (!isNil(urlParams['dateFrom'])) {
+      this.dateFrom = new Date(urlParams['dateFrom']);
+    }
+
+    if (!isNil(urlParams['dateTo'])) {
+      this.dateTo = new Date(urlParams['dateTo']);
+    }
+
+    updateActiveUrl(this.router, this.activatedRoute, urlParams);
     this.downloadOffers();
   }
 
@@ -110,8 +185,19 @@ export class OfferListComponent implements OnInit {
   }
 
   private setInitialData() {
+    if (this.offerService.offerListQueryParams === undefined) {
+      this._loggedUser?.volunteerData?.interestCategories?.forEach(category => {
+        this._selectedCategories.add(category.id);
+      });
+    } else {
+      this.initStateFromLastSavedQueryParams();
+    }
+    this.onSelectionChanged();
+  }
+
+  private unsetInitialData() {
     this._loggedUser?.volunteerData?.interestCategories?.forEach(category => {
-      this._selectedCategories.add(category.id);
+      this._selectedCategories.delete(category.id);
     });
   }
 
@@ -136,8 +222,7 @@ export class OfferListComponent implements OnInit {
   }
 
   private onMobileFilterClose(dialogFilters: OfferListDialogDataIf) {
-    const { typedText, dateFrom, dateTo, selectedCategories, selectedTypes } =
-      dialogFilters;
+    const { typedText, dateFrom, dateTo, selectedCategories, selectedTypes } = dialogFilters;
     this.typedText = typedText;
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;
@@ -148,17 +233,11 @@ export class OfferListComponent implements OnInit {
 
   private downloadOffers() {
     this.isLoadingData = true;
-    this.offerService
-      .getAdvertisementPreviews(
-        this.getListFilters(),
-        this.pageIndex,
-        this._selectedPageSize
-      )
-      .subscribe(pagedPreviews => {
-        this._pageableResult = pagedPreviews;
-        this._offerPreviews = pagedPreviews.content;
-        this.isLoadingData = false;
-      });
+    this.offerService.getAdvertisementPreviews(this.getListFilters(), this.pageIndex, this._selectedPageSize).subscribe(pagedPreviews => {
+      this._pageableResult = pagedPreviews;
+      this._offerPreviews = pagedPreviews.content;
+      this.isLoadingData = false;
+    });
   }
 
   public onClearFilters() {
@@ -167,6 +246,7 @@ export class OfferListComponent implements OnInit {
     this.dateTo = null;
     this.selectedCategories.clear();
     this.selectedTypes.clear();
+    this.onSelectionChanged();
     this.downloadOffers();
   }
 
@@ -192,6 +272,7 @@ export class OfferListComponent implements OnInit {
   public onPaginatorDataChange(event: PageEvent) {
     this._selectedPageIndex = event.pageIndex;
     this._selectedPageSize = event.pageSize;
+    this.onSelectionChanged();
     this.downloadOffers();
   }
 
