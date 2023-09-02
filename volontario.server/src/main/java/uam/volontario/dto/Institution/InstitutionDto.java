@@ -28,7 +28,7 @@ public class InstitutionDto
 
     private String headquartersAddress;
 
-    private List< String > tags; // TODO: how to save it in DB? Different table? Perhaps comma separation? I dont think there is nice way with relational DBs.
+    private List< String > tags;
 
     private String description;
 

@@ -1,6 +1,6 @@
 import { InstitutionContactPersonModel } from 'src/app/core/model/InstitutionContactPerson.model';
 
-interface InstitutionInterface {
+export interface InstitutionInterface {
   id?: number;
   name?: string;
   contactPerson?: InstitutionContactPersonModel;
@@ -24,9 +24,7 @@ export class InstitutionModelBuilder implements InstitutionInterface {
     return new InstitutionModelBuilder();
   }
 
-  public setContactPerson(
-    contactPerson: InstitutionContactPersonModel
-  ): InstitutionModelBuilder {
+  public setContactPerson(contactPerson: InstitutionContactPersonModel): InstitutionModelBuilder {
     this.contactPerson = contactPerson;
     return this;
   }

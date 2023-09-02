@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
-import {
-  Institution,
-  InstitutionModelBuilder,
-  InstitutionRegisterModel,
-} from 'src/app/core/model/institution.model';
+import { Institution, InstitutionModelBuilder, InstitutionRegisterModel } from 'src/app/core/model/institution.model';
 import { map, Observable } from 'rxjs';
 import { InstitutionContactPersonModel } from 'src/app/core/model/InstitutionContactPerson.model';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
@@ -19,59 +15,35 @@ import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 export class InstitutionService {
   constructor(private restService: VolontarioRestService) {}
 
-  public createInstitution(
-    institutionModel: InstitutionRegisterModel
-  ): Observable<any> {
+  public createInstitution(institutionModel: InstitutionRegisterModel): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const options: HttpOptionsInterface = {
       headers: headers,
     };
-    return this.restService.post(
-      EndpointUrls.institutionRegister,
-      institutionModel
-    );
+    return this.restService.post(EndpointUrls.institutionRegister, institutionModel);
   }
 
-  public verifyInstitution(
-    token: string,
-    operationType?: VerifyType
-  ): Observable<any> {
+  public verifyInstitution(token: string, operationType?: VerifyType): Observable<any> {
     const params = new HttpParams({ fromObject: { token: token } });
     const options: HttpOptionsInterface = {
       params: params,
     };
-    return this.restService.post(
-      EndpointUrls.getInstitutionVerify(operationType!),
-      {},
-      options
-    );
+    return this.restService.post(EndpointUrls.getInstitutionVerify(operationType!), {}, options);
   }
 
-  public registerContactPerson(
-    token: string,
-    registerIf: SetPasswordInterface
-  ): Observable<any> {
+  public registerContactPerson(token: string, registerIf: SetPasswordInterface): Observable<any> {
     const params = new HttpParams({ fromObject: { t: token } });
     const options: HttpOptionsInterface = {
       params: params,
     };
-    return this.restService.post(
-      EndpointUrls.institutionRegisterContactPerson,
-      registerIf,
-      options
-    );
+    return this.restService.post(EndpointUrls.institutionRegisterContactPerson, registerIf, options);
   }
 
   public getInstitutionDetails(institutionId: number): Observable<Institution> {
-    return this.restService
-      .get(EndpointUrls.institutionResource.concat(`/${institutionId}`))
-      .pipe(map(result => Institution.fromPayload(result)));
+    return this.restService.get(EndpointUrls.institutionResource.concat(`/${institutionId}`)).pipe(map(result => Institution.fromPayload(result)));
   }
 
-  public getInstitutionModelFromFormData(
-    basicInfoValue: any,
-    additionalInfoValue: any
-  ): InstitutionRegisterModel {
+  public getInstitutionModelFromFormData(basicInfoValue: any, additionalInfoValue: any): InstitutionRegisterModel {
     const contactPerson = new InstitutionContactPersonModel(
       basicInfoValue.registerPersonName,
       basicInfoValue.registerPersonLastName,
@@ -79,8 +51,7 @@ export class InstitutionService {
       basicInfoValue.registerPersonEmail
     );
     const { institutionName, krsNumber, address } = basicInfoValue;
-    const { institutionTags, institutionDescription, operationPlace } =
-      additionalInfoValue;
+    const { institutionTags, institutionDescription, operationPlace } = additionalInfoValue;
     return InstitutionModelBuilder.builder()
       .setContactPerson(contactPerson)
       .setName(institutionName)
@@ -92,16 +63,16 @@ export class InstitutionService {
       .build();
   }
 
-  public canManageInstitution(
-    loggedUser: User,
-    institution: Institution
-  ): boolean {
+  public canManageInstitution(loggedUser: User, institution: Institution): boolean {
     if (loggedUser.hasUserRoles([UserRoleEnum.Moderator, UserRoleEnum.Admin])) {
       return true;
     }
-    return (
-      loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin) &&
-      institution.id === loggedUser.institution?.id
-    );
+    return loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin) && institution.id === loggedUser.institution?.id;
+  }
+
+  public editInstitutionData(institutionId: number, data: Institution): Observable<Institution> {
+    return this.restService
+      .put(EndpointUrls.institutionResource.concat(`/${institutionId}`), data)
+      .pipe(map(result => Institution.fromPayload(result)));
   }
 }

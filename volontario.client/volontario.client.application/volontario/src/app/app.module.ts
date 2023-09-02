@@ -28,6 +28,7 @@ import { VolunteerApplicationsListModule } from './features/volunteer-applicatio
 import { AdminUsersManagementModule } from './features/admin-users-management/admin-users-management.module';
 import { InstitutionDetailsModule } from 'src/app/features/institution-details/institution-details.module';
 import { ManageDictValuesModule } from 'src/app/features/manage-dict-values/manage-dict-values.module';
+import { InstitutionEditModule } from 'src/app/features/institution-edit/institution-edit.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -57,6 +58,7 @@ import { ManageDictValuesModule } from 'src/app/features/manage-dict-values/mana
     AdminUsersManagementModule,
     InstitutionDetailsModule,
     ManageDictValuesModule,
+    InstitutionEditModule,
   ],
   providers: [
     {
