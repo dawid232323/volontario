@@ -8,7 +8,7 @@ import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interfa
 import { VerifyType } from 'src/app/features/institution-verify/institution-verify.const';
 import { EndpointUrls } from 'src/app/utils/url.util';
 import { SetPasswordInterface } from 'src/app/core/interface/authorization.interface';
-import { User } from 'src/app/core/model/user.model';
+import { InstitutionWorker, User } from 'src/app/core/model/user.model';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 
 @Injectable({ providedIn: 'root' })
@@ -43,6 +43,16 @@ export class InstitutionService {
     return this.restService.get(EndpointUrls.institutionResource.concat(`/${institutionId}`)).pipe(map(result => Institution.fromPayload(result)));
   }
 
+  public getInstitutionWorkers(institutionId: number): Observable<InstitutionWorker[]> {
+    return this.restService
+      .get(EndpointUrls.institutionWorkers.concat(`/${institutionId}`))
+      .pipe(map(result => result.map(InstitutionWorker.fromPayload)));
+  }
+
+  public getAllInstitutionWorkers(): Observable<InstitutionWorker[]> {
+    return this.restService.get(EndpointUrls.institutionWorkers).pipe(map(result => result.map(InstitutionWorker.fromPayload)));
+  }
+
   public getInstitutionModelFromFormData(basicInfoValue: any, additionalInfoValue: any): InstitutionRegisterModel {
     const contactPerson = new InstitutionContactPersonModel(
       basicInfoValue.registerPersonName,
@@ -63,11 +73,11 @@ export class InstitutionService {
       .build();
   }
 
-  public canManageInstitution(loggedUser: User, institution: Institution): boolean {
+  public canManageInstitution(loggedUser: User, institution?: Institution): boolean {
     if (loggedUser.hasUserRoles([UserRoleEnum.Moderator, UserRoleEnum.Admin])) {
       return true;
     }
-    return loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin) && institution.id === loggedUser.institution?.id;
+    return loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin) && institution?.id === loggedUser.institution?.id;
   }
 
   public editInstitutionData(institutionId: number, data: Institution): Observable<Institution> {

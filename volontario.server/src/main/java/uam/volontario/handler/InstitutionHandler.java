@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.InstitutionService;
 import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.dto.convert.DtoService;
+import uam.volontario.dto.user.InstitutionWorkerDto;
+import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -84,5 +87,35 @@ public class InstitutionHandler
         institution = this.institutionService.saveOrUpdate( institution );
         return ResponseEntity.ok( this.dtoService
                 .getDtoFromInstitution( institution ) );
+    }
+
+    /**
+     * Returns list of institution workers.
+     *
+     * @param aInstitutionId id of institution that workers should be assigned to
+     *
+     * @return Response entity with list of given institution workers
+     */
+    public ResponseEntity< ? > getInstitutionWorkers( final Long aInstitutionId )
+    {
+        final List< InstitutionWorkerDto > workers = this.institutionService
+                .getInstitutionWorkers( aInstitutionId )
+                .stream().map( dtoService::getInstitutionWorkerDtoFromUser )
+                .toList();
+        return ResponseEntity.ok( workers );
+    }
+
+    /**
+     * Retrieves list of all institution workers. Method should be restricted for moderators only.
+     *
+     * @return Response entity with list of all institution workers.
+     */
+    public ResponseEntity< ? > getAllInstitutionWorkers()
+    {
+        final List< InstitutionWorkerDto > workers = this.institutionService
+                .getAllInstitutionWorkers()
+                .stream().map( dtoService::getInstitutionWorkerDtoFromUser )
+                .toList();
+        return ResponseEntity.ok( workers );
     }
 }

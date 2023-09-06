@@ -56,13 +56,7 @@ export class PatchUserDto {
 export class AdministrativeUserDetails {
   public fullName: string;
   public rolesList: string;
-  constructor(
-    public userId: number,
-    public firstName: string,
-    public lastName: string,
-    public userRoles: UserRole[],
-    public verified: boolean
-  ) {
+  constructor(public userId: number, public firstName: string, public lastName: string, public userRoles: UserRole[], public verified: boolean) {
     this.fullName = this.firstName.concat(' ', this.lastName);
     this.rolesList = this.userRoles.map(role => role.name).join(', ');
   }
@@ -75,5 +69,17 @@ export class AdministrativeUserDetails {
       payload?.userRoles?.map(UserRole.fromPayload),
       payload?.verified
     );
+  }
+}
+
+export class InstitutionWorker {
+  constructor(public id: number, public firstName: string, public lastName: string, public institutionId?: number, public institutionName?: string) {}
+
+  public static fromPayload(payload: any): InstitutionWorker {
+    return new InstitutionWorker(payload?.id, payload?.firstName, payload?.lastName, payload?.institutionId, payload?.institutionName);
+  }
+
+  public static fromUser(user: User): InstitutionWorker {
+    return new InstitutionWorker(user.id, user.firstName, user.lastName, user.institution?.id, user.institution?.name);
   }
 }

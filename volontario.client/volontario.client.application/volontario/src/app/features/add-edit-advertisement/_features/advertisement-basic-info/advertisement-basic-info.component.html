@@ -1,151 +1,73 @@
 <div>
   <form [formGroup]="basicInfoFormGroup!">
     <div class="flex flex-col lg:flex-row items-stretch">
-      <mat-form-field
-        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-        appearance="standard"
-        color="accent">
+      <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
         <mat-label>Tytuł ogłoszenia</mat-label>
         <mat-icon matPrefix color="accent">subtitles</mat-icon>
-        <input
-          matInput
-          formControlName="title"
-          placeholder="Podaj tytuł ogłoszenia" />
-        <mat-hint *ngIf="basicInfoFormGroup.controls['title'].invalid"
-          >Pole jest wymagane</mat-hint
-        >
+        <input matInput formControlName="title" placeholder="Podaj tytuł ogłoszenia" />
+        <mat-hint *ngIf="basicInfoFormGroup.controls['title'].invalid">Pole jest wymagane</mat-hint>
       </mat-form-field>
     </div>
     <div class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
-      <mat-form-field
-        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-        appearance="standard"
-        color="accent">
+      <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
         <mat-label>Osoba kontaktowa</mat-label>
         <mat-icon matPrefix color="accent">person</mat-icon>
-        <mat-select formControlName="contactPerson">
-          <mat-option
-            *ngFor="let person of institutionWorkers"
-            [value]="person.id"
-            >{{ person.firstName.concat(' ', person.lastName) }}</mat-option
-          >
+        <mat-select formControlName="contactPerson" [disabled]="!canSelectUser">
+          <mat-option *ngFor="let person of institutionWorkers" [value]="person.id">{{ person.firstName.concat(' ', person.lastName) }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field
-        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-        appearance="standard"
-        color="accent">
+      <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
         <mat-label>Data zakończenia oferty</mat-label>
-        <input
-          matInput
-          (click)="expirationPicker.open()"
-          [matDatepicker]="expirationPicker"
-          formControlName="expirationDate" />
-        <mat-datepicker-toggle
-          matPrefix
-          [for]="expirationPicker"></mat-datepicker-toggle>
+        <input matInput (click)="expirationPicker.open()" [matDatepicker]="expirationPicker" formControlName="expirationDate" />
+        <mat-datepicker-toggle matPrefix [for]="expirationPicker"></mat-datepicker-toggle>
         <mat-datepicker #expirationPicker></mat-datepicker>
       </mat-form-field>
     </div>
     <div class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
-      <mat-form-field
-        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-        appearance="standard"
-        color="accent">
+      <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
         <mat-label>Typ ogłoszenia</mat-label>
         <mat-icon matPrefix color="accent">format_list_bulleted</mat-icon>
         <mat-select formControlName="advertisementType">
-          <mat-option
-            *ngFor="let type of advertisementTypes"
-            [value]="type.id"
-            >{{ type.name }}</mat-option
-          >
+          <mat-option *ngFor="let type of advertisementTypes" [value]="type.id">{{ type.name }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field
-        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-        appearance="standard"
-        color="accent">
+      <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
         <mat-label>Data rozpoczęcia wolontariatu</mat-label>
-        <input
-          matInput
-          (click)="startDatePicker.open()"
-          [matDatepicker]="startDatePicker"
-          formControlName="startDate" />
-        <mat-datepicker-toggle
-          matPrefix
-          [for]="startDatePicker"></mat-datepicker-toggle>
+        <input matInput (click)="startDatePicker.open()" [matDatepicker]="startDatePicker" formControlName="startDate" />
+        <mat-datepicker-toggle matPrefix [for]="startDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #startDatePicker></mat-datepicker>
       </mat-form-field>
-      <mat-form-field
-        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-        appearance="standard"
-        color="accent">
+      <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
         <mat-label>Data zakończenia wolontariatu</mat-label>
-        <input
-          matInput
-          (click)="endDatePicker.open()"
-          [matDatepicker]="endDatePicker"
-          formControlName="endDate" />
-        <mat-datepicker-toggle
-          matPrefix
-          [for]="endDatePicker"></mat-datepicker-toggle>
-        <mat-hint
-          *ngIf="basicInfoFormGroup.hasError(DateValidatorUsageEnum.After)"
-          class="text-warnColor">
-          Data zakończenia wolontariatu nie może być późniejsza niż data
-          zakończenia oferty
+        <input matInput (click)="endDatePicker.open()" [matDatepicker]="endDatePicker" formControlName="endDate" />
+        <mat-datepicker-toggle matPrefix [for]="endDatePicker"></mat-datepicker-toggle>
+        <mat-hint *ngIf="basicInfoFormGroup.hasError(DateValidatorUsageEnum.After)" class="text-warnColor">
+          Data zakończenia wolontariatu nie może być późniejsza niż data zakończenia oferty
         </mat-hint>
-        <mat-hint
-          *ngIf="basicInfoFormGroup.hasError(DateValidatorUsageEnum.Before)"
-          class="text-warnColor">
-          Data zakończenia wolontariatu nie może być wcześniejsza niż data
-          rozpoczęcia wolontariatu
+        <mat-hint *ngIf="basicInfoFormGroup.hasError(DateValidatorUsageEnum.Before)" class="text-warnColor">
+          Data zakończenia wolontariatu nie może być wcześniejsza niż data rozpoczęcia wolontariatu
         </mat-hint>
         <mat-datepicker #endDatePicker></mat-datepicker>
       </mat-form-field>
     </div>
-    <div
-      *ngIf="!isDescriptionOfCycleHidden"
-      class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
-      <mat-form-field
-        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-        appearance="standard"
-        color="accent">
+    <div *ngIf="!isDescriptionOfCycleHidden" class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
+      <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
         <mat-label>Opis cykliczności wydarzena</mat-label>
         <textarea formControlName="periodicDescription" matInput></textarea>
         <mat-icon matPrefix color="accent">description</mat-icon>
         <mat-hint
-          >Podaj opis powtarzalności wydarzenia. Pamiętaj aby podać dni tygodnia
-          w jakich się odbywa, w jakich częstotliwościach oraz mniej więcej ile
+          >Podaj opis powtarzalności wydarzenia. Pamiętaj aby podać dni tygodnia w jakich się odbywa, w jakich częstotliwościach oraz mniej więcej ile
           będzie trwało pojedyncze wydarzenie
         </mat-hint>
-        <mat-error
-          *ngIf="
-            basicInfoFormGroup.controls['periodicDescription'].hasError(
-              'maxlength'
-            )
-          "
+        <mat-error *ngIf="basicInfoFormGroup.controls['periodicDescription'].hasError('maxlength')"
           >Opis powinien być krótszy niż
-          {{
-            basicInfoFormGroup.controls['periodicDescription'].getError(
-              'maxlength'
-            ).requiredLength
-          }}
+          {{ basicInfoFormGroup.controls['periodicDescription'].getError('maxlength').requiredLength }}
           znaków</mat-error
         >
       </mat-form-field>
     </div>
     <div class="flex flex-col items-center pt-10">
-      <button
-        mat-raised-button
-        matStepperNext
-        type="button"
-        class="w-1/2 h-full"
-        color="accent"
-        [disabled]="false">
-        Dalej
-      </button>
+      <button mat-raised-button matStepperNext type="button" class="w-1/2 h-full" color="accent" [disabled]="false">Dalej</button>
     </div>
   </form>
 </div>

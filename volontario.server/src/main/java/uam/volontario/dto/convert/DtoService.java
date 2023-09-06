@@ -17,6 +17,7 @@ import uam.volontario.dto.Offer.OfferDto;
 import uam.volontario.dto.Offer.OfferTypeDto;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
+import uam.volontario.dto.user.InstitutionWorkerDto;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
@@ -349,6 +350,18 @@ public class DtoService
                 .email( aUser.getContactEmailAddress() )
                 .userRoles( aUser.getRoles() )
                 .verified( aUser.isVerified() )
+                .build();
+    }
+
+    public InstitutionWorkerDto getInstitutionWorkerDtoFromUser( final User aUser )
+    {
+        assert aUser.getInstitution() != null;
+        return InstitutionWorkerDto.builder()
+                .id( aUser.getId() )
+                .firstName( aUser.getFirstName() )
+                .lastName( aUser.getLastName() )
+                .institutionId( aUser.getInstitution().getId() )
+                .institutionName( aUser.getInstitution().getName() )
                 .build();
     }
 

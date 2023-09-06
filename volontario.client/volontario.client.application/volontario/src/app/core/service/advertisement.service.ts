@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
 import {
   AdvertisementBenefit,
@@ -9,7 +9,7 @@ import {
   AdvertisementUpdateCreateDto,
 } from 'src/app/core/model/advertisement.model';
 import { EndpointUrls } from 'src/app/utils/url.util';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 import { PageableModelInterface } from 'src/app/core/model/pageable.model';
@@ -41,6 +41,7 @@ export enum AdvertisementVisibilityEnum {
 
 @Injectable({ providedIn: 'root' })
 export class AdvertisementService {
+  public addAdvertisementReloadEvent: Subject<void> = new Subject<void>();
   private _offerListQueryParams?: Params;
 
   constructor(private restService: VolontarioRestService) {}

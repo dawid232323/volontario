@@ -5,6 +5,7 @@ import { UserService } from 'src/app/core/service/user.service';
 import { User } from 'src/app/core/model/user.model';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { Subscription } from 'rxjs';
+import { AdvertisementService } from 'src/app/core/service/advertisement.service';
 
 @Component({
   selector: 'app-nav',
@@ -15,16 +16,15 @@ export class NavComponent implements OnInit, OnDestroy {
   constructor(
     public authService: SecurityService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private offerService: AdvertisementService
   ) {}
 
   public loggedUser?: User;
   private subscriptions = new Subscription();
 
   ngOnInit(): void {
-    this.subscriptions.add(
-      this.authService.loginEvent.subscribe(this.downloadData.bind(this))
-    );
+    this.subscriptions.add(this.authService.loginEvent.subscribe(this.downloadData.bind(this)));
     this.downloadData();
   }
 
@@ -45,7 +45,11 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   routeToAddAdvertisement() {
-    this.router.navigate(['advertisement/add']);
+    if (this.router.url === '/advertisement/add') {
+      this.offerService.addAdvertisementReloadEvent.next();
+      return;
+    }
+    this.router.navigate(['advertisement', 'add']);
   }
 
   public routeToAdminUsers() {

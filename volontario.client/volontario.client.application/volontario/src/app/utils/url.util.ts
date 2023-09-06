@@ -10,6 +10,7 @@ export class EndpointUrls {
   public static readonly volunteerResource: string = '/volunteer';
   public static readonly registerVolunteer: string = EndpointUrls.volunteerResource.concat('/register');
   public static readonly institutionResource: string = '/institution';
+  public static readonly institutionWorkers: string = EndpointUrls.institutionResource.concat('/workers');
   public static readonly institutionRegister: string = EndpointUrls.institutionResource.concat('/register');
   public static readonly institutionRegisterContactPerson = EndpointUrls.institutionResource.concat('/register-contact-person');
   public static readonly userData: string = '/userData';

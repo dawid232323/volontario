@@ -54,4 +54,30 @@ public class InstitutionController
     {
         return this.institutionHandler.updateInstitutionData( aInstitutionId, aInstitutionDto );
     }
+
+    /**
+     * Returns list of institution workers.
+     *
+     * @param aInstitutionId id of institution that workers should be assigned to
+     *
+     * @return Response entity with list of given institution workers
+     */
+    @GetMapping( "/workers/{institution_id}" )
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionAdministrators( authentication.principal )" )
+    public ResponseEntity< ? > getInstitutionWorkers( @PathVariable( "institution_id" ) final Long aInstitutionId )
+    {
+        return this.institutionHandler.getInstitutionWorkers( aInstitutionId );
+    }
+
+    /**
+     * Retrieves list of all users that are assigned to any institution. Endpoint restricted for administrators only.
+     *
+     * @return Response entity with list of institution workers
+     */
+    @GetMapping( "/workers" )
+    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
+    public ResponseEntity< ? > getAllInstitutionWorkers()
+    {
+        return this.institutionHandler.getAllInstitutionWorkers();
+    }
 }
