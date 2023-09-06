@@ -1,20 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ApplicationDetails } from 'src/app/core/model/application.model';
 import { MatTableDataSource } from '@angular/material/table';
-import {
-  BaseApplicationFiltersIf,
-  OfferApplicationService,
-} from 'src/app/core/service/offer-application.service';
+import { BaseApplicationFiltersIf, OfferApplicationService } from 'src/app/core/service/offer-application.service';
 import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { cloneDeep } from 'lodash';
 import { ApplicationActionIf } from 'src/app/core/interface/application.interface';
 
@@ -26,35 +17,22 @@ import { ApplicationActionIf } from 'src/app/core/interface/application.interfac
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
       state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
 export class ApplicationListComponent implements OnInit {
   @ViewChild(MatSort) sort?: MatSort;
 
-  private _visibleColumns = [
-    'firstName',
-    'lastName',
-    'participationMotivation',
-    'state',
-    'starred',
-  ];
+  private _visibleColumns = ['firstName', 'lastName', 'participationMotivation', 'state', 'starred'];
   private _advertisementId?: number;
   private _offerApplications: ApplicationDetails[] = [];
-  private _dataSource: MatTableDataSource<ApplicationDetails> =
-    new MatTableDataSource<ApplicationDetails>();
+  private _dataSource: MatTableDataSource<ApplicationDetails> = new MatTableDataSource<ApplicationDetails>();
 
   public columnsToDisplayWithExpand = [...this._visibleColumns, 'expand'];
   public expandedElementId?: null | number;
   public expandedElementIds = new Set<number>();
-  constructor(
-    private offerApplicationService: OfferApplicationService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private offerApplicationService: OfferApplicationService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this._advertisementId = <number>this.route.snapshot.params['adv_id'];
@@ -74,22 +52,15 @@ export class ApplicationListComponent implements OnInit {
   }
 
   public onIsStarredClick(applicationId: number, isStarred: boolean) {
-    const rowIndex = this._dataSource.data.findIndex(
-      value => value.id === applicationId
-    );
+    const rowIndex = this._dataSource.data.findIndex(value => value.id === applicationId);
     if (rowIndex === -1) {
       return;
     }
     this._dataSource.data[rowIndex].starred = !isStarred;
     this._dataSource.data = this._dataSource._orderData(this.dataSource.data);
-    const applicationStarredCallback: (id: number) => Observable<any> =
-      isStarred
-        ? this.offerApplicationService.markApplicationUnStarred.bind(
-            this.offerApplicationService
-          )
-        : this.offerApplicationService.markApplicationStarred.bind(
-            this.offerApplicationService
-          );
+    const applicationStarredCallback: (id: number) => Observable<any> = isStarred
+      ? this.offerApplicationService.markApplicationUnStarred.bind(this.offerApplicationService)
+      : this.offerApplicationService.markApplicationStarred.bind(this.offerApplicationService);
     applicationStarredCallback(applicationId).subscribe({
       error: err => {
         throw new Error(err.error);
@@ -110,13 +81,11 @@ export class ApplicationListComponent implements OnInit {
   }
 
   public onApplicationStatusChange(event: ApplicationActionIf) {
-    this.offerApplicationService
-      .changeApplicationState(event.application.id, event.actionType)
-      .subscribe({
-        error: err => {
-          throw new Error(err);
-        },
-      });
+    this.offerApplicationService.changeApplicationState(event.application.id, event.actionType, event.actionReason).subscribe({
+      error: err => {
+        throw new Error(err);
+      },
+    });
   }
 
   private getOfferApplications() {
@@ -126,9 +95,7 @@ export class ApplicationListComponent implements OnInit {
     this.offerApplicationService.getApplicationDetailsList(filters).subscribe({
       next: result => {
         this._offerApplications = result.content;
-        this._dataSource = new MatTableDataSource<ApplicationDetails>(
-          this.offerApplications
-        );
+        this._dataSource = new MatTableDataSource<ApplicationDetails>(this.offerApplications);
         this._dataSource.sort = this.sort!;
       },
     });

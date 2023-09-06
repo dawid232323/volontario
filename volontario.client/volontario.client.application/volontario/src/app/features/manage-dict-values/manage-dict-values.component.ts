@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
 import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
-import { AdvertisementService } from 'src/app/core/service/advertisement.service';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { AdvertisementBenefit } from 'src/app/core/model/advertisement.model';
@@ -14,7 +13,7 @@ import {
 import { DictValuesModalFactory } from 'src/app/features/manage-dict-values/_utils/dict-values-modal-factory';
 import { isNil } from 'lodash';
 import { OfferBenefitService } from 'src/app/core/service/offer-benefit.service';
-import { ConfirmationAlertResult } from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
+import { ConfirmationAlertResult, ConfirmationAlertResultIf } from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
 import { DictionaryValueInterface } from 'src/app/core/interface/dictionary-value.interface';
 import { DictValuesOperationPerformerInterface } from 'src/app/features/manage-dict-values/_utils/dict-values-operation-performer.interface';
 
@@ -65,28 +64,19 @@ export class ManageDictValuesComponent implements OnInit {
   }
 
   public onOperationAction(operationDetails: DictValueOperationInterface) {
-    const operationPerformer =
-      this.operationPerformerFactory.getOperationPerformer(
-        operationDetails.valueType
-      );
+    const operationPerformer = this.operationPerformerFactory.getOperationPerformer(operationDetails.valueType);
     if (isNil(operationPerformer)) {
       return;
     }
     const dialogRef = operationPerformer.getDialogRef(operationDetails);
     dialogRef
       ?.afterClosed()
-      .subscribe((result: ConfirmationAlertResult | DictionaryValueInterface) =>
-        this.onModalDialogAfterClosed(
-          result,
-          operationDetails,
-          operationPerformer
-        )
+      .subscribe((result: ConfirmationAlertResultIf | DictionaryValueInterface) =>
+        this.onModalDialogAfterClosed(result, operationDetails, operationPerformer)
       );
   }
 
-  private isConfirmationAlertResult(
-    result: ConfirmationAlertResult | DictionaryValueInterface
-  ): result is ConfirmationAlertResult {
+  private isConfirmationAlertResult(result: ConfirmationAlertResultIf | DictionaryValueInterface): result is ConfirmationAlertResultIf {
     return (<DictionaryValueInterface>result).name === undefined;
   }
   private setInitialData() {
@@ -104,30 +94,24 @@ export class ManageDictValuesComponent implements OnInit {
   }
 
   private onModalDialogAfterClosed(
-    result: ConfirmationAlertResult | DictionaryValueInterface,
+    result: ConfirmationAlertResultIf | DictionaryValueInterface,
     operationDetails: DictValueOperationInterface,
     operationPerformer: DictValuesOperationPerformerInterface<DictionaryValueInterface>
   ) {
     let operationObservable: Observable<any> | undefined;
+    if (this.isConfirmationAlertResult(result) && result.confirmationAlertResult !== ConfirmationAlertResult.Accept) {
+      return;
+    }
     if (this.isConfirmationAlertResult(result)) {
-      operationObservable = operationPerformer.getOperationObservable(
-        operationDetails.operationData!,
-        operationDetails.operationType,
-        result
-      );
+      operationObservable = operationPerformer.getOperationObservable(operationDetails.operationData!, operationDetails.operationType, result);
     } else {
-      operationObservable = operationPerformer.getOperationObservable(
-        result,
-        operationDetails.operationType
-      );
+      operationObservable = operationPerformer.getOperationObservable(result, operationDetails.operationType);
     }
     if (isNil(operationObservable)) {
       return;
     }
     operationObservable.subscribe(r => {
-      const body = this.isConfirmationAlertResult(result)
-        ? operationDetails.operationData!
-        : { ...result, id: r.id, isUsed: r.isUsed };
+      const body = this.isConfirmationAlertResult(result) ? operationDetails.operationData! : { ...result, id: r.id, isUsed: r.isUsed };
       if (this.isConfirmationAlertResult(result)) {
         body.isUsed = !body.isUsed;
       }
@@ -135,10 +119,7 @@ export class ManageDictValuesComponent implements OnInit {
     });
   }
 
-  private onAfterValueUpdate(
-    valueData: DictionaryValueInterface,
-    valueType: DictionaryValueTypeEnum
-  ) {
+  private onAfterValueUpdate(valueData: DictionaryValueInterface, valueType: DictionaryValueTypeEnum) {
     switch (valueType) {
       case DictionaryValueTypeEnum.InterestCategory:
         this._interestCategoryList?.updateValue(valueData);

@@ -6,19 +6,15 @@ import {
   DictValueOperationTypeEnum,
 } from 'src/app/features/manage-dict-values/_features/dict-values-list/dict-values-list.component';
 import { DictionaryValueInterface } from 'src/app/core/interface/dictionary-value.interface';
-import { ConfirmationAlertResult } from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
+import { ConfirmationAlertResult, ConfirmationAlertResultIf } from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
 
-export interface DictValuesOperationPerformerInterface<
-  T extends DictionaryValueInterface
-> {
+export interface DictValuesOperationPerformerInterface<T extends DictionaryValueInterface> {
   performerService: DictionaryValuesServiceInterface<T>;
   dialog: MatDialog;
-  getDialogRef(
-    operationDetails: DictValueOperationInterface
-  ): MatDialogRef<any> | undefined;
+  getDialogRef(operationDetails: DictValueOperationInterface): MatDialogRef<any> | undefined;
   getOperationObservable(
     modalResult: T,
     operationType: DictValueOperationTypeEnum,
-    confirmationResult?: ConfirmationAlertResult
+    confirmationResult?: ConfirmationAlertResultIf
   ): Observable<T> | undefined;
 }

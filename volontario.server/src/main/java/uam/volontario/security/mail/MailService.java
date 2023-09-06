@@ -233,12 +233,15 @@ public class MailService
      *
      * @param aOfferName name of offer from Application.
      *
+     * @param aDecisionReason reason why the application has been declined
+     *
      * @throws MessagingException
      *                                          in case of message syntax errors.
      * @throws UnsupportedEncodingException
      *                                          in case of wrong encoding of email.
      */
-    public void sendEmailAboutApplicationBeingDeclined( final String aVolunteerContactEmail, final String aOfferName )
+    public void sendEmailAboutApplicationBeingDeclined( final String aVolunteerContactEmail, final String aOfferName,
+                                                        final String aDecisionReason )
             throws MessagingException, IOException
     {
         final MimeMessage message = mailSender.createMimeMessage();
@@ -254,6 +257,7 @@ public class MailService
         String content = Resources.toString( Resources.getResource( "emails/applicationDeclined.html" ),
                 StandardCharsets.UTF_8 );
         content = content.replaceAll( "\\|offerName\\|", aOfferName );
+        content = content.replaceAll( "\\|decisionReason\\|", aDecisionReason );
 
         helper.setText( content, true );
 

@@ -11,6 +11,7 @@ import {
 import {
   ConfirmationAlertComponent,
   ConfirmationAlertResult,
+  ConfirmationAlertResultIf,
 } from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
 import { Injectable } from '@angular/core';
 import { DictValueFormComponent } from 'src/app/features/manage-dict-values/_features/dict-value-form/dict-value-form.component';
@@ -27,49 +28,29 @@ export class DictValuesModalFactory {
     private dialog: MatDialog
   ) {}
 
-  public getOperationPerformer(
-    valueType: DictionaryValueTypeEnum
-  ):
-    | DictValuesOperationPerformerInterface<DictionaryValueInterface>
-    | undefined {
+  public getOperationPerformer(valueType: DictionaryValueTypeEnum): DictValuesOperationPerformerInterface<DictionaryValueInterface> | undefined {
     switch (valueType) {
       case DictionaryValueTypeEnum.InterestCategory:
-        return new InterestCategoryOperationPerformer(
-          this.interestCategoryService,
-          this.dialog
-        );
+        return new InterestCategoryOperationPerformer(this.interestCategoryService, this.dialog);
       case DictionaryValueTypeEnum.AddBenefits:
-        return new OfferBenefitsOperationPerformer(
-          this.offerBenefitService,
-          this.dialog
-        );
+        return new OfferBenefitsOperationPerformer(this.offerBenefitService, this.dialog);
       case DictionaryValueTypeEnum.ExpLevel:
-        return new ExperienceLevelOperationPerformer(
-          this.experienceService,
-          this.dialog
-        );
+        return new ExperienceLevelOperationPerformer(this.experienceService, this.dialog);
     }
     return undefined;
   }
 }
 
-abstract class AbstractDictValueOperationPerformer
-  implements DictValuesOperationPerformerInterface<DictionaryValueInterface>
-{
+abstract class AbstractDictValueOperationPerformer implements DictValuesOperationPerformerInterface<DictionaryValueInterface> {
   performerService: DictionaryValuesServiceInterface<DictionaryValueInterface>;
   dialog: MatDialog;
 
-  constructor(
-    perfService: DictionaryValuesServiceInterface<DictionaryValueInterface>,
-    dialog: MatDialog
-  ) {
+  constructor(perfService: DictionaryValuesServiceInterface<DictionaryValueInterface>, dialog: MatDialog) {
     this.performerService = perfService;
     this.dialog = dialog;
   }
 
-  getDialogRef(
-    operationDetails: DictValueOperationInterface
-  ): MatDialogRef<any> | undefined {
+  getDialogRef(operationDetails: DictValueOperationInterface): MatDialogRef<any> | undefined {
     switch (operationDetails.operationType) {
       case DictValueOperationTypeEnum.Add:
         return this.getCreateModalRef(operationDetails);
@@ -83,12 +64,9 @@ abstract class AbstractDictValueOperationPerformer
   public getOperationObservable(
     modalResult: DictionaryValueInterface,
     operationType: DictValueOperationTypeEnum,
-    confirmationResult?: ConfirmationAlertResult
+    confirmationResult?: ConfirmationAlertResultIf
   ): Observable<any> | undefined {
-    if (
-      operationType === DictValueOperationTypeEnum.Delete &&
-      confirmationResult === ConfirmationAlertResult.Accept
-    ) {
+    if (operationType === DictValueOperationTypeEnum.Delete && confirmationResult?.confirmationAlertResult === ConfirmationAlertResult.Accept) {
       return this.getDeleteCallback(modalResult);
     }
     if (operationType === DictValueOperationTypeEnum.Add) {
@@ -100,15 +78,11 @@ abstract class AbstractDictValueOperationPerformer
     return undefined;
   }
 
-  protected getCreateModalRef(
-    operationDetails: DictValueOperationInterface
-  ): MatDialogRef<any> {
+  protected getCreateModalRef(operationDetails: DictValueOperationInterface): MatDialogRef<any> {
     return this.dialog.open(DictValueFormComponent, { data: operationDetails });
   }
 
-  protected getEditModalRef(
-    operationDetails: DictValueOperationInterface
-  ): MatDialogRef<any> {
+  protected getEditModalRef(operationDetails: DictValueOperationInterface): MatDialogRef<any> {
     return this.dialog.open(DictValueFormComponent, { data: operationDetails });
   }
 
@@ -116,13 +90,8 @@ abstract class AbstractDictValueOperationPerformer
     return this.dialog.open(ConfirmationAlertComponent);
   }
 
-  protected getDeleteCallback(
-    operationDetails: DictionaryValueInterface
-  ): Observable<any> {
-    return this.performerService.activateDeactivateValue(
-      operationDetails?.isUsed,
-      operationDetails?.id!
-    );
+  protected getDeleteCallback(operationDetails: DictionaryValueInterface): Observable<any> {
+    return this.performerService.activateDeactivateValue(operationDetails?.isUsed, operationDetails?.id!);
   }
 }
 

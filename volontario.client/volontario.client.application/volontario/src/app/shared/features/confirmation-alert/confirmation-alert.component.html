@@ -1,12 +1,19 @@
 <h1 mat-dialog-title>Czy na pewno?</h1>
 <mat-dialog-content>
-  {{ confirmationMessage }}
+  <div>
+    {{ confirmationMessage }}
+  </div>
+  <div *ngIf="shouldAskForReason" class="flex flex-row w-full">
+    <mat-form-field color="accent" class="w-full">
+      <textarea matInput [(ngModel)]="confirmationReason" placeholder="Podaj powód odrzucenia aplikacji" [required]="shouldAskForReason"></textarea>
+    </mat-form-field>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button mat-dialog-close color="primary">
     {{ cancelButtonLabel }}
   </button>
-  <button mat-raised-button color="warn" (click)="onConfirmButtonClicked()">
+  <button mat-raised-button color="warn" (click)="onConfirmButtonClicked()" [disabled]="!isDialogValid()">
     {{ confirmButtonLabel }}
   </button>
 </mat-dialog-actions>

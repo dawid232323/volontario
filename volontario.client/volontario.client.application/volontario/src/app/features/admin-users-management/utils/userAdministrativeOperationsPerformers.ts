@@ -12,6 +12,7 @@ import {
   ConfirmationAlertComponent,
   ConfirmationAlertInitialData,
   ConfirmationAlertResult,
+  ConfirmationAlertResultIf,
 } from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
 import {
   RoleChangeDialogComponent,
@@ -25,15 +26,10 @@ import { SetPasswordInterface } from 'src/app/core/interface/authorization.inter
 export class UserAdministrativeOperationsPerformerFactory {
   constructor(private userService: UserService, private dialog: MatDialog) {}
 
-  public getOperationPerformer(
-    operationDetails: UserAdministrativeOperationDetailsIf
-  ): UserAdministrativeOperationPerformerInterface | undefined {
+  public getOperationPerformer(operationDetails: UserAdministrativeOperationDetailsIf): UserAdministrativeOperationPerformerInterface | undefined {
     switch (operationDetails.operationType) {
       case UserAdministrativeOperationType.ChangeActivityStatus:
-        return new UserActivityStatusChangePerformer(
-          this.userService,
-          this.dialog
-        );
+        return new UserActivityStatusChangePerformer(this.userService, this.dialog);
       case UserAdministrativeOperationType.ChangeRoles:
         return new UserRoleChangePerformer(this.userService, this.dialog);
       case UserAdministrativeOperationType.ResetPassword:
@@ -44,9 +40,7 @@ export class UserAdministrativeOperationsPerformerFactory {
   }
 }
 
-class UserRoleChangePerformer
-  implements UserAdministrativeOperationPerformerInterface
-{
+class UserRoleChangePerformer implements UserAdministrativeOperationPerformerInterface {
   userService: UserService;
   dialog: MatDialog;
 
@@ -55,9 +49,7 @@ class UserRoleChangePerformer
     this.dialog = dialog;
   }
 
-  getDialogRef(
-    operationDetails: UserAdministrativeOperationDetailsIf
-  ): MatDialogRef<any> {
+  getDialogRef(operationDetails: UserAdministrativeOperationDetailsIf): MatDialogRef<any> {
     const roleIds = operationDetails.userDetails.userRoles.map(role => role.id);
     const initialData: RoleChangeDialogDataIf = { selectedRoles: roleIds };
     return this.dialog.open(RoleChangeDialogComponent, {
@@ -65,23 +57,15 @@ class UserRoleChangePerformer
     });
   }
 
-  getOperationObservable(
-    dialogResult: RoleChangeDialogDataIf,
-    operationDetails: UserAdministrativeOperationDetailsIf
-  ): Observable<any> | undefined {
+  getOperationObservable(dialogResult: RoleChangeDialogDataIf, operationDetails: UserAdministrativeOperationDetailsIf): Observable<any> | undefined {
     if (isNil(dialogResult)) {
       return undefined;
     }
-    return this.userService.changeUserRoles(
-      operationDetails.userDetails.userId,
-      dialogResult.selectedRoles
-    );
+    return this.userService.changeUserRoles(operationDetails.userDetails.userId, dialogResult.selectedRoles);
   }
 }
 
-class UserPasswordChangePerformer
-  implements UserAdministrativeOperationPerformerInterface
-{
+class UserPasswordChangePerformer implements UserAdministrativeOperationPerformerInterface {
   userService: UserService;
   dialog: MatDialog;
 
@@ -90,33 +74,19 @@ class UserPasswordChangePerformer
     this.dialog = dialog;
   }
 
-  getDialogRef(
-    operationDetails: UserAdministrativeOperationDetailsIf
-  ): MatDialogRef<any> | undefined {
+  getDialogRef(operationDetails: UserAdministrativeOperationDetailsIf): MatDialogRef<any> | undefined {
     return this.dialog.open(SetPasswordComponent);
   }
 
-  getOperationObservable(
-    dialogResult: SetPasswordInterface,
-    operationDetails: UserAdministrativeOperationDetailsIf
-  ): Observable<any> | undefined {
-    if (
-      isNil(dialogResult) ||
-      dialogResult?.password === '' ||
-      isNil(dialogResult.password)
-    ) {
+  getOperationObservable(dialogResult: SetPasswordInterface, operationDetails: UserAdministrativeOperationDetailsIf): Observable<any> | undefined {
+    if (isNil(dialogResult) || dialogResult?.password === '' || isNil(dialogResult.password)) {
       return undefined;
     }
-    return this.userService.changeUserPassword(
-      operationDetails.userDetails.userId,
-      dialogResult.password
-    );
+    return this.userService.changeUserPassword(operationDetails.userDetails.userId, dialogResult.password);
   }
 }
 
-class UserActivityStatusChangePerformer
-  implements UserAdministrativeOperationPerformerInterface
-{
+class UserActivityStatusChangePerformer implements UserAdministrativeOperationPerformerInterface {
   userService: UserService;
   dialog: MatDialog;
 
@@ -125,12 +95,8 @@ class UserActivityStatusChangePerformer
     this.dialog = dialog;
   }
 
-  getDialogRef(
-    operationDetails: UserAdministrativeOperationDetailsIf
-  ): MatDialogRef<any> | undefined {
-    const newActivityStatus = this.getNewUserActivityStatus(
-      operationDetails.userDetails
-    );
+  getDialogRef(operationDetails: UserAdministrativeOperationDetailsIf): MatDialogRef<any> | undefined {
+    const newActivityStatus = this.getNewUserActivityStatus(operationDetails.userDetails);
     const dialogInitialData: ConfirmationAlertInitialData = {
       confirmationMessage: this.getConfirmationMessage(newActivityStatus),
     };
@@ -141,25 +107,17 @@ class UserActivityStatusChangePerformer
   }
 
   getOperationObservable(
-    dialogResult: ConfirmationAlertResult,
+    dialogResult: ConfirmationAlertResultIf,
     operationDetails: UserAdministrativeOperationDetailsIf
   ): Observable<any> | undefined {
-    console.log(operationDetails);
-    if (dialogResult !== ConfirmationAlertResult.Accept) {
+    if (dialogResult.confirmationAlertResult !== ConfirmationAlertResult.Accept) {
       return undefined;
     }
-    const newActivityStatus = this.getNewUserActivityStatus(
-      operationDetails.userDetails
-    );
-    return this.userService.changeUserActivityStatus(
-      operationDetails.userDetails.userId,
-      newActivityStatus
-    );
+    const newActivityStatus = this.getNewUserActivityStatus(operationDetails.userDetails);
+    return this.userService.changeUserActivityStatus(operationDetails.userDetails.userId, newActivityStatus);
   }
 
-  private getNewUserActivityStatus(
-    userDetails: AdministrativeUserDetails
-  ): boolean {
+  private getNewUserActivityStatus(userDetails: AdministrativeUserDetails): boolean {
     return userDetails.verified;
   }
 

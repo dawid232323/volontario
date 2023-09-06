@@ -8,4 +8,5 @@ export enum ApplicationActionTypeEnum {
 export interface ApplicationActionIf {
   application: ApplicationDetails;
   actionType: ApplicationActionTypeEnum;
+  actionReason?: string;
 }

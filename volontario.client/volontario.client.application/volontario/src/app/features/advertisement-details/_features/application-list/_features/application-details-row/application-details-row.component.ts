@@ -1,17 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  ApplicationDetails,
-  ApplicationStateEnumName,
-} from 'src/app/core/model/application.model';
-import {
-  ApplicationActionIf,
-  ApplicationActionTypeEnum,
-} from 'src/app/core/interface/application.interface';
+import { ApplicationDetails, ApplicationStateEnumName } from 'src/app/core/model/application.model';
+import { ApplicationActionIf, ApplicationActionTypeEnum } from 'src/app/core/interface/application.interface';
 import { MatDialog } from '@angular/material/dialog';
 import {
   ConfirmationAlertComponent,
   ConfirmationAlertInitialData,
   ConfirmationAlertResult,
+  ConfirmationAlertResultIf,
 } from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
 
 @Component({
@@ -34,14 +29,15 @@ export class ApplicationDetailsRowComponent implements OnInit {
       confirmationMessage: 'Odrzucenie aplikacji jest nieodwracalne',
       cancelButtonLabel: 'Anuluj',
       confirmButtonLabel: 'Odrzuć aplikację',
+      shouldAskForReason: true,
     };
     const confirmRef = this.matModal.open(ConfirmationAlertComponent, {
       data: modalInitialData,
     });
-    confirmRef.afterClosed().subscribe(confirmationResult => {
-      if (confirmationResult === ConfirmationAlertResult.Accept) {
+    confirmRef.afterClosed().subscribe((confirmationResult: ConfirmationAlertResultIf) => {
+      if (confirmationResult?.confirmationAlertResult === ConfirmationAlertResult.Accept) {
         this.applicationDetails!.state = ApplicationStateEnumName.Rejected;
-        this.emitChangeEvent(ApplicationActionTypeEnum.Reject);
+        this.emitChangeEvent(ApplicationActionTypeEnum.Reject, confirmationResult.resultReason);
       }
     });
   }
@@ -51,11 +47,12 @@ export class ApplicationDetailsRowComponent implements OnInit {
     this.emitChangeEvent(ApplicationActionTypeEnum.Accept);
   }
 
-  private emitChangeEvent(operationType: ApplicationActionTypeEnum) {
+  private emitChangeEvent(operationType: ApplicationActionTypeEnum, reason?: string) {
     this.shouldDisableButtons = true;
     this.applicationDetailsChange.emit({
       application: this.applicationDetails!,
       actionType: operationType,
+      actionReason: reason,
     });
   }
 

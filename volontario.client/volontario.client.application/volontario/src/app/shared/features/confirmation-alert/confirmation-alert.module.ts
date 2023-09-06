@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ConfirmationAlertComponent } from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ConfirmationAlertComponent],
-  imports: [CommonModule, MatButtonModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatInputModule, FormsModule],
   exports: [ConfirmationAlertComponent],
 })
 export class ConfirmationAlertModule {}

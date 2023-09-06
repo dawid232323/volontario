@@ -27,4 +27,5 @@ public class ApplicationDetailsDto
     private OfferBaseInfoDto offerInfo;
     private boolean isStarred;
     private Long assignedPersonId;
+    private String decisionReason;
 }

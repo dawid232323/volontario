@@ -21,6 +21,8 @@ import uam.volontario.security.mail.MailService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.ApplicationValidationService;
 
+import javax.swing.text.html.Option;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -175,15 +177,19 @@ public class ApplicationProcessingHandler
      *
      * @param aApplicationId id of Application to resolve.
      *
+     * @param aDecisionReasonOptionalMap Optional with map that should contain application decline reason
+     *
      * @param aDecision acceptance or decline.
      *
      * @return
      *          - Response Entity with modified Application's state and 200 code, if everything went well.
-     *          - Response Entity with code 400, if there is no Application with given id.
+     *          - Response Entity with code 400, if there is no Application with given id,
+     *            or there is no decline reason given
      *          - Response Entity with code 500, if aDecision is {@linkplain ApplicationStateEnum#AWAITING} or any
      *            other unexpected error occurs.
      */
-    public ResponseEntity< ? > resolveApplication( final Long aApplicationId, final ApplicationStateEnum aDecision )
+    public ResponseEntity< ? > resolveApplication( final Long aApplicationId, final ApplicationStateEnum aDecision,
+                                                   final Optional< Map<String, String> > aDecisionReasonOptionalMap )
     {
         try
         {
@@ -207,10 +213,17 @@ public class ApplicationProcessingHandler
                     }
                     case DECLINED ->
                     {
+                        if( aDecisionReasonOptionalMap.isEmpty() )
+                        {
+                            return ResponseEntity.badRequest().body( "Decline reason should be present" );
+                        }
+                        final Map< String, String > reasonMap = aDecisionReasonOptionalMap.get();
+                        final String decisionReason = reasonMap.get( "decisionReason" );
                         application.setState( getApplicationState( ApplicationStateEnum.DECLINED ) );
+                        application.setDecisionReason( decisionReason );
                         applicationService.saveOrUpdate( application );
                         mailService.sendEmailAboutApplicationBeingDeclined( volunteer.getContactEmailAddress(),
-                                offer.getTitle() );
+                                offer.getTitle(), decisionReason );
                     }
                 }
                 return ResponseEntity.ok( application );

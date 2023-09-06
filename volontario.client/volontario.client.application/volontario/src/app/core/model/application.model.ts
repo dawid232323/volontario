@@ -40,7 +40,8 @@ export class ApplicationDetails {
     public interestCategories: InterestCategoryDTO[],
     public offerInfo: AdvertisementPreview,
     public starred: boolean,
-    public assignedPersonId: number
+    public assignedPersonId: number,
+    public decisionReason: string
   ) {}
 
   public static fromPayload(payload?: any): ApplicationDetails {
@@ -57,7 +58,8 @@ export class ApplicationDetails {
       payload?.interestCategories?.map(InterestCategoryDTO.fromPayload),
       AdvertisementPreview.fromPayload(payload?.offerInfo),
       payload?.starred,
-      payload?.assignedPersonId
+      payload?.assignedPersonId,
+      payload?.decisionReason
     );
   }
 }

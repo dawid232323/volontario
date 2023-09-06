@@ -316,7 +316,7 @@ public class DtoService
                 volunteer.getLastName(), volunteer.getContactEmailAddress(),
                 volunteer.getVolunteerData().getDomainEmailAddress(), volunteer.getPhoneNumber(), experience,
                 aApplication.getParticipationMotivation(), interestCategories, offer, aApplication.isStarred(),
-                aApplication.getOffer().getContactPerson().getId() );
+                aApplication.getOffer().getContactPerson().getId(), aApplication.getDecisionReason() );
     }
 
     /**

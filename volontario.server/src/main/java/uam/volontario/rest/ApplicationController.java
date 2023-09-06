@@ -10,6 +10,9 @@ import uam.volontario.dto.Application.ApplicationDto;
 import uam.volontario.handler.ApplicationProcessingHandler;
 import uam.volontario.model.offer.impl.ApplicationStateEnum;
 
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * Controller for API related to {@linkplain uam.volontario.model.offer.impl.Application}s.
  */
@@ -101,7 +104,7 @@ public class ApplicationController
     @PatchMapping( "/accept/{applicationId}" )
     public ResponseEntity< ? > acceptApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
-        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.ACCEPTED );
+        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.ACCEPTED, Optional.empty() );
     }
 
     /**
@@ -110,6 +113,8 @@ public class ApplicationController
      *
      * @param aApplicationId id of Application to decline.
      *
+     * @param aDeclineReasonMap map that should contain decisionReason key
+     *                          with reason why given application was declined
      *
      * @return
      *          - Response Entity with declined Application and 200 code, if everything went well.
@@ -117,9 +122,11 @@ public class ApplicationController
      */
     @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheApplication( authentication.principal, #aApplicationId )" )
     @PatchMapping( "/decline/{applicationId}" )
-    public ResponseEntity< ? > declineApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
+    public ResponseEntity< ? > declineApplication( @PathVariable( "applicationId" ) final Long aApplicationId,
+                                                   @RequestBody final Map<String, String> aDeclineReasonMap )
     {
-        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.DECLINED );
+        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.DECLINED,
+                Optional.ofNullable( aDeclineReasonMap ) );
     }
 
     /**

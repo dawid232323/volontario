@@ -51,6 +51,10 @@ public class Application implements VolontarioDomainElementIf
     private String participationMotivation;
 
     @Column
+    @Size( max = 300, message = "Decision reason must not exceed 300 letters" )
+    private String decisionReason;
+
+    @Column
     private boolean isStarred;
 
     @JsonIgnore
