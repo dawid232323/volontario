@@ -1,81 +1,111 @@
 package uam.volontario.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.InstitutionService;
+import uam.volontario.crud.service.RoleService;
+import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.dto.user.InstitutionWorkerDto;
+import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Handler class for {@linkplain Institution} business logic.
+ */
 @Service
 public class InstitutionHandler
 {
     private final InstitutionService institutionService;
+
+    private final UserService userService;
+
     private final DtoService dtoService;
 
+    private final RoleService roleService;
+
+    /**
+     * CDI constructor.
+     *
+     * @param aInstitutionService institution service.
+     *
+     * @param aDtoService dto service.
+     *
+     * @param aRoleService role service.
+     *
+     * @param aUserService user service.
+     */
     @Autowired
-    public InstitutionHandler( final InstitutionService aInstitutionService,
-                               final DtoService aDtoService )
+    public InstitutionHandler( final InstitutionService aInstitutionService, final RoleService aRoleService,
+                               final DtoService aDtoService, final UserService aUserService )
     {
-        this.institutionService = aInstitutionService;
-        this.dtoService = aDtoService;
+        institutionService = aInstitutionService;
+        dtoService = aDtoService;
+        userService = aUserService;
+        roleService = aRoleService;
     }
 
     /**
-     * Returns institution details
+     * Resolves Institution details.
      *
-     * @param aInstitutionId institution id to retrieve
+     * @param aInstitutionId Institution id used to resolve Institution.
      *
-     * @return Response with status 400 if institution with given id does not exist
-     *          or response with status 200 with institution data
+     * @return Response with status 400 if Institution with given id does not exist
+     *          or response with status 200 with Institution data.
      */
     public ResponseEntity< ? > getInstitutionDetails( final Long aInstitutionId )
     {
-        final Optional< Institution > institutionOptional = this.institutionService
+        final Optional< Institution > institutionOptional = institutionService
                 .tryLoadEntity( aInstitutionId );
+
         if( institutionOptional.isEmpty() )
         {
             return ResponseEntity.badRequest()
                     .body( "Institution with given id does not exist" );
         }
+
         final Institution institution = institutionOptional.get();
         if( !institution.isActive() )
         {
             return ResponseEntity.badRequest()
                     .body( "Institution with given id does not exist" );
         }
-        final InstitutionDto institutionDto = this.dtoService
-                .getDtoFromInstitution( institution );
-        return ResponseEntity.ok( institutionDto );
+
+        return ResponseEntity.ok( dtoService
+                .getDtoFromInstitution( institution ) );
     }
 
     /**
-     * Updates institution data.
+     * Updates Institution data.
      *
-     * @param aInstitutionId primary key of institution to be updated
+     * @param aInstitutionId id of Institution to be updated.
      *
-     * @param aInstitutionDto dto with all necessary information
+     * @param aInstitutionDto dto with all necessary information related to Institution.
      *
-     * @return response with status 200 and institution data body if everything works fine,
-     *          status 400 if institution with given id does not exist or status 500 in any other error
+     * @return response with status 200 and Institution data body if everything works fine,
+     *          status 400 if Institution with given id does not exist or status 500 in any other error
      */
     public ResponseEntity< ? > updateInstitutionData( final Long aInstitutionId,
                                                       final InstitutionDto aInstitutionDto )
     {
-        final Optional< Institution > institutionOptional = this.institutionService
+        final Optional< Institution > institutionOptional = institutionService
                 .tryLoadEntity( aInstitutionId );
+
         if( institutionOptional.isEmpty() )
         {
             return ResponseEntity.badRequest()
                     .body( "Institution with given id does not exist" );
         }
+
         Institution institution = institutionOptional.get();
+
         institution = institution.toBuilder()
                 .name( aInstitutionDto.getName() )
                 .krsNumber( aInstitutionDto.getKrsNumber() )
@@ -84,8 +114,10 @@ public class InstitutionHandler
                 .description( aInstitutionDto.getDescription() )
                 .localization( aInstitutionDto.getLocalization() )
                 .build();
-        institution = this.institutionService.saveOrUpdate( institution );
-        return ResponseEntity.ok( this.dtoService
+
+        institutionService.saveOrUpdate( institution );
+
+        return ResponseEntity.ok( dtoService
                 .getDtoFromInstitution( institution ) );
     }
 
@@ -117,5 +149,87 @@ public class InstitutionHandler
                 .stream().map( dtoService::getInstitutionWorkerDtoFromUser )
                 .toList();
         return ResponseEntity.ok( workers );
+    }
+
+    /**
+     * Changes role on Institution worker.
+     *
+     * @param aInstitutionId id of Institution.
+     *
+     * @param aInstitutionWorkerId id of Institution worker.
+     *
+     * @param aRoleToSet role to be set.
+     *
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 400 if:
+     *                   - Institution or Institution Worker with provided ids do not exist.
+     *                   - Institution is not active.
+     *                   - Institution worker is Institution's {@linkplain uam.volontario.model.institution.impl.InstitutionContactPerson}
+     *                     (owner in other words).
+     *                   - Institution Worker with given id does not belong to Institution with given id.
+     *         - Response Entity with code 500 if unexpected server side error occurred.
+     */
+    public ResponseEntity< ? > changeRoleOfInstitutionWorker( final Long aInstitutionId, final Long aInstitutionWorkerId,
+                                                              final UserRole aRoleToSet )
+    {
+        try
+        {
+            final Optional< Institution > optionalInstitution = institutionService.tryLoadEntity( aInstitutionId );
+
+            if( optionalInstitution.isPresent() )
+            {
+                final Institution institution = optionalInstitution.get();
+                if ( !institution.isActive() )
+                {
+                    return ResponseEntity.badRequest()
+                            .body( "Institution " + institution.getName() + " (KRS: " + institution.getKrsNumber() +
+                                    ") is not yet accepted by system administrator." );
+                }
+
+                final Optional< User > optionalInstitutionWorker = userService.tryLoadEntity( aInstitutionWorkerId );
+
+                if( optionalInstitutionWorker.isPresent() )
+                {
+                    final User institutionWorker = optionalInstitutionWorker.get();
+
+                    if( institutionWorker.getContactEmailAddress()
+                            .equals( institution.getInstitutionContactPerson()
+                                    .getContactEmail() ) )
+                    {
+                        return ResponseEntity.badRequest()
+                                .body( "Role of Institution owner can not be changed." );
+                    }
+
+                    if( institution.getEmployees()
+                            .stream()
+                            .noneMatch( worker -> worker.equals( institutionWorker ) ) )
+                    {
+                        return ResponseEntity.badRequest()
+                                .body( String.format( "Institution worker of id %o does not belong to Institution of id %o", aInstitutionWorkerId,
+                                        aInstitutionId ) );
+                    }
+
+                    institutionWorker.setRoles( roleService.findByNameIn( UserRole
+                            .mapUserRolesToRoleNames( List.of( aRoleToSet ) ) ) );
+
+                    userService.saveOrUpdate( institutionWorker );
+
+                    return ResponseEntity.ok()
+                            .build();
+                }
+
+                return  ResponseEntity.badRequest()
+                        .body( String.format( "No Institution worker with id %o was found", aInstitutionWorkerId ) );
+            }
+
+            return ResponseEntity.badRequest( )
+                    .body( String.format( "No Institution of id %o found", aInstitutionId ) );
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
     }
 }

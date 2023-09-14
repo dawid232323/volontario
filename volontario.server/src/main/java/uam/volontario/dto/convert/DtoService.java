@@ -103,6 +103,7 @@ public class DtoService
                 .roles(roles)
                 .isVerified(true) // TODO: for now until email verification is implemented.
                 .volunteerData(volunteerData)
+                .creationDate( Instant.now() )
                 .build();
 
         user.getVolunteerData().setUser(user);

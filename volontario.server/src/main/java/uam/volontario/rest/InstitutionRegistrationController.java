@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.Institution.InstitutionDto;
+import uam.volontario.dto.Institution.InstitutionEmployeeDto;
 import uam.volontario.handler.InstitutionRegistrationHandler;
 
 import java.util.Map;
@@ -100,5 +101,57 @@ public class InstitutionRegistrationController
     {
         return institutionRegistrationHandler.registerInstitutionContactPerson( aRegistrationToken,
                 aPassword.get( "password" ) );
+    }
+
+    /**
+     * Registers account for employee of Institution. Account is created with a random password which is not passed to
+     * the user, but the account is linked to the Institution and user receives an email about setting password for his account.
+     * Once user does it, the account becomes verified and may be used.
+     *
+     * @param aInstitutionEmployeeDto dto containing institution employee data.
+     *
+     * @return
+     *     - Response Entity with code 201 and employee account if everything went as expected.
+     *     - Response Entity with code 401 and failure reason if:
+     *             - institution was not found.
+     *             - institution is not active.
+     *             - dto contained data which did not pass user validation.
+     *     - Response Entity with code 500 and exception message in case server-side error occurred.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionAdministrators( authentication.principal )" )
+    @PostMapping( value = "/register-employee" )
+    public ResponseEntity< ? > registerInstitutionEmployee( @RequestBody final InstitutionEmployeeDto aInstitutionEmployeeDto )
+    {
+        return institutionRegistrationHandler.registerInstitutionEmployee( aInstitutionEmployeeDto );
+    }
+
+    /**
+     * Sets password for newly created institution employee account.
+     *
+     * @param aRegistrationToken registration token (encoded in Base64 format contact email address of employee)
+     *
+     * @param aPassword password to be set.
+     *
+     * @param aInstitutionId id of institution to which employee belongs.
+     *
+     * @return
+     *     - Response Entity with code 200  if everything went as expected.
+     *     - Response Entity with code 401 and failure reason if:
+     *             - institution was not found.
+     *             - employee was not found.
+     *             - institution is not active.
+     *             - password chosen by user did not pass validation.
+     *             - id of passed institution doesn't match id of institution resolved from employee.
+     *             - one week has passed since creating employee account.
+     *     - Response Entity with code 500 and exception message in case server-side error occurred.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
+    @PostMapping( value = "/{institution_id}/register-employee/set-password" )
+    public ResponseEntity< ? > setPasswordForNewlyCreatedInstitutionEmployeeUser( @PathVariable( "institution_id" ) final Long aInstitutionId,
+                                                                                  @RequestParam( "t" ) final String aRegistrationToken,
+                                                                                  @RequestBody final Map< String, String > aPassword )
+    {
+        return institutionRegistrationHandler.setPasswordForNewlyCreatedInstitutionEmployeeUser( aRegistrationToken,
+                aPassword.get( "password" ), aInstitutionId );
     }
 }

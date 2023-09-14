@@ -7,7 +7,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.handler.InstitutionHandler;
+import uam.volontario.model.common.UserRole;
 
+/**
+ * Controller for {@linkplain uam.volontario.model.institution.impl.Institution} business logic.
+ */
 @RestController
 @RequestMapping( value = "/api/institution",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -17,10 +21,15 @@ public class InstitutionController
 
     private final InstitutionHandler institutionHandler;
 
+    /**
+     * CDI constructor.
+     *
+     * @param aInstitutionHandler institution handler.
+     */
     @Autowired
     public InstitutionController( final InstitutionHandler aInstitutionHandler )
     {
-        this.institutionHandler = aInstitutionHandler;
+        institutionHandler = aInstitutionHandler;
     }
 
     /**
@@ -34,7 +43,7 @@ public class InstitutionController
     @GetMapping( "/{institution_id}" )
     public ResponseEntity< ? > getInstitutionDetails( @PathVariable( "institution_id" ) final Long aInstitutionId )
     {
-        return this.institutionHandler.getInstitutionDetails( aInstitutionId );
+        return institutionHandler.getInstitutionDetails( aInstitutionId );
     }
 
     /**
@@ -52,7 +61,59 @@ public class InstitutionController
     public ResponseEntity< ? > updateInstitutionData( @PathVariable( "institution_id" ) final Long aInstitutionId,
                                                       @RequestBody final InstitutionDto aInstitutionDto )
     {
-        return this.institutionHandler.updateInstitutionData( aInstitutionId, aInstitutionDto );
+        return institutionHandler.updateInstitutionData( aInstitutionId, aInstitutionDto );
+    }
+
+    /**
+     * Changes role of Institution Worker to {@linkplain UserRole#INSTITUTION_ADMIN}.
+     *
+     * @param aInstitutionId id of Institution.
+     *
+     * @param aInstitutionWorkerId id of Institution worker.
+     *
+     *
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 400 if:
+     *                   - Institution or Institution Worker with provided ids do not exist.
+     *                   - Institution is not active.
+     *                   - Institution worker is Institution's {@linkplain uam.volontario.model.institution.impl.InstitutionContactPerson}
+     *                     (owner in other words).
+     *                   - Institution Worker with given id does not belong to Institution with given id.
+     *         - Response Entity with code 500 if unexpected server side error occurred.
+     */
+    @PatchMapping( "/{institution_id}/{institution_worker_id}/mark-as-admin" )
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionAdministrators( authentication.principal )" )
+    public ResponseEntity< ? > giveAdminPrivilegesToInstitutionWorker( @PathVariable( "institution_id" ) final Long aInstitutionId,
+                                                                       @PathVariable( "institution_worker_id" ) final Long aInstitutionWorkerId )
+    {
+        return institutionHandler.changeRoleOfInstitutionWorker( aInstitutionId, aInstitutionWorkerId, UserRole.INSTITUTION_ADMIN );
+    }
+
+    /**
+     * Changes role of Institution Worker to {@linkplain UserRole#INSTITUTION_EMPLOYEE}.
+     *
+     * @param aInstitutionId id of Institution.
+     *
+     * @param aInstitutionWorkerId id of Institution worker.
+     *
+     *
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 400 if:
+     *                   - Institution or Institution Worker with provided ids do not exist.
+     *                   - Institution is not active.
+     *                   - Institution worker is Institution's {@linkplain uam.volontario.model.institution.impl.InstitutionContactPerson}
+     *                     (owner in other words).
+     *                   - Institution Worker with given id does not belong to Institution with given id.
+     *         - Response Entity with code 500 if unexpected server side error occurred.
+     */
+    @PatchMapping( "/{institution_id}/{institution_worker_id}/mark-as-employee" )
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionAdministrators( authentication.principal )" )
+    public ResponseEntity< ? > giveEmployeePrivilegesToInstitutionWorker( @PathVariable( "institution_id" ) final Long aInstitutionId,
+                                                                          @PathVariable( "institution_worker_id" ) final Long aInstitutionWorkerId )
+    {
+        return institutionHandler.changeRoleOfInstitutionWorker( aInstitutionId, aInstitutionWorkerId, UserRole.INSTITUTION_EMPLOYEE );
     }
 
     /**

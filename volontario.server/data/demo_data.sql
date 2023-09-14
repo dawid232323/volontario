@@ -26,15 +26,15 @@ SELECT setval('volunteer_data_id_seq', 3, true);
 -- Password for all is SecurePassword123_
 --
 INSERT INTO public.users
-VALUES (1, 'januszex@januszex.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Uszex', '123456789', 1, null),
-       (2, 'Ola@wolontariat.pl', 'Ola', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Wolontariacka', '123456788', 2, null),
-       (3, 'ktoswazny@amu.edu.pl', 'Ktos', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Wazny', '123456787', 3, null),
-       (4, 'typ@niema.pl', 'Zamknal', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Instytucje', '123456786', 4, null),
-       (5, 'pan@warszawka.pl', 'Pan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Warszawski', '123456785', 5, null),
-       (6, 'janwolontariusz@gmail.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Kowalski', '123456784', null, 1),
-       (7, 'adamwolontariusz@gmail.pl', 'Adam', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '123456783', null, 2),
-       (8, 'MODERATOR@gmail.pl', 'Moderator', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '333456783', 1, null),
-       (9, 'admin@admin.gmail.com', 'Administrator', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Admin', '333456783', null, null);
+VALUES (1, 'januszex@januszex.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Uszex', '123456789', 1, null, '1970-01-01 00:00:00+00'),
+       (2, 'Ola@wolontariat.pl', 'Ola', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Wolontariacka', '123456788', 2, null, '1970-01-01 00:00:00+00'),
+       (3, 'ktoswazny@amu.edu.pl', 'Ktos', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Wazny', '123456787', 3, null, '1970-01-01 00:00:00+00'),
+       (4, 'typ@niema.pl', 'Zamknal', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Instytucje', '123456786', 4, null, '1970-01-01 00:00:00+00'),
+       (5, 'pan@warszawka.pl', 'Pan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Warszawski', '123456785', 5, null, '1970-01-01 00:00:00+00'),
+       (6, 'janwolontariusz@gmail.pl', 'Jan', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Kowalski', '123456784', null, 1, '1970-01-01 00:00:00+00'),
+       (7, 'adamwolontariusz@gmail.pl', 'Adam', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '123456783', null, 2, '1970-01-01 00:00:00+00'),
+       (8, 'MODERATOR@gmail.pl', 'Moderator', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Nowak', '333456783', 1, null, '1970-01-01 00:00:00+00'),
+       (9, 'admin@admin.gmail.com', 'Administrator', '$2a$10$69b70HN7dLVmE1EZwtXlV.4PD/Np3Nj9osdJxvlewM99fpYfrVUTm', true, 'Admin', '333456783', null, null, '1970-01-01 00:00:00+00');
 
 SELECT setval('users_id_seq', 10, true);
 

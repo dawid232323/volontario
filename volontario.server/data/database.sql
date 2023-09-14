@@ -469,7 +469,8 @@ CREATE TABLE public.users (
                               last_name character varying(255),
                               phone_number character varying(255),
                               institution_id bigint,
-                              volunteer_data_id bigint
+                              volunteer_data_id bigint,
+                              creation_date timestamp(6) with time zone
 );
 
 

@@ -6,19 +6,18 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.UserIf;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.institution.impl.Institution;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.VolunteerData;
-import uam.volontario.validation.annotation.DomainEmail;
 import uam.volontario.validation.annotation.Password;
 
+import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Basic implementation of {@linkplain UserIf}.
@@ -83,6 +82,10 @@ public class User implements UserIf
     @ManyToOne
     @JoinColumn( name = "institution_id" )
     private Institution institution;
+
+    @Column
+    @NotNull
+    private Instant creationDate;
 
     @Override
     public List< UserRole > getUserRoles()

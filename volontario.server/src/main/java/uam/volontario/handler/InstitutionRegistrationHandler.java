@@ -1,5 +1,6 @@
 package uam.volontario.handler;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,17 +10,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uam.volontario.crud.service.InstitutionService;
 import uam.volontario.crud.service.RoleService;
+import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.Institution.InstitutionDto;
+import uam.volontario.dto.Institution.InstitutionEmployeeDto;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.security.mail.MailService;
+import uam.volontario.security.util.VolontarioBase64Coder;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.InstitutionValidationService;
 import uam.volontario.validation.service.entity.UserValidationService;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +48,8 @@ public class InstitutionRegistrationHandler
     private final InstitutionValidationService institutionValidationService;
 
     private final RoleService roleService;
+
+    private final UserService userService;
 
     /**
      * CDI constructor.
@@ -66,7 +74,7 @@ public class InstitutionRegistrationHandler
                                           final PasswordEncoder aPasswordEncoder,
                                           final UserValidationService aUserValidationService,
                                           final InstitutionValidationService aInstitutionValidationService,
-                                          final RoleService aRoleService )
+                                          final RoleService aRoleService, final UserService aUserService )
     {
         dtoService = aDtoService;
         mailService = aMailService;
@@ -75,6 +83,7 @@ public class InstitutionRegistrationHandler
         userValidationService = aUserValidationService;
         institutionValidationService = aInstitutionValidationService;
         roleService = aRoleService;
+        userService = aUserService;
     }
 
     /**
@@ -129,7 +138,6 @@ public class InstitutionRegistrationHandler
      */
     public ResponseEntity< ? > acceptInstitution( final String aRegistrationToken )
     {
-        // TODO: this endpoint should only by accessible for administrator. Adjust once role system is implemented.
         try
         {
             final Optional< Institution > optionalInstitution =
@@ -168,7 +176,6 @@ public class InstitutionRegistrationHandler
      */
     public ResponseEntity< ? > rejectInstitution( final String aRegistrationToken )
     {
-        // TODO: this endpoint should only by accessible for administrator. Adjust once role system is implemented.
         try
         {
             final Optional< Institution > optionalInstitution =
@@ -236,6 +243,7 @@ public class InstitutionRegistrationHandler
                         .institution( institution )
                         .roles( roleService.findByNameIn( UserRole
                                 .mapUserRolesToRoleNames( List.of( UserRole.INSTITUTION_ADMIN ) ) ) )
+                        .creationDate( Instant.now() )
                         .build();
 
                 final ValidationResult userValidationResult =
@@ -265,5 +273,214 @@ public class InstitutionRegistrationHandler
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
+    }
+
+    /**
+     * Registers account for employee of Institution. Account is created with a random password which is not passed to
+     * the user, but the account is linked to the Institution and user receives an email about setting password for his account.
+     * Once user does it, the account becomes verified and may be used.
+     *
+     * @param aInstitutionEmployeeDto dto containing institution employee data.
+     *
+     * @return
+     *     - Response Entity with code 201 and employee account if everything went as expected.
+     *     - Response Entity with code 401 and failure reason if:
+     *             - institution was not found.
+     *             - institution is not active.
+     *             - dto contained data which did not pass user validation.
+     *     - Response Entity with code 500 and exception message in case server-side error occurred.
+     */
+    public ResponseEntity< ? > registerInstitutionEmployee( final InstitutionEmployeeDto aInstitutionEmployeeDto )
+    {
+        try
+        {
+            final Optional< Institution > optionalInstitution =
+                    institutionService.tryLoadEntity( aInstitutionEmployeeDto.getInstitutionId() );
+
+            if( optionalInstitution.isPresent() )
+            {
+                final Institution institution = optionalInstitution.get();
+                if( !institution.isActive() )
+                {
+                    return ResponseEntity.badRequest()
+                            .body( "Institution " + institution.getName() + " (KRS: " + institution.getKrsNumber() +
+                                    ") is not yet accepted by system administrator." );
+                }
+
+                final String randomGeneratedPassword = "X" +
+                        RandomStringUtils.randomNumeric( 5 ) +
+                        RandomStringUtils.randomAlphabetic( 5 ) +
+                        "_";
+
+                final User employee = User.builder()
+                        .firstName( aInstitutionEmployeeDto.getFirstName() )
+                        .lastName( aInstitutionEmployeeDto.getLastName() )
+                        .contactEmailAddress( aInstitutionEmployeeDto.getContactEmail() )
+                        .institution( institution )
+                        .roles( roleService.findByNameIn( UserRole
+                                .mapUserRolesToRoleNames( List.of( UserRole.INSTITUTION_EMPLOYEE ) ) ) )
+                        .phoneNumber( aInstitutionEmployeeDto.getPhoneNumber() )
+                        .password( randomGeneratedPassword )
+                        .isVerified( false ) // will be verified once new password is set.
+                        .creationDate( Instant.now() )
+                        .build();
+
+                final ValidationResult employeeValidationResult =
+                        userValidationService.validateEntity( employee );
+
+                if( employeeValidationResult.isValidated() )
+                {
+                    employee.setHashedPassword( passwordEncoder.encode( randomGeneratedPassword ) );
+                    institution.getEmployees().add( employee );
+
+                    userService.saveOrUpdate( employee );
+                    institutionService.saveOrUpdate( institution );
+
+                    if( mailService.sendMailAboutInstitutionEmployeeAccountBeingCreated( employee ) )
+                    {
+                        return ResponseEntity.status( HttpStatus.CREATED )
+                                .body( employeeValidationResult.getValidatedEntity() );
+                    }
+                    else
+                    {
+                        return ResponseEntity.status( HttpStatus.MULTI_STATUS )
+                                .body( "Institution Employee account was created, but mail was not send." );
+                    }
+                }
+                else
+                {
+                    return ResponseEntity.badRequest()
+                            .body( employeeValidationResult.getValidationViolations() );
+                }
+            }
+            else
+            {
+                return ResponseEntity.badRequest( )
+                        .body( String.format( "No institution of id %o found", aInstitutionEmployeeDto.getInstitutionId() ) );
+            }
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    /**
+     * Sets password for newly created institution employee account.
+     *
+     * @param aRegistrationToken registration token (encoded in Base64 format contact email address of employee)
+     *
+     * @param aPassword password to be set.
+     *
+     * @param aInstitutionId id of institution to which employee belongs.
+     *
+     * @return
+     *     - Response Entity with code 200  if everything went as expected.
+     *     - Response Entity with code 401 and failure reason if:
+     *             - institution was not found.
+     *             - employee was not found.
+     *             - institution is not active.
+     *             - password chosen by user did not pass validation.
+     *             - id of passed institution doesn't match id of institution resolved from employee.
+     *             - one week has passed since creating employee account.
+     *     - Response Entity with code 500 and exception message in case server-side error occurred.
+     */
+    public ResponseEntity< ? > setPasswordForNewlyCreatedInstitutionEmployeeUser( final String aRegistrationToken,
+                                                                                  final String aPassword,
+                                                                                  final Long aInstitutionId )
+    {
+        try
+        {
+            final Optional< Institution > optionalInstitution =
+                    institutionService.tryLoadEntity( aInstitutionId );
+
+            if( optionalInstitution.isPresent() )
+            {
+
+                final Institution institution = optionalInstitution.get();
+                if ( !institution.isActive() )
+                {
+                    return ResponseEntity.badRequest()
+                            .body( "Institution " + institution.getName() + " (KRS: " + institution.getKrsNumber() +
+                                    ") is not yet accepted by system administrator." );
+                }
+
+                final String decodedContactEmail = VolontarioBase64Coder.decode( aRegistrationToken );
+                final Optional< User > optionalEmployee = userService.tryToLoadByContactEmail(
+                        decodedContactEmail );
+
+                if( optionalEmployee.isPresent() )
+                {
+                    final User employee = optionalEmployee.get();
+                    final Optional< ResponseEntity< ? > > hasErrorOccurredDuringEmployeeConstraintsCheck
+                            = checkConstraintWhenEmployeeSetsPasswordForTheFirstTime( employee, aInstitutionId );
+
+                    if( hasErrorOccurredDuringEmployeeConstraintsCheck.isPresent() )
+                    {
+                        return hasErrorOccurredDuringEmployeeConstraintsCheck.get();
+                    }
+
+                    employee.setPassword( aPassword );
+                    final ValidationResult employeeValidationResult =
+                            userValidationService.validateEntity( employee );
+
+                    if( employeeValidationResult.isValidated() )
+                    {
+                        employee.setHashedPassword( passwordEncoder.encode( aPassword ) );
+                        employee.setVerified( true );
+
+                        userService.saveOrUpdate( employee );
+
+                        return ResponseEntity.ok()
+                                .build();
+                    }
+                    else
+                    {
+                        return ResponseEntity.badRequest()
+                                .body( employeeValidationResult.getValidationViolations() );
+                    }
+
+                }
+                else
+                {
+                    return  ResponseEntity.badRequest()
+                            .body( String.format( "No employee with contact email %s was found", decodedContactEmail ) );
+                }
+            }
+            else
+            {
+                return ResponseEntity.badRequest( )
+                        .body( String.format( "No institution of id %o found", aInstitutionId ) );
+            }
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    private Optional< ResponseEntity< ? > > checkConstraintWhenEmployeeSetsPasswordForTheFirstTime( final User aEmployee, final long aInstitutionId )
+    {
+        if( aEmployee.isVerified() )
+        {
+            return Optional.of( ResponseEntity.badRequest()
+                    .body( "Employee has already set his password." ) );
+        }
+
+        if( !aEmployee.getInstitution().getId().equals( aInstitutionId ) )
+        {
+            return Optional.of( ResponseEntity.badRequest()
+                    .body( "Institution mismatch." ) );
+        }
+
+        if( Duration.between( aEmployee.getCreationDate(), Instant.now() ).compareTo( Duration.ofDays( 7 ) ) > 0 )
+        {
+            return Optional.of( ResponseEntity.badRequest()
+                    .body( "Time to set password has expired." ) );
+        }
+
+        return Optional.empty();
     }
 }

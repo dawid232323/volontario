@@ -14,6 +14,7 @@ import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.UserValidationService;
 import uam.volontario.validation.service.entity.VolunteerDataValidationService;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Random;
 
@@ -334,6 +335,7 @@ public class VolunteerCreationValidationTest
                 .password( "ABCdef123_" )
                 .phoneNumber( "123456789" )
                 .volunteerData( volunteerData )
+                .creationDate( Instant.now() )
                 .isVerified( true );
     }
 }

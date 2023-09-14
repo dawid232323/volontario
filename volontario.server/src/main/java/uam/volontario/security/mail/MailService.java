@@ -1,5 +1,6 @@
 package uam.volontario.security.mail;
 
+import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -11,11 +12,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.model.offer.impl.Application;
 import uam.volontario.model.offer.impl.Benefit;
 import uam.volontario.model.offer.impl.Offer;
+import uam.volontario.security.util.VolontarioBase64Coder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -64,15 +67,17 @@ public class MailService
      */
     private static final Logger LOGGER = LogManager.getLogger( MailService.class );
 
-    private void trySendMail( final Runnable aMailRunnable )
+    private boolean trySendMail( final Runnable aMailRunnable )
     {
         try
         {
             aMailRunnable.run();
+            return true;
         }
         catch ( Exception aE )
         {
             LOGGER.warn( "Error while sending mail: " + aE.getMessage() );
+            return false;
         }
     }
 
@@ -112,8 +117,10 @@ public class MailService
      *                                          in case of message syntax errors.
      * @throws UnsupportedEncodingException
      *                                          in case of wrong encoding of email.
+     *
+     * @return true if email was successfully sent, false otherwise.
      */
-    public void sendApplicationCreatedMailToVolunteer( final Application aApplication )
+    public boolean sendApplicationCreatedMailToVolunteer( final Application aApplication )
             throws MessagingException, IOException
     {
         final MimeMessage message = mailSender.createMimeMessage();
@@ -131,7 +138,7 @@ public class MailService
         helper.setSubject( mailSubject );
         helper.setText( createContentForApplicationMadeEmail( aApplication.getOffer() ), true );
 
-        trySendMail( () -> mailSender.send( message ) );
+        return trySendMail( () -> mailSender.send( message ) );
     }
 
     /**
@@ -273,10 +280,13 @@ public class MailService
      *                                          in case of message syntax errors.
      * @throws UnsupportedEncodingException
      *                                          in case of wrong encoding of email.
+     *
+     * @return true if email was successfully sent, false otherwise.
      */
     public void sendEmailsAboutOffersExpiringSoon( final List< Offer > aExpiringOffers )
             throws MessagingException, IOException
     {
+        final List< String > contactEmailAddressesToWhichEmailsWereNotSend = Lists.newArrayList();
         for( final Offer offer : aExpiringOffers )
         {
             final MimeMessage message = mailSender.createMimeMessage();
@@ -298,8 +308,52 @@ public class MailService
 
             helper.setText( content, true );
 
-            trySendMail( () -> mailSender.send( message ) );
+            if ( !trySendMail( () -> mailSender.send( message ) ) )
+            {
+                contactEmailAddressesToWhichEmailsWereNotSend.add( offer.getContactPerson().getContactEmailAddress() );
+            }
         }
+
+        LOGGER.error( String.format( "Email failed to be sent to %o users", contactEmailAddressesToWhichEmailsWereNotSend.size() ) );
+    }
+
+    /**
+     * Sends email to employee about his account being created by Institution and password to be set.
+     *
+     * @param aInstitutionEmployee institution employee.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     *
+     * @return true if email was successfully sent, false if not.
+     */
+    public boolean sendMailAboutInstitutionEmployeeAccountBeingCreated( final User aInstitutionEmployee ) throws
+            MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final String sender = aInstitutionEmployee.getInstitution().getName();
+        final String mailSubject = "Your account has been created!";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( aInstitutionEmployee.getContactEmailAddress() );
+        helper.setSubject( mailSubject );
+
+        String content = Resources.toString( Resources.getResource( "emails/institutionEmployeeAccountCreated.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|institutionName\\|", aInstitutionEmployee.getInstitution().getName() );
+        content = content.replaceAll( "\\|employeeContactEmail\\|", aInstitutionEmployee.getContactEmailAddress() );
+        content = content.replaceAll( "\\|institutionName\\|", String.format( "http://localhost:4200/register-employee/%o?t=%s",
+                aInstitutionEmployee.getInstitution().getId(),
+                VolontarioBase64Coder.encode( aInstitutionEmployee.getContactEmailAddress() ) ) );
+
+        helper.setText( content, true );
+
+        return trySendMail( () -> mailSender.send( message ) );
     }
 
     private String buildMailContentForInstitutionRegistration( final Institution aInstitution )

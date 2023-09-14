@@ -114,9 +114,16 @@ public class ApplicationProcessingHandler
             if( validationResult.isValidated() )
             {
                 applicationService.saveOrUpdate( application );
-                mailService.sendApplicationCreatedMailToVolunteer( application );
-                return ResponseEntity.status( HttpStatus.CREATED )
-                        .body( application );
+                if( mailService.sendApplicationCreatedMailToVolunteer( application ) )
+                {
+                    return ResponseEntity.status( HttpStatus.CREATED )
+                            .body( application );
+                }
+                else
+                {
+                    return ResponseEntity.status( HttpStatus.MULTI_STATUS )
+                            .body( "Application was created, but email was not send to volunteer." );
+                }
             }
             else
             {
