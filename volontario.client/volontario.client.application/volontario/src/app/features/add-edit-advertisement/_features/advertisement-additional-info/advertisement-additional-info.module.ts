@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [AdvertisementAdditionalInfoComponent],
@@ -24,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
     MatCheckboxModule,
     MatSlideToggleModule,
     MatInputModule,
+    MatTooltipModule,
   ],
   exports: [AdvertisementAdditionalInfoComponent],
 })

@@ -33,10 +33,12 @@ export class EndpointUrls {
   public static readonly changeUserRolesUrl = EndpointUrls.userResource.concat('/change-roles');
   public static readonly changeUserPassword = '/change-password';
   public static readonly interestCategoryResource = '/interest-category';
+  public static readonly interestCategoriesPublic = '/interestCategories';
   public static readonly notUsedInterestCategories = EndpointUrls.interestCategoryResource.concat('/all-not-used');
   public static readonly benefitResource = '/benefit';
   public static notUsedBenefits = EndpointUrls.benefitResource.concat('/all-not-used');
   public static readonly experienceLevelResource = '/experience-level';
+  public static readonly experienceLevelPublic = '/experienceLevels';
   public static readonly notUsedExpLevels = EndpointUrls.experienceLevelResource.concat('/all-not-used');
   public static readonly advertisementBenefits = EndpointUrls.benefitResource.concat('/all-used');
   public static readonly interestCategories: string = EndpointUrls.interestCategoryResource.concat('/all-used');

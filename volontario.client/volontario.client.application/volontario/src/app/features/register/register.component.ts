@@ -32,10 +32,7 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    forkJoin([
-      this.interestCategoryService.getUsedValues(),
-      this.experienceService.getUsedValues(),
-    ]).subscribe(([categories, experiences]) => {
+    forkJoin([this.interestCategoryService.getPublicValues(), this.experienceService.getPublicValues()]).subscribe(([categories, experiences]) => {
       this.interestCategories = categories.map(category => {
         return {
           value: category.id,
@@ -46,6 +43,7 @@ export class RegisterComponent implements OnInit {
         return {
           value: expLevel.id,
           viewValue: expLevel.name,
+          helpValue: expLevel.description,
         };
       });
     });

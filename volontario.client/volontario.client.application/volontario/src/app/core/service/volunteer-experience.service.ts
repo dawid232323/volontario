@@ -19,45 +19,35 @@ export class VolunteerExperienceService extends AbstractDictionaryValueService<V
     const options: HttpOptionsInterface = {
       headers: headers,
     };
-    return this.restService
-      .get(EndpointUrls.experienceLevels, options)
-      .pipe(map(result => result.map(VolunteerExperience.fromPayload)));
+    return this.restService.get(EndpointUrls.experienceLevels, options).pipe(map(result => result.map(VolunteerExperience.fromPayload)));
+  }
+
+  public getPublicValues(): Observable<VolunteerExperience[]> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const options: HttpOptionsInterface = {
+      headers: headers,
+    };
+    return this.restService.get(EndpointUrls.experienceLevelPublic, options).pipe(map(result => result.map(VolunteerExperience.fromPayload)));
   }
 
   public override getNotUsedValues(): Observable<VolunteerExperience[]> {
-    return this.restService
-      .get(EndpointUrls.notUsedExpLevels)
-      .pipe(map(result => result.map(VolunteerExperience.fromPayload)));
+    return this.restService.get(EndpointUrls.notUsedExpLevels).pipe(map(result => result.map(VolunteerExperience.fromPayload)));
   }
 
   protected deactivateValue(valueId: number): Observable<void> {
-    return this.restService.delete(
-      EndpointUrls.expLevelsSoftDelete.concat(`/${valueId}`)
-    );
+    return this.restService.delete(EndpointUrls.expLevelsSoftDelete.concat(`/${valueId}`));
   }
 
   protected activateValue(valueId: number): Observable<void> {
-    return this.restService.post(
-      EndpointUrls.epxLevelRevertDelete.concat(`/${valueId}`),
-      {}
-    );
+    return this.restService.post(EndpointUrls.epxLevelRevertDelete.concat(`/${valueId}`), {});
   }
 
-  public override createValue(
-    body: VolunteerExperience
-  ): Observable<VolunteerExperience> {
-    return super
-      .createValue(body)
-      .pipe(map(result => VolunteerExperience.fromPayload(result)));
+  public override createValue(body: VolunteerExperience): Observable<VolunteerExperience> {
+    return super.createValue(body).pipe(map(result => VolunteerExperience.fromPayload(result)));
   }
 
-  public override updateValue(
-    body: VolunteerExperience,
-    valueId: number
-  ): Observable<any> {
-    return super
-      .updateValue(body, valueId)
-      .pipe(map(result => VolunteerExperience.fromPayload(result)));
+  public override updateValue(body: VolunteerExperience, valueId: number): Observable<any> {
+    return super.updateValue(body, valueId).pipe(map(result => VolunteerExperience.fromPayload(result)));
   }
 
   protected override getCreateUpdateUrl(valueId: number): string {
