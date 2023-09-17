@@ -27,10 +27,10 @@ public class OfferValidationService extends AbstractValidationService< Offer >
     private void doValidateOfferDates( final Offer aOffer )
     {
         final String offerDatesKey = "offerDates";
-        if ( aOffer.getExpirationDate().isBefore( aOffer.getEndDate() ) )
+        if ( aOffer.getEndDate().isBefore( aOffer.getExpirationDate() ) )
         {
             this.validationViolations.put( offerDatesKey,
-                    "Expiration date should not be earlier than end date" );
+                    "End date should not be earlier than Expiration date" );
         }
     }
 

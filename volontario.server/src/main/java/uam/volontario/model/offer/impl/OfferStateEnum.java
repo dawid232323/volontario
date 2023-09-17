@@ -44,4 +44,25 @@ public enum OfferStateEnum
                     default -> throw new IllegalArgumentException( aOfferState.getState() + " is not a defined offer state in the system." );
                 };
     }
+
+
+    /**
+     * Maps OfferStateEnum to name of {@linkplain OfferState} entity.
+     *
+     * @param aOfferStateEnum offer state enum.
+     *
+     * @return name of offer state entity.
+     */
+    public static String mapOfferStateEnumToOfferStateName( final OfferStateEnum aOfferStateEnum )
+    {
+        return switch ( aOfferStateEnum )
+        {
+            case NEW -> "Nowe";
+            case UNDER_VERIFICATION -> "W trakcie weryfikacji";
+            case REJECTED -> "Odrzucone";
+            case PUBLISHED -> "Opublikowane";
+            case EXPIRED -> "Wygasłe";
+            case CLOSED -> "Zamknięte";
+        };
+    }
 }
