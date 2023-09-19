@@ -1,45 +1,28 @@
 <div>
-  <div
-    class="min-h-screen flex flex-col justify-between items-center bg-gray-100">
+  <div class="min-h-screen flex flex-col justify-between items-center bg-gray-100">
     <section
       id="tabContentWrapper"
       class="my-10 py-2 flex flex-col items-center justify-center w-full border-4 rounded-xl border-solid lg:w-5/6 bg-white pb-5">
       <div class="w-full px-5 lg:px-12">
-        <span
-          class="flex flex-row items-center justify-center lg:items-start lg:space-x-5 py-10 lg:pr-10 w-full">
-          <div
-            class="text-2xl font-bold w-full text-center lg:text-left underline underline-offset-2">
-            Ogłoszenia twojej instytucji
-          </div>
+        <span class="flex flex-row items-center justify-center lg:items-start lg:space-x-5 py-10 lg:pr-10 w-full">
+          <div class="text-2xl font-bold w-full text-center lg:text-left underline underline-offset-2">Ogłoszenia twojej instytucji</div>
         </span>
-        <div
-          id="buttonsContainer"
-          class="flex flex-col lg:flex-row lg:items-end space-y-4 lg:space-y-0 lg:space-x-5 w-full lg:justify-end">
-          <button
-            mat-raised-button
-            color="accent"
-            class="hover:bg-btnAccentHover"
-            (click)="onAddAdvertisementClicked()">
+        <div id="buttonsContainer" class="flex flex-col lg:flex-row lg:items-end space-y-4 lg:space-y-0 lg:space-x-5 w-full lg:justify-end">
+          <button mat-raised-button color="accent" class="hover:bg-btnAccentHover" (click)="onAddAdvertisementClicked()">
             <mat-icon>add</mat-icon>
             Dodaj ogłoszenie
           </button>
-          <button
-            mat-raised-button
-            color="accent"
-            class="hover:bg-btnAccentHover"
-            (click)="onShowFilterPanel()">
+          <button mat-raised-button color="accent" class="hover:bg-btnAccentHover" (click)="onShowFilterPanel()">
             <mat-icon *ngIf="!shouldShowFilterPanel">filter_list</mat-icon>
             <mat-icon *ngIf="shouldShowFilterPanel">filter_list_off</mat-icon>
             {{ shouldShowFilterPanel ? 'Ukryj filtry' : 'Pokaż filtry' }}
           </button>
-          <button disabled mat-raised-button color="primary">
+          <button *ngIf="canManageInstitution" mat-raised-button color="primary" [matMenuTriggerFor]="manageInstitutionMenu">
             <mat-icon>settings</mat-icon>
             Zarządzaj instytycją
           </button>
         </div>
-        <div
-          id="filterSectionWrapper"
-          class="flex flex-row justify-between items-start pt-10 lg:space-x-5 w-full">
+        <div id="filterSectionWrapper" class="flex flex-row justify-between items-start pt-10 lg:space-x-5 w-full">
           <div id="tabContainer" class="flex flex-col items-start w-full">
             <app-filter-panel
               *ngIf="shouldShowFilterPanel"
@@ -51,33 +34,17 @@
               (searchTriggered)="onFilterSearchEvent($event)"
               class="w-full mb-5">
             </app-filter-panel>
-            <mat-tab-group
-              color="accent"
-              class="w-full"
-              animationDuration="0ms"
-              (selectedTabChange)="onSelectedTabChange($event)">
+            <mat-tab-group color="accent" class="w-full" animationDuration="0ms" (selectedTabChange)="onSelectedTabChange($event)">
               <mat-tab label="Przypisane do ciebie">
                 <div class="flex flex-col pt-10">
-                  <div
-                    *ngIf="advertisements.length === 0 && !isLoadingData"
-                    class="text-xl font-medium text-gray-500">
-                    Brak ogłoszeń
-                  </div>
-                  <div
-                    *ngIf="isLoadingData"
-                    class="flex flex-row w-full h-full items-center justify-center">
-                    <mat-spinner
-                      mode="indeterminate"
-                      color="accent"></mat-spinner>
+                  <div *ngIf="advertisements.length === 0 && !isLoadingData" class="text-xl font-medium text-gray-500">Brak ogłoszeń</div>
+                  <div *ngIf="isLoadingData" class="flex flex-row w-full h-full items-center justify-center">
+                    <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
                   </div>
                   <div *ngIf="!isLoadingData">
-                    <div
-                      *ngFor="let advertisement of advertisements"
-                      class="w-full mb-5 mt-5">
+                    <div *ngFor="let advertisement of advertisements" class="w-full mb-5 mt-5">
                       <app-advertisement-preview-card
-                        (visibilityChangedEvent)="
-                          onAdvertisementChangeVisibilityClicked($event)
-                        "
+                        (visibilityChangedEvent)="onAdvertisementChangeVisibilityClicked($event)"
                         [advertisement]="advertisement"
                         [shouldShowContextMenu]="shouldShowContextMenu">
                       </app-advertisement-preview-card>
@@ -96,26 +63,13 @@
               </mat-tab>
               <mat-tab label="Wszystkie">
                 <div class="flex flex-col pt-10">
-                  <div
-                    *ngIf="advertisements.length === 0 && !isLoadingData"
-                    class="text-xl font-medium text-gray-500">
-                    Brak ogłoszeń
-                  </div>
-                  <div
-                    *ngIf="isLoadingData"
-                    class="flex flex-row w-full h-full items-center justify-center">
-                    <mat-spinner
-                      mode="indeterminate"
-                      color="accent"></mat-spinner>
+                  <div *ngIf="advertisements.length === 0 && !isLoadingData" class="text-xl font-medium text-gray-500">Brak ogłoszeń</div>
+                  <div *ngIf="isLoadingData" class="flex flex-row w-full h-full items-center justify-center">
+                    <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
                   </div>
                   <div *ngIf="!isLoadingData">
-                    <div
-                      *ngFor="let advertisement of advertisements"
-                      class="w-full mb-5 mt-5">
-                      <app-advertisement-preview-card
-                        [advertisement]="
-                          advertisement
-                        "></app-advertisement-preview-card>
+                    <div *ngFor="let advertisement of advertisements" class="w-full mb-5 mt-5">
+                      <app-advertisement-preview-card [advertisement]="advertisement"></app-advertisement-preview-card>
                     </div>
                     <mat-paginator
                       color="accent"
@@ -135,4 +89,8 @@
       </div>
     </section>
   </div>
+  <mat-menu #manageInstitutionMenu>
+    <button mat-menu-item (click)="onEditInstitutionData()"><mat-icon matPrefix>edit</mat-icon>Edytuj dane Edytuj dane instytucji</button>
+    <button mat-menu-item (click)="onManageInstitutionWorkers()"><mat-icon matPrefix>group</mat-icon>Zarządzaj pracownikami</button>
+  </mat-menu>
 </div>

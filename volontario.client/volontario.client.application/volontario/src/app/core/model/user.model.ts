@@ -73,13 +73,31 @@ export class AdministrativeUserDetails {
 }
 
 export class InstitutionWorker {
-  constructor(public id: number, public firstName: string, public lastName: string, public institutionId?: number, public institutionName?: string) {}
+  constructor(
+    public id: number,
+    public firstName: string,
+    public lastName: string,
+    public role?: string,
+    public institutionId?: number,
+    public institutionName?: string
+  ) {}
 
   public static fromPayload(payload: any): InstitutionWorker {
-    return new InstitutionWorker(payload?.id, payload?.firstName, payload?.lastName, payload?.institutionId, payload?.institutionName);
+    return new InstitutionWorker(payload?.id, payload?.firstName, payload?.lastName, payload?.role, payload?.institutionId, payload?.institutionName);
   }
 
   public static fromUser(user: User): InstitutionWorker {
-    return new InstitutionWorker(user.id, user.firstName, user.lastName, user.institution?.id, user.institution?.name);
+    return new InstitutionWorker(
+      user.id,
+      user.firstName,
+      user.lastName,
+      this.getInstitutionRelatedRole(user),
+      user.institution?.id,
+      user.institution?.name
+    );
+  }
+
+  private static getInstitutionRelatedRole(user: User): string | undefined {
+    return user.roles.find(role => role.id === UserRoleEnum.InstitutionAdmin || role.id === UserRoleEnum.InstitutionWorker)?.name;
   }
 }

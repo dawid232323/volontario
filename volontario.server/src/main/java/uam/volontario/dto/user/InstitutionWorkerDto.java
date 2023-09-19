@@ -16,4 +16,5 @@ public class InstitutionWorkerDto
     private String lastName;
     private Long institutionId;
     private String institutionName;
+    private String role;
 }

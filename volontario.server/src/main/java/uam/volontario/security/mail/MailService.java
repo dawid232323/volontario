@@ -347,10 +347,9 @@ public class MailService
 
         content = content.replaceAll( "\\|institutionName\\|", aInstitutionEmployee.getInstitution().getName() );
         content = content.replaceAll( "\\|employeeContactEmail\\|", aInstitutionEmployee.getContactEmailAddress() );
-        content = content.replaceAll( "\\|institutionName\\|", String.format( "http://localhost:4200/register-employee/%o?t=%s",
+        content = content.replaceAll( "\\|changePasswordLink\\|", String.format( "http://localhost:4200/register-employee/%o?t=%s",
                 aInstitutionEmployee.getInstitution().getId(),
                 VolontarioBase64Coder.encode( aInstitutionEmployee.getContactEmailAddress() ) ) );
-
         helper.setText( content, true );
 
         return trySendMail( () -> mailSender.send( message ) );

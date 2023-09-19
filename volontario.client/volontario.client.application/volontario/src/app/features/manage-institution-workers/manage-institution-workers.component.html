@@ -1,0 +1,29 @@
+<main class="flex flex-col w-full min-h-screen bg-gray-100 items-center">
+  <div class="flex bg-white flex-col lg:px-16 my-10 py-16 space-y-6 lg:w-3/4 w-full items-center justify-start border-2 rounded-2xl border-solid">
+    <section id="back-section" class="flex flex-col lg:w-full justify-start items-start">
+      <div>
+        <button (click)="onReturnToDetailsButtonClicked()" class="w-full" mat-raised-button color="accent">
+          <mat-icon matPrefix>arrow_back</mat-icon> Szczegóły instytucji
+        </button>
+      </div>
+    </section>
+    <section id="title-section" class="flex flex-col items-center justify-center w-full">
+      <div class="w-full">
+        <p class="text-2xl font-bold text-center">Zarządzaj pracownikami instytucji</p>
+      </div>
+    </section>
+    <section id="add-btn-section" class="flex flex-col items-center justify-center w-full">
+      <div class="flex justify-end w-full">
+        <button mat-raised-button color="primary" (click)="onAddWorkerButtonClicked()"><mat-icon matPrefix>add</mat-icon>Dodaj pracownika</button>
+      </div>
+    </section>
+    <section id="list-section" class="flex flex-col items-center justify-center w-full" #workersList>
+      <app-institution-workers-list
+        [institutionWorkers]="institutionWorkers"
+        [institutionData]="institution"
+        [user]="user"
+        (workerRoleChangeEvent)="onRoleChangeEvent($event)"
+        class="w-full"></app-institution-workers-list>
+    </section>
+  </div>
+</main>

@@ -120,3 +120,27 @@ export class Institution implements InstitutionInterface {
     );
   }
 }
+
+/**
+ * Data transfer object that stores necessary data
+ * to register new institution worker by institution admin.
+ */
+export class RegisterInstitutionEmployeeDto {
+  constructor(
+    public institutionId: number,
+    public firstName: string,
+    public lastName: string,
+    public phoneNumber: string,
+    public contactEmail: string
+  ) {}
+
+  public static fromPayload(payload?: any): RegisterInstitutionEmployeeDto {
+    return new RegisterInstitutionEmployeeDto(
+      payload?.institutionId,
+      payload?.firstName,
+      payload?.lastName,
+      payload?.phoneNumber,
+      payload?.contactEmail
+    );
+  }
+}

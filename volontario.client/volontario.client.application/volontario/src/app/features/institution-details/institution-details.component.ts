@@ -51,11 +51,11 @@ export class InstitutionDetailsComponent implements OnInit {
     this.router.navigate(['institution', 'edit', this._institutionId]);
   }
 
-  //TODO add handling when workers management is implemented
   public onManageWorkers() {
     if (!this.canManageInstitution) {
       return;
     }
+    this.router.navigate(['institution', 'workers', this._institutionId]);
   }
 
   private setInitialData() {

@@ -9,6 +9,8 @@ import { FilterPanelModule } from 'src/app/features/institution-advertisement-pa
 import { AdvertisementPreviewCardModule } from 'src/app/shared/features/advertisement-preview-card/advertisement-preview-card.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [InstitutionAdvertisementPanelComponent],
@@ -22,6 +24,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     AdvertisementPreviewCardModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatMenuModule,
+    MatFormFieldModule,
   ],
   exports: [InstitutionAdvertisementPanelComponent],
 })

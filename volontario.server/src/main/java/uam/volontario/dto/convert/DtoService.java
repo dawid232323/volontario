@@ -32,6 +32,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service for DTO operations.
@@ -357,12 +358,26 @@ public class DtoService
     public InstitutionWorkerDto getInstitutionWorkerDtoFromUser( final User aUser )
     {
         assert aUser.getInstitution() != null;
+        final List< UserRole > roles = UserRole.mapRolesToUserRoles( aUser.getRoles() );
+        final UserRole institutionRelatedRole = roles.stream()
+                .filter( aUserRole -> aUserRole.equals( UserRole.INSTITUTION_ADMIN ) ||
+                        aUserRole.equals( UserRole.INSTITUTION_EMPLOYEE ) )
+                .findFirst().orElse( null );
+        final String roleName;
+        if( institutionRelatedRole == null )
+        {
+            roleName = null;
+        } else
+        {
+            roleName = institutionRelatedRole.getTranslatedRoleName();
+        }
         return InstitutionWorkerDto.builder()
                 .id( aUser.getId() )
                 .firstName( aUser.getFirstName() )
                 .lastName( aUser.getLastName() )
                 .institutionId( aUser.getInstitution().getId() )
                 .institutionName( aUser.getInstitution().getName() )
+                .role( roleName )
                 .build();
     }
 

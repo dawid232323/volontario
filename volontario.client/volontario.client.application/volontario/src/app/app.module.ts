@@ -31,6 +31,7 @@ import { ManageDictValuesModule } from 'src/app/features/manage-dict-values/mana
 import { InstitutionEditModule } from 'src/app/features/institution-edit/institution-edit.module';
 import { ErrorDialogModule } from 'src/app/shared/features/error-dialog/error-dialog.module';
 import { VolontarioGlobalErrorHandlerInterceptor } from 'src/app/core/interceptor/VolontarioGlobalErrorHandler.interceptor';
+import { ManageInstitutionWorkersModule } from 'src/app/features/manage-institution-workers/manage-institution-workers.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -61,6 +62,7 @@ import { VolontarioGlobalErrorHandlerInterceptor } from 'src/app/core/intercepto
     InstitutionDetailsModule,
     ManageDictValuesModule,
     InstitutionEditModule,
+    ManageInstitutionWorkersModule,
     ErrorDialogModule,
   ],
   providers: [

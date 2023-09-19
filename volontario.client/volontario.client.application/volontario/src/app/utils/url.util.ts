@@ -3,6 +3,7 @@ import { ApplicationActionTypeEnum } from 'src/app/core/interface/application.in
 import { ActivatedRoute, Params, QueryParamsHandling, Router } from '@angular/router';
 import { isNil } from 'lodash';
 import * as moment from 'moment';
+import { InstitutionWorkerRoleChangeTypeEnum } from 'src/app/core/service/institution.service';
 
 export class EndpointUrls {
   public static readonly login: string = '/login';
@@ -13,6 +14,7 @@ export class EndpointUrls {
   public static readonly institutionWorkers: string = EndpointUrls.institutionResource.concat('/workers');
   public static readonly institutionRegister: string = EndpointUrls.institutionResource.concat('/register');
   public static readonly institutionRegisterContactPerson = EndpointUrls.institutionResource.concat('/register-contact-person');
+  public static readonly institutionRegisterEmployee = EndpointUrls.institutionResource.concat('/register-employee');
   public static readonly userData: string = '/userData';
   public static getInstitutionVerify(operationType: VerifyType) {
     return this.institutionResource.concat('/', operationType);
@@ -36,7 +38,7 @@ export class EndpointUrls {
   public static readonly interestCategoriesPublic = '/interestCategories';
   public static readonly notUsedInterestCategories = EndpointUrls.interestCategoryResource.concat('/all-not-used');
   public static readonly benefitResource = '/benefit';
-  public static notUsedBenefits = EndpointUrls.benefitResource.concat('/all-not-used');
+  public static readonly notUsedBenefits = EndpointUrls.benefitResource.concat('/all-not-used');
   public static readonly experienceLevelResource = '/experience-level';
   public static readonly experienceLevelPublic = '/experienceLevels';
   public static readonly notUsedExpLevels = EndpointUrls.experienceLevelResource.concat('/all-not-used');
@@ -64,6 +66,20 @@ export class EndpointUrls {
       return EndpointUrls.offerApplicationResource.concat('/accept', `/${applicationId}`);
     }
     return EndpointUrls.offerApplicationResource.concat('/decline', `/${applicationId}`);
+  }
+
+  public static getInstitutionWorkerRoleChangeUrl(
+    workerId: number,
+    institutionId: number,
+    operationType: InstitutionWorkerRoleChangeTypeEnum
+  ): string {
+    const baseUrl = EndpointUrls.institutionResource;
+    const operationSuffix = operationType === InstitutionWorkerRoleChangeTypeEnum.MarkAsAdmin ? 'mark-as-admin' : 'mark-as-employee';
+    return [baseUrl, institutionId, workerId, operationSuffix].join('/');
+  }
+
+  public static getEmployeeRegisterUrl(institutionId: number): string {
+    return EndpointUrls.institutionResource.concat('/', String(institutionId), '/register-employee/set-password');
   }
 }
 

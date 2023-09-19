@@ -74,7 +74,9 @@ public class SecurityConfiguration
                 "/api/institution/register",
                 "/api/institution/accept",
                 "/api/institution/reject",
-                "/api/institution/register-contact-person" ) );
+                "/api/institution/register-contact-person",
+                "/api/institution/{institution_id:[0-9]+}/register-employee/set-password"
+                ) );
 
         aHttp.cors();
         aHttp.csrf().disable();

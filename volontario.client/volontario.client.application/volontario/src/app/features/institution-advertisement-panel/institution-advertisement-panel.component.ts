@@ -1,16 +1,9 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import {
-  AdvertisementPreview,
-  AdvertisementType,
-} from 'src/app/core/model/advertisement.model';
+import { AdvertisementPreview, AdvertisementType } from 'src/app/core/model/advertisement.model';
 import { PageableModel } from 'src/app/core/model/pageable.model';
 import { isNil } from 'lodash';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
-import {
-  AdvertisementFilterIf,
-  AdvertisementService,
-  AdvertisementVisibilityEnum,
-} from 'src/app/core/service/advertisement.service';
+import { AdvertisementFilterIf, AdvertisementService, AdvertisementVisibilityEnum } from 'src/app/core/service/advertisement.service';
 import { forkJoin } from 'rxjs';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { UserService } from 'src/app/core/service/user.service';
@@ -19,6 +12,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
+import { InstitutionService } from 'src/app/core/service/institution.service';
 
 export enum AdvertisementPanelTabEnum {
   Assigned = 0,
@@ -34,10 +28,7 @@ export interface AdvertisementPreviewActionIf {
 @Component({
   selector: 'app-institution-advertisement-panel',
   templateUrl: './institution-advertisement-panel.component.html',
-  styleUrls: [
-    './institution-advertisement-panel.component.scss',
-    '../../shared/styles/material-styles.scss',
-  ],
+  styleUrls: ['./institution-advertisement-panel.component.scss', '../../shared/styles/material-styles.scss'],
 })
 export class InstitutionAdvertisementPanelComponent implements OnInit {
   public selectedTab = AdvertisementPanelTabEnum.Assigned;
@@ -51,6 +42,7 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
   private _pageableData?: PageableModel<AdvertisementPreview>;
   private _filterData?: AdvertisementFilterIf;
   private _shouldShowFilterPanel = false;
+  private _canManageInstitution = false;
 
   public filterClearEvent = new EventEmitter<void>();
 
@@ -58,7 +50,8 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
     private interestCategoryService: InterestCategoryService,
     private advertisementService: AdvertisementService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private institutionService: InstitutionService
   ) {}
 
   ngOnInit(): void {
@@ -97,11 +90,7 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
   private loadListData() {
     this.isLoadingData = true;
     this.advertisementService
-      .getAdvertisementPreviews(
-        this._filterData!,
-        this.currentlySelectedPageIndex,
-        this.currentlySelectedPageSize
-      )
+      .getAdvertisementPreviews(this._filterData!, this.currentlySelectedPageIndex, this.currentlySelectedPageSize)
       .subscribe(previews => {
         this._pageableData = previews;
         this.advertisements = previews.content;
@@ -131,6 +120,7 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
         contactPersonId: this.loggedUser?.id,
         visibility: AdvertisementVisibilityEnum.All,
       };
+      this._canManageInstitution = this.institutionService.canManageInstitution(user, user.institution);
       this.loadListData();
     });
   }
@@ -142,13 +132,15 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
     return this._pageableData!.totalElements;
   }
 
+  public get canManageInstitution(): boolean {
+    return this._canManageInstitution;
+  }
+
   public get shouldShowFilterPanel(): boolean {
     return this._shouldShowFilterPanel;
   }
 
-  public onAdvertisementChangeVisibilityClicked(
-    visibilityIf: AdvertisementPreviewActionIf
-  ) {
+  public onAdvertisementChangeVisibilityClicked(visibilityIf: AdvertisementPreviewActionIf) {
     this.advertisementService
       .changeOfferVisibility(visibilityIf.advertisementId, {
         isHidden: visibilityIf.isHidden || false,
@@ -162,12 +154,22 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
 
   public get shouldShowContextMenu(): boolean {
     return (
-      this.loggedUser?.hasUserRoles([
-        UserRoleEnum.InstitutionWorker,
-        UserRoleEnum.InstitutionAdmin,
-        UserRoleEnum.Moderator,
-        UserRoleEnum.Admin,
-      ]) || this.selectedTab === AdvertisementPanelTabEnum.Assigned
+      this.loggedUser?.hasUserRoles([UserRoleEnum.InstitutionWorker, UserRoleEnum.InstitutionAdmin, UserRoleEnum.Moderator, UserRoleEnum.Admin]) ||
+      this.selectedTab === AdvertisementPanelTabEnum.Assigned
     );
+  }
+
+  public onEditInstitutionData() {
+    if (!this.canManageInstitution || isNil(this.loggedUser?.institution)) {
+      return;
+    }
+    this.router.navigate(['institution', 'edit', this.loggedUser?.institution.id]);
+  }
+
+  public onManageInstitutionWorkers() {
+    if (!this.canManageInstitution || isNil(this.loggedUser?.institution)) {
+      return;
+    }
+    this.router.navigate(['institution', 'workers', this.loggedUser?.institution.id]);
   }
 }
