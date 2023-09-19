@@ -165,7 +165,12 @@
           class="w-full h-full"
           [matTooltip]="applicationState"
           [matTooltipDisabled]="canApplyForOffer || true">
-          <button mat-raised-button class="w-full hover:bg-btnAccentHover" color="accent" routerLink="apply" [disabled]="!canApplyForOffer">
+          <button
+            mat-raised-button
+            class="w-full hover:bg-btnAccentHover"
+            color="accent"
+            [disabled]="!canApplyForOffer"
+            (click)="onApplyButtonCLicked()">
             Aplikuj
           </button>
         </div>

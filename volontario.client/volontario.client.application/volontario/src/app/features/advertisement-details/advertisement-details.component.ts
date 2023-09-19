@@ -32,18 +32,14 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    forkJoin([
-      this.advertisementService.getAdvertisement(this._advertisementId),
-      this.userService.getCurrentUserData(),
-    ]).subscribe(([advertisement, user]) => {
-      this.advertisementData = advertisement;
-      this.loggedUser = user;
-      this._canManageOffer = this.advertisementService.canManageOffer(
-        this.advertisementData,
-        this.loggedUser
-      );
-      this.determineIfUserCanApply();
-    });
+    forkJoin([this.advertisementService.getAdvertisement(this._advertisementId), this.userService.getCurrentUserData()]).subscribe(
+      ([advertisement, user]) => {
+        this.advertisementData = advertisement;
+        this.loggedUser = user;
+        this._canManageOffer = this.advertisementService.canManageOffer(this.advertisementData, this.loggedUser);
+        this.determineIfUserCanApply();
+      }
+    );
   }
 
   public convertDate(getDate: any | undefined) {
@@ -55,10 +51,7 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   }
 
   public get canApplyForOffer(): boolean | undefined {
-    return (
-      !this._hasAppliedForOffer &&
-      this.loggedUser?.hasUserRole(UserRoleEnum.Volunteer)
-    );
+    return !this._hasAppliedForOffer && this.loggedUser?.hasUserRole(UserRoleEnum.Volunteer);
   }
 
   public get applicationState(): string {
@@ -67,11 +60,7 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
 
   public onEditButtonClicked() {
     if (this.canManageOffer) {
-      return this.router.navigate([
-        'advertisement',
-        'edit',
-        this._advertisementId,
-      ]);
+      return this.router.navigate(['advertisement', 'edit', this._advertisementId]);
     }
     return;
   }
@@ -82,15 +71,20 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
 
   private determineIfUserCanApply() {
     if (this?.loggedUser?.hasUserRole(UserRoleEnum.Volunteer)) {
-      this.offerApplicationService
-        .checkApplicationState(this.loggedUser?.id, this._advertisementId)
-        .subscribe({
-          next: result => {
-            this._hasAppliedForOffer = result.applied;
-            this._applicationState = result.state;
-          },
-        });
+      this.offerApplicationService.checkApplicationState(this.loggedUser?.id, this._advertisementId).subscribe({
+        next: result => {
+          this._hasAppliedForOffer = result.applied;
+          this._applicationState = result.state;
+        },
+      });
     }
+  }
+
+  public onApplyButtonCLicked() {
+    if (!this.canApplyForOffer) {
+      return;
+    }
+    this.router.navigate(['apply'], { relativeTo: this.route });
   }
 
   protected readonly UserRoleEnum = UserRoleEnum;

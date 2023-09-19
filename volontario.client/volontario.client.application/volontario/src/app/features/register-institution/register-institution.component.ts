@@ -40,6 +40,9 @@ export class RegisterInstitutionComponent implements OnInit {
   }
 
   onFormSubmit() {
+    if (!this.canSubmitForm) {
+      return;
+    }
     this.isPerformingRegistration = true;
     const institutionModel = this.institutionService.getInstitutionModelFromFormData(
       this.basicInfoFormGroup.value,

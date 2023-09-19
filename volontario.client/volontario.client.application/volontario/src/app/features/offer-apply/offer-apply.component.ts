@@ -66,6 +66,9 @@ export class OfferApplyComponent implements OnInit {
   }
 
   public async onFormSubmit() {
+    if (!this.canSubmitForm) {
+      return;
+    }
     this._isLoadingData = true;
     let failedUserEdit = false;
     if (this.contactFormGroup.dirty) {
@@ -78,11 +81,7 @@ export class OfferApplyComponent implements OnInit {
       this._isLoadingData = false;
       return;
     }
-    const applicationDto = OfferApplicationModelDto.fromApplyForm(
-      this.loggedUser?.id!,
-      this.offerId,
-      this.reasonFormGroup.value['reason']
-    );
+    const applicationDto = OfferApplicationModelDto.fromApplyForm(this.loggedUser?.id!, this.offerId, this.reasonFormGroup.value['reason']);
     this.applicationService.createApplication(applicationDto).subscribe({
       next: result => {
         this._isLoadingData = false;
@@ -114,23 +113,14 @@ export class OfferApplyComponent implements OnInit {
 
   private async submitUserContactData() {
     return firstValueFrom(
-      this.userService.patchVolunteerData(
-        this.loggedUser?.id!,
-        PatchUserDto.fromApplyFormVerification(this.contactFormGroup.value)
-      )
+      this.userService.patchVolunteerData(this.loggedUser?.id!, PatchUserDto.fromApplyFormVerification(this.contactFormGroup.value))
     );
   }
 
   private initializeContactFormData() {
     this.contactFormGroup = this.formBuilder.group({
-      contactEmail: [
-        this.loggedUser?.contactEmailAddress,
-        [Validators.required, Validators.email],
-      ],
-      phoneNumber: [
-        this.getFormNullableValue(this.loggedUser?.phoneNumber),
-        [Validators.minLength(1), Validators.maxLength(9)],
-      ],
+      contactEmail: [this.loggedUser?.contactEmailAddress, [Validators.required, Validators.email]],
+      phoneNumber: [this.getFormNullableValue(this.loggedUser?.phoneNumber), [Validators.minLength(1), Validators.maxLength(9)]],
     });
   }
 

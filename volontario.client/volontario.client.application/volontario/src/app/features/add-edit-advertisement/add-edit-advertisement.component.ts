@@ -125,6 +125,9 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
   }
 
   public onFormSubmit() {
+    if (!this.canSubmitForm) {
+      return;
+    }
     const advertisementDto = this.advertisementService.getAdvertisementDtoFromValue({
       ...this.basicInfoFormGroup.value,
       ...this.additionalInfoFormGroup.value,
