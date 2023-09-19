@@ -363,14 +363,8 @@ public class DtoService
                 .filter( aUserRole -> aUserRole.equals( UserRole.INSTITUTION_ADMIN ) ||
                         aUserRole.equals( UserRole.INSTITUTION_EMPLOYEE ) )
                 .findFirst().orElse( null );
-        final String roleName;
-        if( institutionRelatedRole == null )
-        {
-            roleName = null;
-        } else
-        {
-            roleName = institutionRelatedRole.getTranslatedRoleName();
-        }
+        final String roleName = institutionRelatedRole == null ? null :
+                institutionRelatedRole.getTranslatedRoleName();
         return InstitutionWorkerDto.builder()
                 .id( aUser.getId() )
                 .firstName( aUser.getFirstName() )
