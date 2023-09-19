@@ -1,9 +1,4 @@
-import {
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-} from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { TokenService } from '../service/security/token.service';
@@ -13,23 +8,12 @@ import { EndpointUrls } from 'src/app/utils/url.util';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationInterceptor implements HttpInterceptor {
-  constructor(
-    private tokenService: TokenService,
-    private authService: SecurityService,
-    private backendService: VolontarioRestService
-  ) {}
+  constructor(private tokenService: TokenService, private authService: SecurityService, private backendService: VolontarioRestService) {}
 
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const isLoggedIn = this.authService.isUserLoggedIn();
     const authHeader = `Bearer ${this.tokenService.getToken()}`;
-    if (
-      isLoggedIn &&
-      this.isEndpointAuthenticated(req.url) &&
-      this.isVolontarioApiUrl(req.url)
-    ) {
+    if (isLoggedIn && this.isEndpointAuthenticated(req.url) && this.isVolontarioApiUrl(req.url)) {
       req = req.clone({
         setHeaders: {
           Authorization: authHeader,

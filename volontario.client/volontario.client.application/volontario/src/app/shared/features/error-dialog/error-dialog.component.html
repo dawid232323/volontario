@@ -1,0 +1,38 @@
+<span>
+  <span class="flex flex-row items-center space-x-6">
+    <img
+      ngSrc="/assets/server_down.svg"
+      alt="Volontario error logo"
+      height="60"
+      width="100" />
+    <span class="font-bold text-2xl">{{ dialogTitle }}</span>
+  </span>
+</span>
+<mat-dialog-content>
+  <div class="flex flex-col pt-5">
+    <div class="flex flex-row space-x-2">
+      <span class="font-bold">Wiadomość błędu:</span>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <div class="flex flex-row space-x-2" *ngIf="!isNil(statusCode)">
+      <span class="font-bold">Kod błędu:</span>
+      <span>{{ statusCode }}</span>
+    </div>
+    <div class="flex flex-row space-x-2" *ngIf="!isNil(errorBody)">
+      <span class="font-bold">Szczegóły błędu:</span>
+      <pre>{{ errorBody | json }}</pre>
+    </div>
+    <div class="text-xl font-medium pt-5">
+      <span>{{ dialogMessage }}</span>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-dialog-close
+    mat-raised-button
+    color="primary"
+    class="hover:cursor-pointer hover:bg-btnAccentHoverPrimary">
+    Ok
+  </button>
+</mat-dialog-actions>

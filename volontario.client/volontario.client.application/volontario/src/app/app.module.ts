@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { AuthorizationInterceptor } from './core/interceptor/AuthorizationInterceptor';
-import { HttpErrorInterceptor } from './core/interceptor/HttpErrorInterceptor';
+import { AuthorizationInterceptor } from 'src/app/core/interceptor/Authorization.interceptor';
+import { HttpErrorInterceptor } from 'src/app/core/interceptor/HttpError.interceptor';
 import { SideBannerModule } from './shared/features/side-banner/side-banner.module';
 import { LoginModule } from './features/login/login.module';
 import { HomePageModule } from './features/home-page/home-page.module';
@@ -29,6 +29,8 @@ import { AdminUsersManagementModule } from './features/admin-users-management/ad
 import { InstitutionDetailsModule } from 'src/app/features/institution-details/institution-details.module';
 import { ManageDictValuesModule } from 'src/app/features/manage-dict-values/manage-dict-values.module';
 import { InstitutionEditModule } from 'src/app/features/institution-edit/institution-edit.module';
+import { ErrorDialogModule } from 'src/app/shared/features/error-dialog/error-dialog.module';
+import { VolontarioGlobalErrorHandlerInterceptor } from 'src/app/core/interceptor/VolontarioGlobalErrorHandler.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -59,6 +61,7 @@ import { InstitutionEditModule } from 'src/app/features/institution-edit/institu
     InstitutionDetailsModule,
     ManageDictValuesModule,
     InstitutionEditModule,
+    ErrorDialogModule,
   ],
   providers: [
     {
@@ -70,6 +73,10 @@ import { InstitutionEditModule } from 'src/app/features/institution-edit/institu
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true,
+    },
+    {
+      provide: ErrorHandler,
+      useClass: VolontarioGlobalErrorHandlerInterceptor,
     },
     { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
   ],
