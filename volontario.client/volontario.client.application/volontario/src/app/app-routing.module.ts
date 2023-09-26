@@ -18,6 +18,7 @@ import { VolunteerApplicationsListComponent } from 'src/app/features/volunteer-a
 import { adminRouting } from 'src/app/core/routing/admin.routing';
 import { institutionRouting } from 'src/app/core/routing/institution.routing';
 import { moderatorRouting } from 'src/app/core/routing/moderator.routing';
+import { userRouting } from 'src/app/core/routing/user.routing';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -83,6 +84,7 @@ const routes: Routes = [
   ...institutionRouting,
   ...adminRouting,
   ...moderatorRouting,
+  ...userRouting,
   { path: '**', pathMatch: 'full', redirectTo: 'home' },
 ];
 

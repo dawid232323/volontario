@@ -5,6 +5,7 @@ import {
   AdministrativeUserDetails,
   PatchUserDto,
   User,
+  UserProfile,
 } from 'src/app/core/model/user.model';
 import { isNil } from 'lodash';
 import { EndpointUrls } from 'src/app/utils/url.util';
@@ -48,6 +49,12 @@ export class UserService {
           return this.userData;
         })
       );
+  }
+
+  public getUserProfileDetails(userId: number): Observable<UserProfile> {
+    return this.restService
+      .get(EndpointUrls.userProfile.concat(`/${userId}`))
+      .pipe(map(result => UserProfile.fromPayload(result)));
   }
 
   public getAdministrativeUserDetails(

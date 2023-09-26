@@ -1,0 +1,115 @@
+<div class="flex flex-col space-y-6 my-6">
+  <mat-card>
+    <mat-card-title-group class="mat-card-header-avatar-right">
+      <img ngSrc="assets/coffee_avatar.svg" height="60" width="100" />
+      <mat-card-title>{{
+        userProfile?.firstName + ' ' + userProfile?.lastName
+      }}</mat-card-title>
+      <mat-card-subtitle>{{
+        userProfile?.userRoles?.join(', ')
+      }}</mat-card-subtitle>
+      <mat-card-subtitle
+        (click)="onInstitutionNameCLicked()"
+        class="hover:text-btnAccentHover hover:cursor-pointer"
+        *ngIf="!isNil(userProfile?.institutionName)"
+        >{{ userProfile?.institutionName }}</mat-card-subtitle
+      >
+    </mat-card-title-group>
+    <mat-card-content>
+      <div class="grid lg:grid-cols-2 grid-cols-1">
+        <div class="flex items-center flex-row py-3">
+          <div
+            class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+            <i class="fa-regular fa-envelope text-lg"></i>
+          </div>
+          <div class="flex justify-center flex-col px-2">
+            <p class="font-semibold text-base !m-0">Email kontaktowy</p>
+            <p class="text-bgPrimary font-bold text-sm !m-0">
+              {{ userProfile?.contactEmailAddress }}
+            </p>
+          </div>
+        </div>
+        <div
+          class="flex items-center flex-row py-3"
+          *ngIf="!isNil(userProfile?.domainEmailAddress)">
+          <div
+            class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+            <i class="fa-regular fa-envelope text-lg"></i>
+          </div>
+          <div class="flex justify-center flex-col px-2">
+            <p class="font-semibold text-base !m-0">Email uniwersytecki</p>
+            <p class="text-bgPrimary font-bold text-sm !m-0">
+              {{ userProfile?.domainEmailAddress }}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center flex-row py-3">
+          <div
+            class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+            <i class="fa-solid fa-phone text-lg"></i>
+          </div>
+          <div class="flex justify-center flex-col px-2">
+            <p class="font-semibold text-base !m-0">Numer telefonu</p>
+            <p class="text-bgPrimary font-bold text-sm !m-0">
+              {{ userProfile?.phoneNumber }}
+            </p>
+          </div>
+        </div>
+        <div
+          class="flex items-center flex-row py-3"
+          *ngIf="!isNil(userProfile?.experienceLevel?.name)">
+          <div
+            class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+            <i class="fa-solid fa-star text-lg"></i>
+          </div>
+          <div class="flex justify-center flex-col px-2">
+            <p class="font-semibold text-base !m-0">Poziom doświadczenia</p>
+            <p class="text-bgPrimary font-bold text-sm !m-0">
+              {{ userProfile?.experienceLevel?.name }}
+              <i
+                [matTooltip]="userProfile?.experienceLevel?.definition || ''"
+                class="fa-regular fa-circle-question hover:text-btnAccentHover"></i>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="grid grid-cols-1"
+        *ngIf="!isNil(userProfile?.participationMotivation)">
+        <div class="flex items-center flex-row py-3">
+          <div
+            class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+            <i class="fa-solid fa-message text-lg"></i>
+          </div>
+          <div class="flex justify-center flex-col px-2">
+            <p class="font-semibold text-base !m-0">
+              Motywacja do uczestnictwa
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center flex-row py-3">
+          <div class="flex justify-center flex-col px-2">
+            <p class="text-bgPrimary font-bold text-sm !m-0">
+              {{ userProfile?.participationMotivation }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card *ngIf="!isNil(userProfile?.interestCategories)">
+    <mat-card-title>Zainteresowania</mat-card-title>
+    <mat-card-content>
+      <div class="py-3">
+        <mat-chip-list>
+          <mat-chip
+            class="!bg-btnAccentPrimary text-xs md:text-base"
+            *ngFor="let category of userProfile?.interestCategories"
+            color="accent">
+            {{ category.name }}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

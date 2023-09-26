@@ -97,4 +97,18 @@ public class UserController
     {
         return this.userHandler.assignUserRoles( aUserId, aRoleIds );
     }
+
+    /**
+     * Returns data necessary to display user profile details.
+     *
+     * @param aUserId id of user to retrieve
+     *
+     * @return Response entity with profile data body or error status code.
+     */
+    @GetMapping( "/profile/{user_id}" )
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
+    public ResponseEntity< ? > getUserProfileDetails( @PathVariable( "user_id" ) final Long aUserId )
+    {
+        return this.userHandler.getUserProfileDetails( aUserId );
+    }
 }

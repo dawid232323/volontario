@@ -32,6 +32,7 @@ import { InstitutionEditModule } from 'src/app/features/institution-edit/institu
 import { ErrorDialogModule } from 'src/app/shared/features/error-dialog/error-dialog.module';
 import { VolontarioGlobalErrorHandlerInterceptor } from 'src/app/core/interceptor/VolontarioGlobalErrorHandler.interceptor';
 import { ManageInstitutionWorkersModule } from 'src/app/features/manage-institution-workers/manage-institution-workers.module';
+import { UserDetailsModule } from 'src/app/features/user-details/user-details.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -64,6 +65,7 @@ import { ManageInstitutionWorkersModule } from 'src/app/features/manage-institut
     InstitutionEditModule,
     ManageInstitutionWorkersModule,
     ErrorDialogModule,
+    UserDetailsModule,
   ],
   providers: [
     {

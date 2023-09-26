@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { NavComponent } from './nav.component';
 import { LogoModule } from '../logo/logo.module';
 import { RouterLink, RouterLinkWithHref } from '@angular/router';
@@ -15,6 +15,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatButtonModule,
     MatMenuModule,
     RouterLink,
+    NgOptimizedImage,
   ],
   exports: [NavComponent],
 })

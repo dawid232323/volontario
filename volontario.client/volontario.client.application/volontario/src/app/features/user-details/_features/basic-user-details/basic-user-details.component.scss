@@ -1,0 +1,11 @@
+::ng-deep .mat-card-header .mat-card-title-group{
+  flex-direction: row-reverse !important;
+}
+
+::ng-deep  .mat-card-avatar{
+  width: 10%;
+}
+
+::ng-deep  .mat-card-header-text{
+  width: 90%;
+}

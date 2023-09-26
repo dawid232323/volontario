@@ -125,10 +125,10 @@
             <div
               [matMenuTriggerFor]="menu"
               class="relative w-12 h-12 rounded-full flex items-center justify-center bg-bgWhite hover:bg-btnAccentHover transition">
-              <i class="fa-solid fa-user"></i>
+              <img ngSrc="assets/coffee_avatar.svg" height="60" width="100" />
             </div>
             <mat-menu #menu="matMenu">
-              <ul mat-menu-item>
+              <ul mat-menu-item (click)="onShowProfileCLick()">
                 <i class="fa-solid fa-address-card"></i>
                 Zobacz profil
               </ul>

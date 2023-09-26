@@ -18,6 +18,7 @@ import uam.volontario.dto.Offer.OfferTypeDto;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
 import uam.volontario.dto.user.InstitutionWorkerDto;
+import uam.volontario.dto.user.UserProfileDto;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
@@ -319,7 +320,7 @@ public class DtoService
                 volunteer.getLastName(), volunteer.getContactEmailAddress(),
                 volunteer.getVolunteerData().getDomainEmailAddress(), volunteer.getPhoneNumber(), experience,
                 aApplication.getParticipationMotivation(), interestCategories, offer, aApplication.isStarred(),
-                aApplication.getOffer().getContactPerson().getId(), aApplication.getDecisionReason() );
+                aApplication.getOffer().getContactPerson().getId(), aApplication.getDecisionReason(), volunteer.getId() );
     }
 
     /**
@@ -373,6 +374,45 @@ public class DtoService
                 .institutionName( aUser.getInstitution().getName() )
                 .role( roleName )
                 .build();
+    }
+
+    /**
+     * Converts user entity to the dto used for presenting basic user data.
+     *
+     * @param aUser entity that needs to be converted
+     *
+     * @return dto with all user information
+     */
+    public UserProfileDto getUserProfileDtoFromUser( final User aUser )
+    {
+        final List<String> userRoles = aUser.getUserRoles().stream()
+                .map( UserRole::getTranslatedRoleName )
+                .toList();
+        final UserProfileDto.UserProfileDtoBuilder userProfileDtoBuilder = UserProfileDto.builder()
+                .id( aUser.getId() )
+                .firstName( aUser.getFirstName() )
+                .lastName( aUser.getLastName() )
+                .contactEmailAddress( aUser.getContactEmailAddress() )
+                .phoneNumber( aUser.getPhoneNumber() )
+                .userRoles( userRoles );
+        if( aUser.getVolunteerData() != null )
+        {
+            final VolunteerData volunteerData = aUser.getVolunteerData();
+            userProfileDtoBuilder
+                    .experienceLevel(
+                        this.volunteerExperienceToDto( volunteerData.getExperience() ) )
+                    .domainEmailAddress( volunteerData.getDomainEmailAddress() )
+                    .interestCategories( volunteerData.getInterestCategories() )
+                    .participationMotivation( volunteerData.getParticipationMotivation() );
+        }
+        if( aUser.getInstitution() != null )
+        {
+            final Institution institution = aUser.getInstitution();
+            userProfileDtoBuilder
+                    .institutionId( institution.getId() )
+                    .institutionName( institution.getName() );
+        }
+        return userProfileDtoBuilder.build();
     }
 
     private BenefitDto benefitToDto( Benefit aBenefit )

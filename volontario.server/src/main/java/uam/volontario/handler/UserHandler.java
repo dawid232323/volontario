@@ -14,6 +14,7 @@ import uam.volontario.crud.service.UserService;
 import uam.volontario.crud.specification.UserSpecification;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
+import uam.volontario.dto.user.UserProfileDto;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.common.impl.UserSearchQuery;
@@ -130,6 +131,26 @@ public class UserHandler
                 .getAdmUserDetailsDtoFromUser( user );
         return ResponseEntity.status( HttpStatus.OK )
                 .body( userDetailsDto );
+    }
+
+    /**
+     * Retrieves desired user profile data
+     *
+     * @param aUserId primary key of user to retrieve
+     *
+     * @return response entity with status 200 and body of {@linkplain UserProfileDto}
+     *          or status 400 if user with given id does not exist
+     */
+    public ResponseEntity< ? > getUserProfileDetails( final Long aUserId )
+    {
+        final Optional< User > optionalUser = this.userService.tryToFindById( aUserId );
+        if ( optionalUser.isEmpty() )
+        {
+            return ResponseEntity.badRequest().body( "User with given id does not exist" );
+        }
+        final User user = optionalUser.get();
+        final UserProfileDto profileDto = this.dtoService.getUserProfileDtoFromUser( user );
+        return ResponseEntity.ok( profileDto );
     }
 
     private UserSearchQuery getUserSearchQuery( final List< Long > aRoleIds, final String aName,

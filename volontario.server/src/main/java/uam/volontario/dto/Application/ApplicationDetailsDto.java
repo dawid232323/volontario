@@ -28,4 +28,5 @@ public class ApplicationDetailsDto
     private boolean isStarred;
     private Long assignedPersonId;
     private String decisionReason;
+    private Long volunteerId;
 }

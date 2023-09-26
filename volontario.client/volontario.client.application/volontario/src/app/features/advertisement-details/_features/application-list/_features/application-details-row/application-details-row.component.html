@@ -3,6 +3,19 @@
   <div class="flex flex-row">
     <section class="flex flex-col basis-2/3 space-y-4">
       <div class="flex flex-col">
+        <p class="font-semibold text-base !m-0">Wolontariusz</p>
+        <p
+          (click)="onShowVolunteerDetails()"
+          class="text-bgPrimary font-bold text-sm !m-0 hover:text-btnAccentPrimary hover:cursor-pointer">
+          {{
+            applicationDetails?.firstName?.concat(
+              ' ',
+              applicationDetails?.lastName || ''
+            )
+          }}
+        </p>
+      </div>
+      <div class="flex flex-col">
         <p class="font-semibold text-base !m-0">Motywacja do uczestnictwa</p>
         <p class="text-bgPrimary font-bold text-sm !m-0">
           {{ applicationDetails?.participationMotivation }}
@@ -25,14 +38,26 @@
       <div
         *ngIf="applicationDetails?.state === ApplicationStateEnumName.Waiting"
         class="flex lg:flex-row flex-col justify-end lg:items-end items-baseline lg:space-x-3 space-x-0 space-y-3 lg:space-y-0">
-        <button (click)="onDeclineButtonClicked()" [disabled]="shouldDisableButtons" mat-raised-button class="hover:bg-btnWarnHover" color="warn">
+        <button
+          (click)="onDeclineButtonClicked()"
+          [disabled]="shouldDisableButtons"
+          mat-raised-button
+          class="hover:bg-btnWarnHover"
+          color="warn">
           Odrzuć
         </button>
-        <button (click)="onAcceptButtonClicked()" [disabled]="shouldDisableButtons" mat-raised-button class="hover:bg-btnAccentHover" color="accent">
+        <button
+          (click)="onAcceptButtonClicked()"
+          [disabled]="shouldDisableButtons"
+          mat-raised-button
+          class="hover:bg-btnAccentHover"
+          color="accent">
           Akceptuj
         </button>
       </div>
-      <div *ngIf="applicationDetails?.state !== ApplicationStateEnumName.Waiting" class="flex flex-col justify-center items-start space-x-3">
+      <div
+        *ngIf="applicationDetails?.state !== ApplicationStateEnumName.Waiting"
+        class="flex flex-col justify-center items-start space-x-3">
         <p class="font-semibold text-base !m-0">Status aplikacji</p>
         <p class="text-bgPrimary font-bold text-sm !m-0">
           {{ applicationDetails?.state }}
@@ -41,7 +66,9 @@
     </section>
   </div>
   <div class="flex flex-row w-full pt-5">
-    <section class="flex flex-row" *ngIf="applicationDetails?.state === ApplicationStateEnumName.Rejected">
+    <section
+      class="flex flex-row"
+      *ngIf="applicationDetails?.state === ApplicationStateEnumName.Rejected">
       <div class="flex flex-col">
         <p class="font-semibold text-base !m-0">Powód odrzucenia</p>
         <p class="text-bgPrimary font-bold text-sm !m-0">
@@ -53,9 +80,13 @@
   <div class="flex flex-col pt-5">
     <mat-divider></mat-divider>
     <section class="pt-3">
-      <p class="font-semibold text-base !m-0">Kategorie zainteresowań wolontariusza</p>
+      <p class="font-semibold text-base !m-0">
+        Kategorie zainteresowań wolontariusza
+      </p>
       <ul class="list-disc list-inside pt-1 space-y-2">
-        <li *ngFor="let category of applicationDetails?.interestCategories" class="text-xs md:text-base">
+        <li
+          *ngFor="let category of applicationDetails?.interestCategories"
+          class="text-xs md:text-base">
           {{ category.name }}
         </li>
       </ul>

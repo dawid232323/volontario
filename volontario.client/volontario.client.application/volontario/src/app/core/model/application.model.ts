@@ -41,7 +41,8 @@ export class ApplicationDetails {
     public offerInfo: AdvertisementPreview,
     public starred: boolean,
     public assignedPersonId: number,
-    public decisionReason: string
+    public decisionReason: string,
+    public volunteerId: number
   ) {}
 
   public static fromPayload(payload?: any): ApplicationDetails {
@@ -59,7 +60,8 @@ export class ApplicationDetails {
       AdvertisementPreview.fromPayload(payload?.offerInfo),
       payload?.starred,
       payload?.assignedPersonId,
-      payload?.decisionReason
+      payload?.decisionReason,
+      payload?.volunteerId
     );
   }
 }

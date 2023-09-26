@@ -1,0 +1,10 @@
+<main class="flex flex-col w-full items-center min-h-screen bg-gray-100">
+  <div class="flex flex-col justify-center lg:px-0 px-3 w-full lg:w-3/4 my-6">
+    <mat-tab-group color="accent">
+      <mat-tab label="Podstawowe dane">
+        <app-basic-user-details
+          [userProfile]="userProfile"></app-basic-user-details>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</main>

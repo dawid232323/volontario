@@ -6,6 +6,7 @@ import { User } from 'src/app/core/model/user.model';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { Subscription } from 'rxjs';
 import { AdvertisementService } from 'src/app/core/service/advertisement.service';
+import { isNil } from 'lodash';
 
 @Component({
   selector: 'app-nav',
@@ -24,7 +25,9 @@ export class NavComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   ngOnInit(): void {
-    this.subscriptions.add(this.authService.loginEvent.subscribe(this.downloadData.bind(this)));
+    this.subscriptions.add(
+      this.authService.loginEvent.subscribe(this.downloadData.bind(this))
+    );
     this.downloadData();
   }
 
@@ -58,6 +61,13 @@ export class NavComponent implements OnInit, OnDestroy {
 
   public routeToManageDictValues() {
     this.router.navigate(['moderator', 'manage-dict-values']);
+  }
+
+  public onShowProfileCLick() {
+    if (isNil(this.loggedUser)) {
+      return;
+    }
+    this.router.navigate(['user', this.loggedUser.id]);
   }
 
   protected readonly UserRoleEnum = UserRoleEnum;
