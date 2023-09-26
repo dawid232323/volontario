@@ -8,6 +8,9 @@ import { OfferApplicationService } from 'src/app/core/service/offer-application.
 import { firstValueFrom } from 'rxjs';
 import { OfferApplicationModelDto } from 'src/app/core/model/offerApplication.model';
 import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
+import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
+import { ErrorDialogInitialData } from 'src/app/shared/features/error-dialog/error-dialog.component';
+import { ApplicationStateCheck } from 'src/app/core/model/application.model';
 
 @Component({
   selector: 'app-offer-apply',
@@ -28,25 +31,34 @@ export class OfferApplyComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private applicationService: OfferApplicationService,
-    private router: Router
+    private router: Router,
+    private errorDialogService: ErrorDialogService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this._advertisementId = <number>this.route.snapshot.params['adv_id'];
     this.initializeContactFormData();
     this.initializePurposeFormData();
-    this.userService.getCurrentUserData().subscribe(user => {
-      this.loggedUser = user;
-      this.contactFormGroup.setValue(
-        {
-          contactEmail: user.contactEmailAddress,
-          phoneNumber: user.phoneNumber,
-        },
-        { emitEvent: true }
-      );
-      this.contactFormGroup.markAsUntouched();
-      this._isLoadingData = false;
-    });
+    const user = await firstValueFrom(this.userService.getCurrentUserData());
+    const stateCheck = await firstValueFrom(
+      this.applicationService.checkApplicationState(
+        user.id,
+        this._advertisementId
+      )
+    );
+    if (stateCheck.applied) {
+      await this.handleAppliedOffer(stateCheck);
+    }
+    this.loggedUser = user;
+    this.contactFormGroup.setValue(
+      {
+        contactEmail: user.contactEmailAddress,
+        phoneNumber: user.phoneNumber,
+      },
+      { emitEvent: true }
+    );
+    this.contactFormGroup.markAsUntouched();
+    this._isLoadingData = false;
   }
 
   public get offerId(): number {
@@ -81,7 +93,11 @@ export class OfferApplyComponent implements OnInit {
       this._isLoadingData = false;
       return;
     }
-    const applicationDto = OfferApplicationModelDto.fromApplyForm(this.loggedUser?.id!, this.offerId, this.reasonFormGroup.value['reason']);
+    const applicationDto = OfferApplicationModelDto.fromApplyForm(
+      this.loggedUser?.id!,
+      this.offerId,
+      this.reasonFormGroup.value['reason']
+    );
     this.applicationService.createApplication(applicationDto).subscribe({
       next: result => {
         this._isLoadingData = false;
@@ -96,16 +112,10 @@ export class OfferApplyComponent implements OnInit {
   }
 
   public onSuccessCardButtonClicked(button: SuccessInfoCardButtonEnum) {
-    if (button === SuccessInfoCardButtonEnum.Primary) {
-      this.onGoToApplicationDetails();
-    }
     if (button === SuccessInfoCardButtonEnum.Secondary) {
       this.onReturnToOfferDetails();
     }
   }
-
-  //TODO assign corresponding url when single application view is created
-  private onGoToApplicationDetails() {}
 
   private onReturnToOfferDetails() {
     return this.router.navigate(['/advertisement', this.offerId]);
@@ -113,14 +123,23 @@ export class OfferApplyComponent implements OnInit {
 
   private async submitUserContactData() {
     return firstValueFrom(
-      this.userService.patchVolunteerData(this.loggedUser?.id!, PatchUserDto.fromApplyFormVerification(this.contactFormGroup.value))
+      this.userService.patchVolunteerData(
+        this.loggedUser?.id!,
+        PatchUserDto.fromApplyFormVerification(this.contactFormGroup.value)
+      )
     );
   }
 
   private initializeContactFormData() {
     this.contactFormGroup = this.formBuilder.group({
-      contactEmail: [this.loggedUser?.contactEmailAddress, [Validators.required, Validators.email]],
-      phoneNumber: [this.getFormNullableValue(this.loggedUser?.phoneNumber), [Validators.minLength(1), Validators.maxLength(9)]],
+      contactEmail: [
+        this.loggedUser?.contactEmailAddress,
+        [Validators.required, Validators.email],
+      ],
+      phoneNumber: [
+        this.getFormNullableValue(this.loggedUser?.phoneNumber),
+        [Validators.minLength(1), Validators.maxLength(9)],
+      ],
     });
   }
 
@@ -135,5 +154,19 @@ export class OfferApplyComponent implements OnInit {
       return null;
     }
     return value;
+  }
+
+  private async handleAppliedOffer(stateCheck: ApplicationStateCheck) {
+    const initialData: ErrorDialogInitialData = {
+      error: new Error(
+        `Znaleziono istniejącą aplikację na dane ogłoszenie ze statusem ${stateCheck.state}`
+      ),
+      dialogTitle: 'Zaaplikowałeś już na to ogłoszenie',
+      dialogMessage: 'Wróć do listy ogłoszeń i wybierz coś innego',
+    };
+    await firstValueFrom(
+      this.errorDialogService.openDefaultErrorDialog(initialData).afterClosed()
+    );
+    return this.router.navigate(['advertisement', 'list']);
   }
 }
