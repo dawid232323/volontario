@@ -407,7 +407,8 @@ public class MailService
     {
         String content = Resources.toString(aUrl, StandardCharsets.UTF_8 );
         content = content.replaceAll( "\\|institutionName\\|", aInstitution.getName() );
-        content = content.replaceAll( "\\|krsNumber\\|", aInstitution.getKrsNumber() );
+        content = content.replaceAll( "\\|krsNumber\\|",
+                aInstitution.getKrsNumber() != null ? aInstitution.getKrsNumber() : "Brak" );
         content = content.replaceAll( "\\|headQuartersAddress\\|", aInstitution.getHeadquarters() );
         content = content.replaceAll( "\\|localization\\|", aInstitution.getLocalization() );
         content = content.replaceAll( "\\|description\\|", aInstitution.getDescription() );

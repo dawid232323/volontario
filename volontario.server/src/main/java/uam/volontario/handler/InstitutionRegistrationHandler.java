@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+
 /**
  * Handler class for {@linkplain Institution} related operations.
  */
@@ -228,8 +229,7 @@ public class InstitutionRegistrationHandler
                 if( !institution.isActive() )
                 {
                     return ResponseEntity.badRequest()
-                            .body( "Institution " + institution.getName() + " (KRS: " + institution.getKrsNumber() +
-                            ") is not yet accepted by system administrator." );
+                            .body( MessageGenerator.getInstitutionNotVerifiedMessage( institution ) );
                 }
 
                 final InstitutionContactPerson institutionContactPerson = institution.getInstitutionContactPerson();
@@ -303,8 +303,7 @@ public class InstitutionRegistrationHandler
                 if( !institution.isActive() )
                 {
                     return ResponseEntity.badRequest()
-                            .body( "Institution " + institution.getName() + " (KRS: " + institution.getKrsNumber() +
-                                    ") is not yet accepted by system administrator." );
+                            .body( MessageGenerator.getInstitutionNotVerifiedMessage( institution ) );
                 }
 
                 final String randomGeneratedPassword = "X" +
@@ -356,7 +355,7 @@ public class InstitutionRegistrationHandler
             else
             {
                 return ResponseEntity.badRequest( )
-                        .body( String.format( "No institution of id %o found", aInstitutionEmployeeDto.getInstitutionId() ) );
+                        .body( MessageGenerator.getInstutionNotFoundMessage( aInstitutionEmployeeDto.getInstitutionId() ) );
             }
         }
         catch ( Exception aE )
@@ -402,8 +401,7 @@ public class InstitutionRegistrationHandler
                 if ( !institution.isActive() )
                 {
                     return ResponseEntity.badRequest()
-                            .body( "Institution " + institution.getName() + " (KRS: " + institution.getKrsNumber() +
-                                    ") is not yet accepted by system administrator." );
+                            .body( MessageGenerator.getInstitutionNotVerifiedMessage( institution ) );
                 }
 
                 final String decodedContactEmail = VolontarioBase64Coder.decode( aRegistrationToken );
@@ -445,13 +443,13 @@ public class InstitutionRegistrationHandler
                 else
                 {
                     return  ResponseEntity.badRequest()
-                            .body( String.format( "No employee with contact email %s was found", decodedContactEmail ) );
+                            .body( MessageGenerator.getEmployeeWithMailNotFound( decodedContactEmail ) );
                 }
             }
             else
             {
                 return ResponseEntity.badRequest( )
-                        .body( String.format( "No institution of id %o found", aInstitutionId ) );
+                        .body( MessageGenerator.getInstutionNotFoundMessage( aInstitutionId ) );
             }
         }
         catch ( Exception aE )

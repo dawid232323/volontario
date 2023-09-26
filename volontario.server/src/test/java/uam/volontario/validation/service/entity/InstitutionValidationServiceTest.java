@@ -4,9 +4,11 @@ import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import uam.volontario.crud.service.InstitutionContactPersonService;
 import uam.volontario.crud.service.InstitutionService;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
@@ -19,12 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith( MockitoJUnitRunner.Silent.class )
-class InstitutionValidationServiceTest
+public class InstitutionValidationServiceTest
 {
-    @InjectMocks
-    InstitutionValidationService institutionValidationService;
     @Spy
     InstitutionService institutionService;
+    @Spy
+    InstitutionContactPersonService institutionContactPersonService;
+    @Mock
+    InstitutionContactPersonValidationService cpValidationService;
+    @InjectMocks
+    InstitutionValidationService institutionValidationService;
 
     @BeforeEach
     void init()
@@ -46,7 +52,27 @@ class InstitutionValidationServiceTest
 
         //when
         assertThatInstitutionServiceRepositoryIsEmpty();
-        ValidationResult validationResult = institutionValidationService.validateEntity(institution);
+        ValidationResult validationResult = institutionValidationService.validateEntity( institution );
+
+        //then
+        assertTrue( validationResult.isValidated() );
+    }
+
+    @Test
+    public void shouldValidateInstitutionWithoutKrs()
+    {
+        //given
+        InstitutionContactPerson contactPerson = new InstitutionContactPerson( 0L, null, "Test",
+                "Test", "000000000", "test@test.test");
+
+        Institution institution = new Institution(0L, "Name", "Desc", "HQ", "Loc",
+                null, Collections.emptyList(), Collections.emptyList(), contactPerson, null,
+                true, null, null );
+        contactPerson.setInstitution( institution );
+
+        //when
+        assertThatInstitutionServiceRepositoryIsEmpty();
+        ValidationResult validationResult = institutionValidationService.validateEntity( institution );
 
         //then
         assertTrue( validationResult.isValidated() );
@@ -72,7 +98,7 @@ class InstitutionValidationServiceTest
         //then
         assertFalse( validationResult.isValidated() );
         assertEquals( 1, validationResult.getValidationViolations().size() );
-        assertEquals( krs +  "belongs to already registered Institution.",
+        assertEquals( krs + " belongs to already registered Institution.",
                 validationResult.getValidationViolations().get( "krsNumber") );
     }
 

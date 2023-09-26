@@ -178,13 +178,13 @@ public class VolunteerHandler
                 else
                 {
                     return ResponseEntity.badRequest()
-                            .body( "User with id: " + aVolunteerId +  " is not a Volunteer." );
+                            .body( MessageGenerator.getVolunteerNotFoundMessage( aVolunteerId ) );
                 }
             }
             else
             {
                 return ResponseEntity.badRequest()
-                        .body( "No Volunteer found with id: " + aVolunteerId +  "." );
+                        .body( MessageGenerator.getUserNotFoundMessage( aVolunteerId ) );
             }
         }
         catch ( Exception aE )

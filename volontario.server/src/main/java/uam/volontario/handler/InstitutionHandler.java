@@ -68,14 +68,14 @@ public class InstitutionHandler
         if( institutionOptional.isEmpty() )
         {
             return ResponseEntity.badRequest()
-                    .body( "Institution with given id does not exist" );
+                    .body( MessageGenerator.getInstutionNotFoundMessage( aInstitutionId ) );
         }
 
         final Institution institution = institutionOptional.get();
         if( !institution.isActive() )
         {
             return ResponseEntity.badRequest()
-                    .body( "Institution with given id does not exist" );
+                    .body( MessageGenerator.getInstitutionNotActiveMessage( aInstitutionId ) );
         }
 
         return ResponseEntity.ok( dtoService
@@ -101,7 +101,7 @@ public class InstitutionHandler
         if( institutionOptional.isEmpty() )
         {
             return ResponseEntity.badRequest()
-                    .body( "Institution with given id does not exist" );
+                    .body( MessageGenerator.getInstutionNotFoundMessage( aInstitutionId ) );
         }
 
         Institution institution = institutionOptional.get();
@@ -183,8 +183,7 @@ public class InstitutionHandler
                 if ( !institution.isActive() )
                 {
                     return ResponseEntity.badRequest()
-                            .body( "Institution " + institution.getName() + " (KRS: " + institution.getKrsNumber() +
-                                    ") is not yet accepted by system administrator." );
+                            .body( MessageGenerator.getInstitutionNotVerifiedMessage( institution ) );
                 }
 
                 final Optional< User > optionalInstitutionWorker = userService.tryLoadEntity( aInstitutionWorkerId );
@@ -206,8 +205,7 @@ public class InstitutionHandler
                             .noneMatch( worker -> worker.equals( institutionWorker ) ) )
                     {
                         return ResponseEntity.badRequest()
-                                .body( String.format( "Institution worker of id %o does not belong to Institution of id %o", aInstitutionWorkerId,
-                                        aInstitutionId ) );
+                                .body( MessageGenerator.getInstitutionWorkerNotInInstitutionMessage( aInstitutionWorkerId, aInstitutionId ) );
                     }
 
                     institutionWorker.setRoles( roleService.findByNameIn( UserRole
@@ -220,11 +218,11 @@ public class InstitutionHandler
                 }
 
                 return  ResponseEntity.badRequest()
-                        .body( String.format( "No Institution worker with id %o was found", aInstitutionWorkerId ) );
+                        .body( MessageGenerator.getInstitutionWorkerNotFoundMessage( aInstitutionWorkerId ) );
             }
 
             return ResponseEntity.badRequest( )
-                    .body( String.format( "No Institution of id %o found", aInstitutionId ) );
+                    .body( MessageGenerator.getInstitutionNotFoundMessage( aInstitutionId ) );
         }
         catch ( Exception aE )
         {

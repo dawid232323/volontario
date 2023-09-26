@@ -23,7 +23,7 @@ export class RegisterInstitutionComponent implements OnInit {
   ngOnInit(): void {
     this.basicInfoFormGroup = this.formBuilder.group({
       institutionName: [null, [Validators.required, Validators.maxLength(50)]],
-      krsNumber: [null, [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')]],
+      krsNumber: [null, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')]],
       address: [null, [Validators.required]],
       registerPersonName: [null, [Validators.required]],
       registerPersonLastName: [null, [Validators.required]],

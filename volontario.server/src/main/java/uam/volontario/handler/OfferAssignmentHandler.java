@@ -83,7 +83,7 @@ public class OfferAssignmentHandler
                     else
                     {
                         return ResponseEntity.badRequest()
-                                .body( "No offer of id: " + aOfferId + "." );
+                                .body( MessageGenerator.getOfferNotFoundMessage( aOfferId ) );
                     }
                 }
                 else
@@ -95,7 +95,7 @@ public class OfferAssignmentHandler
             else
             {
                 return ResponseEntity.badRequest()
-                        .body( "No moderator of id: " + aModeratorId + "." );
+                        .body( MessageGenerator.getModeratorNotFoundMessage( aModeratorId ) );
             }
         }
         catch ( Exception aE )
@@ -139,7 +139,7 @@ public class OfferAssignmentHandler
             else
             {
                 return ResponseEntity.badRequest()
-                        .body( "No moderator of id: " + aModeratorId + ".");
+                        .body( MessageGenerator.getModeratorNotFoundMessage( aModeratorId ) );
             }
         }
         catch ( Exception aE )

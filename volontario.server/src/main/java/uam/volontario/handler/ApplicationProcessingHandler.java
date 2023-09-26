@@ -21,7 +21,6 @@ import uam.volontario.security.mail.MailService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.ApplicationValidationService;
 
-import javax.swing.text.html.Option;
 import java.util.Map;
 import java.util.Optional;
 
@@ -94,12 +93,12 @@ public class ApplicationProcessingHandler
             if( optionalUser.isEmpty() )
             {
                 return ResponseEntity.badRequest()
-                        .body( "User of id " + aDto.getVolunteerId() + " not found." );
+                        .body( MessageGenerator.getUserNotFoundMessage( aDto ) );
             }
             else if( optionalOffer.isEmpty() )
             {
                 return ResponseEntity.badRequest()
-                        .body( "Offer of id " + aDto.getOfferId() + " not found." );
+                        .body( MessageGenerator.getOfferNotFoundMessage( aDto ) );
             }
 
             final Application application = Application.builder()
@@ -167,7 +166,7 @@ public class ApplicationProcessingHandler
             else
             {
                 return ResponseEntity.badRequest()
-                        .body( "Application with id " + aApplicationId + " was not found." );
+                        .body( MessageGenerator.getApplicationNotFoundMessage( aApplicationId ) );
             }
         }
         catch ( Exception aE )
@@ -238,7 +237,7 @@ public class ApplicationProcessingHandler
             else
             {
                 return ResponseEntity.badRequest()
-                        .body( "Application with id " + aApplicationId + " was not found." );
+                        .body( MessageGenerator.getApplicationNotFoundMessage( aApplicationId ) );
             }
         }
         catch ( Exception aE )
@@ -292,13 +291,13 @@ public class ApplicationProcessingHandler
             if ( offer.isEmpty())
             {
                 return ResponseEntity.badRequest()
-                        .body( "Offer with id " + offerId + " was not found." );
+                        .body( MessageGenerator.getOfferNotFoundMessage( offerId ) );
             }
             Optional< User > volunteer = userService.tryLoadEntity( volunteerId );
             if ( volunteer.isEmpty() )
             {
                 return ResponseEntity.badRequest()
-                        .body( "Volunteer with id " + volunteerId + " was not found." );
+                        .body( MessageGenerator.getVolunteerNotFoundMessage( volunteerId ) );
             }
 
             ApplicationSearchQuery query = new ApplicationSearchQuery( null, null, offerId, volunteerId, null );
@@ -332,7 +331,7 @@ public class ApplicationProcessingHandler
                 return ResponseEntity.ok( dtoService.createApplicationDetailsDto( application.get() ) );
             }
             return ResponseEntity.status( HttpStatus.NOT_FOUND )
-                    .body( "Application of id " + aApplicationId + " not found" );
+                    .body( MessageGenerator.getApplicationNotFoundMessage( aApplicationId ) );
         }
         catch ( Exception aE)
         {

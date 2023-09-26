@@ -38,14 +38,20 @@ public class InstitutionValidationService extends AbstractValidationService< Ins
     @Override
     protected void validateEntityByCustomConstraints( final Institution aInstitution )
     {
-        final List< Institution > allInstitutions = institutionService.loadAllEntities();
+        if ( aInstitution.getKrsNumber() != null )
+        {
+            final List< Institution > allInstitutions = institutionService.loadAllEntities();
 
-        allInstitutions.stream()
-                .map( Institution::getKrsNumber )
-                .filter( krs -> aInstitution.getKrsNumber().equals( krs ) )
-                .findAny()
-                .ifPresent( krs -> validationViolations.put( "krsNumber",
-                        krs + " belongs to already registered Institution." ) );
+            if ( aInstitution.getKrsNumber() != null )
+            {
+                allInstitutions.stream()
+                    .map( Institution::getKrsNumber )
+                    .filter( krs -> aInstitution.getKrsNumber().equals( krs ) )
+                    .findAny()
+                    .ifPresent( krs -> validationViolations.put("krsNumber",
+                            krs + " belongs to already registered Institution." ) );
+            }
+        }
 
         institutionContactPersonValidationService.validateEntity( aInstitution.getInstitutionContactPerson() );
     }

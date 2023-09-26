@@ -216,12 +216,12 @@ public class CrudOfferDataHandler
     {
         try
         {
-            Optional<Offer> offer = offerService.tryLoadEntity(aId);
+            Optional<Offer> offer = offerService.tryLoadEntity( aId );
             if ( offer.isPresent() )
             {
                 return ResponseEntity.ok( dtoService.createOfferDetailsDto( offer.get() ) );
             }
-            return ResponseEntity.status( HttpStatus.NOT_FOUND ).body( "Offer of id " + aId + " not found" );
+            return ResponseEntity.status( HttpStatus.NOT_FOUND ).body( MessageGenerator.getOfferNotFoundMessage( aId ) );
         }
         catch ( Exception aE )
         {
@@ -240,7 +240,7 @@ public class CrudOfferDataHandler
             optionalOfferToUpdate = this.offerService.tryLoadEntity( aOfferId );
             if ( optionalOfferToUpdate.isEmpty() )
             {
-                return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( "Offer with given id does not exist" );
+                return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( MessageGenerator.getOfferNotFoundMessage( aOfferId ) );
             }
             offerToUpdate = optionalOfferToUpdate.get();
         } catch ( Exception aException )

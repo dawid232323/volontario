@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.LoginDto;
+import uam.volontario.handler.MessageGenerator;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.rest.VolunteerController;
 import uam.volontario.security.jwt.JWTService;
@@ -77,8 +78,7 @@ public class SecurityController
             if( user.isEmpty() )
             {
                 return ResponseEntity.badRequest()
-                        .body( "No user with phone number/contact email " + aDto.getLogin()
-                                + " is registered in the system." );
+                        .body( MessageGenerator.getLoginNotInSystemMessage( aDto.getLogin() ) );
             }
 
             if( !user.get().isAccountNonLocked() )
@@ -90,8 +90,7 @@ public class SecurityController
             if( !passwordEncoder.matches( aDto.getPassword(), user.get().getHashedPassword() ) )
             {
                 return ResponseEntity.badRequest()
-                        .body( "Wrong password for user registered with phone number/contact email "
-                                + aDto.getLogin() + "." );
+                        .body( MessageGenerator.getWrongPasswordMessage( aDto.getLogin() ) );
             }
             LOGGER.debug( "User with phone number/contact email {} has logged on", aDto.getLogin() );
             return ResponseEntity.ok( jwtService.createMainTokenAndRefreshToken( user.get() ) );

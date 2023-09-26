@@ -2,6 +2,7 @@ package uam.volontario.model.institution.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -46,6 +47,7 @@ public class Institution implements VolontarioDomainElementIf
     @NotBlank( message = "Localization of institution must be defined." )
     private String localization;
 
+    @Nullable
     @Pattern( regexp = "\\d{10}", message = "Wrong format of KRS number" )
     private String krsNumber;
 
@@ -79,7 +81,7 @@ public class Institution implements VolontarioDomainElementIf
     public int hashCode()
     {
         return new HashCodeBuilder()
-                .append( krsNumber )
+                .append( id )
                 .toHashCode();
     }
 
@@ -89,7 +91,7 @@ public class Institution implements VolontarioDomainElementIf
         if( aObj instanceof Institution institution )
         {
             return new EqualsBuilder()
-                    .append( this.krsNumber, institution.krsNumber )
+                    .append( this.id, institution.id )
                     .isEquals();
         }
         return false;
