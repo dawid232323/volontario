@@ -15,7 +15,7 @@
             <nav aria-label="Site Nav">
               <ul
                 *ngIf="loggedUser?.hasUserRoles([UserRoleEnum.Volunteer])"
-                class="flex items-center gap-6 text-sm">
+                class="flex items-center gap-6 text-sm navbar-list">
                 <li>
                   <a
                     class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
@@ -45,7 +45,7 @@
                     UserRoleEnum.InstitutionAdmin
                   ])
                 "
-                class="flex items-center gap-6 text-sm">
+                class="flex items-center gap-6 text-sm navbar-list">
                 <li>
                   <a
                     class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
@@ -77,7 +77,7 @@
                 </li>
               </ul>
               <ul
-                class="flex items-center gap-6 text-sm"
+                class="flex items-center gap-6 text-sm navbar-list"
                 *ngIf="
                   loggedUser?.hasUserRoles([
                     UserRoleEnum.Moderator,
@@ -128,17 +128,18 @@
               <img ngSrc="assets/coffee_avatar.svg" height="60" width="100" />
             </div>
             <mat-menu #menu="matMenu">
-              <ul mat-menu-item (click)="onShowProfileCLick()">
+              <ul mat-menu-item (click)="onShowProfileCLick()" class='navbar-list'>
                 <i class="fa-solid fa-address-card"></i>
                 Zobacz profil
               </ul>
-              <ul mat-menu-item (click)="onLogout()">
+              <ul mat-menu-item (click)="onLogout()" class="navbar-list">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 Wyloguj się
               </ul>
             </mat-menu>
             <mat-menu #adminMenu="matMenu">
               <ul
+                class="navbar-list"
                 (click)="routeToAdminUsers()"
                 mat-menu-item
                 *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
@@ -147,7 +148,10 @@
               </ul>
             </mat-menu>
             <mat-menu #moderatorMenu="matMenu">
-              <ul mat-menu-item (click)="routeToManageDictValues()">
+              <ul
+                mat-menu-item
+                (click)="routeToManageDictValues()"
+                class="navbar-list">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 Zarządzaj wartościami słownikowymi
               </ul>
@@ -206,6 +210,7 @@
       </a>
       <mat-menu #menuMobile="matMenu">
         <ul
+          class="navbar-list"
           *ngIf="loggedUser?.hasUserRoles([UserRoleEnum.Moderator])"
           mat-menu-item
           (click)="routeToManageDictValues()">
@@ -213,16 +218,17 @@
           Zarządzaj wartościami słownikowymi
         </ul>
         <ul
+          class="navbar-list"
           mat-menu-item
           *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)">
           <i class="fa-solid fa-address-card"></i>
           Twoje aplikacje
         </ul>
-        <ul mat-menu-item>
+        <ul class="navbar-list" mat-menu-item>
           <i class="fa-solid fa-address-card"></i>
           Zobacz profil
         </ul>
-        <ul mat-menu-item (click)="onLogout()">
+        <ul mat-menu-item (click)="onLogout()" class="!navbar-list">
           <i class="fa-solid fa-right-from-bracket"></i>
           Wyloguj się
         </ul>

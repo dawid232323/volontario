@@ -39,8 +39,8 @@ public class Offer implements OfferIf
     @Size( max = 100, message = "Offer title cannot be longer than 100 characters" )
     private String title;
 
-    @Column( length = 500 )
-    @Size( max = 500, message = "Offer description must be 500 characters long at most." )
+    @Column( length = 3000 )
+    @Size( max = 3000, message = "Offer description must be 500 characters long at most." )
     private String description;
 
     @JsonManagedReference

@@ -11,6 +11,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 @NgModule({
   declarations: [AdvertisementAdditionalInfoComponent],
@@ -26,6 +27,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSlideToggleModule,
     MatInputModule,
     MatTooltipModule,
+    AngularEditorModule,
   ],
   exports: [AdvertisementAdditionalInfoComponent],
 })

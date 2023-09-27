@@ -4,6 +4,10 @@ import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.mod
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { isNil } from 'lodash';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import {
+  defaultAngularEditorConfig,
+  DefaultAngularEditorConfigProvider,
+} from 'src/app/utils/angular-editor.const';
 
 @Component({
   selector: 'app-advertisement-additional-info',
@@ -38,6 +42,7 @@ export class AdvertisementAdditionalInfoComponent implements OnInit {
     }
   }
 
-  protected readonly console = console;
   protected readonly isNil = isNil;
+  protected readonly defaultAngularEditorConfig =
+    new DefaultAngularEditorConfigProvider().config;
 }

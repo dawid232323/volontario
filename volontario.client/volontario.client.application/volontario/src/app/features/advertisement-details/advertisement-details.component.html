@@ -154,15 +154,15 @@
       <mat-card class="my-8">
         <mat-card-title><h1>Opis</h1></mat-card-title>
         <mat-divider></mat-divider>
-        <mat-card-content class="py-3">{{
-          advertisementData?.offerDescription
-        }}</mat-card-content>
+        <mat-card-content
+          class="py-3"
+          [innerHTML]="advertisementData?.offerDescription"></mat-card-content>
       </mat-card>
 
       <mat-card
         *ngIf="
           !isNil(advertisementData?.periodicDescription) &&
-          advertisementData?.periodicDescription !== ''
+          advertisementData?.periodicDescription.trim() !== ''
         "
         class="my-8">
         <mat-card-title><h1>Opis cykliczności</h1></mat-card-title>

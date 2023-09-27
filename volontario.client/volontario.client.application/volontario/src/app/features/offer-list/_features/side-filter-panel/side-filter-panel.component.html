@@ -2,7 +2,7 @@
   class="flex flex-col bg-white lg:shadow-md lg:rounded-xl lg:border-2 lg:border-gray-200">
   <section id="interest-categories-section" class="py-4 px-4">
     <h2>Kategorie ogłoszeń</h2>
-    <ul>
+    <ul class="list-none">
       <li
         (click)="onAddRemoveSelectedCategory(interestCategory)"
         *ngFor="let interestCategory of interestCategories"
@@ -21,7 +21,7 @@
   </section>
   <section id="offer-type-section" class="py-4 px-4">
     <h2>Typy ogłoszeń</h2>
-    <ul>
+    <ul class="list-none">
       <li
         (click)="onAddRemoveSelectedType(offerType)"
         *ngFor="let offerType of offerTypes"

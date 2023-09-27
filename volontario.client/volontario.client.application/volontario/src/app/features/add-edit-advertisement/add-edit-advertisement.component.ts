@@ -16,7 +16,10 @@ import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { dateBeforeAfterValidator, DateValidatorUsageEnum } from 'src/app/utils/validator.utils';
+import {
+  dateBeforeAfterValidator,
+  DateValidatorUsageEnum,
+} from 'src/app/utils/validator.utils';
 import { ViewportScroller } from '@angular/common';
 import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
 import { OfferBenefitService } from 'src/app/core/service/offer-benefit.service';
@@ -43,7 +46,8 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
   public interestCategories: InterestCategoryDTO[] = [];
   public experienceLevel: VolunteerExperience[] = [];
   public advertisementBenefits: AdvertisementBenefit[] = [];
-  public operationType: AdvertisementCrudOperationType = AdvertisementCrudOperationType.Add;
+  public operationType: AdvertisementCrudOperationType =
+    AdvertisementCrudOperationType.Add;
 
   public isAddingAdvertisement = false;
   public hasAddedAdvertisement = false;
@@ -67,7 +71,9 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.operationType = this.route.snapshot.data['operationType'];
-    this.advertisementService.addAdvertisementReloadEvent.subscribe(this.onFormReloadEvent.bind(this));
+    this.advertisementService.addAdvertisementReloadEvent.subscribe(
+      this.onFormReloadEvent.bind(this)
+    );
     this.initializeBasicInfoFormGroup();
     this.initializeAdditionalInfoFormGroup();
     this.initializeOptionalInfoFormGroup();
@@ -91,8 +97,16 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
       },
       {
         validators: [
-          dateBeforeAfterValidator(DateValidatorUsageEnum.Before, 'startDate', 'endDate'),
-          dateBeforeAfterValidator(DateValidatorUsageEnum.After, 'expirationDate', 'endDate'),
+          dateBeforeAfterValidator(
+            DateValidatorUsageEnum.Before,
+            'startDate',
+            'endDate'
+          ),
+          dateBeforeAfterValidator(
+            DateValidatorUsageEnum.After,
+            'expirationDate',
+            'endDate'
+          ),
         ],
       }
     );
@@ -102,7 +116,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
       advertisementCategories: [[], [Validators.required]],
       isExperienceRequired: [false, []],
       experienceLevel: [null],
-      description: [null, [Validators.maxLength(300)]],
+      description: [null, [Validators.maxLength(3000)]],
     });
   }
   private initializeOptionalInfoFormGroup() {
@@ -121,24 +135,33 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
   }
 
   public get canSubmitForm(): boolean {
-    return this.basicInfoFormGroup.valid && this.additionalInfoFormGroup.valid && this.optionalInfoFormGroup.valid;
+    return (
+      this.basicInfoFormGroup.valid &&
+      this.additionalInfoFormGroup.valid &&
+      this.optionalInfoFormGroup.valid
+    );
   }
 
   public onFormSubmit() {
     if (!this.canSubmitForm) {
       return;
     }
-    const advertisementDto = this.advertisementService.getAdvertisementDtoFromValue({
-      ...this.basicInfoFormGroup.value,
-      ...this.additionalInfoFormGroup.value,
-      ...this.optionalInfoFormGroup.value,
-    });
+    const advertisementDto =
+      this.advertisementService.getAdvertisementDtoFromValue({
+        ...this.basicInfoFormGroup.value,
+        ...this.additionalInfoFormGroup.value,
+        ...this.optionalInfoFormGroup.value,
+      });
     this.isAddingAdvertisement = true;
     let advertisementCrudCallback;
     if (this.operationType === AdvertisementCrudOperationType.Add) {
-      advertisementCrudCallback = this.advertisementService.createNewAdvertisement(advertisementDto);
+      advertisementCrudCallback =
+        this.advertisementService.createNewAdvertisement(advertisementDto);
     } else {
-      advertisementCrudCallback = this.advertisementService.updateAdvertisement(this.currentOfferId, advertisementDto);
+      advertisementCrudCallback = this.advertisementService.updateAdvertisement(
+        this.currentOfferId,
+        advertisementDto
+      );
     }
 
     advertisementCrudCallback.subscribe({
@@ -168,21 +191,35 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
 
   private setAdvertisementToEdit() {
     this.currentOfferId = +this.route.snapshot.params['adv_id'];
-    this.advertisementService.getAdvertisement(this.currentOfferId).subscribe(result => {
-      this.basicInfoFormGroup.setValue(AdvertisementBasicInfo.fromAdvertisementDto(result));
-      this.additionalInfoFormGroup.setValue(AdvertisementAdditionalInfo.fromAdvertisementDto(result));
-      this.optionalInfoFormGroup.setValue(AdvertisementOptionalInfo.fromAdvertisementDto(result));
-      this.basicInfoFormGroup.updateValueAndValidity();
-      this.additionalInfoFormGroup.updateValueAndValidity();
-      this.optionalInfoFormGroup.updateValueAndValidity();
-      this.basicInfoFormGroup.controls['advertisementType'].updateValueAndValidity({ onlySelf: true, emitEvent: true });
-      this.optionalInfoFormGroup.controls['isPoznanOnly'].updateValueAndValidity({ onlySelf: true, emitEvent: true });
-      this.isAddingAdvertisement = false;
-    });
+    this.advertisementService
+      .getAdvertisement(this.currentOfferId)
+      .subscribe(result => {
+        this.basicInfoFormGroup.setValue(
+          AdvertisementBasicInfo.fromAdvertisementDto(result)
+        );
+        this.additionalInfoFormGroup.setValue(
+          AdvertisementAdditionalInfo.fromAdvertisementDto(result)
+        );
+        this.optionalInfoFormGroup.setValue(
+          AdvertisementOptionalInfo.fromAdvertisementDto(result)
+        );
+        this.basicInfoFormGroup.updateValueAndValidity();
+        this.additionalInfoFormGroup.updateValueAndValidity();
+        this.optionalInfoFormGroup.updateValueAndValidity();
+        this.basicInfoFormGroup.controls[
+          'advertisementType'
+        ].updateValueAndValidity({ onlySelf: true, emitEvent: true });
+        this.optionalInfoFormGroup.controls[
+          'isPoznanOnly'
+        ].updateValueAndValidity({ onlySelf: true, emitEvent: true });
+        this.isAddingAdvertisement = false;
+      });
   }
 
   private async downloadData() {
-    const loggedUser = await firstValueFrom(this.userService.getCurrentUserData());
+    const loggedUser = await firstValueFrom(
+      this.userService.getCurrentUserData()
+    );
     const loggedWorker = InstitutionWorker.fromUser(loggedUser);
     const sources = {
       workers: of([loggedWorker]),
@@ -194,11 +231,21 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
     if (loggedUser.hasUserRoles([UserRoleEnum.Moderator, UserRoleEnum.Admin])) {
       sources.workers = this.institutionService.getAllInstitutionWorkers();
     } else if (loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin)) {
-      sources.workers = this.institutionService.getInstitutionWorkers(loggedUser.institution!.id!);
+      sources.workers = this.institutionService.getInstitutionWorkers(
+        loggedUser.institution!.id!
+      );
     }
     forkJoin(sources).subscribe(
-      ({ workers: workers, advertisementTypes: types, categories: categories, experiences: experiences, benefits: benefits }) => {
-        this.institutionWorkers = workers.sort((a, b) => a.firstName.localeCompare(b.firstName));
+      ({
+        workers: workers,
+        advertisementTypes: types,
+        categories: categories,
+        experiences: experiences,
+        benefits: benefits,
+      }) => {
+        this.institutionWorkers = workers.sort((a, b) =>
+          a.firstName.localeCompare(b.firstName)
+        );
         this.advertisementTypes = types;
         this.interestCategories = categories;
         this.experienceLevel = experiences;
@@ -209,7 +256,10 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
         } else {
           this.setAdvertisementToEdit();
         }
-        this.canSelectUser = this.institutionService.canManageInstitution(loggedUser, loggedUser.institution);
+        this.canSelectUser = this.institutionService.canManageInstitution(
+          loggedUser,
+          loggedUser.institution
+        );
       },
       error => console.log(error)
     );
@@ -223,11 +273,17 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
   }
 
   private setOfferUser(loggedUser: User) {
-    if (this.institutionWorkers.map(worker => worker.id).includes(loggedUser.id)) {
+    if (
+      this.institutionWorkers.map(worker => worker.id).includes(loggedUser.id)
+    ) {
       // default contact person should be currently logged-in user
-      this.basicInfoFormGroup?.controls['contactPerson']?.setValue(loggedUser.id);
+      this.basicInfoFormGroup?.controls['contactPerson']?.setValue(
+        loggedUser.id
+      );
     } else {
-      this.basicInfoFormGroup?.controls['contactPerson']?.setValue(this.institutionWorkers[0].id);
+      this.basicInfoFormGroup?.controls['contactPerson']?.setValue(
+        this.institutionWorkers[0].id
+      );
     }
   }
 

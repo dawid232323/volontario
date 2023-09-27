@@ -369,7 +369,7 @@ ALTER SEQUENCE public.offer_types_id_seq OWNED BY public.offer_types.id;
 
 CREATE TABLE public.offers (
                                id bigint NOT NULL,
-                               description character varying(500),
+                               description character varying(3000),
                                end_date timestamp(6) with time zone,
                                expiration_date timestamp(6) with time zone,
                                is_experience_required boolean,
