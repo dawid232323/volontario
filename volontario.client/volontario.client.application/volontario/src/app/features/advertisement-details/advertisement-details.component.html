@@ -162,7 +162,7 @@
       <mat-card
         *ngIf="
           !isNil(advertisementData?.periodicDescription) &&
-          advertisementData?.periodicDescription.trim() !== ''
+          advertisementData?.periodicDescription?.trim() !== ''
         "
         class="my-8">
         <mat-card-title><h1>Opis cykliczności</h1></mat-card-title>
