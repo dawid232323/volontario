@@ -26,9 +26,11 @@ export class EndpointUrls {
   public static readonly institutionRegisterEmployee =
     EndpointUrls.institutionResource.concat('/register-employee');
   public static readonly userData: string = '/userData';
+
   public static getInstitutionVerify(operationType: VerifyType) {
     return this.institutionResource.concat('/', operationType);
   }
+
   public static readonly advertisementResource = '/offer';
   public static readonly advertisementDetails =
     EndpointUrls.advertisementResource.concat('/details');
@@ -103,6 +105,12 @@ export class EndpointUrls {
     if (operationType === ApplicationActionTypeEnum.Accept) {
       return EndpointUrls.offerApplicationResource.concat(
         '/accept',
+        `/${applicationId}`
+      );
+    }
+    if (operationType === ApplicationActionTypeEnum.Reserve_list) {
+      return EndpointUrls.offerApplicationResource.concat(
+        '/reserve-list',
         `/${applicationId}`
       );
     }

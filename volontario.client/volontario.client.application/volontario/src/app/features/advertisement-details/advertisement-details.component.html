@@ -1,6 +1,10 @@
 <main class="min-h-screen max-w-screen-lg mx-auto pt-16 flex flex-col">
   <div>
-    <button mat-raised-button class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5" (click)="onGoBackToOfferListButtonClicked()" color="accent">
+    <button
+      mat-raised-button
+      class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5"
+      (click)="onGoBackToOfferListButtonClicked()"
+      color="accent">
       <mat-icon matPrefix>arrow_back</mat-icon>
       Wróć do listy ogłoszeń
     </button>
@@ -44,7 +48,8 @@
         <mat-card-content class="py-3">
           <div class="w-full grid grid-cols-1 md:grid-cols-2">
             <div class="flex items-center flex-row py-3">
-              <div class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <div
+                class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
                 <i class="fa-solid fa-calendar-day text-lg"></i>
               </div>
               <div class="flex justify-center flex-col px-2">
@@ -55,7 +60,8 @@
               </div>
             </div>
             <div class="flex items-center flex-row py-3">
-              <div class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <div
+                class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
                 <i class="fa-solid fa-calendar-day text-lg"></i>
               </div>
               <div class="flex justify-center flex-col px-2">
@@ -66,33 +72,46 @@
               </div>
             </div>
             <div class="flex items-center flex-row py-3">
-              <div class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <div
+                class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
                 <i class="fa-solid fa-hand-point-up text-lg"></i>
               </div>
               <div class="flex justify-center flex-col px-2">
                 <p class="font-semibold text-base !m-0">Poziom doświadczenia</p>
                 <p class="text-bgPrimary font-bold text-sm !m-0">
-                  {{ !advertisementData?.isExperienceRequired ? 'Każdy poziom doświadczenia' : advertisementData?.experienceLevel?.name }}
+                  {{
+                    !advertisementData?.isExperienceRequired
+                      ? 'Każdy poziom doświadczenia'
+                      : advertisementData?.experienceLevel?.name
+                  }}
                   <i
                     *ngIf="advertisementData?.isExperienceRequired"
-                    [matTooltip]="advertisementData?.experienceLevel?.definition || ''"
+                    [matTooltip]="
+                      advertisementData?.experienceLevel?.definition || ''
+                    "
                     class="fa-regular fa-circle-question hover:text-btnAccentHover"></i>
                 </p>
               </div>
             </div>
             <div class="flex items-center flex-row py-3">
-              <div class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <div
+                class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
                 <i class="fa-solid fa-location-dot text-lg"></i>
               </div>
               <div class="flex justify-center flex-col px-2">
                 <p class="font-semibold text-base !m-0">Miejsce wydarzenia</p>
                 <p class="text-bgPrimary font-bold text-sm !m-0">
-                  {{ advertisementData?.isPoznanOnly ? 'Poznań' : advertisementData?.offerPlace }}
+                  {{
+                    advertisementData?.isPoznanOnly
+                      ? 'Poznań'
+                      : advertisementData?.offerPlace
+                  }}
                 </p>
               </div>
             </div>
             <div class="flex items-center flex-row py-3">
-              <div class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <div
+                class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
                 <i class="fa-solid fa-calendar-check text-lg"></i>
               </div>
               <div class="flex justify-center flex-col px-2">
@@ -103,7 +122,8 @@
               </div>
             </div>
             <div class="flex items-center flex-row py-3">
-              <div class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+              <div
+                class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
                 <i class="fa-solid fa-calendar-xmark text-lg"></i>
               </div>
               <div class="flex justify-center flex-col px-2">
@@ -122,9 +142,11 @@
         <mat-divider></mat-divider>
         <mat-card-content class="py-3">
           <mat-chip-list>
-            <mat-chip *ngFor="let category of advertisementData?.interestCategories" class="!bg-btnAccentHover text-xs md:text-base">{{
-              category.name
-            }}</mat-chip>
+            <mat-chip
+              *ngFor="let category of advertisementData?.interestCategories"
+              class="!bg-btnAccentHover text-xs md:text-base"
+              >{{ category.name }}</mat-chip
+            >
           </mat-chip-list>
         </mat-card-content>
       </mat-card>
@@ -132,13 +154,22 @@
       <mat-card class="my-8">
         <mat-card-title><h1>Opis</h1></mat-card-title>
         <mat-divider></mat-divider>
-        <mat-card-content class="py-3">{{ advertisementData?.offerDescription }}</mat-card-content>
+        <mat-card-content class="py-3">{{
+          advertisementData?.offerDescription
+        }}</mat-card-content>
       </mat-card>
 
-      <mat-card *ngIf="!isNil(advertisementData?.periodicDescription) && advertisementData?.periodicDescription !== ''" class="my-8">
+      <mat-card
+        *ngIf="
+          !isNil(advertisementData?.periodicDescription) &&
+          advertisementData?.periodicDescription !== ''
+        "
+        class="my-8">
         <mat-card-title><h1>Opis cykliczności</h1></mat-card-title>
         <mat-divider></mat-divider>
-        <mat-card-content class="py-3">{{ advertisementData?.periodicDescription }}</mat-card-content>
+        <mat-card-content class="py-3">{{
+          advertisementData?.periodicDescription
+        }}</mat-card-content>
       </mat-card>
 
       <mat-card *ngIf="advertisementData?.offerBenefitIds" class="my-8">
@@ -148,23 +179,29 @@
         <mat-divider></mat-divider>
         <mat-card-content class="py-3">
           <mat-chip-list>
-            <mat-chip *ngFor="let benefits of advertisementData?.offerBenefitIds" class="!bg-btnAccentHover text-xs md:text-base">{{
-              benefits.name
-            }}</mat-chip>
+            <mat-chip
+              *ngFor="let benefits of advertisementData?.offerBenefitIds"
+              class="!bg-btnAccentHover text-xs md:text-base"
+              >{{ benefits.name }}</mat-chip
+            >
           </mat-chip-list>
         </mat-card-content>
       </mat-card>
     </div>
   </ng-template>
   <ng-template #sideButtonContainer>
-    <mat-card class="w-full lg:h-[200px] lg:w-[200px] my-8 lg:mx-4" *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer) || canManageOffer">
-      <mat-card-title *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"><h3>Aplikuj na ogłoszenie</h3></mat-card-title>
+    <mat-card
+      class="w-full lg:h-[200px] lg:w-[200px] my-8 lg:mx-4"
+      *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer) || canManageOffer">
+      <mat-card-title *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
+        ><h3>Aplikuj na ogłoszenie</h3></mat-card-title
+      >
       <mat-card-content>
         <div
           *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
           class="w-full h-full"
           [matTooltip]="applicationState"
-          [matTooltipDisabled]="canApplyForOffer || true">
+          [matTooltipDisabled]="canApplyForOffer">
           <button
             mat-raised-button
             class="w-full hover:bg-btnAccentHover"
@@ -175,7 +212,13 @@
           </button>
         </div>
         <div *ngIf="canManageOffer" class="w-full h-full">
-          <button (click)="onEditButtonClicked()" mat-raised-button class="w-full hover:bg-btnAccentHover" color="accent">Edytuj ogłoszenie</button>
+          <button
+            (click)="onEditButtonClicked()"
+            mat-raised-button
+            class="w-full hover:bg-btnAccentHover"
+            color="accent">
+            Edytuj ogłoszenie
+          </button>
         </div>
       </mat-card-content>
     </mat-card>

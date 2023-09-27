@@ -234,6 +234,40 @@ public class MailService
     }
 
     /**
+     * Sens Email to Volunteer about his/her Application being moved to reserve list.
+     *
+     * @param aVolunteerContactEmail Volunteer's contact email.
+     *
+     * @param aOfferName name of offer from Application.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendEmailAboutApplicationBeingMovedToReserveList( final String aVolunteerContactEmail, final String aOfferName )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final String sender = "Volontario";
+        final String mailSubject = "Your application has been placed in reserve list.";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( aVolunteerContactEmail );
+        helper.setSubject( mailSubject );
+
+        String content = Resources.toString( Resources.getResource( "emails/applicationMovedToReserveList.html" ),
+                StandardCharsets.UTF_8 );
+        content = content.replaceAll( "\\|offerName\\|", aOfferName );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
+    }
+
+    /**
      * Sens Email to Volunteer about his/her Application being declined.
      *
      * @param aVolunteerContactEmail Volunteer's contact email.

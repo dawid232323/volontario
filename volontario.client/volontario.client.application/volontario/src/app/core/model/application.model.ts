@@ -78,6 +78,7 @@ export enum ApplicationStateEnumName {
   Waiting = 'Oczekująca',
   Accepted = 'Zaakceptowana',
   Rejected = 'Odrzucona',
+  Reserve_list = 'Lista rezerwowa',
 }
 
 export interface ApplicationStateIf {
@@ -105,7 +106,13 @@ export class ApplicationStates {
     serverQueryStateName: 'accepted',
   };
 
+  static readonly Reserve_list: ApplicationStateIf = {
+    stateId: 4,
+    stateName: ApplicationStateEnumName.Reserve_list,
+    serverQueryStateName: 'reserve list',
+  };
+
   static get allStates(): ApplicationStateIf[] {
-    return [this.Rejected, this.Waiting, this.Accepted];
+    return [this.Rejected, this.Waiting, this.Accepted, this.Reserve_list];
   }
 }

@@ -1,7 +1,5 @@
 package uam.volontario.model.offer.impl;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -38,6 +36,8 @@ public class ApplicationSearchQuery
             case "accepted" -> ApplicationStateEnum.ACCEPTED;
 
             case "declined" -> ApplicationStateEnum.DECLINED;
+
+            case "reserve list" -> ApplicationStateEnum.RESERVE_LIST;
 
             default -> throw new IllegalArgumentException( aState + " is not a defined application state." );
         };

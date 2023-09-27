@@ -8,6 +8,7 @@ import { OfferApplicationService } from 'src/app/core/service/offer-application.
 import { firstValueFrom } from 'rxjs';
 import { OfferApplicationModelDto } from 'src/app/core/model/offerApplication.model';
 import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
 import { ErrorDialogInitialData } from 'src/app/shared/features/error-dialog/error-dialog.component';
 import { ApplicationStateCheck } from 'src/app/core/model/application.model';
@@ -104,9 +105,15 @@ export class OfferApplyComponent implements OnInit {
         this._hasAppliedForOffer = true;
         this._createdApplicationId = result.id;
       },
-      error: error => {
+      error: (error: HttpErrorResponse) => {
         alert(JSON.stringify(error.error));
         this._isLoadingData = false;
+        if (error.status === 207) {
+          // we consider 207 status code as partial success, so it must not be treated exactly like error.
+          this.router.navigate(['../'], { relativeTo: this.route });
+        } else {
+          this.reasonFormGroup.reset();
+        }
       },
     });
   }

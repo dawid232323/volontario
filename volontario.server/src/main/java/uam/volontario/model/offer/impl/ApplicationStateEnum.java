@@ -15,7 +15,9 @@ public enum ApplicationStateEnum
 
     ACCEPTED( "Zaakceptowana" ),
 
-    DECLINED( "Odrzucona" );
+    DECLINED( "Odrzucona" ),
+
+    RESERVE_LIST( "Lista rezerwowa" );
 
     private final String translatedState;
 
@@ -33,6 +35,7 @@ public enum ApplicationStateEnum
                     case "Oczekująca" -> AWAITING;
                     case "Zaakceptowana" -> ACCEPTED;
                     case "Odrzucona" -> DECLINED;
+                    case "Lista rezerwowa" -> RESERVE_LIST;
                     default -> throw new IllegalArgumentException( aApplicationState.getName() + " is not a " +
                             "defined application state in the system." );
                 };

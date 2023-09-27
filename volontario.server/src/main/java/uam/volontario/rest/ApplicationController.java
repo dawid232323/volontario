@@ -108,6 +108,24 @@ public class ApplicationController
     }
 
     /**
+     * Sets Application's state to {@linkplain ApplicationStateEnum#RESERVE_LIST} and informs Volunteer about it
+     * via contact email.
+     *
+     * @param aApplicationId id of Application to add to reserve list.
+     *
+     *
+     * @return
+     *          - Response Entity with Application added to reserve list and 200 code, if everything went well.
+     *          - Response Entity with code 400, if there is no Application with given id.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheApplication( authentication.principal, #aApplicationId )" )
+    @PatchMapping( "/reserve-list/{applicationId}" )
+    public ResponseEntity< ? > addApplicationToReserveList( @PathVariable( "applicationId" ) final Long aApplicationId )
+    {
+        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.RESERVE_LIST, Optional.empty() );
+    }
+
+    /**
      * Sets Application's state to {@linkplain ApplicationStateEnum#DECLINED} and informs Volunteer about it
      * via contact email.
      *

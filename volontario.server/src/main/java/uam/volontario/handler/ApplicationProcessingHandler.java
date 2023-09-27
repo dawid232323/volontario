@@ -217,6 +217,13 @@ public class ApplicationProcessingHandler
                         mailService.sendEmailAboutApplicationBeingAccepted( volunteer.getContactEmailAddress(),
                                 offer.getTitle() );
                     }
+                    case RESERVE_LIST ->
+                    {
+                        application.setState( getApplicationState( ApplicationStateEnum.RESERVE_LIST ) );
+                        applicationService.saveOrUpdate( application );
+                        mailService.sendEmailAboutApplicationBeingMovedToReserveList( volunteer.getContactEmailAddress(),
+                                offer.getTitle() );
+                    }
                     case DECLINED ->
                     {
                         if( aDecisionReasonOptionalMap.isEmpty() )
@@ -234,16 +241,14 @@ public class ApplicationProcessingHandler
                 }
                 return ResponseEntity.ok( application );
             }
-            else
-            {
-                return ResponseEntity.badRequest()
-                        .body( MessageGenerator.getApplicationNotFoundMessage( aApplicationId ) );
-            }
+
+            return ResponseEntity.badRequest()
+                    .body( MessageGenerator.getApplicationNotFoundMessage( aApplicationId ) );
         }
         catch ( Exception aE )
         {
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-                    .build();
+                    .body( aE.getMessage() );
         }
     }
 

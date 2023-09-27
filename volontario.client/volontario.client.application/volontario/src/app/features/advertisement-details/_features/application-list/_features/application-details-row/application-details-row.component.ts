@@ -63,6 +63,11 @@ export class ApplicationDetailsRowComponent implements OnInit {
     this.emitChangeEvent(ApplicationActionTypeEnum.Accept);
   }
 
+  public onReserveListButtonClicked() {
+    this.applicationDetails!.state = ApplicationStateEnumName.Reserve_list;
+    this.emitChangeEvent(ApplicationActionTypeEnum.Reserve_list);
+  }
+
   private emitChangeEvent(
     operationType: ApplicationActionTypeEnum,
     reason?: string

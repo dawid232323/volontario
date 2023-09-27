@@ -47,11 +47,19 @@
           Odrzuć
         </button>
         <button
-          (click)="onAcceptButtonClicked()"
+          (click)="onReserveListButtonClicked()"
           [disabled]="shouldDisableButtons"
           mat-raised-button
           class="hover:bg-btnAccentHover"
           color="accent">
+          Lista rezerwowa
+        </button>
+        <button
+          (click)="onAcceptButtonClicked()"
+          [disabled]="shouldDisableButtons"
+          mat-raised-button
+          class="hover:bg-btnAccentHoverPrimary"
+          color="primary">
           Akceptuj
         </button>
       </div>

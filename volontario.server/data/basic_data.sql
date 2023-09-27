@@ -10,9 +10,10 @@ SELECT setval('roles_id_seq', 6, true);
 INSERT INTO public.application_states
 VALUES  (1, 'Odrzucona'),
         (2, 'Oczekująca'),
-        (3, 'Zaakceptowana');
+        (3, 'Zaakceptowana'),
+        (4, 'Lista rezerwowa');
 
-SELECT setval('application_states_id_seq', 4, true);
+SELECT setval('application_states_id_seq', 5, true);
 
 INSERT INTO public.offer_states
 VALUES  (1, 'Nowe'),
