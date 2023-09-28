@@ -1,4 +1,9 @@
 <header class="bg-bgPrimary">
+  <ng-container *ngTemplateOutlet="desktopNavigation"></ng-container>
+  <ng-container *ngTemplateOutlet="mobileNavigation"></ng-container>
+</header>
+
+<ng-template #desktopNavigation>
   <div class="md:hidden pl-3"><app-logo></app-logo></div>
   <div class="hidden md:block">
     <header aria-label="Site Header" class="bg-bgPrimary relative w-full z-50">
@@ -61,13 +66,6 @@
                     Ogłoszenia instytucji
                   </a>
                 </li>
-
-                <li>
-                  <a
-                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
-                    Zarchiwizowane ogłoszenia
-                  </a>
-                </li>
                 <li>
                   <a
                     routerLink="/advertisement/list"
@@ -84,6 +82,13 @@
                     UserRoleEnum.Admin
                   ])
                 ">
+                <li>
+                  <a
+                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
+                    routerLink="/home">
+                    Pulpit
+                  </a>
+                </li>
                 <li *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
                   <a
                     [matMenuTriggerFor]="adminMenu"
@@ -91,7 +96,13 @@
                     Administrator
                   </a>
                 </li>
-                <li *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Moderator)">
+                <li
+                  *ngIf="
+                    loggedUser?.hasUserRoles([
+                      UserRoleEnum.Moderator,
+                      UserRoleEnum.Admin
+                    ])
+                  ">
                   <a
                     [matMenuTriggerFor]="moderatorMenu"
                     class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
@@ -114,7 +125,9 @@
               *ngIf="
                 loggedUser?.hasUserRoles([
                   UserRoleEnum.InstitutionWorker,
-                  UserRoleEnum.InstitutionAdmin
+                  UserRoleEnum.InstitutionAdmin,
+                  UserRoleEnum.Admin,
+                  UserRoleEnum.Moderator
                 ])
               "
               (click)="routeToAddAdvertisement()">
@@ -127,65 +140,50 @@
               class="relative w-12 h-12 rounded-full flex items-center justify-center bg-bgWhite hover:bg-btnAccentHover transition">
               <img ngSrc="assets/coffee_avatar.svg" height="60" width="100" />
             </div>
-            <mat-menu #menu="matMenu">
-              <ul mat-menu-item (click)="onShowProfileCLick()" class='navbar-list'>
-                <i class="fa-solid fa-address-card"></i>
-                Zobacz profil
-              </ul>
-              <ul mat-menu-item (click)="onLogout()" class="navbar-list">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Wyloguj się
-              </ul>
-            </mat-menu>
-            <mat-menu #adminMenu="matMenu">
-              <ul
-                class="navbar-list"
-                (click)="routeToAdminUsers()"
-                mat-menu-item
-                *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
-                <i class="fa-solid fa-users"></i>
-                Zarządzaj użytkownikami
-              </ul>
-            </mat-menu>
-            <mat-menu #moderatorMenu="matMenu">
-              <ul
-                mat-menu-item
-                (click)="routeToManageDictValues()"
-                class="navbar-list">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Zarządzaj wartościami słownikowymi
-              </ul>
-            </mat-menu>
           </div>
         </div>
       </div>
-    </header>
-  </div>
-
-  <div class="fixed bottom-0 bg-bgPrimary left-0 w-full block md:hidden z-50">
+    </header></div
+></ng-template>
+<ng-template #mobileNavigation
+  ><div class="fixed bottom-0 bg-bgPrimary left-0 w-full flex md:hidden z-50">
     <div
-      class="flex flex-row items-center justify-center gap-y-10 py-1 text-white font-semibold text-[10px]">
+      class="flex flex-row overflow-x-scroll w-full items-center space-x-6 gap-y-10 py-1 text-white font-semibold text-[10px]">
       <a
-        class="flex flex-col justify-center items-center w-1/4 p-1"
+        class="flex flex-col justify-center items-center w-1/4 p-1 pl-5 whitespace-nowrap"
         routerLink="/home">
         <i class="fa-solid fa-house text-lg"></i>
         Pulpit
       </a>
       <a
-        class="flex flex-col justify-center items-center w-1/4 p-1"
-        [routerLink]="
+        class="flex flex-col justify-center items-center w-1/4 p-1 whitespace-nowrap"
+        *ngIf="
           loggedUser?.hasUserRoles([
             UserRoleEnum.InstitutionWorker,
             UserRoleEnum.InstitutionAdmin
           ])
-            ? '/institution/advertisement-panel'
-            : 'advertisement/list'
-        ">
-        <i class="fa-solid fa-magnifying-glass text-lg"></i>
-        Ogłoszenia
+        "
+        routerLink="/institution/advertisement-panel">
+        <i class="fa-solid fa-briefcase text-lg"></i>
+        Ogłoszenia instytucji
       </a>
       <a
-        class="flex flex-col justify-center items-center w-1/4 p-1"
+        class="flex flex-col justify-center items-center w-1/4 p-1 whitespace-nowrap"
+        routerLink="
+        advertisement/list
+        ">
+        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        Lista ogłoszeń
+      </a>
+      <a
+        class="flex flex-col justify-center items-center w-1/4 p-1 whitespace-nowrap"
+        routerLink="/applications"
+        *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)">
+        <i class="fa-solid fa-address-card text-lg"></i>
+        Twoje aplikacje
+      </a>
+      <a
+        class="flex flex-col justify-center items-center w-1/4 p-1 whitespace-nowrap"
         *ngIf="
           loggedUser?.hasUserRoles([
             UserRoleEnum.InstitutionWorker,
@@ -197,33 +195,28 @@
         Dodaj ogłoszenie
       </a>
       <a
-        class="flex flex-col justify-center items-center w-1/4 p-1"
+        *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)"
+        class="flex flex-col justify-center items-center w-1/4 p-1 whitespace-nowrap"
         [matMenuTriggerFor]="adminMenu">
         <i class="fa-solid fa-gear text-lg"></i>
         Administrator
       </a>
       <a
-        class="flex flex-col justify-center items-center w-1/4 p-1"
+        *ngIf="
+          loggedUser?.hasUserRoles([UserRoleEnum.Admin, UserRoleEnum.Moderator])
+        "
+        class="flex flex-col justify-center items-center w-1/4 p-1 whitespace-nowrap"
+        [matMenuTriggerFor]="moderatorMenu">
+        <i class="fa-solid fa-gear text-lg"></i>
+        Moderator
+      </a>
+      <a
+        class="flex flex-col justify-center items-center w-1/4 p-1 pr-5 whitespace-nowrap"
         [matMenuTriggerFor]="menuMobile">
         <i class="fa-solid fa-plus text-lg fa-angle-up"></i>
         Więcej
       </a>
       <mat-menu #menuMobile="matMenu">
-        <ul
-          class="navbar-list"
-          *ngIf="loggedUser?.hasUserRoles([UserRoleEnum.Moderator])"
-          mat-menu-item
-          (click)="routeToManageDictValues()">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          Zarządzaj wartościami słownikowymi
-        </ul>
-        <ul
-          class="navbar-list"
-          mat-menu-item
-          *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)">
-          <i class="fa-solid fa-address-card"></i>
-          Twoje aplikacje
-        </ul>
         <ul class="navbar-list" mat-menu-item>
           <i class="fa-solid fa-address-card"></i>
           Zobacz profil
@@ -234,5 +227,31 @@
         </ul>
       </mat-menu>
     </div>
-  </div>
-</header>
+  </div></ng-template
+>
+<mat-menu #menu="matMenu">
+  <ul mat-menu-item (click)="onShowProfileCLick()" class="navbar-list">
+    <i class="fa-solid fa-address-card"></i>
+    Zobacz profil
+  </ul>
+  <ul mat-menu-item (click)="onLogout()" class="navbar-list">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    Wyloguj się
+  </ul>
+</mat-menu>
+<mat-menu #adminMenu="matMenu">
+  <ul
+    class="navbar-list"
+    (click)="routeToAdminUsers()"
+    mat-menu-item
+    *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
+    <i class="fa-solid fa-users"></i>
+    Zarządzaj użytkownikami
+  </ul>
+</mat-menu>
+<mat-menu #moderatorMenu="matMenu">
+  <ul mat-menu-item (click)="routeToManageDictValues()" class="navbar-list">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    Zarządzaj wartościami słownikowymi
+  </ul>
+</mat-menu>
