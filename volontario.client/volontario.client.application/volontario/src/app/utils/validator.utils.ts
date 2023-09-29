@@ -1,4 +1,10 @@
-import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { isNil } from 'lodash';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -8,7 +14,11 @@ export enum DateValidatorUsageEnum {
   After = 'dateAfter',
 }
 
-export function dateBeforeAfterValidator(usage: DateValidatorUsageEnum, masterFieldName: string, dependentFieldName: string): ValidatorFn {
+export function dateBeforeAfterValidator(
+  usage: DateValidatorUsageEnum,
+  masterFieldName: string,
+  dependentFieldName: string
+): ValidatorFn {
   return (form: AbstractControl): ValidationErrors | null => {
     const dateFromField = form.get(masterFieldName)?.value;
     const dateToFormField = form.get(dependentFieldName)?.value;
@@ -24,14 +34,20 @@ export function dateBeforeAfterValidator(usage: DateValidatorUsageEnum, masterFi
   };
 }
 
-function dateBeforeValidator(masterDate: Moment, dependentDate: Moment): ValidationErrors | null {
+function dateBeforeValidator(
+  masterDate: Moment,
+  dependentDate: Moment
+): ValidationErrors | null {
   if (masterDate.isSameOrBefore(dependentDate)) {
     return null;
   }
   return { [DateValidatorUsageEnum.Before]: true };
 }
 
-function dateAfterValidator(masterDate: Moment, dependentDate: Moment): ValidationErrors | null {
+function dateAfterValidator(
+  masterDate: Moment,
+  dependentDate: Moment
+): ValidationErrors | null {
   if (masterDate.isSameOrAfter(dependentDate)) {
     return null;
   }
@@ -47,6 +63,15 @@ export function arrayLengthValidator(arrayMaxLength: number) {
   };
 }
 
+export function phoneNumberValidator(): ValidatorFn {
+  return (formControl: AbstractControl): ValidationErrors | null => {
+    if (isNil(formControl.value)) {
+      return null;
+    }
+    return Validators.pattern('[1-9][0-9]{8}')(formControl);
+  };
+}
+
 /**
  * Checks if given form control has max length error.
  *
@@ -54,7 +79,9 @@ export function arrayLengthValidator(arrayMaxLength: number) {
  *
  * @returns undefined if given control doesn't have max length error or required field length
  */
-export function hasMaxLengthError(formControl: AbstractControl): string | undefined {
+export function hasMaxLengthError(
+  formControl: AbstractControl
+): string | undefined {
   if (isNil(formControl.errors?.['maxlength'])) {
     return undefined;
   }

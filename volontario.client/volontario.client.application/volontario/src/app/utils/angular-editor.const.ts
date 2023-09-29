@@ -18,7 +18,7 @@ export class DefaultAngularEditorConfigProvider
   private static _config: AngularEditorConfig = {
     editable: true,
     toolbarHiddenButtons: [
-      [],
+      ['fontName'],
       [
         'insertImage',
         'insertVideo',

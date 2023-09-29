@@ -1,5 +1,3 @@
-import { InterestCategoryDTO } from './interestCategory.model';
-
 export class VolunteerRegisterDTO {
   constructor(
     public firstName: string,
@@ -10,6 +8,7 @@ export class VolunteerRegisterDTO {
     public participationMotivation: string,
     public experienceId: number,
     public interestCategoriesIds: number[],
+    public fieldOfStudy: string | null,
     public phoneNumber?: string | null
   ) {}
 
@@ -23,6 +22,7 @@ export class VolunteerRegisterDTO {
       payload?.participationMotivation,
       payload?.experience,
       payload?.interestCategories,
+      payload?.fieldOfStudy,
       payload?.phoneNumber
     );
   }

@@ -95,6 +95,7 @@ public class DtoService
                 .experience(experienceLevel)
                 .participationMotivation(aDto.getParticipationMotivation())
                 .domainEmailAddress(aDto.getDomainEmail())
+                .fieldOfStudy( aDto.getFieldOfStudy() )
                 .interestCategories(volunteerInterestCategories).build();
 
         final User user = User.builder().firstName(aDto.getFirstName())
@@ -403,7 +404,8 @@ public class DtoService
                         this.volunteerExperienceToDto( volunteerData.getExperience() ) )
                     .domainEmailAddress( volunteerData.getDomainEmailAddress() )
                     .interestCategories( volunteerData.getInterestCategories() )
-                    .participationMotivation( volunteerData.getParticipationMotivation() );
+                    .participationMotivation( volunteerData.getParticipationMotivation() )
+                    .fieldOfStudy( volunteerData.getFieldOfStudy() );
         }
         if( aUser.getInstitution() != null )
         {

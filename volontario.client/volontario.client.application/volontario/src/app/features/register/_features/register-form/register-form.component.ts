@@ -1,7 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { SelectFieldModelIf } from 'src/app/core/interface/selectField.interface';
 import { VolunteerRegisterDTO } from 'src/app/core/model/volunteer.model';
+import {
+  hasMaxLengthError,
+  phoneNumberValidator,
+} from 'src/app/utils/validator.utils';
 
 @Component({
   selector: 'app-register-form',
@@ -17,9 +28,19 @@ export class RegisterFormComponent implements OnInit {
   private _isPasswordShown: boolean = false;
 
   registerFormGroup = new FormGroup({
-    firstName: new FormControl('', [Validators.required, Validators.pattern('^[A-źa-ź]+$')]),
-    lastName: new FormControl('', [Validators.required, Validators.pattern('^[A-źa-ź]+$')]),
-    domainEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern('.*.st.amu.edu.pl')]),
+    firstName: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^[A-źa-ź]+$'),
+    ]),
+    lastName: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^[A-źa-ź]+$'),
+    ]),
+    domainEmail: new FormControl('', [
+      Validators.required,
+      Validators.email,
+      Validators.pattern('.*.st.amu.edu.pl'),
+    ]),
     contactEmail: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
@@ -31,7 +52,12 @@ export class RegisterFormComponent implements OnInit {
     passwordRepeat: new FormControl('', [Validators.required]),
     experience: new FormControl(null, [Validators.required]),
     interestCategories: new FormControl([1], [Validators.required]),
-    participationMotivation: new FormControl('', [Validators.required, Validators.maxLength(150)]),
+    participationMotivation: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(150),
+    ]),
+    fieldOfStudy: new FormControl(null, [Validators.maxLength(100)]),
+    phoneNumber: new FormControl(null, [phoneNumberValidator()]),
     rodo: new FormControl('', [Validators.required]),
   });
 
@@ -53,8 +79,18 @@ export class RegisterFormComponent implements OnInit {
     if (this.registerFormGroup.invalid) {
       return;
     }
-    const { firstName, lastName, domainEmail, contactEmail, password, experience, interestCategories, participationMotivation } =
-      this.registerFormGroup.value;
+    const {
+      firstName,
+      lastName,
+      domainEmail,
+      contactEmail,
+      password,
+      experience,
+      interestCategories,
+      participationMotivation,
+      fieldOfStudy,
+      phoneNumber,
+    } = this.registerFormGroup.value;
 
     const registerDTO: VolunteerRegisterDTO = {
       firstName: <string>firstName,
@@ -65,7 +101,8 @@ export class RegisterFormComponent implements OnInit {
       participationMotivation: <string>participationMotivation,
       experienceId: <number>1,
       interestCategoriesIds: <number[]>interestCategories,
-      phoneNumber: (Math.random() * (999999999 - 0o00000001) + 0o00000001).toString(),
+      fieldOfStudy: fieldOfStudy || null,
+      phoneNumber: phoneNumber,
     };
 
     this.formSubmit.emit(registerDTO);
@@ -86,9 +123,12 @@ export class RegisterFormComponent implements OnInit {
     return 'password';
   }
 
-  private equalPasswordValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  private equalPasswordValidator: ValidatorFn = (
+    group: AbstractControl
+  ): ValidationErrors | null => {
     let pass = group.get('password')?.value;
     let confirmPass = group.get('passwordRepeat')?.value;
     return pass === confirmPass ? null : { notSame: true };
   };
+  protected readonly hasMaxLengthError = hasMaxLengthError;
 }

@@ -30,5 +30,7 @@ public class VolunteerDto
 
     private Long experienceId;
 
+    private String fieldOfStudy;
+
     private List< Long > interestCategoriesIds;
 }

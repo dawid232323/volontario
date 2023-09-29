@@ -72,6 +72,20 @@
             </p>
           </div>
         </div>
+        <div
+          class="flex items-center flex-row py-3"
+          *ngIf="!isNil(userProfile?.fieldOfStudy)">
+          <div
+            class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+            <i class="fa-solid fa-graduation-cap text-lg"></i>
+          </div>
+          <div class="flex justify-center flex-col px-2">
+            <p class="font-semibold text-base !m-0">Kierunek studiów</p>
+            <p class="text-bgPrimary font-bold text-sm !m-0">
+              {{ userProfile?.fieldOfStudy }}
+            </p>
+          </div>
+        </div>
       </div>
       <div
         class="grid grid-cols-1"

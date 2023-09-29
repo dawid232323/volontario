@@ -47,6 +47,10 @@ public class VolunteerData implements VolontarioDomainElementIf
     @Column( length = 1500 )
     private String participationMotivation;
 
+    @Size( max = 100 )
+    @Column( length = 100 )
+    private String fieldOfStudy;
+
     @JsonManagedReference
     @ManyToOne
     @JoinColumn( name = "volunteer_experience_id" )

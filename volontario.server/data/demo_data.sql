@@ -17,8 +17,8 @@ VALUES  (1, 'Januszex', 'Towarowa', true, '1111111111', 'Poznań', 'Januszex', n
 SELECT setval('institutions_id_seq', 6, true);
 
 INSERT INTO public.volunteer_data
-VALUES (1, 'janwolontariusz@st.amu.edu.pl', 'Lubię ludzi', 1),
-       (2, 'adamwolontariusz@st.amu.edu.pl', 'Nudzi mi się', 2);
+VALUES (1, 'janwolontariusz@st.amu.edu.pl', 'Lubię ludzi', 1, 'Kulturoznawstwo'),
+       (2, 'adamwolontariusz@st.amu.edu.pl', 'Nudzi mi się', 2, 'Socjologia');
 
 SELECT setval('volunteer_data_id_seq', 3, true);
 

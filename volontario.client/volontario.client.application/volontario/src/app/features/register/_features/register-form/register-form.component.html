@@ -3,63 +3,145 @@
   <div>
     <form [formGroup]="registerFormGroup" (ngSubmit)="onFormSubmit()">
       <div class="flex flex-col lg:flex-row items-stretch">
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          appearance="standard"
+          color="accent">
           <mat-label>Imię</mat-label>
           <input matInput formControlName="firstName" />
           <mat-icon matPrefix color="accent">person</mat-icon>
-          <mat-hint *ngIf="registerFormGroup.controls['firstName'].invalid">Pole wymagane</mat-hint>
+          <mat-hint *ngIf="registerFormGroup.controls['firstName'].invalid"
+            >Pole wymagane</mat-hint
+          >
         </mat-form-field>
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:ml-3" appearance="standard" color="accent">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
+          appearance="standard"
+          color="accent">
           <mat-label>Nazwisko </mat-label>
           <input matInput formControlName="lastName" />
           <mat-icon matPrefix color="accent">person</mat-icon>
-          <mat-hint *ngIf="registerFormGroup.controls['lastName'].invalid">Pole wymagane</mat-hint>
+          <mat-hint *ngIf="registerFormGroup.controls['lastName'].invalid"
+            >Pole wymagane</mat-hint
+          >
         </mat-form-field>
       </div>
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          appearance="standard"
+          color="accent">
           <mat-label>Adres email uczelniany </mat-label>
           <input matInput formControlName="domainEmail" />
           <mat-icon matPrefix color="accent">mail</mat-icon>
-          <mat-hint *ngIf="registerFormGroup.controls['domainEmail'].invalid">Pole wymagane</mat-hint>
+          <mat-hint *ngIf="registerFormGroup.controls['domainEmail'].invalid"
+            >Pole wymagane</mat-hint
+          >
         </mat-form-field>
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:ml-3" appearance="standard" color="accent">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
+          appearance="standard"
+          color="accent">
           <mat-label>Adres email kontaktowy </mat-label>
           <input matInput formControlName="contactEmail" />
           <mat-icon matPrefix color="accent">mail</mat-icon>
-          <mat-hint *ngIf="registerFormGroup.controls['contactEmail'].invalid">Pole wymagane</mat-hint>
+          <mat-hint *ngIf="registerFormGroup.controls['contactEmail'].invalid"
+            >Pole wymagane</mat-hint
+          >
         </mat-form-field>
       </div>
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" appearance="standard" color="accent">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          appearance="standard"
+          color="accent">
           <mat-label>Hasło</mat-label>
-          <input matInput formControlName="password" [type]="passwordInputType" />
+          <input
+            matInput
+            formControlName="password"
+            [type]="passwordInputType" />
           <mat-icon matPrefix color="accent">lock</mat-icon>
-          <mat-icon class="hover:opacity-100 hover:cursor-pointer opacity-50" matSuffix (click)="isPasswordShown = !isPasswordShown">
+          <mat-icon
+            class="hover:opacity-100 hover:cursor-pointer opacity-50"
+            matSuffix
+            (click)="isPasswordShown = !isPasswordShown">
             {{ !isPasswordShown ? 'visibility' : 'visibility_off' }}</mat-icon
           >
         </mat-form-field>
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:ml-3" appearance="standard" color="accent">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
+          appearance="standard"
+          color="accent">
           <mat-label>Powtórz hasło </mat-label>
           <input matInput formControlName="passwordRepeat" type="password" />
           <mat-icon matPrefix color="accent">lock</mat-icon>
         </mat-form-field>
       </div>
-      <app-password-check-card [passwordValue]="passwordValue" [repeatPasswordValue]="repeatPasswordValue"></app-password-check-card>
+      <app-password-check-card
+        [passwordValue]="passwordValue"
+        [repeatPasswordValue]="repeatPasswordValue"></app-password-check-card>
       <div class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:mr-3" color="accent">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          color="accent">
+          <mat-label>Numer telefonu</mat-label>
+          <input matInput formControlName="phoneNumber" />
+          <mat-icon matPrefix color="accent">phone_iphone</mat-icon>
+          <mat-hint
+            class="text-red-500"
+            *ngIf="
+              registerFormGroup.controls['phoneNumber']?.hasError('pattern')
+            "
+            >Podaj prawidłowy numer telefonu</mat-hint
+          >
+        </mat-form-field>
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          color="accent">
+          <mat-label>Kierunek studiów</mat-label>
+          <mat-icon matPrefix color="accent">school</mat-icon>
+          <input matInput formControlName="fieldOfStudy" />
+          <mat-hint
+            class="text-red-500"
+            *ngIf="
+              hasMaxLengthError(registerFormGroup.controls['fieldOfStudy']) !==
+              undefined
+            "
+            >Maksymalna ilość znaków to
+            {{
+              hasMaxLengthError(registerFormGroup.controls['fieldOfStudy'])
+            }}</mat-hint
+          >
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+          color="accent">
           <mat-label>Poziom doświadczenia </mat-label>
           <mat-select formControlName="experience">
-            <mat-option *ngFor="let experience of availableExperiences" [value]="experience.value">
+            <mat-option
+              *ngFor="let experience of availableExperiences"
+              [value]="experience.value">
               {{ experience.viewValue }}
-              <i [matTooltip]="experience.helpValue || ''" class="fa-regular fa-circle-question hover:text-btnAccentHover"></i>
+              <i
+                [matTooltip]="experience.helpValue || ''"
+                class="fa-regular fa-circle-question hover:text-btnAccentHover"></i>
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="flex pt-3 pb-3 flex-col w-full lg:ml-3" color="accent">
+        <mat-form-field
+          class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
+          color="accent">
           <mat-label>Wybierz zainteresowania </mat-label>
-          <mat-select formControlName="interestCategories" id="interestCategories" name="interestCategories" multiple>
-            <mat-option *ngFor="let category of availableCategories" [value]="category.value">
+          <mat-select
+            formControlName="interestCategories"
+            id="interestCategories"
+            name="interestCategories"
+            multiple>
+            <mat-option
+              *ngFor="let category of availableCategories"
+              [value]="category.value">
               {{ category.viewValue }}
             </mat-option>
           </mat-select>
@@ -67,12 +149,18 @@
       </div>
       <mat-form-field class="w-full" appearance="fill" color="accent">
         <mat-label>Motywacja do uczestnictwa: </mat-label>
-        <textarea matInput formControlName="participationMotivation"> </textarea>
-        <mat-hint *ngIf="registerFormGroup.controls['participationMotivation'].invalid">Pole wymagane, podaj maksymalnie 150 znaków</mat-hint>
+        <textarea matInput formControlName="participationMotivation">
+        </textarea>
+        <mat-hint
+          *ngIf="registerFormGroup.controls['participationMotivation'].invalid"
+          >Pole wymagane, podaj maksymalnie 150 znaków</mat-hint
+        >
       </mat-form-field>
       <div class="w-full pt-3">
         <mat-checkbox formControlName="rodo" color="accent">
-          <label class="font-medium">Wyrazam zgode na przetwarzanie moich danych.....</label>
+          <label class="font-medium"
+            >Wyrazam zgode na przetwarzanie moich danych.....</label
+          >
         </mat-checkbox>
       </div>
       <div class="flex flex-col items-center">
