@@ -1,0 +1,94 @@
+<div>
+  <section
+    *ngIf="fileUploadInProgress && !reportMade"
+    class="flex flex-col justify-center items-center lg:basis-2/3 py-10 h-full w-full">
+    <div class="flex flex-col justify-center items-center h-full w-full">
+      <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+    </div>
+  </section>
+  <div
+    *ngIf="!reportMade && !fileUploadInProgress"
+    class="flex flex-col justify-between items-center w-full bg-gray-100 min-h-screen">
+    <section
+      class="my-10 py-4 flex flex-col items-center justify-center w-full border-4 rounded-xl border-solid lg:w-3/4 bg-white pb-5">
+      <span class="flex flex-row lg:space-x-5 py-6">
+        <div class="lg:flex hidden">
+          <mat-icon class="scale-150 pt-1" color="accent">bug_report</mat-icon>
+        </div>
+        <div class="text-4xl font-bold text-center">Zgłoś błąd</div>
+      </span>
+      <div class="w-3/4">
+        <form [formGroup]="reportIssueForm">
+          <div class="flex flex-col justify-between">
+            <mat-form-field
+              class="flex py-1 flex-col w-full lg:mr-3"
+              appearance="standard"
+              color="accent">
+              <mat-label>Nazwa zgłoszenia</mat-label>
+              <input
+                matInput
+                formControlName="reportName"
+                placeholder="Podaj tytuł zgłoszenia"
+                type="text" />
+            </mat-form-field>
+            <mat-form-field
+              class="flex py-1 flex-col w-full lg:mr-3"
+              appearance="standard"
+              hintLabel=""
+              color="accent">
+              <mat-label>Opis zgłoszenia</mat-label>
+              <div class="bg-gray-50">
+                <textarea
+                  class="resize-none h-60"
+                  matInput
+                  formControlName="reportDescription"
+                  type="text"
+                  placeholder="Opisz zgłoszenie poprzez podanie dokładnych kroków, które doprowadziły do błędu."></textarea>
+              </div>
+            </mat-form-field>
+            <div class="text-center">
+              <mat-label>
+                Załącz maksymalnie do pięciu zdjęć. ({{
+                  filesToUpload.length
+                }}/5)
+              </mat-label>
+              <div *ngIf="errorMessage !== null">
+                <mat-label class="text-red-700"> {{ errorMessage }} </mat-label>
+              </div>
+            </div>
+            <div class="py-3">
+              <app-file-uploader
+                [config]="{
+                  accepted_MIME_types: 'image/png, image/gif, image/jpeg',
+                  allow_multi_selection: true
+                }"
+                [selected_files]="filesToUpload"
+                (fileTransferResultEmitter)="setErrorMessage($event)">
+              </app-file-uploader>
+              <div class="pt-3">
+                <button
+                  [disabled]="!canFormBeSubmitted()"
+                  (click)="onSubmitForm()"
+                  class="w-full h-full"
+                  mat-raised-button
+                  color="accent">
+                  Wyślij
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+  <div
+    *ngIf="reportMade && !fileUploadInProgress"
+    class="flex flex-col lg:space-x-5 py-6 items-center justify-center h-screen">
+    <div class="lg:flex hidden content-center pb-10">
+      <mat-icon class="scale-150 pt-1" color="accent">favorite</mat-icon>
+    </div>
+    <div class="text-4xl font-bold text-center content-center">
+      Dziękujemy za zgłoszenie błędu!
+    </div>
+  </div>
+</div>

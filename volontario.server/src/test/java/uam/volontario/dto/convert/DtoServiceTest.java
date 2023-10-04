@@ -65,7 +65,7 @@ class DtoServiceTest {
 
         //given
         VolunteerDto dto = new VolunteerDto( "Name", "Surname", "pas", "test@amu.edu.pl", "test@test.pl", "000000000",
-                "motivation", 0L, Collections.emptyList() );
+                "motivation", 0L, "informatyka", Collections.emptyList() );
 
         //when
         assertThatExperienceLevelIsReturned();
@@ -251,7 +251,7 @@ class DtoServiceTest {
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
 
         VolunteerData volunteerData = new VolunteerData( 0L, null, "test@amu.edu.pl" , "motivation",
-                getSampleExperienceLevel(), Collections.emptyList() );
+                "informatyka", getSampleExperienceLevel(), Collections.emptyList() );
 
         User user = User.builder().id( 1L ).firstName( "name" ).lastName( "surname" ).contactEmailAddress("test@test.pl")
                 .volunteerData( volunteerData ).phoneNumber( "000000000" ).build();

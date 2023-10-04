@@ -47,6 +47,10 @@ export class NavComponent implements OnInit, OnDestroy {
     this.loggedUser = undefined;
   }
 
+  onReportIssue(): void {
+    this.router.navigate(['report-issue']);
+  }
+
   routeToAddAdvertisement() {
     if (this.router.url === '/advertisement/add') {
       this.offerService.addAdvertisementReloadEvent.next();

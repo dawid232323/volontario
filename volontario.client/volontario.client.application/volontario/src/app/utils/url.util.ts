@@ -14,6 +14,9 @@ export class EndpointUrls {
   public static readonly login: string = '/login';
   public static readonly refreshToken: string = '/refresh/token';
   public static readonly volunteerResource: string = '/volunteer';
+  public static readonly report: string = '/report';
+  public static readonly reportWithAttachment: string =
+    EndpointUrls.report.concat('/with-attachments');
   public static readonly registerVolunteer: string =
     EndpointUrls.volunteerResource.concat('/register');
   public static readonly institutionResource: string = '/institution';
@@ -96,6 +99,13 @@ export class EndpointUrls {
     EndpointUrls.login,
     EndpointUrls.registerVolunteer,
     EndpointUrls.refreshToken,
+    EndpointUrls.reportWithAttachment,
+    EndpointUrls.report,
+  ]);
+
+  public static readonly resourcesRequiringNoContentType = new Set<string>([
+    EndpointUrls.reportWithAttachment,
+    EndpointUrls.report,
   ]);
 
   public static getApplicationStateCheckUrl(

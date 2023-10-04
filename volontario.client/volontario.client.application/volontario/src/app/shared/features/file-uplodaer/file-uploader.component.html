@@ -1,0 +1,48 @@
+<div>
+  <div
+    class="border-dashed border-2 border-gray-400 py-8 px-2"
+    appDragAndDrop
+    (whenFileDropped)="selectFiles($event)">
+    <div class="text-center">
+      <label> Przeciągnij zdjęcia w to miejsce albo naciśnij "Wybierz". </label>
+    </div>
+  </div>
+  <div class="py-8">
+    <mat-expansion-panel
+      *ngFor="let selected_file of selected_files; index as i"
+      hideToggle>
+      <mat-expansion-panel-header>
+        <div class="flex flex-row">
+          <button
+            matRipple
+            matTooltipPosition="right"
+            matTooltip="Usuń plik"
+            (click)="unselectFile(i)">
+            <span class="material-icons">clear</span>
+          </button>
+          <div class="text-ellipsis overflow-hidden">
+            {{ i + 1 }}. {{ selected_file.file.name }}
+          </div>
+        </div>
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+  </div>
+  <div>
+    <form [formGroup]="fileSelectionForm">
+      <input
+        type="file"
+        #fileSelector
+        formControlName="file_selection"
+        [accept]="config.accepted_MIME_types"
+        multiple="{{ config.allow_multi_selection }}"
+        hidden />
+    </form>
+    <button
+      class="w-full h-full"
+      mat-raised-button
+      color="primary"
+      (click)="fileSelector.click()">
+      Wybierz
+    </button>
+  </div>
+</div>

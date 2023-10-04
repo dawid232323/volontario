@@ -3,7 +3,7 @@ import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
 import { ErrorDialogInitialData } from 'src/app/shared/features/error-dialog/error-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class VolontarioGlobalErrorHandlerInterceptor implements ErrorHandler {
   constructor(private errorService: ErrorDialogService, private zone: NgZone) {}
 

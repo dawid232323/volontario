@@ -19,10 +19,12 @@ import { adminRouting } from 'src/app/core/routing/admin.routing';
 import { institutionRouting } from 'src/app/core/routing/institution.routing';
 import { moderatorRouting } from 'src/app/core/routing/moderator.routing';
 import { userRouting } from 'src/app/core/routing/user.routing';
+import { ReportIssueComponent } from './features/report-issue/report-issue.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'report-issue', component: ReportIssueComponent },
   { path: 'home', component: HomePageComponent, canActivate: [RouterGuard] },
   { path: 'institution', redirectTo: 'home' },
   { path: '', component: MainPageComponent },

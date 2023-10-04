@@ -22,3 +22,5 @@ CLIENT_ENVIRONMENT=
 
 # insert your own email for testing purposes
 VOLONTARIO_MODERATOR=s464956@wmi.amu.edu.pl
+
+MAINTENANCE_EMAILS=micmus4@st.amu.edu.pl,pawros1@st.amu.edu.pl,mikmum@st.amu.edu.pl,dawpyl@st.amu.edu.pl

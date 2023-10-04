@@ -33,6 +33,9 @@ import { ErrorDialogModule } from 'src/app/shared/features/error-dialog/error-di
 import { VolontarioGlobalErrorHandlerInterceptor } from 'src/app/core/interceptor/VolontarioGlobalErrorHandler.interceptor';
 import { ManageInstitutionWorkersModule } from 'src/app/features/manage-institution-workers/manage-institution-workers.module';
 import { UserDetailsModule } from 'src/app/features/user-details/user-details.module';
+import { ReportIssueModule } from './features/report-issue/report-issue.module';
+import { FileUploaderModule } from './shared/features/file-uplodaer/file-uploader.module';
+import { DragAndDropModule } from './shared/features/drag-and-drop/drag-and-drop.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -66,6 +69,9 @@ import { UserDetailsModule } from 'src/app/features/user-details/user-details.mo
     ManageInstitutionWorkersModule,
     ErrorDialogModule,
     UserDetailsModule,
+    ReportIssueModule,
+    FileUploaderModule,
+    DragAndDropModule,
   ],
   providers: [
     {

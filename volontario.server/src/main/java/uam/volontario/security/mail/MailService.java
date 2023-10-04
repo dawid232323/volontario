@@ -3,7 +3,10 @@ package uam.volontario.security.mail;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
@@ -43,23 +47,33 @@ public class MailService
 
     private final String volontarioModeratorAddress; //TODO remove after implementing moderator roles properly
 
+    private final InternetAddress[] maintenanceEmails;
+
     /**
      * CDI constructor.
-     * 
+     *
      * @param aJavaMailSender
      *                            mail sender.
-     * @param aNoReplyVolontarioEmailAddress no reply volontario email address
+     *
+     * @param aNoReplyVolontarioEmailAddress no reply volontario email address.
+     *
+     * @param aMaintenanceEmails comma seperated email addresses of system maintenance group.
+     *
+     * @param aModeratorAddress email address of moderator.
+     *
+     * @throws AddressException on error when parsing maintenance email addresses.
      */
     @Autowired
     public MailService( final JavaMailSender aJavaMailSender,
                         final @Value("${volontarioNoReplyEmailAddress}") String aNoReplyVolontarioEmailAddress,
-                        final @Value("${volontarioModeratorEmailPlaceholder}") String aModeratorAddress )
-    {
+                        final @Value("${volontarioModeratorEmailPlaceholder}") String aModeratorAddress,
+                        final @Value("${maintenanceEmails}") String aMaintenanceEmails ) throws AddressException {
         mailSender = aJavaMailSender;
         noReplyVolontarioEmailAddress = aNoReplyVolontarioEmailAddress;
         instantFormatter = DateTimeFormatter.ofPattern( "dd.MM.yyyy" )
                 .withZone( ZoneId.systemDefault() );
         volontarioModeratorAddress = aModeratorAddress;
+        maintenanceEmails = InternetAddress.parse( aMaintenanceEmails );
     }
 
     /**
@@ -385,6 +399,42 @@ public class MailService
                 aInstitutionEmployee.getInstitution().getId(),
                 VolontarioBase64Coder.encode( aInstitutionEmployee.getContactEmailAddress() ) ) );
         helper.setText( content, true );
+
+        return trySendMail( () -> mailSender.send( message ) );
+    }
+
+    /**
+     * Sens email about report with details to system maintenance group.
+     *
+     * @param aReportName name of report.
+     *
+     * @param aReportDescription description of report.
+     *
+     * @param aAttachments attachments linked to the report.
+     *
+     * @return true if email was successfully sent, false otherwise.
+     *
+     */
+    public boolean sendMailAboutReportBeingMade( final String aReportName, final String aReportDescription,
+                                                 final List< MultipartFile > aAttachments ) throws
+            MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        final String sender = "test-sender";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( maintenanceEmails );
+        helper.setSubject( aReportName );
+
+        helper.setText( aReportDescription, true );
+
+        for( final MultipartFile attachment : aAttachments )
+        {
+            helper.addAttachment( ObjectUtils.defaultIfNull( attachment.getOriginalFilename(), "attachment" ),
+                    attachment, ObjectUtils.defaultIfNull( attachment.getContentType(), "image/*" ) );
+        }
 
         return trySendMail( () -> mailSender.send( message ) );
     }
