@@ -405,6 +405,8 @@ public class DtoService
                     .domainEmailAddress( volunteerData.getDomainEmailAddress() )
                     .interestCategories( volunteerData.getInterestCategories() )
                     .participationMotivation( volunteerData.getParticipationMotivation() )
+                    .experienceDescription( volunteerData.getExperienceDescription() )
+                    .interests( volunteerData.getInterests() )
                     .fieldOfStudy( volunteerData.getFieldOfStudy() );
         }
         if( aUser.getInstitution() != null )

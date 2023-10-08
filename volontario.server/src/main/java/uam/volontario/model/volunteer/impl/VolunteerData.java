@@ -64,6 +64,14 @@ public class VolunteerData implements VolontarioDomainElementIf
     )
     private List< InterestCategory > interestCategories;
 
+    @Column( length = 1500 )
+    @Size( max = 1500 )
+    private String interests;
+
+    @Column( length = 1500 )
+    @Size( max = 1500 )
+    private String experienceDescription;
+
     @Override
     public int hashCode()
     {

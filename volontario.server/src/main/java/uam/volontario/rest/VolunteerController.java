@@ -7,7 +7,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.VolunteerPatchInfoDto;
+import uam.volontario.exception.user.RoleMismatchException;
 import uam.volontario.handler.VolunteerHandler;
+
+import java.util.Map;
 
 /**
  * Controller for API related to {@linkplain uam.volontario.model.common.impl.User}s
@@ -72,5 +75,47 @@ public class VolunteerController
                                                            @RequestBody final VolunteerPatchInfoDto aPatchDto )
     {
         return volunteerHandler.updateVolunteerInformation( aVolunteerId, aPatchDto );
+    }
+
+    /**
+     * Endpoint that updates volunteer interest data.
+     *
+     * @param aVolunteerId primary key of volunteer to be updated
+     *
+     * @param aInterestsBody json body where key <strong>interests</strong> contains value interests description value
+     *
+     * @return response entity with status 200 if everything is saved correctly
+     *
+     * @throws RoleMismatchException when user with given id
+     *                              does not have {@linkplain uam.volontario.model.common.UserRole#VOLUNTEER} role
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteers( authentication.principal )" )
+    @PatchMapping( "/{volunteerId}/interests" )
+    public ResponseEntity< ? > updateVolunteerInterests( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                                         @RequestBody final Map<String, String> aInterestsBody )
+    {
+        return this.volunteerHandler
+                .patchVolunteerInterests( aVolunteerId, aInterestsBody.get( "interests" ) );
+    }
+
+    /**
+     * Endpoint that updates volunteer experience description data.
+     *
+     * @param aVolunteerId primary key of volunteer to be updated
+     *
+     * @param aInterestsBody json body where key <strong>experienceDescription</strong> contains value experience description value
+     *
+     * @return response entity with status 200 if everything is saved correctly
+     *
+     * @throws RoleMismatchException when user with given id
+     *                              does not have {@linkplain uam.volontario.model.common.UserRole#VOLUNTEER} role
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteers( authentication.principal )" )
+    @PatchMapping( "/{volunteerId}/experience-description" )
+    public ResponseEntity< ? > updateVolunteerExperienceDescription( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                                         @RequestBody final Map<String, String> aInterestsBody )
+    {
+        return this.volunteerHandler
+                .patchVolunteerExperienceDescription( aVolunteerId, aInterestsBody.get( "experienceDescription" ) );
     }
 }

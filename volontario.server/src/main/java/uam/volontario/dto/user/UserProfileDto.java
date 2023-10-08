@@ -23,6 +23,8 @@ public class UserProfileDto
     private String domainEmailAddress;
     private String participationMotivation;
     private String fieldOfStudy;
+    private String interests;
+    private String experienceDescription;
     private List<String> userRoles;
     private ExperienceLevelDto experienceLevel;
     private List< InterestCategory > interestCategories;

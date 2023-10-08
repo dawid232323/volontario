@@ -1,5 +1,6 @@
 package uam.volontario.handler;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.VolunteerPatchInfoDto;
 import uam.volontario.dto.convert.DtoService;
+import uam.volontario.exception.user.RoleMismatchException;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.volunteer.impl.VolunteerData;
@@ -192,5 +194,56 @@ public class VolunteerHandler
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
+    }
+
+    /**
+     * Edits volunteer interests.
+     *
+     * @param aUserId id of volunteer to edit
+     *
+     * @param interests string with interests description
+     *
+     * @return response entity with status 200 if everything is saved correctly
+     */
+    public ResponseEntity< ? > patchVolunteerInterests( final Long aUserId, final String interests )
+    {
+        final User user = this.resolveVolunteer( aUserId );
+        user.getVolunteerData().setInterests( interests );
+        this.userService.saveOrUpdate( user );
+        return ResponseEntity.ok( user );
+    }
+
+    /**
+     * Edits volunteer experience description.
+     *
+     * @param aUserId id of volunteer to edit
+     *
+     * @param experienceDescription string with experience description
+     *
+     * @return response entity with status 200 if everything is saved correctly
+     */
+    public ResponseEntity< ? > patchVolunteerExperienceDescription( final Long aUserId,
+                                                                    final String experienceDescription )
+    {
+        final User user = this.resolveVolunteer( aUserId );
+        user.getVolunteerData().setExperienceDescription( experienceDescription );
+        this.userService.saveOrUpdate( user );
+        return ResponseEntity.ok( user );
+    }
+
+    private User resolveVolunteer( final Long aVolunteerId )
+    {
+        final Optional< User > optionalUser = this.userService.tryToFindById( aVolunteerId );
+        if ( optionalUser.isEmpty() )
+        {
+            throw new EntityNotFoundException();
+        }
+        final User user = optionalUser.get();
+        if( !user.hasUserRole( UserRole.VOLUNTEER ) )
+        {
+            throw new RoleMismatchException( String
+                    .format( "User with username %s is not a volunteer", user.getUsername() ) );
+        }
+        return user;
     }
 }

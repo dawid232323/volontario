@@ -506,7 +506,9 @@ CREATE TABLE public.volunteer_data (
                                        domain_email_address character varying(255),
                                        participation_motivation character varying(1500),
                                        volunteer_experience_id bigint,
-                                       field_of_study character varying(255)
+                                       field_of_study character varying(255),
+                                       interests character varying(1500),
+                                       experience_description character varying(1500)
 );
 
 
