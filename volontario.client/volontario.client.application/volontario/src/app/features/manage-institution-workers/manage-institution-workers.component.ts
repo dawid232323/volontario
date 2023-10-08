@@ -3,7 +3,10 @@ import { InstitutionService } from 'src/app/core/service/institution.service';
 import { UserService } from 'src/app/core/service/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstitutionWorker, User } from 'src/app/core/model/user.model';
-import { Institution, RegisterInstitutionEmployeeDto } from 'src/app/core/model/institution.model';
+import {
+  Institution,
+  RegisterInstitutionEmployeeDto,
+} from 'src/app/core/model/institution.model';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import {
   InstitutionWorkersListComponent,
@@ -41,7 +44,8 @@ export class ManageInstitutionWorkersComponent implements OnInit {
     private userService: UserService,
     private dialog: MatDialog
   ) {
-    this._institutionId = +this.activatedRoute.snapshot.params['institution_id'];
+    this._institutionId =
+      +this.activatedRoute.snapshot.params['institution_id'];
   }
 
   ngOnInit(): void {
@@ -76,19 +80,38 @@ export class ManageInstitutionWorkersComponent implements OnInit {
     const initialData: ConfirmationAlertInitialData = {
       confirmationMessage: `Czy na pewno chcesz zmienić rolę ${event.worker.firstName} ${event.worker.lastName}?`,
     };
-    const dialogRef = this.dialog.open(ConfirmationAlertComponent, { data: initialData });
-    const confirmationResult: ConfirmationAlertResultIf = await firstValueFrom(dialogRef.afterClosed());
-    if (confirmationResult.confirmationAlertResult !== ConfirmationAlertResult.Accept) {
+    const dialogRef = this.dialog.open(ConfirmationAlertComponent, {
+      data: initialData,
+    });
+    const confirmationResult: ConfirmationAlertResultIf = await firstValueFrom(
+      dialogRef.afterClosed()
+    );
+    if (
+      confirmationResult.confirmationAlertResult !==
+      ConfirmationAlertResult.Accept
+    ) {
       return;
     }
-    this.institutionService.changeInstitutionWorkerRole(event.worker.id, this._institutionId, event.operation).subscribe(async () => {
-      this._institutionWorkers = await firstValueFrom(this.institutionService.getInstitutionWorkers(this._institutionId));
-    });
+    this.institutionService
+      .changeInstitutionWorkerRole(
+        event.worker.id,
+        this._institutionId,
+        event.operation
+      )
+      .subscribe(async () => {
+        this._institutionWorkers = await firstValueFrom(
+          this.institutionService.getInstitutionWorkers(this._institutionId)
+        );
+      });
   }
 
   public async onAddWorkerButtonClicked() {
-    const dialogRef = this.dialog.open(AddEmployeeFormComponent, { data: { institutionId: this._institutionId } });
-    const formResult: RegisterInstitutionEmployeeDto = await firstValueFrom(dialogRef.afterClosed());
+    const dialogRef = this.dialog.open(AddEmployeeFormComponent, {
+      data: { institutionId: this._institutionId },
+    });
+    const formResult: RegisterInstitutionEmployeeDto = await firstValueFrom(
+      dialogRef.afterClosed()
+    );
     if (isNil(formResult.institutionId)) {
       return;
     }
@@ -99,7 +122,9 @@ export class ManageInstitutionWorkersComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         if (error.status === 207) {
-          alert('Konto użytkownika zostało stworzone poprawnie, ale nie została wysłana do niego wiadomość email. Skontaktuj się z administracją');
+          alert(
+            'Konto użytkownika zostało stworzone poprawnie, ale nie została wysłana do niego wiadomość email. Skontaktuj się z administracją'
+          );
         } else {
           alert(JSON.stringify(error.error));
         }

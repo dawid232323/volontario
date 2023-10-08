@@ -9,7 +9,14 @@ import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [AddEmployeeFormComponent],
-  imports: [CommonModule, MatDialogModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   exports: [AddEmployeeFormComponent],
 })
 export class AddEmployeeFormModule {}

@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { InstitutionService } from 'src/app/core/service/institution.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Institution } from 'src/app/core/model/institution.model';
-import { AdvertisementFilterIf, AdvertisementService, AdvertisementVisibilityEnum } from 'src/app/core/service/advertisement.service';
+import {
+  AdvertisementFilterIf,
+  AdvertisementService,
+  AdvertisementVisibilityEnum,
+} from 'src/app/core/service/advertisement.service';
 import { forkJoin } from 'rxjs';
 import { AdvertisementPreview } from 'src/app/core/model/advertisement.model';
 import { UserService } from 'src/app/core/service/user.service';
@@ -59,7 +63,8 @@ export class InstitutionDetailsComponent implements OnInit {
   }
 
   private setInitialData() {
-    this._institutionId = +this.activatedRoute.snapshot.params['institution_id'];
+    this._institutionId =
+      +this.activatedRoute.snapshot.params['institution_id'];
     const offerQueryParams = this.getQueryParams();
     forkJoin([
       this.institutionService.getInstitutionDetails(this._institutionId),
@@ -70,7 +75,11 @@ export class InstitutionDetailsComponent implements OnInit {
         this._loadedInstitution = institutionData;
         this._offers = offers.content;
         this._loggedUser = userData;
-        this._canManageInstitution = this.institutionService.canManageInstitution(this._loggedUser!, this._loadedInstitution!);
+        this._canManageInstitution =
+          this.institutionService.canManageInstitution(
+            this._loggedUser!,
+            this._loadedInstitution!
+          );
       },
       () => this.router.navigate(['home'])
     );

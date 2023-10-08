@@ -54,12 +54,20 @@ export class AdvertisementService {
     );
   }
 
-  public createNewAdvertisement(body: AdvertisementUpdateCreateDto): Observable<any> {
+  public createNewAdvertisement(
+    body: AdvertisementUpdateCreateDto
+  ): Observable<any> {
     return this.restService.post(EndpointUrls.advertisementResource, body);
   }
 
-  public updateAdvertisement(advertisementId: number, body: AdvertisementUpdateCreateDto): Observable<any> {
-    return this.restService.put(`${EndpointUrls.advertisementResource}/${advertisementId}`, body);
+  public updateAdvertisement(
+    advertisementId: number,
+    body: AdvertisementUpdateCreateDto
+  ): Observable<any> {
+    return this.restService.put(
+      `${EndpointUrls.advertisementResource}/${advertisementId}`,
+      body
+    );
   }
 
   public getAdvertisementPreviews(
@@ -77,16 +85,32 @@ export class AdvertisementService {
       fromObject: { page: pageNumber, size: pageSize, ...(<any>filters) },
     });
     const options: HttpOptionsInterface = { params: params };
-    return this.restService.get(EndpointUrls.advertisementSearch, options).pipe(map(result => <PageableModelInterface<AdvertisementPreview>>result));
-  }
-
-  public getAdvertisement(advertisementId: number): Observable<AdvertisementDto> {
-    return this.restService.get(`${EndpointUrls.advertisementDetails}/${advertisementId}`).pipe(map(result => AdvertisementDto.fromPayload(result)));
-  }
-
-  public changeOfferVisibility(offerId: number, visibilityIf: OfferVisibilityInterface): Observable<AdvertisementPreview> {
     return this.restService
-      .patch(EndpointUrls.advertisementChangeVisibilityResource.concat(`/${offerId}`), visibilityIf)
+      .get(EndpointUrls.advertisementSearch, options)
+      .pipe(
+        map(result => <PageableModelInterface<AdvertisementPreview>>result)
+      );
+  }
+
+  public getAdvertisement(
+    advertisementId: number
+  ): Observable<AdvertisementDto> {
+    return this.restService
+      .get(`${EndpointUrls.advertisementDetails}/${advertisementId}`)
+      .pipe(map(result => AdvertisementDto.fromPayload(result)));
+  }
+
+  public changeOfferVisibility(
+    offerId: number,
+    visibilityIf: OfferVisibilityInterface
+  ): Observable<AdvertisementPreview> {
+    return this.restService
+      .patch(
+        EndpointUrls.advertisementChangeVisibilityResource.concat(
+          `/${offerId}`
+        ),
+        visibilityIf
+      )
       .pipe(map(result => AdvertisementPreview.fromPayload(result)));
   }
 
@@ -97,7 +121,9 @@ export class AdvertisementService {
    *
    * @return returns valid dto that can be processed later on
    */
-  public getAdvertisementDtoFromValue(value: any): AdvertisementUpdateCreateDto {
+  public getAdvertisementDtoFromValue(
+    value: any
+  ): AdvertisementUpdateCreateDto {
     return AdvertisementDtoBuilder.builder()
       .setContactPersonId(value.contactPerson)
       .setOfferTitle(value.title)
@@ -124,17 +150,26 @@ export class AdvertisementService {
     this._offerListQueryParams = value;
   }
 
-  public canManageOffer(advertisement: AdvertisementDto | null, loggedUser?: User): boolean {
+  public canManageOffer(
+    advertisement: AdvertisementDto | null,
+    loggedUser?: User
+  ): boolean {
     if (isNil(loggedUser) || isNil(advertisement)) {
       return false;
     }
     if (loggedUser.hasUserRoles([UserRoleEnum.Admin, UserRoleEnum.Moderator])) {
       return true;
     }
-    if (loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin) && advertisement.institutionId === loggedUser.institution?.id) {
+    if (
+      loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin) &&
+      advertisement.institutionId === loggedUser.institution?.id
+    ) {
       return true;
     }
-    if (loggedUser.hasUserRole(UserRoleEnum.InstitutionWorker) && advertisement.contactPerson.id === loggedUser.id) {
+    if (
+      loggedUser.hasUserRole(UserRoleEnum.InstitutionWorker) &&
+      advertisement.contactPerson.id === loggedUser.id
+    ) {
       return true;
     }
     return false;

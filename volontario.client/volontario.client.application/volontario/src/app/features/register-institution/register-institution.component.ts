@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { InstitutionService } from 'src/app/core/service/institution.service';
 import { arrayLengthValidator } from 'src/app/utils/validator.utils';
 
@@ -15,20 +21,39 @@ export class RegisterInstitutionComponent implements OnInit {
   isPerformingRegistration: boolean = false;
 
   successTitle = 'Wniosek złożony pomyślnie';
-  successContent = 'Wniosek o rejestrację instytucji został złożony pomyślnie! Nasi moderatorzy rozpatrzą go w czasie do 5 dni roboczych.';
+  successContent =
+    'Wniosek o rejestrację instytucji został złożony pomyślnie! Nasi moderatorzy rozpatrzą go w czasie do 5 dni roboczych.';
   buttonText = 'Strona główna';
 
-  constructor(private formBuilder: FormBuilder, private institutionService: InstitutionService) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private institutionService: InstitutionService
+  ) {}
 
   ngOnInit(): void {
     this.basicInfoFormGroup = this.formBuilder.group({
       institutionName: [null, [Validators.required, Validators.maxLength(50)]],
-      krsNumber: [null, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')]],
+      krsNumber: [
+        null,
+        [
+          Validators.minLength(10),
+          Validators.maxLength(10),
+          Validators.pattern('[0-9]*'),
+        ],
+      ],
       address: [null, [Validators.required]],
       registerPersonName: [null, [Validators.required]],
       registerPersonLastName: [null, [Validators.required]],
       registerPersonEmail: [null, [Validators.required, Validators.email]],
-      registerPersonPhoneNumber: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern('[0-9]*')]],
+      registerPersonPhoneNumber: [
+        null,
+        [
+          Validators.required,
+          Validators.minLength(9),
+          Validators.maxLength(9),
+          Validators.pattern('[0-9]*'),
+        ],
+      ],
     });
     this.additionalInfoFormGroup = this.formBuilder.group({
       institutionTags: [[], [Validators.required, arrayLengthValidator(10)]],
@@ -44,10 +69,11 @@ export class RegisterInstitutionComponent implements OnInit {
       return;
     }
     this.isPerformingRegistration = true;
-    const institutionModel = this.institutionService.getInstitutionModelFromFormData(
-      this.basicInfoFormGroup.value,
-      this.additionalInfoFormGroup.value
-    );
+    const institutionModel =
+      this.institutionService.getInstitutionModelFromFormData(
+        this.basicInfoFormGroup.value,
+        this.additionalInfoFormGroup.value
+      );
     this.institutionService.createInstitution(institutionModel).subscribe({
       next: this.onRegisterSuccess.bind(this),
       error: err => console.log(err),

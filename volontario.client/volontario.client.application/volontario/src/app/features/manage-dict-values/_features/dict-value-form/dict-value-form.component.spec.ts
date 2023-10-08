@@ -8,9 +8,8 @@ describe('DictValueFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DictValueFormComponent ]
-    })
-    .compileComponents();
+      declarations: [DictValueFormComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DictValueFormComponent);
     component = fixture.componentInstance;

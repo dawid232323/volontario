@@ -21,10 +21,17 @@ export class RegisterContactPersonComponent implements OnInit {
   private _isPerformingRegistration = false;
   private readonly _workingMode: EmployeeRegistrationModeEnum;
   private readonly _institutionId?: number;
-  constructor(private activatedRoute: ActivatedRoute, private institutionService: InstitutionService, private router: Router) {
-    this._workingMode = <EmployeeRegistrationModeEnum>this.activatedRoute.snapshot.data['mode'];
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private institutionService: InstitutionService,
+    private router: Router
+  ) {
+    this._workingMode = <EmployeeRegistrationModeEnum>(
+      this.activatedRoute.snapshot.data['mode']
+    );
     if (this._workingMode === EmployeeRegistrationModeEnum.RegisterEmployee) {
-      this._institutionId = this.activatedRoute.snapshot.params['institution_id'];
+      this._institutionId =
+        this.activatedRoute.snapshot.params['institution_id'];
     }
   }
 
@@ -40,11 +47,24 @@ export class RegisterContactPersonComponent implements OnInit {
     });
   }
 
-  private getSubmitObservable(registerIf: SetPasswordInterface): Observable<any> | null {
-    if (this._workingMode === EmployeeRegistrationModeEnum.RegisterContactPerson) {
-      return this.institutionService.registerContactPerson(this.token, registerIf);
-    } else if (this._workingMode === EmployeeRegistrationModeEnum.RegisterEmployee) {
-      return this.institutionService.setNewEmployeePassword(this._institutionId!, this.token, registerIf);
+  private getSubmitObservable(
+    registerIf: SetPasswordInterface
+  ): Observable<any> | null {
+    if (
+      this._workingMode === EmployeeRegistrationModeEnum.RegisterContactPerson
+    ) {
+      return this.institutionService.registerContactPerson(
+        this.token,
+        registerIf
+      );
+    } else if (
+      this._workingMode === EmployeeRegistrationModeEnum.RegisterEmployee
+    ) {
+      return this.institutionService.setNewEmployeePassword(
+        this._institutionId!,
+        this.token,
+        registerIf
+      );
     }
     return null;
   }

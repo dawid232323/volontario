@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { InstitutionVerifyComponent } from 'src/app/features/institution-verify/institution-verify.component';
-import { InstitutionRegistrationGuard, InstitutionRegistrationStage } from 'src/app/core/guard/institution-registration.guard';
+import {
+  InstitutionRegistrationGuard,
+  InstitutionRegistrationStage,
+} from 'src/app/core/guard/institution-registration.guard';
 import { RegisterInstitutionComponent } from 'src/app/features/register-institution/register-institution.component';
 import {
   EmployeeRegistrationModeEnum,
@@ -20,7 +23,10 @@ export const institutionRouting: Routes = [
     path: 'register-employee/:institution_id',
     component: RegisterContactPersonComponent,
     canActivate: [InstitutionRegistrationGuard],
-    data: { stage: InstitutionRegistrationStage.ContactPersonRegistration, mode: EmployeeRegistrationModeEnum.RegisterEmployee },
+    data: {
+      stage: InstitutionRegistrationStage.ContactPersonRegistration,
+      mode: EmployeeRegistrationModeEnum.RegisterEmployee,
+    },
   },
   {
     path: 'institution',
@@ -36,14 +42,20 @@ export const institutionRouting: Routes = [
         path: 'register-contact-person',
         component: RegisterContactPersonComponent,
         canActivate: [InstitutionRegistrationGuard],
-        data: { stage: InstitutionRegistrationStage.ContactPersonRegistration, mode: EmployeeRegistrationModeEnum.RegisterContactPerson },
+        data: {
+          stage: InstitutionRegistrationStage.ContactPersonRegistration,
+          mode: EmployeeRegistrationModeEnum.RegisterContactPerson,
+        },
       },
       {
         path: 'advertisement-panel',
         component: InstitutionAdvertisementPanelComponent,
         canActivate: [RouterGuard, RoleDependentGuard],
         data: {
-          roles: [UserRoleEnum.InstitutionWorker, UserRoleEnum.InstitutionAdmin],
+          roles: [
+            UserRoleEnum.InstitutionWorker,
+            UserRoleEnum.InstitutionAdmin,
+          ],
         },
       },
       {
@@ -51,8 +63,16 @@ export const institutionRouting: Routes = [
         component: InstitutionDetailsComponent,
         canActivate: [RouterGuard],
       },
-      { path: 'edit/:institution_id', component: InstitutionEditComponent, canActivate: [RouterGuard, InstitutionAdminGuard] },
-      { path: 'workers/:institution_id', component: ManageInstitutionWorkersComponent, canActivate: [RouterGuard, InstitutionAdminGuard] },
+      {
+        path: 'edit/:institution_id',
+        component: InstitutionEditComponent,
+        canActivate: [RouterGuard, InstitutionAdminGuard],
+      },
+      {
+        path: 'workers/:institution_id',
+        component: ManageInstitutionWorkersComponent,
+        canActivate: [RouterGuard, InstitutionAdminGuard],
+      },
     ],
   },
 ];

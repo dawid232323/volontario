@@ -1,7 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Institution, InstitutionInterface } from 'src/app/core/model/institution.model';
-import { arrayLengthValidator, hasMaxLengthError, hasRequiredError } from 'src/app/utils/validator.utils';
+import {
+  Institution,
+  InstitutionInterface,
+} from 'src/app/core/model/institution.model';
+import {
+  arrayLengthValidator,
+  hasMaxLengthError,
+  hasRequiredError,
+} from 'src/app/utils/validator.utils';
 import { isNil } from 'lodash';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -23,8 +30,14 @@ export class InstitutionEditFormComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) {
     this.institutionEditFormGroup = this.formBuilder.group({
       name: [null, [Validators.required, Validators.maxLength(100)]],
-      krsNumber: [null, [Validators.maxLength(10), Validators.pattern('[0-9]*')]],
-      headquartersAddress: [null, [Validators.required, Validators.maxLength(100)]],
+      krsNumber: [
+        null,
+        [Validators.maxLength(10), Validators.pattern('[0-9]*')],
+      ],
+      headquartersAddress: [
+        null,
+        [Validators.required, Validators.maxLength(100)],
+      ],
       tags: [[], [arrayLengthValidator(10)]],
       description: [null, [Validators.required, Validators.maxLength(500)]],
       localization: [null, [Validators.required, Validators.maxLength(100)]],
@@ -55,11 +68,15 @@ export class InstitutionEditFormComponent implements OnInit {
   }
 
   public hasRequiredError(formControlName: string): boolean {
-    return hasRequiredError(this.institutionEditFormGroup.controls[formControlName]);
+    return hasRequiredError(
+      this.institutionEditFormGroup.controls[formControlName]
+    );
   }
 
   public hasMaxLengthError(formControlName: string): string | undefined {
-    return hasMaxLengthError(this.institutionEditFormGroup.controls[formControlName]);
+    return hasMaxLengthError(
+      this.institutionEditFormGroup.controls[formControlName]
+    );
   }
 
   public get institutionTags() {
@@ -70,7 +87,10 @@ export class InstitutionEditFormComponent implements OnInit {
     const value = event.value;
     const input = event.input;
     if ((value || '').trim()) {
-      this.institutionTags?.setValue([...this.institutionTags?.value, value.trim()]);
+      this.institutionTags?.setValue([
+        ...this.institutionTags?.value,
+        value.trim(),
+      ]);
       this.institutionTags?.updateValueAndValidity();
       if (input) {
         input.value = '';
@@ -88,7 +108,10 @@ export class InstitutionEditFormComponent implements OnInit {
   }
 
   public onFormSubmit() {
-    const finalOutput = { ...this._institutionData, ...this.institutionEditFormGroup.value };
+    const finalOutput = {
+      ...this._institutionData,
+      ...this.institutionEditFormGroup.value,
+    };
     if (this.institutionEditFormGroup.valid) {
       this.formSubmit.emit(finalOutput);
     }

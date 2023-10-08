@@ -6,7 +6,10 @@ import { isNil } from 'lodash';
 @Component({
   selector: 'app-side-filter-panel',
   templateUrl: './side-filter-panel.component.html',
-  styleUrls: ['./side-filter-panel.component.scss', '../../../../shared/styles/material-styles.scss'],
+  styleUrls: [
+    './side-filter-panel.component.scss',
+    '../../../../shared/styles/material-styles.scss',
+  ],
 })
 export class SideFilterPanelComponent implements OnInit {
   @Input() interestCategories: InterestCategoryDTO[] = [];

@@ -24,7 +24,9 @@ export class InstitutionModelBuilder implements InstitutionInterface {
     return new InstitutionModelBuilder();
   }
 
-  public setContactPerson(contactPerson: InstitutionContactPersonModel): InstitutionModelBuilder {
+  public setContactPerson(
+    contactPerson: InstitutionContactPersonModel
+  ): InstitutionModelBuilder {
     this.contactPerson = contactPerson;
     return this;
   }

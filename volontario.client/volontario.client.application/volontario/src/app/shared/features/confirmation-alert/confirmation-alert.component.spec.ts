@@ -8,9 +8,8 @@ describe('ConfirmationAlertComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ConfirmationAlertComponent ]
-    })
-    .compileComponents();
+      declarations: [ConfirmationAlertComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmationAlertComponent);
     component = fixture.componentInstance;

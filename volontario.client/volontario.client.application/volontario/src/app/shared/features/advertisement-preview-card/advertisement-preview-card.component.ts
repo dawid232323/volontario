@@ -15,13 +15,17 @@ import { AdvertisementPreviewActionIf } from 'src/app/features/institution-adver
 @Component({
   selector: 'app-advertisement-preview-card',
   templateUrl: './advertisement-preview-card.component.html',
-  styleUrls: ['./advertisement-preview-card.component.scss', '../../styles/material-styles.scss'],
+  styleUrls: [
+    './advertisement-preview-card.component.scss',
+    '../../styles/material-styles.scss',
+  ],
 })
 export class AdvertisementPreviewCardComponent implements OnInit {
   @Input() advertisement: AdvertisementPreview | undefined = undefined;
   @Input() shouldShowContextMenu: boolean = false;
 
-  @Output() visibilityChangedEvent = new EventEmitter<AdvertisementPreviewActionIf>();
+  @Output() visibilityChangedEvent =
+    new EventEmitter<AdvertisementPreviewActionIf>();
   constructor(private router: Router, private matDialog: MatDialog) {}
 
   ngOnInit(): void {}
@@ -46,11 +50,15 @@ export class AdvertisementPreviewCardComponent implements OnInit {
     const dialogRef = this.matDialog.open(ConfirmationAlertComponent, {
       data: dialogData,
     });
-    dialogRef.afterClosed().subscribe({ next: this.onAfterDialogClosed.bind(this) });
+    dialogRef
+      .afterClosed()
+      .subscribe({ next: this.onAfterDialogClosed.bind(this) });
   }
 
   private onAfterDialogClosed(dialogResult: ConfirmationAlertResultIf) {
-    if (dialogResult.confirmationAlertResult === ConfirmationAlertResult.Accept) {
+    if (
+      dialogResult.confirmationAlertResult === ConfirmationAlertResult.Accept
+    ) {
       this.visibilityChangedEvent.emit({
         isHidden: !this.advertisement?.isHidden,
         advertisementId: this.advertisement!.id,

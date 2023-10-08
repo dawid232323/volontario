@@ -65,7 +65,9 @@ export class DictValueFormComponent implements OnInit {
       description: [null, [Validators.maxLength(100)]],
     });
     if (this.shouldShowDescription) {
-      this._dictValueFormGroup.controls['description'].addValidators(Validators.required);
+      this._dictValueFormGroup.controls['description'].addValidators(
+        Validators.required
+      );
       this._dictValueFormGroup.controls['description'].updateValueAndValidity();
     }
   }
@@ -74,9 +76,13 @@ export class DictValueFormComponent implements OnInit {
     if (this.data.operationType !== DictValueOperationTypeEnum.Edit) {
       return;
     }
-    this._dictValueFormGroup.controls['name'].setValue(this.data.operationData?.name);
+    this._dictValueFormGroup.controls['name'].setValue(
+      this.data.operationData?.name
+    );
     if (this.shouldShowDescription) {
-      this._dictValueFormGroup.controls['description'].setValue(this.data.operationData?.description);
+      this._dictValueFormGroup.controls['description'].setValue(
+        this.data.operationData?.description
+      );
     }
   }
 }

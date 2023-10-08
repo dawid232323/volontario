@@ -10,7 +10,15 @@ import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [InstitutionEditFormComponent],
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatIconModule, MatChipsModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatChipsModule,
+    MatButtonModule,
+  ],
   exports: [InstitutionEditFormComponent],
 })
 export class InstitutionEditFormModule {}

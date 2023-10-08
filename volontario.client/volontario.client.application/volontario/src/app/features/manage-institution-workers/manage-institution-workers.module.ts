@@ -9,7 +9,14 @@ import { AddEmployeeFormModule } from 'src/app/features/manage-institution-worke
 
 @NgModule({
   declarations: [ManageInstitutionWorkersComponent],
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatInputModule, InstitutionWorkersListModule, AddEmployeeFormModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    InstitutionWorkersListModule,
+    AddEmployeeFormModule,
+  ],
   exports: [ManageInstitutionWorkersComponent],
 })
 export class ManageInstitutionWorkersModule {}

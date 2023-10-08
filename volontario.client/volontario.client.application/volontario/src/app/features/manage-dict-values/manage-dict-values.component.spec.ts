@@ -8,9 +8,8 @@ describe('ManageDictValuesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ManageDictValuesComponent ]
-    })
-    .compileComponents();
+      declarations: [ManageDictValuesComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ManageDictValuesComponent);
     component = fixture.componentInstance;

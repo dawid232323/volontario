@@ -36,10 +36,16 @@ export class ConfirmationAlertComponent {
   private readonly _confirmButtonLabel: string;
   private readonly _cancelButtonLabel: string;
   private readonly _shouldAskForReason: boolean;
-  constructor(public dialogRef: MatDialogRef<ConfirmationAlertComponent>, @Inject(MAT_DIALOG_DATA) public data: ConfirmationAlertInitialData) {
-    this._confirmationMessage = data?.confirmationMessage || this._defaultConfirmationMessage;
-    this._confirmButtonLabel = data?.confirmButtonLabel || this._defaultConfirmButtonLabel;
-    this._cancelButtonLabel = data?.cancelButtonLabel || this._defaultCancelButtonLabel;
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmationAlertComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmationAlertInitialData
+  ) {
+    this._confirmationMessage =
+      data?.confirmationMessage || this._defaultConfirmationMessage;
+    this._confirmButtonLabel =
+      data?.confirmButtonLabel || this._defaultConfirmButtonLabel;
+    this._cancelButtonLabel =
+      data?.cancelButtonLabel || this._defaultCancelButtonLabel;
     this._shouldAskForReason = data?.shouldAskForReason || false;
   }
 
@@ -70,7 +76,9 @@ export class ConfirmationAlertComponent {
     if (!this.isDialogValid()) {
       return;
     }
-    const result: ConfirmationAlertResultIf = { confirmationAlertResult: ConfirmationAlertResult.Accept };
+    const result: ConfirmationAlertResultIf = {
+      confirmationAlertResult: ConfirmationAlertResult.Accept,
+    };
     if (this._shouldAskForReason) {
       result.resultReason = this.confirmationReason;
     }

@@ -14,7 +14,11 @@ export class InstitutionEditComponent implements OnInit {
   private _isLoadingData = true;
   private _institutionDetails?: Institution;
 
-  constructor(private institutionService: InstitutionService, private activatedRoute: ActivatedRoute, private router: Router) {
+  constructor(
+    private institutionService: InstitutionService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
+  ) {
     this._institutionId = this.activatedRoute.snapshot.params['institution_id'];
   }
 
@@ -31,18 +35,22 @@ export class InstitutionEditComponent implements OnInit {
   }
 
   public onEditFormSubmit(institutionData: Institution) {
-    this.institutionService.editInstitutionData(this._institutionId, institutionData).subscribe({
-      next: () => {
-        this.router.navigate(['institution', this._institutionId]);
-      },
-      error: (error: HttpErrorResponse) => alert(error.error),
-    });
+    this.institutionService
+      .editInstitutionData(this._institutionId, institutionData)
+      .subscribe({
+        next: () => {
+          this.router.navigate(['institution', this._institutionId]);
+        },
+        error: (error: HttpErrorResponse) => alert(error.error),
+      });
   }
 
   private setFormData() {
-    this.institutionService.getInstitutionDetails(this._institutionId).subscribe(institutionResult => {
-      this._institutionDetails = institutionResult;
-      this._isLoadingData = false;
-    });
+    this.institutionService
+      .getInstitutionDetails(this._institutionId)
+      .subscribe(institutionResult => {
+        this._institutionDetails = institutionResult;
+        this._isLoadingData = false;
+      });
   }
 }

@@ -1,53 +1,97 @@
 <div class="flex flex-col w-full py-10 px-5">
-  <form class="flex flex-col space-y-6" [formGroup]="institutionEditFormGroup" (ngSubmit)="onFormSubmit()">
+  <form
+    class="flex flex-col space-y-6"
+    [formGroup]="institutionEditFormGroup"
+    (ngSubmit)="onFormSubmit()">
     <div class="flex flex-col w-full">
-      <mat-form-field class="flex flex-col items-stretch" appearance="outline" color="accent">
+      <mat-form-field
+        class="flex flex-col items-stretch"
+        appearance="outline"
+        color="accent">
         <mat-label>Nazwa</mat-label>
         <input matInput formControlName="name" />
         <mat-icon matPrefix color="accent">badge</mat-icon>
         <mat-hint *ngIf="institutionEditFormGroup.controls['name'].invalid">
           <span *ngIf="hasRequiredError('name')"> Pole jest wymagane </span>
-          <span *ngIf="!isNil(hasMaxLengthError('name'))">Maksymalna długość pola to {{ hasMaxLengthError('name') }} znaków</span>
+          <span *ngIf="!isNil(hasMaxLengthError('name'))"
+            >Maksymalna długość pola to
+            {{ hasMaxLengthError('name') }} znaków</span
+          >
         </mat-hint>
       </mat-form-field>
     </div>
-    <div class="flex flex-col lg:flex-row w-full lg:space-x-6 space-x-0 space-y-6 lg:space-y-0">
-      <mat-form-field class="flex flex-col items-stretch w-full" appearance="outline" color="accent">
+    <div
+      class="flex flex-col lg:flex-row w-full lg:space-x-6 space-x-0 space-y-6 lg:space-y-0">
+      <mat-form-field
+        class="flex flex-col items-stretch w-full"
+        appearance="outline"
+        color="accent">
         <mat-label>Miejsce prowadzenia działalnośći</mat-label>
         <mat-icon matPrefix color="accent">share_location</mat-icon>
         <input matInput formControlName="localization" />
-        <mat-hint *ngIf="institutionEditFormGroup.controls['localization'].invalid">
-          <span *ngIf="hasRequiredError('localization')"> Pole jest wymagane </span>
-          <span *ngIf="!isNil(hasMaxLengthError('localization'))">Maksymalna długość pola to {{ hasMaxLengthError('localization') }} znaków</span>
+        <mat-hint
+          *ngIf="institutionEditFormGroup.controls['localization'].invalid">
+          <span *ngIf="hasRequiredError('localization')">
+            Pole jest wymagane
+          </span>
+          <span *ngIf="!isNil(hasMaxLengthError('localization'))"
+            >Maksymalna długość pola to
+            {{ hasMaxLengthError('localization') }} znaków</span
+          >
         </mat-hint>
       </mat-form-field>
-      <mat-form-field class="flex flex-col items-stretch w-full" appearance="outline" color="accent">
+      <mat-form-field
+        class="flex flex-col items-stretch w-full"
+        appearance="outline"
+        color="accent">
         <mat-label>Numer krs</mat-label>
         <mat-icon matPrefix color="accent">123</mat-icon>
         <input matInput formControlName="krsNumber" />
-        <mat-hint *ngIf="institutionEditFormGroup.controls['krsNumber'].invalid">
-          <span *ngIf="!isNil(hasMaxLengthError('krsNumber'))">Maksymalna długość pola to {{ hasMaxLengthError('krsNumber') }} znaków</span>
-        </mat-hint>
-      </mat-form-field>
-    </div>
-    <div class="flex flex-col w-full">
-      <mat-form-field class="flex flex-col items-stretch" appearance="outline" color="accent">
-        <mat-label>Adres siedziby</mat-label>
-        <mat-icon matPrefix color="accent">location_on</mat-icon>
-        <input matInput formControlName="headquartersAddress" />
-        <mat-hint *ngIf="institutionEditFormGroup.controls['headquartersAddress'].invalid">
-          <span *ngIf="hasRequiredError('headquartersAddress')"> Pole jest wymagane </span>
-          <span *ngIf="!isNil(hasMaxLengthError('headquartersAddress'))"
-            >Maksymalna długość pola to {{ hasMaxLengthError('headquartersAddress') }} znaków</span
+        <mat-hint
+          *ngIf="institutionEditFormGroup.controls['krsNumber'].invalid">
+          <span *ngIf="!isNil(hasMaxLengthError('krsNumber'))"
+            >Maksymalna długość pola to
+            {{ hasMaxLengthError('krsNumber') }} znaków</span
           >
         </mat-hint>
       </mat-form-field>
     </div>
     <div class="flex flex-col w-full">
-      <mat-form-field appearance="outline" color="accent" #institutionTagsInput class="flex flex-col items-stretch">
+      <mat-form-field
+        class="flex flex-col items-stretch"
+        appearance="outline"
+        color="accent">
+        <mat-label>Adres siedziby</mat-label>
+        <mat-icon matPrefix color="accent">location_on</mat-icon>
+        <input matInput formControlName="headquartersAddress" />
+        <mat-hint
+          *ngIf="
+            institutionEditFormGroup.controls['headquartersAddress'].invalid
+          ">
+          <span *ngIf="hasRequiredError('headquartersAddress')">
+            Pole jest wymagane
+          </span>
+          <span *ngIf="!isNil(hasMaxLengthError('headquartersAddress'))"
+            >Maksymalna długość pola to
+            {{ hasMaxLengthError('headquartersAddress') }} znaków</span
+          >
+        </mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="flex flex-col w-full">
+      <mat-form-field
+        appearance="outline"
+        color="accent"
+        #institutionTagsInput
+        class="flex flex-col items-stretch">
         <mat-icon matPrefix color="accent">label</mat-icon>
         <mat-chip-list #tagsChipList formControlName="tags">
-          <mat-chip color="accent" *ngFor="let tag of institutionTags?.value" [selectable]="true" [removable]="true" (removed)="removeTag(tag)">
+          <mat-chip
+            color="accent"
+            *ngFor="let tag of institutionTags?.value"
+            [selectable]="true"
+            [removable]="true"
+            (removed)="removeTag(tag)">
             {{ tag }}
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
@@ -59,25 +103,46 @@
             (matChipInputTokenEnd)="addTag($event)" />
         </mat-chip-list>
         <mat-hint
-          >Podaj maksymalnie 10 przedmiotów działalności instytucji w formie pojedynczych tagów, oddzielonych klawiszem enter lub
+          >Podaj maksymalnie 10 przedmiotów działalności instytucji w formie
+          pojedynczych tagów, oddzielonych klawiszem enter lub
           przecinkiem</mat-hint
         >
       </mat-form-field>
     </div>
     <div class="flex flex-col lg:flex-row w-full lg:space-x-6 space-x-0">
-      <mat-form-field class="flex flex-col items-stretch w-full" appearance="outline" color="accent">
+      <mat-form-field
+        class="flex flex-col items-stretch w-full"
+        appearance="outline"
+        color="accent">
         <mat-label>Opis</mat-label>
         <mat-icon matPrefix color="accent">description</mat-icon>
-        <textarea class="w-full" matInput formControlName="description"></textarea>
-        <mat-hint *ngIf="institutionEditFormGroup.controls['description'].invalid">
-          <span *ngIf="hasRequiredError('description')"> Pole jest wymagane </span>
-          <span *ngIf="!isNil(hasMaxLengthError('description'))">Maksymalna długość pola to {{ hasMaxLengthError('description') }} znaków</span>
+        <textarea
+          class="w-full"
+          matInput
+          formControlName="description"></textarea>
+        <mat-hint
+          *ngIf="institutionEditFormGroup.controls['description'].invalid">
+          <span *ngIf="hasRequiredError('description')">
+            Pole jest wymagane
+          </span>
+          <span *ngIf="!isNil(hasMaxLengthError('description'))"
+            >Maksymalna długość pola to
+            {{ hasMaxLengthError('description') }} znaków</span
+          >
         </mat-hint>
       </mat-form-field>
     </div>
-    <div class="flex flec-col lg:flex-row w-full items-stretch lg:space-x-3 spacex-0 lg:space-y-0 space-y-0">
+    <div
+      class="flex flec-col lg:flex-row w-full items-stretch lg:space-x-3 spacex-0 lg:space-y-0 space-y-0">
       <button class="w-full" mat-raised-button color="warn">Anuluj</button>
-      <button class="w-full" mat-raised-button color="primary" [disabled]="institutionEditFormGroup.invalid" type="submit">Zatwierdź</button>
+      <button
+        class="w-full"
+        mat-raised-button
+        color="primary"
+        [disabled]="institutionEditFormGroup.invalid"
+        type="submit">
+        Zatwierdź
+      </button>
     </div>
   </form>
 </div>

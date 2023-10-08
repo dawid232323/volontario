@@ -2,8 +2,14 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { forkJoin } from 'rxjs';
-import { AdvertisementFilterIf, AdvertisementService } from 'src/app/core/service/advertisement.service';
-import { AdvertisementPreview, AdvertisementType } from 'src/app/core/model/advertisement.model';
+import {
+  AdvertisementFilterIf,
+  AdvertisementService,
+} from 'src/app/core/service/advertisement.service';
+import {
+  AdvertisementPreview,
+  AdvertisementType,
+} from 'src/app/core/model/advertisement.model';
 import { UserService } from 'src/app/core/service/user.service';
 import { User } from 'src/app/core/model/user.model';
 import { PageableModel } from 'src/app/core/model/pageable.model';
@@ -13,7 +19,13 @@ import { isNil } from 'lodash';
 import { PageEvent } from '@angular/material/paginator';
 import * as moment from 'moment';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { addQueryParamFromDate, addQueryParamFromNumber, addQueryParamFromSet, addQueryParamFromString, updateActiveUrl } from '../../utils/url.util';
+import {
+  addQueryParamFromDate,
+  addQueryParamFromNumber,
+  addQueryParamFromSet,
+  addQueryParamFromString,
+  updateActiveUrl,
+} from '../../utils/url.util';
 import { HttpParams } from '@angular/common/http';
 
 @Component({
@@ -103,7 +115,11 @@ export class OfferListComponent implements OnInit {
   public onSelectionChanged() {
     const httpParams: Params = new HttpParams();
 
-    addQueryParamFromSet('interestCategories', this.selectedCategories, httpParams);
+    addQueryParamFromSet(
+      'interestCategories',
+      this.selectedCategories,
+      httpParams
+    );
     addQueryParamFromSet('offerTypes', this.selectedTypes, httpParams);
     addQueryParamFromNumber('page', this._selectedPageIndex, httpParams);
     addQueryParamFromNumber('pageSize', this._selectedPageSize, httpParams);
@@ -129,7 +145,9 @@ export class OfferListComponent implements OnInit {
     this.initStateFromQueryParams(urlParams);
   }
 
-  private initStateFromQueryParams(urlParams: Params | { [p: string]: string }) {
+  private initStateFromQueryParams(
+    urlParams: Params | { [p: string]: string }
+  ) {
     this.unsetInitialData();
 
     if (!isNil(urlParams['interestCategories'])) {
@@ -222,7 +240,8 @@ export class OfferListComponent implements OnInit {
   }
 
   private onMobileFilterClose(dialogFilters: OfferListDialogDataIf) {
-    const { typedText, dateFrom, dateTo, selectedCategories, selectedTypes } = dialogFilters;
+    const { typedText, dateFrom, dateTo, selectedCategories, selectedTypes } =
+      dialogFilters;
     this.typedText = typedText;
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;
@@ -233,11 +252,17 @@ export class OfferListComponent implements OnInit {
 
   private downloadOffers() {
     this.isLoadingData = true;
-    this.offerService.getAdvertisementPreviews(this.getListFilters(), this.pageIndex, this._selectedPageSize).subscribe(pagedPreviews => {
-      this._pageableResult = pagedPreviews;
-      this._offerPreviews = pagedPreviews.content;
-      this.isLoadingData = false;
-    });
+    this.offerService
+      .getAdvertisementPreviews(
+        this.getListFilters(),
+        this.pageIndex,
+        this._selectedPageSize
+      )
+      .subscribe(pagedPreviews => {
+        this._pageableResult = pagedPreviews;
+        this._offerPreviews = pagedPreviews.content;
+        this.isLoadingData = false;
+      });
   }
 
   public onClearFilters() {

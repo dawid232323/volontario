@@ -20,9 +20,14 @@ export class ErrorDialogComponent {
   private readonly _statusCode?: number;
   private readonly _errorMessage: string;
   private readonly _errorBody?: any;
-  constructor(@Inject(MAT_DIALOG_DATA) private initialData: ErrorDialogInitialData) {
-    this._dialogTitle = initialData.dialogTitle || 'Wystąpił nieoczekiwany błąd';
-    this._dialogMessage = initialData.dialogMessage || 'Spróbuj jeszcze raz lub skorzystaj z formularza zgłaszania błędów';
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private initialData: ErrorDialogInitialData
+  ) {
+    this._dialogTitle =
+      initialData.dialogTitle || 'Wystąpił nieoczekiwany błąd';
+    this._dialogMessage =
+      initialData.dialogMessage ||
+      'Spróbuj jeszcze raz lub skorzystaj z formularza zgłaszania błędów';
     this._errorMessage = initialData.error.message;
     if (initialData.error instanceof HttpErrorResponse) {
       this._statusCode = initialData.error.status;

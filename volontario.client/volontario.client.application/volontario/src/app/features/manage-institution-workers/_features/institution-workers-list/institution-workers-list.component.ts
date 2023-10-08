@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { InstitutionWorker, User } from 'src/app/core/model/user.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -28,7 +35,12 @@ export class InstitutionWorkersListComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   @ViewChild(MatSort) sort?: MatSort;
 
-  private _displayedColumns: string[] = ['firstName', 'lastName', 'role', 'menu'];
+  private _displayedColumns: string[] = [
+    'firstName',
+    'lastName',
+    'role',
+    'menu',
+  ];
   private readonly _dataSource: MatTableDataSource<InstitutionWorker>;
   constructor() {
     this._dataSource = new MatTableDataSource<InstitutionWorker>([]);
@@ -59,34 +71,56 @@ export class InstitutionWorkersListComponent implements AfterViewInit {
   }
 
   public getChangeRoleActionTitle(worker: InstitutionWorker): string {
-    if (worker.role?.toLowerCase() === UserRoles.InstitutionWorker.name.toLowerCase()) {
+    if (
+      worker.role?.toLowerCase() ===
+      UserRoles.InstitutionWorker.name.toLowerCase()
+    ) {
       return 'Nadaj uprawnienia administratora instytucji';
     }
     return 'Nadaj uprawnienia pracownika instytucji';
   }
 
   public canChangeRoles(worker: InstitutionWorker): boolean {
-    const adminsCount = this._institutionWorkers.reduce((accumulator, institutionWorker) => {
-      if (institutionWorker.role?.toLowerCase() === UserRoles.InstitutionAdmin.name.toLowerCase()) {
-        accumulator = accumulator + 1;
-      }
-      return accumulator;
-    }, 0);
+    const adminsCount = this._institutionWorkers.reduce(
+      (accumulator, institutionWorker) => {
+        if (
+          institutionWorker.role?.toLowerCase() ===
+          UserRoles.InstitutionAdmin.name.toLowerCase()
+        ) {
+          accumulator = accumulator + 1;
+        }
+        return accumulator;
+      },
+      0
+    );
     if (this.user?.id === worker.id) {
       return false;
     }
-    return !(adminsCount === 1 && worker.role?.toLowerCase() === UserRoles.InstitutionAdmin.name.toLowerCase());
+    return !(
+      adminsCount === 1 &&
+      worker.role?.toLowerCase() ===
+        UserRoles.InstitutionAdmin.name.toLowerCase()
+    );
   }
 
   public onChangeRoleActionClicked(worker: InstitutionWorker) {
     if (!this.canChangeRoles(worker)) {
       return;
     }
-    if (worker.role?.toLowerCase() === UserRoles.InstitutionAdmin.name.toLowerCase()) {
-      this.workerRoleChangeEvent.emit({ worker: worker, operation: InstitutionWorkerRoleChangeTypeEnum.MarkAsEmployee });
+    if (
+      worker.role?.toLowerCase() ===
+      UserRoles.InstitutionAdmin.name.toLowerCase()
+    ) {
+      this.workerRoleChangeEvent.emit({
+        worker: worker,
+        operation: InstitutionWorkerRoleChangeTypeEnum.MarkAsEmployee,
+      });
       return;
     }
-    this.workerRoleChangeEvent.emit({ worker: worker, operation: InstitutionWorkerRoleChangeTypeEnum.MarkAsAdmin });
+    this.workerRoleChangeEvent.emit({
+      worker: worker,
+      operation: InstitutionWorkerRoleChangeTypeEnum.MarkAsAdmin,
+    });
   }
 
   public addWorker(worker: InstitutionWorker) {

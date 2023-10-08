@@ -22,13 +22,18 @@ export class AddEmployeeFormComponent {
       institutionId: [data.institutionId],
       firstName: [null, [Validators.required, Validators.maxLength(100)]],
       lastName: [null, [Validators.required, Validators.maxLength(100)]],
-      phoneNumber: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+      phoneNumber: [
+        null,
+        [Validators.required, Validators.minLength(9), Validators.maxLength(9)],
+      ],
       contactEmail: [null, [Validators.required, Validators.email]],
     });
   }
 
   public onFormClose() {
-    const dto = RegisterInstitutionEmployeeDto.fromPayload(this.addEmployeeForm.value);
+    const dto = RegisterInstitutionEmployeeDto.fromPayload(
+      this.addEmployeeForm.value
+    );
     this.dialogRef.close(dto);
   }
 

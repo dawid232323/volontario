@@ -1,26 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersListComponent } from './users-list.component';
-import {MatTableModule} from "@angular/material/table";
-import {MatIconModule} from "@angular/material/icon";
-import {MatPaginatorModule} from "@angular/material/paginator";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatMenuModule} from "@angular/material/menu";
-
-
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
-  declarations: [
-    UsersListComponent
-  ],
+  declarations: [UsersListComponent],
   imports: [
     CommonModule,
     MatTableModule,
     MatIconModule,
     MatPaginatorModule,
     MatFormFieldModule,
-    MatMenuModule
+    MatMenuModule,
   ],
-  exports: [UsersListComponent]
+  exports: [UsersListComponent],
 })
-export class UsersListModule { }
+export class UsersListModule {}

@@ -20,7 +20,9 @@ export class InterestCategoryService extends AbstractDictionaryValueService<Dict
     const options: HttpOptionsInterface = {
       headers: headers,
     };
-    return this.restService.get(EndpointUrls.interestCategories, options).pipe(map(result => result.map(InterestCategoryDTO.fromPayload)));
+    return this.restService
+      .get(EndpointUrls.interestCategories, options)
+      .pipe(map(result => result.map(InterestCategoryDTO.fromPayload)));
   }
 
   public getPublicValues(): Observable<InterestCategoryDTO[]> {
@@ -28,27 +30,45 @@ export class InterestCategoryService extends AbstractDictionaryValueService<Dict
     const options: HttpOptionsInterface = {
       headers: headers,
     };
-    return this.restService.get(EndpointUrls.interestCategoriesPublic, options).pipe(map(result => result.map(InterestCategoryDTO.fromPayload)));
+    return this.restService
+      .get(EndpointUrls.interestCategoriesPublic, options)
+      .pipe(map(result => result.map(InterestCategoryDTO.fromPayload)));
   }
 
   public getNotUsedValues(): Observable<InterestCategoryDTO[]> {
-    return this.restService.get(EndpointUrls.notUsedInterestCategories).pipe(map(result => result.map(InterestCategoryDTO.fromPayload)));
+    return this.restService
+      .get(EndpointUrls.notUsedInterestCategories)
+      .pipe(map(result => result.map(InterestCategoryDTO.fromPayload)));
   }
 
-  public override createValue(body: InterestCategoryDTO): Observable<InterestCategoryDTO> {
-    return super.createValue(body).pipe(map(result => InterestCategoryDTO.fromPayload(result)));
+  public override createValue(
+    body: InterestCategoryDTO
+  ): Observable<InterestCategoryDTO> {
+    return super
+      .createValue(body)
+      .pipe(map(result => InterestCategoryDTO.fromPayload(result)));
   }
 
-  public override updateValue(body: InterestCategoryDTO, valueId: number): Observable<any> {
-    return super.updateValue(body, valueId).pipe(map(result => InterestCategoryDTO.fromPayload(result)));
+  public override updateValue(
+    body: InterestCategoryDTO,
+    valueId: number
+  ): Observable<any> {
+    return super
+      .updateValue(body, valueId)
+      .pipe(map(result => InterestCategoryDTO.fromPayload(result)));
   }
 
   protected deactivateValue(valueId: number): Observable<void> {
-    return this.restService.delete(EndpointUrls.interestCategorySoftDelete.concat(`/${valueId}`));
+    return this.restService.delete(
+      EndpointUrls.interestCategorySoftDelete.concat(`/${valueId}`)
+    );
   }
 
   protected activateValue(valueId: number): Observable<void> {
-    return this.restService.post(EndpointUrls.interestCategoryRevertDelete.concat(`/${valueId}`), {});
+    return this.restService.post(
+      EndpointUrls.interestCategoryRevertDelete.concat(`/${valueId}`),
+      {}
+    );
   }
 
   protected override getCreateUpdateUrl(valueId: number): string {

@@ -9,7 +9,14 @@ import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [InstitutionWorkersListComponent],
-  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatIconModule, MatMenuModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatIconModule,
+    MatMenuModule,
+  ],
   exports: [InstitutionWorkersListComponent],
 })
 export class InstitutionWorkersListModule {}

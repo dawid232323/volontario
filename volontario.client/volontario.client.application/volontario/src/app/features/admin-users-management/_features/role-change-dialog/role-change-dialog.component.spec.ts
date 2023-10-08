@@ -8,9 +8,8 @@ describe('RoleChangeDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RoleChangeDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [RoleChangeDialogComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RoleChangeDialogComponent);
     component = fixture.componentInstance;
