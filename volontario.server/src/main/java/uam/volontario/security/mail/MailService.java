@@ -48,6 +48,7 @@ public class MailService
     private final String volontarioModeratorAddress; //TODO remove after implementing moderator roles properly
 
     private final InternetAddress[] maintenanceEmails;
+    private final String volontarioHost;
 
     /**
      * CDI constructor.
@@ -67,13 +68,16 @@ public class MailService
     public MailService( final JavaMailSender aJavaMailSender,
                         final @Value("${volontarioNoReplyEmailAddress}") String aNoReplyVolontarioEmailAddress,
                         final @Value("${volontarioModeratorEmailPlaceholder}") String aModeratorAddress,
-                        final @Value("${maintenanceEmails}") String aMaintenanceEmails ) throws AddressException {
+                        final @Value("${maintenanceEmails}") String aMaintenanceEmails,
+                        final @Value( "${volontarioHost}" ) String aVolontarioHost,
+                        final @Value( "${useHttps}" ) Boolean aShouldUseHttps) throws AddressException {
         mailSender = aJavaMailSender;
         noReplyVolontarioEmailAddress = aNoReplyVolontarioEmailAddress;
         instantFormatter = DateTimeFormatter.ofPattern( "dd.MM.yyyy" )
                 .withZone( ZoneId.systemDefault() );
         volontarioModeratorAddress = aModeratorAddress;
         maintenanceEmails = InternetAddress.parse( aMaintenanceEmails );
+        volontarioHost = this.resolveHostLink( aVolontarioHost, aShouldUseHttps );
     }
 
     /**
@@ -352,7 +356,7 @@ public class MailService
             content = content.replaceAll( "\\|offerName\\|", offer.getTitle() );
             content = content.replaceAll( "\\|expirationDate\\|", instantFormatter.format( offer.getStartDate() ) );
             content = content.replaceAll( "\\|offerEditUrl\\|",
-                    "http://localhost:4200/advertisement/edit/" + offer.getId() );
+                    this.volontarioHost.concat( "/advertisement/edit/ )" + offer.getId() ) );
 
             helper.setText( content, true );
 
@@ -395,8 +399,8 @@ public class MailService
 
         content = content.replaceAll( "\\|institutionName\\|", aInstitutionEmployee.getInstitution().getName() );
         content = content.replaceAll( "\\|employeeContactEmail\\|", aInstitutionEmployee.getContactEmailAddress() );
-        content = content.replaceAll( "\\|changePasswordLink\\|", String.format( "http://localhost:4200/register-employee/%o?t=%s",
-                aInstitutionEmployee.getInstitution().getId(),
+        content = content.replaceAll( "\\|changePasswordLink\\|", String.format( "%s/register-employee/%o?t=%s",
+                this.volontarioHost, aInstitutionEmployee.getInstitution().getId(),
                 VolontarioBase64Coder.encode( aInstitutionEmployee.getContactEmailAddress() ) ) );
         helper.setText( content, true );
 
@@ -444,9 +448,8 @@ public class MailService
     {
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
 
-        // TODO: Urls need to be stored inside the env variable
-        final String acceptUrl = "http://localhost:4200" + "/institution/verify?a=accept&t=" + aInstitution.getRegistrationToken();
-        final String rejectUrl = "http://localhost:4200" + "/institution/verify?a=reject&t=" + aInstitution.getRegistrationToken();
+        final String acceptUrl = this.volontarioHost + "/institution/verify?a=accept&t=" + aInstitution.getRegistrationToken();
+        final String rejectUrl = this.volontarioHost + "/institution/verify?a=reject&t=" + aInstitution.getRegistrationToken();
 
         URL url = Resources.getResource( "emails/institutionRegistration.html" );
 
@@ -461,7 +464,7 @@ public class MailService
             throws IOException
     {
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
-        final String proceedUrl = "http://localhost:4200" + "/institution/register-contact-person?t=" + aInstitution.getRegistrationToken();
+        final String proceedUrl = this.volontarioHost + "/institution/register-contact-person?t=" + aInstitution.getRegistrationToken();
 
         URL url = Resources.getResource( "emails/institutionRegistrationAccepted.html" );
 
@@ -522,5 +525,10 @@ public class MailService
         content = content.replaceAll( "\\|periodicDescription\\|", Optional.ofNullable( aOffer.getPeriodicDescription() )
                 .orElse( StringUtils.EMPTY ) );
         return content;
+    }
+
+    private String resolveHostLink( final String aHost, final Boolean aShouldUseHttps ) {
+        final String prefix = aShouldUseHttps ? "https://" : "http://";
+        return prefix.concat( aHost );
     }
 }
