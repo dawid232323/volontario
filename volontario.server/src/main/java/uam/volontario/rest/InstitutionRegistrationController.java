@@ -58,7 +58,7 @@ public class InstitutionRegistrationController
      *         registration token was invalid, and if any error occurs then Response Entity with code 500 and
      *         error message.
      */
-    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone( )" )
     @PostMapping( value = "/accept" )
     public ResponseEntity< ? > acceptInstitution( @RequestParam( "token" ) final String aRegistrationToken )
     {
@@ -74,7 +74,7 @@ public class InstitutionRegistrationController
      *         registration token was invalid, and if any error occurs then Response Entity with code 500 and
      *         error message.
      */
-    @PreAuthorize( "@permissionEvaluator.allowForAdministration( authentication.principal )" )
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone( )" )
     @PostMapping( value = "/reject" )
     public ResponseEntity< ? > rejectInstitution( @RequestParam( "token" ) final String aRegistrationToken )
     {

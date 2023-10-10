@@ -53,9 +53,11 @@ VALUES (1, 'Jednorazowy'),
 SELECT setval('offer_types_id_seq', 4, true);
 
 INSERT INTO public.benefits
-VALUES (1, 'Nocleg', true),
-       (2, 'Transport', true),
-       (3, 'Pokrycie kosztów dojazdu', true),
-       (4, 'Posiłki', true);
+VALUES (1, 'Nocleg', false),
+       (2, 'Transport', false),
+       (3, 'Pokrycie kosztów dojazdu', false),
+       (4, 'Posiłki', false),
+       (5, 'Certyfikat ukończenia', true),
+       (6, 'Dodatkowe szkolenia', true);
 
 SELECT setval('benefits_id_seq', 5, true);
