@@ -11,3 +11,6 @@ RUN npm run build -- --configuration ${CLIENT_ENVIRONMENT}
 FROM nginx:1.23-alpine
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=node /app/dist/volontario /usr/share/nginx/html
+
+ARG VOLONTARIO_VERSION
+ENV VOLONTARIO_VERSION=${VOLONTARIO_VERSION}
