@@ -159,7 +159,9 @@ export class UserProfile implements UserRoleIf {
     public interestCategories?: InterestCategoryDTO[],
     public institutionId?: number,
     public institutionName?: string,
-    public fieldOfStudy?: string
+    public fieldOfStudy?: string,
+    public interests?: string,
+    public experienceDescription?: string
   ) {}
 
   public hasUserRole(desiredRole: UserRoleEnum): boolean {
@@ -190,7 +192,9 @@ export class UserProfile implements UserRoleIf {
       payload?.interestCategories?.map(InterestCategoryDTO.fromPayload),
       payload?.institutionId,
       payload?.institutionName,
-      payload?.fieldOfStudy
+      payload?.fieldOfStudy,
+      payload?.interests,
+      payload?.experienceDescription
     );
   }
 }

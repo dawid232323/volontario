@@ -3,7 +3,13 @@
     <mat-tab-group color="accent">
       <mat-tab label="Podstawowe dane">
         <app-basic-user-details
-          [userProfile]="userProfile"></app-basic-user-details>
+          (interestsChanged)="onUserInterestsChange($event)"
+          (experienceDescriptionChanged)="
+            onUserExperienceDescriptionChange($event)
+          "
+          [userProfile]="userProfile"
+          [isLoadingData]="isLoadingData"
+          [canQuicklyEditData]="canQuicklyChangeData"></app-basic-user-details>
       </mat-tab>
     </mat-tab-group>
   </div>

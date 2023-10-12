@@ -17,6 +17,9 @@ module.exports = {
         warnColor: 'rgba(255,71,71,0.77)',
         btnWarnHover: 'rgba(182,12,12,0.77)'
       },
+      animation: {
+        'bounce-slow': 'bounce 2s linear infinite'
+      }
     },
   },
   plugins: [],

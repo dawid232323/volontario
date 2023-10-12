@@ -1,5 +1,6 @@
 <div class="flex flex-col space-y-6 my-6">
-  <mat-card>
+  <mat-card
+    [ngClass]="{ 'blur-md': isLoadingData, 'animate-pulse': isLoadingData }">
     <mat-card-title-group class="mat-card-header-avatar-right">
       <img ngSrc="assets/coffee_avatar.svg" height="60" width="100" />
       <mat-card-title>{{
@@ -111,8 +112,10 @@
       </div>
     </mat-card-content>
   </mat-card>
-  <mat-card *ngIf="!isNil(userProfile?.interestCategories)">
-    <mat-card-title>Zainteresowania</mat-card-title>
+  <mat-card
+    [ngClass]="{ 'blur-md': isLoadingData, 'animate-pulse': isLoadingData }"
+    *ngIf="!isNil(userProfile?.interestCategories)">
+    <mat-card-title>Kategorie zainteresowań</mat-card-title>
     <mat-card-content>
       <div class="py-3">
         <mat-chip-list>
@@ -123,6 +126,84 @@
             {{ category.name }}
           </mat-chip>
         </mat-chip-list>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card
+    [ngClass]="{ 'blur-md': isLoadingData, 'animate-pulse': isLoadingData }"
+    *ngIf="!isNil(userProfile?.interests) || canQuicklyEditData">
+    <mat-card-title-group>
+      <mat-icon
+        (click)="onEditInterests()"
+        *ngIf="!isNil(userProfile?.interests) && canQuicklyEditData"
+        class="hover:cursor-pointer"
+        color="accent"
+        >edit</mat-icon
+      >
+      <mat-card-title>Zainteresowania</mat-card-title>
+    </mat-card-title-group>
+    <mat-card-content>
+      <div class="py-3">
+        <div
+          *ngIf="
+            !canQuicklyEditData || !isNil(userProfile?.interests);
+            else addInterestsMessage
+          "
+          [innerHTML]="userProfile?.interests"></div>
+        <ng-template #addInterestsMessage>
+          <div
+            class="flex lg:flex-row flex-col lg:items-baseline items-center lg:space-x-6 space-x-0">
+            <p class="font-bold">
+              Powiedz nam coś więcej o sobie i dodaj swoje zainteresowania!
+            </p>
+            <button
+              mat-mini-fab
+              color="accent"
+              class="hover:bg-btnAccentHover animate-bounce-slow"
+              (click)="onAddInterests()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </ng-template>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card
+    [ngClass]="{ 'blur-md': isLoadingData, 'animate-pulse': isLoadingData }"
+    *ngIf="!isNil(userProfile?.experienceDescription) || canQuicklyEditData">
+    <mat-card-title-group>
+      <mat-icon
+        (click)="onEditExperienceDescription()"
+        *ngIf="!isNil(userProfile?.experienceDescription) && canQuicklyEditData"
+        class="hover:cursor-pointer"
+        color="accent"
+        >edit</mat-icon
+      >
+      <mat-card-title>Opis doświadczenia</mat-card-title>
+    </mat-card-title-group>
+    <mat-card-content>
+      <div class="py-3">
+        <div
+          *ngIf="
+            !canQuicklyEditData || !isNil(userProfile?.experienceDescription);
+            else addExperienceMessage
+          "
+          [innerHTML]="userProfile?.experienceDescription"></div>
+        <ng-template #addExperienceMessage>
+          <div
+            class="flex lg:flex-row flex-col lg:items-baseline items-center lg:space-x-6 space-x-0">
+            <p class="font-bold">
+              Powiedz nam coś więcej o sobie i dodaj swoje doświadczenie!
+            </p>
+            <button
+              mat-mini-fab
+              color="accent"
+              class="hover:bg-btnAccentHover animate-bounce-slow"
+              (click)="onAddExperienceDescription()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </ng-template>
       </div>
     </mat-card-content>
   </mat-card>

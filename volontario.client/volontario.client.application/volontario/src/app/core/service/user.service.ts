@@ -107,4 +107,26 @@ export class UserService {
       { password: newPassword }
     );
   }
+
+  public updateVolunteerInterests(
+    volunteerId: number,
+    volunteerInterests: string
+  ): Observable<any> {
+    return this.restService.patch(
+      EndpointUrls.volunteerResource.concat(`/${volunteerId}/interests`),
+      { interests: volunteerInterests }
+    );
+  }
+
+  public updateVolunteerExperienceDescription(
+    volunteerId: number,
+    volunteerExperienceDescription: string
+  ): Observable<any> {
+    return this.restService.patch(
+      EndpointUrls.volunteerResource.concat(
+        `/${volunteerId}/experience-description`
+      ),
+      { experienceDescription: volunteerExperienceDescription }
+    );
+  }
 }
