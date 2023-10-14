@@ -499,6 +499,7 @@ public class MailService
         content = content.replaceAll( "\\|headQuartersAddress\\|", aInstitution.getHeadquarters() );
         content = content.replaceAll( "\\|localization\\|", aInstitution.getLocalization() );
         content = content.replaceAll( "\\|description\\|", aInstitution.getDescription() );
+        content = content.replaceAll( "\\|tags\\|", aInstitution.getInstitutionTags() );
         content = content.replaceAll( "\\|firstName\\|", aContactPerson.getFirstName() );
         content = content.replaceAll( "\\|lastName\\|", aContactPerson.getLastName() );
         content = content.replaceAll( "\\|contactEmail\\|", aContactPerson.getContactEmail() );
@@ -524,6 +525,8 @@ public class MailService
                 .orElse( aOffer.getIsPoznanOnly() ? "Poznań" : StringUtils.EMPTY ) );
         content = content.replaceAll( "\\|periodicDescription\\|", Optional.ofNullable( aOffer.getPeriodicDescription() )
                 .orElse( StringUtils.EMPTY ) );
+        content = content.replaceAll( "\\|displayStyle\\|", Optional.ofNullable( aOffer.getPeriodicDescription() )
+                .orElse( "none" ) );
         return content;
     }
 
