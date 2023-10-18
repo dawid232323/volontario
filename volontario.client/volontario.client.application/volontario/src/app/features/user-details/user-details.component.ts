@@ -54,7 +54,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   public get canQuicklyChangeData(): boolean {
-    return this._loggedUser?.id === this._userProfile?.id;
+    if (this._loggedUser?.id === this._userProfile?.id) {
+      return true;
+    }
+    return (
+      this._loggedUser?.hasUserRoles([
+        UserRoleEnum.Admin,
+        UserRoleEnum.Moderator,
+      ]) || false
+    );
   }
 
   public get isLoadingData(): boolean {
@@ -87,6 +95,21 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         this.userService
       )
     );
+  }
+
+  public canEditAdditionalVolunteerInfo(): boolean {
+    if (this._loggedUser?.id === this.userProfile?.id) {
+      return this._loggedUser?.hasUserRole(UserRoleEnum.Volunteer) || false;
+    }
+    if (
+      this?._loggedUser?.hasUserRoles([
+        UserRoleEnum.Admin,
+        UserRoleEnum.Moderator,
+      ])
+    ) {
+      return true;
+    }
+    return false;
   }
 
   private makeSubscriptions() {

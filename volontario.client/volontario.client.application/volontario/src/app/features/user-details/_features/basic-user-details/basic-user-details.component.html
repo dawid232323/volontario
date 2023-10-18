@@ -131,7 +131,10 @@
   </mat-card>
   <mat-card
     [ngClass]="{ 'blur-md': isLoadingData, 'animate-pulse': isLoadingData }"
-    *ngIf="!isNil(userProfile?.interests) || canQuicklyEditData">
+    *ngIf="
+      !isNil(userProfile?.interests) ||
+      (canQuicklyEditData && canEditAdditionalVolunteerInfo)
+    ">
     <mat-card-title-group>
       <mat-icon
         (click)="onEditInterests()"
@@ -170,7 +173,10 @@
   </mat-card>
   <mat-card
     [ngClass]="{ 'blur-md': isLoadingData, 'animate-pulse': isLoadingData }"
-    *ngIf="!isNil(userProfile?.experienceDescription) || canQuicklyEditData">
+    *ngIf="
+      !isNil(userProfile?.experienceDescription) ||
+      (canQuicklyEditData && canEditAdditionalVolunteerInfo)
+    ">
     <mat-card-title-group>
       <mat-icon
         (click)="onEditExperienceDescription()"

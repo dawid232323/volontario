@@ -9,7 +9,10 @@
           "
           [userProfile]="userProfile"
           [isLoadingData]="isLoadingData"
-          [canQuicklyEditData]="canQuicklyChangeData"></app-basic-user-details>
+          [canQuicklyEditData]="canQuicklyChangeData"
+          [canEditAdditionalVolunteerInfo]="
+            canEditAdditionalVolunteerInfo()
+          "></app-basic-user-details>
       </mat-tab>
     </mat-tab-group>
   </div>
