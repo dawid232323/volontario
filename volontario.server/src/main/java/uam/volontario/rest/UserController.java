@@ -1,12 +1,13 @@
 package uam.volontario.rest;
 
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import uam.volontario.handler.ProfilePictureHandler;
 import uam.volontario.handler.UserHandler;
 
 import java.util.List;
@@ -22,11 +23,13 @@ public class UserController
 {
 
     private final UserHandler userHandler;
+    private final ProfilePictureHandler profilePictureHandler;
 
     @Autowired
-    public UserController( final UserHandler aUserHandler )
+    public UserController( final UserHandler aUserHandler, final ProfilePictureHandler aProfilePictureHandler )
     {
         this.userHandler = aUserHandler;
+        this.profilePictureHandler = aProfilePictureHandler;
     }
 
     /**
@@ -110,5 +113,35 @@ public class UserController
     public ResponseEntity< ? > getUserProfileDetails( @PathVariable( "user_id" ) final Long aUserId )
     {
         return this.userHandler.getUserProfileDetails( aUserId );
+    }
+
+    /**
+     * Saves profile picture for selected user.
+     *
+     * @param aUserId id of user
+     *
+     * @param aMultipartFile content of a user profile picture
+     *
+     * @return response entity that contains json body with new file name
+     */
+    @PostMapping(value = "/profile/{user_id}/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Map< String, String> saveUserProfilePicture( @RequestParam( "picture" ) MultipartFile aMultipartFile,
+                                                        @PathVariable( "user_id" ) final Long aUserId )
+    {
+        return this.profilePictureHandler.saveUserProfilePicture( aUserId, aMultipartFile );
+    }
+
+    /**
+     * Retrieves image for selected user.
+     *
+     * @param aUserId id of user that image needs to be retrieved
+     *
+     * @return response entity with empty body if user does not have any photo assigned, or
+     *          response entity with photo content
+     */
+    @GetMapping(value = "/profile/{user_id}/picture", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity< ? > getUserProfilePicture( @PathVariable( "user_id" ) final Long aUserId )
+    {
+        return this.profilePictureHandler.getUserProfilePicture( aUserId );
     }
 }

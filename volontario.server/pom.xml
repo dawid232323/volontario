@@ -58,6 +58,19 @@
 			<artifactId>postgresql</artifactId>
 		</dependency>
 
+		<!--		Cloud		-->
+		<dependency>
+			<groupId>io.awspring.cloud</groupId>
+			<artifactId>spring-cloud-aws-s3</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.12.232</version>
+		</dependency>
+
 		<!--		Other		-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>

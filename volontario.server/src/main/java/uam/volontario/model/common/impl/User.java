@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.UserIf;
@@ -87,6 +88,9 @@ public class User implements UserIf
     @NotNull
     private Instant creationDate;
 
+    @Column
+    private String pathToImage;
+
     @Override
     public List< UserRole > getUserRoles()
     {
@@ -98,6 +102,11 @@ public class User implements UserIf
     {
         return getUserRoles().stream()
                 .anyMatch( userRole -> userRole.equals( aUserRole ) );
+    }
+
+    public boolean hasAssignedPicture()
+    {
+        return this.getPathToImage() != null && !StringUtils.isBlank( this.getPathToImage() );
     }
 
     @Override

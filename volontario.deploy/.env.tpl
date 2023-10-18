@@ -27,3 +27,7 @@ MAINTENANCE_EMAILS=micmus4@st.amu.edu.pl,pawros1@st.amu.edu.pl,mikmum@st.amu.edu
 
 # determines if https should be used in volontario links sent to users
 USE_HTTPS=false
+
+MINIO_HOST_NAME=http://volontario-minio:9000
+MINIO_ROOT_USER=x
+MINIO_ROOT_PASSWORD=x

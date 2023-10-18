@@ -34,5 +34,15 @@ services:
     env_file: '.env'
     volumes: 
       - volontario-db:/var/lib/postgresql/data
+  volontario-minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-storage:/data
+    env_file: '.env'
+    command: server --console-address ":9001" /data
 volumes:
   volontario-db:
+  minio-storage:
