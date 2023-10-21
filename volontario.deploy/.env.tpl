@@ -4,7 +4,7 @@ POSTGRES_HOSTNAME=volontario-db
 
 DEMO_DATA=true
 
-MAILSERVER_HOSTNAME=smtp.office365.com # to change when we get volontario email from UAM
+MAILSERVER_HOSTNAME=smtp.wmi.amu.edu.pl # to change when we get volontario email from UAM
 MAILSERVER_PORT=587
 MAILSERVER_SMTP_AUTH=true
 MAILSERVER_TLS_ENABLE=true
@@ -15,7 +15,7 @@ VOLONTARIO_EMAIL=
 
 NGINX_CERT_PATH=/tmp # placeholder for local deployment
 NGINX_CONFIG_TEMPLATE=default.conf.template
-VOLONTARIO_DOMAIN=localhost:4200
+VOLONTARIO_DOMAIN=localhost
 
 # necessary to set when deploying to dev/prod without prebuilt images, otherwise handled by default values in docker compose
 CLIENT_ENVIRONMENT=
@@ -29,5 +29,5 @@ MAINTENANCE_EMAILS=micmus4@st.amu.edu.pl,pawros1@st.amu.edu.pl,mikmum@st.amu.edu
 USE_HTTPS=false
 
 MINIO_HOST_NAME=http://volontario-minio:9000
-MINIO_ROOT_USER=x
-MINIO_ROOT_PASSWORD=x
+MINIO_ROOT_USER=volontario
+MINIO_ROOT_PASSWORD=volontario
