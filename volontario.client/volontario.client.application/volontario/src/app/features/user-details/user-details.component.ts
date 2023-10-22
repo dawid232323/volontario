@@ -2,13 +2,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from 'src/app/core/service/user.service';
 import { User, UserProfile } from 'src/app/core/model/user.model';
 import { ActivatedRoute, Params } from '@angular/router';
-import { forkJoin, Observable, Subscription } from 'rxjs';
+import { forkJoin, from, Observable, Subscription } from 'rxjs';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import {
   UserExperienceDescriptionConfigProvider,
   UserInterestsConfigProvider,
 } from 'src/app/features/user-details/_features/basic-user-details/_features/single-field-user-details-form/single-user-details-config.provider';
+
 import { isNil } from 'lodash';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
 
 @Component({
   selector: 'app-user-details',
@@ -22,10 +25,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   private subscriptions = new Subscription();
   private _isLoadingData = true;
+  public _userProfilePicture?: string;
 
   constructor(
     private userService: UserService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private errorDialogService: ErrorDialogService
   ) {
     this._userId = +this.activatedRoute.snapshot.params['user_id'];
   }
@@ -112,6 +117,25 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  public async onPictureChanged(newFile: File) {
+    this._isLoadingData = true;
+    forkJoin([
+      from(this.userService.getImage(newFile)),
+      this.userService.saveUserImage(this._userId, newFile),
+    ]).subscribe({
+      next: ([imageData, _]) => {
+        this._userProfilePicture = <string>imageData;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorDialogService.openDefaultErrorDialog({ error });
+        this._isLoadingData = false;
+      },
+      complete: () => {
+        this._isLoadingData = false;
+      },
+    });
+  }
+
   private makeSubscriptions() {
     this.subscriptions.add(
       this.activatedRoute.params.subscribe(this.onRouteParamsChange.bind(this))
@@ -128,9 +152,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     forkJoin([
       this.userService.getUserProfileDetails(this._userId),
       this.userService.getCurrentUserData(),
-    ]).subscribe(([userProfileData, loggedUser]) => {
+      from(this.userService.downloadUserProfilePicture(this._userId)),
+    ]).subscribe(([userProfileData, loggedUser, profilePicture]) => {
       this._userProfile = userProfileData;
       this._loggedUser = loggedUser;
+      if (!isNil(profilePicture)) {
+        this._userProfilePicture = <string>profilePicture;
+      }
       this._isLoadingData = false;
     });
   }

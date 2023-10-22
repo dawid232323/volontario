@@ -7,7 +7,9 @@
           (experienceDescriptionChanged)="
             onUserExperienceDescriptionChange($event)
           "
+          (profilePictureChanged)="onPictureChanged($event)"
           [userProfile]="userProfile"
+          [userPhoto]="_userProfilePicture"
           [isLoadingData]="isLoadingData"
           [canQuicklyEditData]="canQuicklyChangeData"
           [canEditAdditionalVolunteerInfo]="

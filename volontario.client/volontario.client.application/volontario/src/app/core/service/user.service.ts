@@ -1,6 +1,6 @@
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
 import { Injectable } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
+import { firstValueFrom, map, Observable, of, Subject } from 'rxjs';
 import {
   AdministrativeUserDetails,
   PatchUserDto,
@@ -11,7 +11,7 @@ import { isNil } from 'lodash';
 import { EndpointUrls } from 'src/app/utils/url.util';
 import { AdminUsersManagementQueryParamsIf } from 'src/app/features/admin-users-management/_features/users-filter-pane/users-filter-pane.component';
 import { PageableModel } from 'src/app/core/model/pageable.model';
-import { HttpParams } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -128,5 +128,45 @@ export class UserService {
       ),
       { experienceDescription: volunteerExperienceDescription }
     );
+  }
+
+  public saveUserImage(userId: number, pictureData: Blob): Observable<any> {
+    const formData = new FormData();
+    formData.append('picture', pictureData);
+    return this.restService.post(
+      EndpointUrls.userProfile.concat(`/${userId}/picture`),
+      formData
+    );
+  }
+
+  public async downloadUserProfilePicture(
+    userId: number
+  ): Promise<string | null> {
+    const rawImageData = await firstValueFrom(
+      this.restService.get(
+        EndpointUrls.userProfile.concat(`/${userId}/picture`),
+        {
+          responseType: 'blob',
+        }
+      )
+    );
+    return this.getImage(rawImageData);
+  }
+
+  public async getImage(image: Blob) {
+    return new Promise<string | null>((resolve, reject) => {
+      if (image.size === 0) {
+        resolve(null);
+      }
+      const reader = new FileReader();
+      reader.addEventListener(
+        'load',
+        () => {
+          resolve(<string>reader.result);
+        },
+        false
+      );
+      reader.readAsDataURL(image);
+    });
   }
 }

@@ -108,6 +108,9 @@ export class EndpointUrls {
     EndpointUrls.report,
   ]);
 
+  public static readonly resourcesRequiringNoContentWithAuthorization =
+    new Set<string>(['/picture']);
+
   public static getApplicationStateCheckUrl(
     applicationId: number,
     operationType: ApplicationActionTypeEnum

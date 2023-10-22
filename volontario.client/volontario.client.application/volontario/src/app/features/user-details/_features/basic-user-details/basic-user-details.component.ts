@@ -10,7 +10,8 @@ import {
   UserExperienceDescriptionConfigProvider,
   UserInterestsConfigProvider,
 } from 'src/app/features/user-details/_features/basic-user-details/_features/single-field-user-details-form/single-user-details-config.provider';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, Subscription } from 'rxjs';
+import { UploadProfilePictureModalComponent } from 'src/app/features/user-details/_features/basic-user-details/_features/upload-profile-picture-modal/upload-profile-picture-modal.component';
 
 @Component({
   selector: 'app-basic-user-details',
@@ -19,6 +20,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class BasicUserDetailsComponent implements OnInit {
   @Input() userProfile?: UserProfile;
+  @Input() userPhoto?: string;
   @Input() canEditProfile = false;
   @Input() canQuicklyEditData = false;
   @Input() isLoadingData = true;
@@ -27,6 +29,7 @@ export class BasicUserDetailsComponent implements OnInit {
   @Output() interestsChanged = new EventEmitter<UserInterestsConfigProvider>();
   @Output() experienceDescriptionChanged =
     new EventEmitter<UserExperienceDescriptionConfigProvider>();
+  @Output() profilePictureChanged = new EventEmitter<File>();
 
   constructor(private router: Router, private matDialog: MatDialog) {}
 
@@ -66,6 +69,21 @@ export class BasicUserDetailsComponent implements OnInit {
       this.userProfile?.experienceDescription
     );
     await this.handleExperienceDialog(configProvider);
+  }
+
+  public onEditProfilePicture() {
+    if (!this.canQuicklyEditData) {
+      return;
+    }
+    const dialogRef = this.matDialog.open(UploadProfilePictureModalComponent);
+    const afterClosedSubscription = <Subscription>(
+      dialogRef.afterClosed().subscribe((dialogResult: File | undefined) => {
+        if (!isNil(dialogResult)) {
+          this.profilePictureChanged.emit(dialogResult);
+        }
+        afterClosedSubscription.unsubscribe();
+      })
+    );
   }
 
   private async handleInterestsDialog(

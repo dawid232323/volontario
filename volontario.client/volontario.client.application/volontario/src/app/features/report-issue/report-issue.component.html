@@ -62,7 +62,7 @@
                   accepted_MIME_types: 'image/png, image/gif, image/jpeg',
                   allow_multi_selection: true
                 }"
-                [selected_files]="filesToUpload"
+                [selectedFiles]="filesToUpload"
                 (fileTransferResultEmitter)="setErrorMessage($event)">
               </app-file-uploader>
               <div class="pt-3">

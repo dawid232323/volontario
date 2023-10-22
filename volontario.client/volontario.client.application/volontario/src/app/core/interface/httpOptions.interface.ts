@@ -6,6 +6,6 @@ export interface HttpOptionsInterface {
   observe?: 'body';
   params?: HttpParams;
   reportProgress?: boolean;
-  responseType?: 'json';
+  responseType?: any;
   withCredentials?: boolean;
 }

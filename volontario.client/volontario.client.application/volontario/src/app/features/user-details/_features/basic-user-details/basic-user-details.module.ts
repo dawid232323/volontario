@@ -8,6 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { SingleFieldUserDetailsFormModule } from 'src/app/features/user-details/_features/basic-user-details/_features/single-field-user-details-form/single-field-user-details-form.module';
+import { UploadProfilePictureModalModule } from 'src/app/features/user-details/_features/basic-user-details/_features/upload-profile-picture-modal/upload-profile-picture-modal.module';
 
 @NgModule({
   declarations: [BasicUserDetailsComponent],
@@ -21,6 +22,7 @@ import { SingleFieldUserDetailsFormModule } from 'src/app/features/user-details/
     MatChipsModule,
     MatButtonModule,
     SingleFieldUserDetailsFormModule,
+    UploadProfilePictureModalModule,
   ],
   exports: [BasicUserDetailsComponent],
 })

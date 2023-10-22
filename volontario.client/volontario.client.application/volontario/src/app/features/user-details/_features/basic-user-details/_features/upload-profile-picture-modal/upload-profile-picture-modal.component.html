@@ -1,0 +1,42 @@
+<mat-dialog-content class="flex flex-col space-y-6">
+  <div class="flex flex-row items-center space-x-6 w-full justify-between">
+    <h2 mat-dialog-title>Aktualizuj zdjęcie profilowe</h2>
+    <img
+      alt="Image about filling the form"
+      ngSrc="/assets/fill_form.svg"
+      width="100"
+      height="35" />
+  </div>
+  <div class="flex flex-col space-y-3">
+    <app-file-uploader
+      [selectedFiles]="selectedFiles"
+      [config]="fileUploaderConfig"
+      (fileTransferResultEmitter)="
+        onFileTransferChange($event)
+      "></app-file-uploader>
+    <p class="text-warnColor" *ngIf="hasMaxSizeError">
+      Rozmiar zdjęcia nie może przekraczać 2MB
+    </p>
+    <p class="text-warnColor" *ngIf="hasWrongExtensionError">
+      Akceptowane formaty zdjęć to jpeg oraz png
+    </p>
+  </div>
+  <div
+    class="flex flex-col lg:flex-row space-x-0 space-y-3 lg:space-x-3 lg:space-y-0 w-full items-stretch">
+    <button
+      class="w-full"
+      mat-raised-button
+      (click)="onPictureEditAbort()"
+      color="warn">
+      Anuluj
+    </button>
+    <button
+      class="w-full"
+      mat-raised-button
+      color="accent"
+      (click)="onModalClose()"
+      [disabled]="!canCloseModal()">
+      Zapisz
+    </button>
+  </div>
+</mat-dialog-content>
