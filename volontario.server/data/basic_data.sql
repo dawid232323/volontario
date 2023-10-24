@@ -10,7 +10,7 @@ SELECT setval('roles_id_seq', 6, true);
 INSERT INTO public.application_states
 VALUES  (1, 'Odrzucona'),
         (2, 'Oczekująca'),
-        (3, 'Zaakceptowana'),
+        (3, 'W trakcie rekrutacji'),
         (4, 'Lista rezerwowa');
 
 SELECT setval('application_states_id_seq', 5, true);

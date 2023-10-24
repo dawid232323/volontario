@@ -177,7 +177,7 @@ public class ApplicationProcessingHandler
     }
 
     /**
-     * Resolves Application's final state to either {@linkplain ApplicationStateEnum#ACCEPTED}
+     * Resolves Application's final state to either {@linkplain ApplicationStateEnum#UNDER_RECRUITMENT}
      * or {@linkplain ApplicationStateEnum#DECLINED}. After Application is resolved, Volunteer is informed
      * via his contact email about Institution's decision.
      *
@@ -185,7 +185,7 @@ public class ApplicationProcessingHandler
      *
      * @param aDecisionReasonOptionalMap Optional with map that should contain application decline reason
      *
-     * @param aDecision acceptance or decline.
+     * @param aDecision move under recruitment or decline.
      *
      * @return
      *          - Response Entity with modified Application's state and 200 code, if everything went well.
@@ -210,11 +210,11 @@ public class ApplicationProcessingHandler
                 switch ( aDecision )
                 {
                     case AWAITING -> throw new IllegalArgumentException( "Awaiting state is not a proper resolve." );
-                    case ACCEPTED ->
+                    case UNDER_RECRUITMENT ->
                     {
-                        application.setState( getApplicationState( ApplicationStateEnum.ACCEPTED ) );
+                        application.setState( getApplicationState( ApplicationStateEnum.UNDER_RECRUITMENT) );
                         applicationService.saveOrUpdate( application );
-                        mailService.sendEmailAboutApplicationBeingAccepted( volunteer.getContactEmailAddress(),
+                        mailService.sendEmailAboutApplicationUnderRecruitment( volunteer.getContactEmailAddress(),
                                 offer.getTitle() );
                     }
                     case RESERVE_LIST ->

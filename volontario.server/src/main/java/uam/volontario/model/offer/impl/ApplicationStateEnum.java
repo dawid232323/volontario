@@ -13,7 +13,7 @@ public enum ApplicationStateEnum
 {
     AWAITING( "Oczekująca" ),
 
-    ACCEPTED( "Zaakceptowana" ),
+    UNDER_RECRUITMENT( "W trakcie rekrutacji" ),
 
     DECLINED( "Odrzucona" ),
 
@@ -33,7 +33,7 @@ public enum ApplicationStateEnum
         return switch ( aApplicationState.getName() )
                 {
                     case "Oczekująca" -> AWAITING;
-                    case "Zaakceptowana" -> ACCEPTED;
+                    case "W trakcie rekrutacji" -> UNDER_RECRUITMENT;
                     case "Odrzucona" -> DECLINED;
                     case "Lista rezerwowa" -> RESERVE_LIST;
                     default -> throw new IllegalArgumentException( aApplicationState.getName() + " is not a " +

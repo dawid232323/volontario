@@ -76,7 +76,7 @@ export class ApplicationStateCheck {
 
 export enum ApplicationStateEnumName {
   Waiting = 'Oczekująca',
-  Accepted = 'Zaakceptowana',
+  UnderRecruitment = 'W trakcie rekrutacji',
   Rejected = 'Odrzucona',
   Reserve_list = 'Lista rezerwowa',
 }
@@ -100,10 +100,10 @@ export class ApplicationStates {
     serverQueryStateName: 'awaiting',
   };
 
-  static readonly Accepted: ApplicationStateIf = {
+  static readonly UnderRecruitment: ApplicationStateIf = {
     stateId: 3,
-    stateName: ApplicationStateEnumName.Accepted,
-    serverQueryStateName: 'accepted',
+    stateName: ApplicationStateEnumName.UnderRecruitment,
+    serverQueryStateName: 'under_recruitment',
   };
 
   static readonly Reserve_list: ApplicationStateIf = {
@@ -113,6 +113,6 @@ export class ApplicationStates {
   };
 
   static get allStates(): ApplicationStateIf[] {
-    return [this.Rejected, this.Waiting, this.Accepted, this.Reserve_list];
+    return [this.Rejected, this.Waiting, this.UnderRecruitment, this.Reserve_list];
   }
 }

@@ -33,7 +33,7 @@ public class ApplicationSearchQuery
         {
             case "awaiting" -> ApplicationStateEnum.AWAITING;
 
-            case "accepted" -> ApplicationStateEnum.ACCEPTED;
+            case "under recruitment" -> ApplicationStateEnum.UNDER_RECRUITMENT;
 
             case "declined" -> ApplicationStateEnum.DECLINED;
 

@@ -90,7 +90,7 @@ public class ApplicationController
     }
 
     /**
-     * Sets Application's state to {@linkplain ApplicationStateEnum#ACCEPTED} and informs Volunteer about it
+     * Sets Application's state to {@linkplain ApplicationStateEnum#UNDER_RECRUITMENT} and informs Volunteer about it
      * via contact email.
      *
      * @param aApplicationId id of Application to accept.
@@ -104,7 +104,7 @@ public class ApplicationController
     @PatchMapping( "/accept/{applicationId}" )
     public ResponseEntity< ? > acceptApplication( @PathVariable( "applicationId" ) final Long aApplicationId )
     {
-        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.ACCEPTED, Optional.empty() );
+        return applicationProcessingHandler.resolveApplication( aApplicationId, ApplicationStateEnum.UNDER_RECRUITMENT, Optional.empty() );
     }
 
     /**

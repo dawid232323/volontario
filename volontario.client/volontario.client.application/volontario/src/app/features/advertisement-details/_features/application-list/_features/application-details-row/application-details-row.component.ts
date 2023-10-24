@@ -59,7 +59,7 @@ export class ApplicationDetailsRowComponent implements OnInit {
   }
 
   public onAcceptButtonClicked() {
-    this.applicationDetails!.state = ApplicationStateEnumName.Accepted;
+    this.applicationDetails!.state = ApplicationStateEnumName.UnderRecruitment;
     this.emitChangeEvent(ApplicationActionTypeEnum.Accept);
   }
 

@@ -116,7 +116,7 @@ public class MailService
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
         final String sender = "Volontario";
-        final String mailSubject = aInstitution.getName() + " asks for verification.";
+        final String mailSubject = aInstitution.getName() + " prosi o weryfikację.";
 
         helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( volontarioModeratorAddress );
@@ -149,7 +149,7 @@ public class MailService
         final String volunteerContactEmail = aApplication.getVolunteer()
                 .getContactEmailAddress();
         final String sender = "Volontario";
-        final String mailSubject = "Application for offer: " + offer.getTitle() + " has been made!";
+        final String mailSubject = "Aplikacja na ofertę: " + offer.getTitle() + " została utworzona!";
 
         helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( volunteerContactEmail );
@@ -176,7 +176,7 @@ public class MailService
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
         final String sender = "Volontario";
-        final String mailSubject = "Your institution " + aInstitution.getName() + " has been verified by Volontario.";
+        final String mailSubject = "Twoja instytucja " + aInstitution.getName() + " została zweryfikowana przez Volontario.";
 
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
 
@@ -205,7 +205,7 @@ public class MailService
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
         final String sender = "Volontario";
-        final String mailSubject = aInstitution.getName() + " verification rejected.";
+        final String mailSubject = aInstitution.getName() + " - weryfikacja odrzucona.";
 
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
 
@@ -218,7 +218,7 @@ public class MailService
     }
 
     /**
-     * Sens Email to Volunteer about his/her Application being accepted.
+     * Sens Email to Volunteer about his/her Application being under recruitmen.
      *
      * @param aVolunteerContactEmail Volunteer's contact email.
      *
@@ -229,14 +229,14 @@ public class MailService
      * @throws UnsupportedEncodingException
      *                                          in case of wrong encoding of email.
      */
-    public void sendEmailAboutApplicationBeingAccepted( final String aVolunteerContactEmail, final String aOfferName )
+    public void sendEmailAboutApplicationUnderRecruitment( final String aVolunteerContactEmail, final String aOfferName )
             throws MessagingException, IOException
     {
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
         final String sender = "Volontario";
-        final String mailSubject = "Your application has been accepted!";
+        final String mailSubject = "Twoja aplikacja jest teraz w trakcie rekrutacji!";
 
         helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( aVolunteerContactEmail );
@@ -270,7 +270,7 @@ public class MailService
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
         final String sender = "Volontario";
-        final String mailSubject = "Your application has been placed in reserve list.";
+        final String mailSubject = "Twoja aplikacja trafiła na listę rezerwową.";
 
         helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( aVolunteerContactEmail );
@@ -307,7 +307,7 @@ public class MailService
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
         final String sender = "Volontario";
-        final String mailSubject = "Sorry, your application has been declined...";
+        final String mailSubject = "Niestety, odrzucono twoją aplikację...";
 
         helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( aVolunteerContactEmail );
@@ -345,7 +345,7 @@ public class MailService
             final MimeMessageHelper helper = new MimeMessageHelper( message );
 
             final String sender = "Volontario";
-            final String mailSubject = "Your offer is expiring soon...";
+            final String mailSubject = "Twoja oferta wkrótce wygaśnie...";
 
             helper.setFrom( noReplyVolontarioEmailAddress, sender );
             helper.setTo( offer.getContactPerson().getContactEmailAddress() );
@@ -388,7 +388,7 @@ public class MailService
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
         final String sender = aInstitutionEmployee.getInstitution().getName();
-        final String mailSubject = "Your account has been created!";
+        final String mailSubject = "Twoje konto zostało utworzone!";
 
         helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( aInstitutionEmployee.getContactEmailAddress() );
