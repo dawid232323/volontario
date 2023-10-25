@@ -8,6 +8,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isNil } from 'lodash';
 import { OfferApplicationService } from 'src/app/core/service/offer-application.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-advertisement-details',
@@ -47,7 +48,10 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   }
 
   public convertDate(getDate: any | undefined) {
-    return getDate?.split('T')[0];
+    if (isNil(getDate)) {
+      return getDate;
+    }
+    return formatDate(getDate, 'dd-MM-yyyy', 'en-EN');
   }
 
   public get canManageOffer(): boolean {

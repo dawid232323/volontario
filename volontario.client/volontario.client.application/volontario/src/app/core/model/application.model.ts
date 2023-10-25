@@ -103,16 +103,21 @@ export class ApplicationStates {
   static readonly UnderRecruitment: ApplicationStateIf = {
     stateId: 3,
     stateName: ApplicationStateEnumName.UnderRecruitment,
-    serverQueryStateName: 'under_recruitment',
+    serverQueryStateName: 'under recruitment',
   };
 
-  static readonly Reserve_list: ApplicationStateIf = {
+  static readonly ReserveList: ApplicationStateIf = {
     stateId: 4,
     stateName: ApplicationStateEnumName.Reserve_list,
     serverQueryStateName: 'reserve list',
   };
 
   static get allStates(): ApplicationStateIf[] {
-    return [this.Rejected, this.Waiting, this.UnderRecruitment, this.Reserve_list];
+    return [
+      this.Rejected,
+      this.Waiting,
+      this.UnderRecruitment,
+      this.ReserveList,
+    ];
   }
 }

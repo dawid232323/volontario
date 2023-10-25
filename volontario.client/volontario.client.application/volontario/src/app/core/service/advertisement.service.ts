@@ -18,6 +18,7 @@ import { User } from 'src/app/core/model/user.model';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { OfferVisibilityInterface } from 'src/app/core/interface/offer-visibility.interface';
 import { Params } from '@angular/router';
+import { SecurityService } from 'src/app/core/service/security/security.service';
 
 /**
  * Object that stores information about user filter preferences on the advertisement panel list.
@@ -44,7 +45,14 @@ export class AdvertisementService {
   public addAdvertisementReloadEvent: Subject<void> = new Subject<void>();
   private _offerListQueryParams?: Params;
 
-  constructor(private restService: VolontarioRestService) {}
+  constructor(
+    private restService: VolontarioRestService,
+    private securityService: SecurityService
+  ) {
+    this.securityService.logoutEvent.subscribe(() => {
+      this._offerListQueryParams = undefined;
+    });
+  }
 
   public getAllAdvertisementTypes(): Observable<AdvertisementType[]> {
     return this.restService.get(EndpointUrls.advertisementType).pipe(

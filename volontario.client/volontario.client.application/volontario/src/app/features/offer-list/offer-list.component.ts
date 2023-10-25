@@ -62,11 +62,6 @@ export class OfferListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!isNil(this.offerService.offerListQueryParams)) {
-      this.initStateFromLastSavedQueryParams();
-    } else {
-      this.initStateFromQueryParamsAfterRefresh();
-    }
     this.downloadData();
   }
 
@@ -185,7 +180,6 @@ export class OfferListComponent implements OnInit {
     }
 
     updateActiveUrl(this.router, this.activatedRoute, urlParams);
-    this.downloadOffers();
   }
 
   private downloadData() {
@@ -197,6 +191,11 @@ export class OfferListComponent implements OnInit {
       this._interestCategories = interestCategories;
       this._offerTypes = offerTypes;
       this._loggedUser = user;
+      if (!isNil(this.offerService.offerListQueryParams)) {
+        this.initStateFromLastSavedQueryParams();
+      } else {
+        this.initStateFromQueryParamsAfterRefresh();
+      }
       this.setInitialData();
       this.downloadOffers();
     });

@@ -22,6 +22,8 @@ export class SecurityService {
 
   public loginEvent = new Subject<void>();
 
+  private _logoutEvent = new Subject<void>();
+
   constructor(
     private httpClient: HttpClient,
     private tokenService: TokenService,
@@ -58,6 +60,7 @@ export class SecurityService {
   }
 
   public logout() {
+    this._logoutEvent.next();
     this.tokenService.logout();
     this.userService.logout();
     this.isLoggedIn = false;
@@ -83,5 +86,9 @@ export class SecurityService {
       !isNil(this.tokenService.getToken()) &&
       !isNil(this.tokenService.getRefreshToken())
     );
+  }
+
+  public get logoutEvent(): Observable<void> {
+    return this._logoutEvent.asObservable();
   }
 }

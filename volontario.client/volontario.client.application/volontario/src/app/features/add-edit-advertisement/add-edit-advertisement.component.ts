@@ -104,8 +104,8 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
           ),
           dateBeforeAfterValidator(
             DateValidatorUsageEnum.After,
-            'expirationDate',
-            'endDate'
+            'endDate',
+            'expirationDate'
           ),
         ],
       }
