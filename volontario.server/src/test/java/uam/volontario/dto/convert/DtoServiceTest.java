@@ -249,9 +249,9 @@ class DtoServiceTest {
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
                 null, null, Collections.emptyList(), Collections.emptyList(),
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
-
-        VolunteerData volunteerData = new VolunteerData( 0L, null, "test@amu.edu.pl" , "motivation",
-                "informatyka", getSampleExperienceLevel(), Collections.emptyList() );
+        VolunteerData volunteerData = VolunteerData.builder().id( 0l ).domainEmailAddress( "test@amu.edu.pl" )
+                .participationMotivation( "motivation ").fieldOfStudy( "informatyka" )
+                .experience( getSampleExperienceLevel() ).interestCategories( Collections.emptyList() ).build();
 
         User user = User.builder().id( 1L ).firstName( "name" ).lastName( "surname" ).contactEmailAddress("test@test.pl")
                 .volunteerData( volunteerData ).phoneNumber( "000000000" ).build();
