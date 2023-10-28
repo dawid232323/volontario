@@ -7,8 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.Application.ApplicationDto;
+import uam.volontario.dto.presence.VoluntaryPresenceVolunteerDataDto;
 import uam.volontario.handler.ApplicationProcessingHandler;
+import uam.volontario.handler.OfferPresenceHandler;
 import uam.volontario.model.offer.impl.ApplicationStateEnum;
+import uam.volontario.model.offer.impl.VoluntaryPresence;
 
 import java.util.Map;
 import java.util.Optional;
@@ -24,15 +27,22 @@ public class ApplicationController
 {
     private final ApplicationProcessingHandler applicationProcessingHandler;
 
+    private final OfferPresenceHandler offerPresenceHandler;
+
     /**
      * CDI constructor.
      *
      * @param aApplicationProcessingHandler application processing handler.
+     *
+     * @param aOfferPresenceHandler offer presence handler.
      */
     @Autowired
-    public ApplicationController( final ApplicationProcessingHandler aApplicationProcessingHandler )
+    public ApplicationController( final ApplicationProcessingHandler aApplicationProcessingHandler,
+                                  final OfferPresenceHandler aOfferPresenceHandler )
     {
         applicationProcessingHandler = aApplicationProcessingHandler;
+        offerPresenceHandler = aOfferPresenceHandler;
+
     }
 
     /**
@@ -208,5 +218,42 @@ public class ApplicationController
     public ResponseEntity< ? > checkState( @RequestParam Long offerId, @RequestParam Long volunteerId )
     {
         return applicationProcessingHandler.checkState( offerId, volunteerId );
+    }
+
+    /**
+     * Checks whether Offer is ready to confirm Presences.
+     *
+     * @param aOfferId id of Offer.
+     *
+     * @return
+     *        - Response Entity with code 200 and true/false which depends on whether presence can be confirmed.
+     *        - Response Entity with code 401 when passed id does not match any existing Offer.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteerWhichHasAcceptedApplicationForGivenOffer( authentication.principal," +
+            " #aOfferId) " )
+    @GetMapping( "/is-presence-available/{offerId}" )
+    public ResponseEntity< ? > isPresenceAvailable( @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return offerPresenceHandler.isOfferReadyToConfirmPresences( aOfferId );
+    }
+
+    /**
+     * Loads state of {@linkplain VoluntaryPresence}.
+     *
+     * @param aOfferId offer id.
+     *
+     * @return
+     *        - Response Entity with code 200 and state as {@linkplain VoluntaryPresenceVolunteerDataDto}.
+     *        - Response Entity with code 400 if Application for given Offer does not exist, or it was not accepted,
+     *          or User of given ID does not exist or is not a Volunteer.
+     *        - Response Entity with code 501 in case of unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteerWhichHasAcceptedApplicationForGivenOffer( authentication.principal," +
+            " #aOfferId) " )
+    @GetMapping( "/load-voluntary-presence/{volunteerId}/{offerId}" )
+    public ResponseEntity< ? > loadVoluntaryPresenceState( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                                           @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return offerPresenceHandler.loadVoluntaryPresenceStateOfVolunteer( aVolunteerId, aOfferId );
     }
 }

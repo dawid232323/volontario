@@ -8,11 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.Offer.OfferDto;
+import uam.volontario.dto.presence.VoluntaryPresenceVolunteerDataDto;
+import uam.volontario.dto.user.VolunteerPresenceDto;
 import uam.volontario.handler.BenefitHandler;
 import uam.volontario.handler.CrudOfferDataHandler;
 import uam.volontario.handler.OfferAssignmentHandler;
+import uam.volontario.handler.OfferPresenceHandler;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.offer.impl.VoluntaryPresence;
 
 import java.util.Date;
 import java.util.List;
@@ -33,6 +37,8 @@ public class OfferController
 
     private final BenefitHandler benefitHandler;
 
+    private final OfferPresenceHandler offerPresenceHandler;
+
     /**
      * CDI constructor.
      *
@@ -44,11 +50,14 @@ public class OfferController
      */
     @Autowired
     public OfferController( final CrudOfferDataHandler aOfferDataHandler,
-                            final OfferAssignmentHandler aOfferAssignmentHandler, final BenefitHandler aBenefitHandler )
+                            final OfferAssignmentHandler aOfferAssignmentHandler,
+                            final BenefitHandler aBenefitHandler,
+                            final OfferPresenceHandler aOfferPresenceHandler )
     {
         crudOfferDataHandler = aOfferDataHandler;
         offerAssignmentHandler = aOfferAssignmentHandler;
         benefitHandler = aBenefitHandler;
+        offerPresenceHandler = aOfferPresenceHandler;
     }
 
     /**
@@ -217,5 +226,92 @@ public class OfferController
     {
         return this.crudOfferDataHandler.changeOfferVisibility( aOfferId,
                 aVisibilityMap.getOrDefault( "isHidden", false ) );
+    }
+
+    /**
+     * Resolves List of Volunteers which presence for Offer of given ID can be confirmed or negated.
+     *
+     * @param aOfferId id of context Offer.
+     *
+     * @return
+     *        - Response Entity with code 200 and List of Volunteers which presence on given Offer can be confirmed.
+     *        - Response Entity with code 401 when passed id does not match any existing Offer.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheOffer( authentication.principal, #aOfferId )" )
+    @GetMapping( "/confirmable-volunteers/{offerId}" )
+    public ResponseEntity< ? > resolveVolunteersWhichPresenceCanBeConfirmed( @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return offerPresenceHandler.resolveAllVolunteersWhosePresenceCanBeConfirmed( aOfferId );
+    }
+
+    /**
+     * Checks whether Volunteers' presence on given Offer can be confirmed.
+     *
+     * @param aOfferId id of Offer.
+     *
+     * @return
+     *        - Response Entity with code 200 and true/false which depends on whether presence can be confirmed.
+     *        - Response Entity with code 401 when passed id does not match any existing Offer.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheOffer( authentication.principal, #aOfferId ) " )
+    @GetMapping( "/is-presence-available/{offerId}" )
+    public ResponseEntity< ? > isPresenceAvailable( @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return offerPresenceHandler.isOfferReadyToConfirmPresences( aOfferId );
+    }
+
+    /**
+     * Changes volunteers reported presence state to either CONFIRMED or DENIED.
+     *
+     * @param aVolunteerPresencesDto List containing IDs of Volunteers and their presence states.
+     *
+     * @param aOfferId id of Offer.
+     *
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 401 if User/Offer of given id was not found or if Application was not accepted.
+     *        - Response Entity with code 500 in case of any unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheOffer( authentication.principal, #aOfferId ) " )
+    @PostMapping( "/make-decision-on-presence/{offerId}" )
+    public ResponseEntity< ? > makeDecisionOnPresence( @PathVariable( "offerId" ) final Long aOfferId,
+                                                       @RequestBody final List< VolunteerPresenceDto > aVolunteerPresencesDto )
+    {
+        return offerPresenceHandler.changeInstitutionReportedPresenceState( aVolunteerPresencesDto, aOfferId );
+    }
+
+    /**
+     * Postpones Voluntary Presence Confirmation on Volunteer's side by 7 days.
+     *
+     * @param aOfferId id of Offer to postpone presence confirmation.
+     *
+     *
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 401 if Offer was not found.
+     *        - Response Entity with code 500 in case of an unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheOffer( authentication.principal, #aOfferId ) " )
+    @PostMapping( "/postpone-presence-confirmation/{offerId}" )
+    public ResponseEntity< ? > postponePresenceConfirmation( @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return offerPresenceHandler.postponePresenceConfirmation( aOfferId );
+    }
+
+    /**
+     * Loads state of {@linkplain VoluntaryPresence}.
+     *
+     * @param aOfferId offer id.
+     *
+     * @return
+     *        - Response Entity with code 200 and state as {@linkplain VoluntaryPresenceVolunteerDataDto}.
+     *        - Response Entity with code 400 if Offer does not exist.
+     *        - Response Entity with code 501 in case of unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheOffer( authentication.principal, #aOfferId) " )
+    @GetMapping( "/load-voluntary-presence/{offerId}" )
+    public ResponseEntity< ? > loadVoluntaryPresenceState( @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return offerPresenceHandler.loadVoluntaryPresenceStateOfInstitution( aOfferId );
     }
 }

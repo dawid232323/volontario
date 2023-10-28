@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import uam.volontario.exception.VolontarioEntityNotFoundException;
 import uam.volontario.exception.user.RoleMismatchException;
 
 /**
@@ -35,10 +36,18 @@ public class VolontarioGlobalAdviceController extends ResponseEntityExceptionHan
      *
      * @return response entity with status 400 and exception message body
      */
-    @ExceptionHandler({ EntityNotFoundException.class })
-    public ResponseEntity< ? > handleEntityNotFoundException( final EntityNotFoundException aNotFoundException )
+    @ExceptionHandler({ VolontarioEntityNotFoundException.class })
+    public ResponseEntity< ? > handleEntityNotFoundException( final VolontarioEntityNotFoundException aNotFoundException )
     {
+        if( aNotFoundException.getEntityId() != null )
+        {
+            return ResponseEntity.badRequest()
+                    .body( String.format( "Instance of class %s of id: %o was not found in the database",
+                            aNotFoundException.getEntityType(), aNotFoundException.getEntityId() ) );
+        }
+
         return ResponseEntity.badRequest()
-                .body( "Object with given id does not exist: " + aNotFoundException.getMessage() );
+                .body( String.format( "Instance of class %s of name: %s was not found in the database",
+                        aNotFoundException.getEntityType(), aNotFoundException.getEntityName() ) );
     }
 }

@@ -325,6 +325,85 @@ CREATE TABLE public.volunteer_interests (
 
 ALTER TABLE public.volunteer_interests OWNER TO postgres;
 
+
+CREATE TABLE public.voluntary_presences (
+                                         id bigint NOT NULL,
+                                         volunteer_id bigint,
+                                         offer_id bigint,
+                                         volunteer_reported_presence_state_id bigint,
+                                         institution_reported_presence_state_id bigint,
+                                         volunteer_reminder_date timestamp(6) with time zone,
+                                         institution_reminder_date timestamp(6) with time zone,
+                                         was_institution_reminded boolean,
+                                         was_volunteer_reminded boolean,
+                                         volunteer_left_reminder_count bigint,
+                                         institution_left_reminder_count bigint,
+                                         volunteer_decision_date timestamp(6) with time zone,
+                                         institution_decision_date timestamp(6) with time zone
+
+);
+
+
+ALTER TABLE public.voluntary_presences OWNER TO postgres;
+
+--
+-- Name: experience_level_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.voluntary_presences_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.voluntary_presences_id_seq OWNER TO postgres;
+
+--
+-- Name: experience_level_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.voluntary_presences_id_seq OWNED BY public.voluntary_presences.id;
+
+CREATE TABLE public.voluntary_presence_states (
+                                    id bigint NOT NULL,
+                                    state character varying(255)
+);
+
+
+ALTER TABLE public.voluntary_presence_states OWNER TO postgres;
+
+--
+-- Name: offer_types_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.voluntary_presence_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.voluntary_presence_states_id_seq OWNER TO postgres;
+
+--
+-- Name: offer_types_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.voluntary_presence_states_id_seq OWNED BY public.voluntary_presence_states.id;
+
+
+--
+-- Name: institution_contact_people; Type: TABLE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.voluntary_presence_states ALTER COLUMN id SET DEFAULT nextval('public.voluntary_presence_states_id_seq'::regclass);
+
+ALTER TABLE ONLY public.voluntary_presences ALTER COLUMN id SET DEFAULT nextval('public.voluntary_presences_id_seq'::regclass);
+
+
 ALTER TABLE ONLY public.application_states ALTER COLUMN id SET DEFAULT nextval('public.application_states_id_seq'::regclass);
 
 ALTER TABLE ONLY public.applications ALTER COLUMN id SET DEFAULT nextval('public.applications_id_seq'::regclass);
@@ -351,6 +430,12 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.volunteer_data ALTER COLUMN id SET DEFAULT nextval('public.volunteer_data_id_seq'::regclass);
 
+
+ALTER TABLE ONLY public.voluntary_presences
+    ADD CONSTRAINT voluntary_presences_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.voluntary_presence_states
+    ADD CONSTRAINT voluntary_presence_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.application_states
     ADD CONSTRAINT application_states_pkey PRIMARY KEY (id);
@@ -390,6 +475,18 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.volunteer_data
     ADD CONSTRAINT volunteer_data_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.voluntary_presences
+    ADD CONSTRAINT fk1jq84e96g7lohehw7jb6kesoa FOREIGN KEY (volunteer_id) REFERENCES public.users(id);
+
+ALTER TABLE ONLY public.voluntary_presences
+    ADD CONSTRAINT fk1jq84e96g3lohehw7jb6kesoa FOREIGN KEY (offer_id) REFERENCES public.offers(id);
+
+ALTER TABLE ONLY public.voluntary_presences
+    ADD CONSTRAINT fk1jq84e96g8lohehw7jb6kesoa FOREIGN KEY (volunteer_reported_presence_state_id) REFERENCES public.voluntary_presence_states(id);
+
+ALTER TABLE ONLY public.voluntary_presences
+    ADD CONSTRAINT fk1jq84e96g1lohehw7jb6kesoa FOREIGN KEY (institution_reported_presence_state_id) REFERENCES public.voluntary_presence_states(id);
 
 ALTER TABLE ONLY public.applications
     ADD CONSTRAINT applications_offer_id_fkey FOREIGN KEY (offer_id) REFERENCES public.offers(id);

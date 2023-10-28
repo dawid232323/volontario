@@ -14,6 +14,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.UserIf;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.institution.impl.Institution;
+import uam.volontario.model.offer.impl.Application;
+import uam.volontario.model.offer.impl.VoluntaryPresence;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.validation.annotation.Password;
 
@@ -90,6 +92,14 @@ public class User implements UserIf
 
     @Column
     private String pathToImage;
+
+    @JsonIgnore
+    @OneToMany( mappedBy = "volunteer", cascade = CascadeType.PERSIST )
+    private List< VoluntaryPresence > voluntaryPresences;
+
+    @JsonIgnore
+    @OneToMany( mappedBy = "volunteer", cascade = CascadeType.PERSIST )
+    private List< Application > applications;
 
     @Override
     public List< UserRole > getUserRoles()

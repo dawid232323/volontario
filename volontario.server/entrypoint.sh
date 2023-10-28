@@ -8,6 +8,7 @@ if ! psql -h volontario-db -U "$POSTGRES_USER" -l | grep -wq "volontario"; then
     psql -h volontario-db -U "$POSTGRES_USER" -c "CREATE DATABASE volontario;"
     psql -h volontario-db -U $POSTGRES_USER -d volontario -f /data/database.sql
     psql -h volontario-db -U $POSTGRES_USER -d volontario -f /data/basic_data.sql
+    psql -h volontario-db -U $POSTGRES_USER -d volontario -f /data/configuration.sql
 
     if [ "${DEMO_DATA}" = "true" ]; then
         # fill database with example data

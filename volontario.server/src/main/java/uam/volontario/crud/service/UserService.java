@@ -2,12 +2,11 @@ package uam.volontario.crud.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import uam.volontario.crud.specification.UserSpecification;
 import uam.volontario.model.common.impl.User;
-import uam.volontario.model.common.impl.UserSearchQuery;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -49,4 +48,13 @@ public interface UserService extends EntityService< User >, UserDetailsService
      * @return user with given id or empty optional if user with given id is not found.
      */
     Optional< User > tryToFindById( final Long aUserId );
+
+    /**
+     * Saves or/and updates given Users.
+     *
+     * @param aUsers list of Users to save/update.
+     *
+     * @return list of saved/updated Users.
+     */
+    List< User > saveOrUpdateAll( final List< User > aUsers );
 }

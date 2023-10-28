@@ -1,5 +1,6 @@
 package uam.volontario.model.offer.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -103,6 +104,14 @@ public class Offer implements OfferIf
             inverseJoinColumns = { @JoinColumn( name = "benefit_id" ) }
     )
     private List< Benefit > benefits;
+
+    @JsonIgnore
+    @OneToMany( mappedBy = "offer", cascade = CascadeType.PERSIST )
+    private List< Application > applications;
+
+    @JsonIgnore
+    @OneToMany( mappedBy = "offer", cascade = CascadeType.PERSIST )
+    private List< VoluntaryPresence > voluntaryPresences;
 
     @Column
     private Instant expirationDate;

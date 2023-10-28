@@ -1,27 +1,34 @@
 package uam.volontario.handler;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uam.volontario.crud.service.ExperienceLevelService;
-import uam.volontario.crud.service.InterestCategoryService;
-import uam.volontario.crud.service.UserService;
+import uam.volontario.configuration.ConfigurationEntryKeySet;
+import uam.volontario.configuration.ConfigurationEntryReader;
+import uam.volontario.crud.service.*;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.VolunteerPatchInfoDto;
 import uam.volontario.dto.convert.DtoService;
-import uam.volontario.exception.user.RoleMismatchException;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.offer.impl.Offer;
+import uam.volontario.model.offer.impl.VoluntaryPresence;
+import uam.volontario.model.offer.impl.VoluntaryPresenceStateEnum;
+import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.rest.VolunteerController;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.UserValidationService;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -44,6 +51,14 @@ public class VolunteerHandler
 
     private final PasswordEncoder passwordEncoder;
 
+    private final ApplicationService applicationService;
+
+    private final VoluntaryPresenceStateService voluntaryPresenceStateService;
+
+    private final ConfigurationEntryService configurationEntryService;
+
+    private final OfferService offerService;
+
     /**
      * CDI constructor.
      *
@@ -58,12 +73,24 @@ public class VolunteerHandler
      * @param aInterestCategoryService interest category service.
      *
      * @param aExperienceLevelService experience level service.
+     *
+     * @param aApplicationService application service.
+     *
+     * @param aVoluntaryPresenceStateService voluntary presence state service.
+     *
+     * @param aOfferService offer service.
+     *
+     * @param aConfigurationEntryService configuration entry service.
      */
     @Autowired
     public VolunteerHandler( final UserValidationService aUserValidationService, final DtoService aDtoService,
                              final UserService aUserService, final PasswordEncoder aPasswordEncoder,
                              final InterestCategoryService aInterestCategoryService,
-                             final ExperienceLevelService aExperienceLevelService )
+                             final ExperienceLevelService aExperienceLevelService,
+                             final ApplicationService aApplicationService,
+                             final VoluntaryPresenceStateService aVoluntaryPresenceStateService,
+                             final ConfigurationEntryService aConfigurationEntryService,
+                             final OfferService aOfferService )
     {
         dtoService = aDtoService;
         userService = aUserService;
@@ -71,6 +98,10 @@ public class VolunteerHandler
         userValidationService = aUserValidationService;
         interestCategoryService = aInterestCategoryService;
         experienceLevelService = aExperienceLevelService;
+        applicationService = aApplicationService;
+        voluntaryPresenceStateService = aVoluntaryPresenceStateService;
+        configurationEntryService = aConfigurationEntryService;
+        offerService = aOfferService;
     }
 
     /**
@@ -143,51 +174,41 @@ public class VolunteerHandler
     {
         try
         {
-            final Optional< User > optionalVolunteer = userService.tryLoadEntity( aVolunteerId );
-            if( optionalVolunteer.isPresent() )
+            final User volunteer = ModelUtils.resolveVolunteer( aVolunteerId, userService );
+            if( volunteer.hasUserRole( UserRole.VOLUNTEER ) )
             {
-                final User volunteer = optionalVolunteer.get();
-                if( volunteer.hasUserRole( UserRole.VOLUNTEER ) )
+                final VolunteerData volunteerData = volunteer.getVolunteerData();
+
+                Optional.ofNullable( aPatchDto.getContactEmailAddress() )
+                        .ifPresent( volunteer::setContactEmailAddress );
+                Optional.ofNullable( aPatchDto.getPhoneNumber() )
+                        .ifPresent( volunteer::setPhoneNumber );
+                Optional.ofNullable( aPatchDto.getParticipationMotivation() )
+                        .ifPresent( volunteerData::setParticipationMotivation );
+
+                Optional.ofNullable( aPatchDto.getInterestCategoriesIds() )
+                        .ifPresent( idList -> volunteerData.setInterestCategories( idList.stream()
+                                .map( interestCategoryService::loadEntity )
+                                .collect( Collectors.toList() ) ) );
+                Optional.ofNullable( aPatchDto.getExperienceId() )
+                        .ifPresent( id -> volunteerData.setExperience( experienceLevelService.loadEntity( id ) ) );
+
+                final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
+                if( validationResult.isValidated() )
                 {
-                    final VolunteerData volunteerData = volunteer.getVolunteerData();
-
-                    Optional.ofNullable( aPatchDto.getContactEmailAddress() )
-                            .ifPresent( volunteer::setContactEmailAddress );
-                    Optional.ofNullable( aPatchDto.getPhoneNumber() )
-                            .ifPresent( volunteer::setPhoneNumber );
-                    Optional.ofNullable( aPatchDto.getParticipationMotivation() )
-                            .ifPresent( volunteerData::setParticipationMotivation );
-
-                    Optional.ofNullable( aPatchDto.getInterestCategoriesIds() )
-                            .ifPresent( idList -> volunteerData.setInterestCategories( idList.stream()
-                                    .map( interestCategoryService::loadEntity )
-                                    .collect( Collectors.toList() ) ) );
-                    Optional.ofNullable( aPatchDto.getExperienceId() )
-                            .ifPresent( id -> volunteerData.setExperience( experienceLevelService.loadEntity( id ) ) );
-
-                    final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
-                    if( validationResult.isValidated() )
-                    {
-                        userService.saveOrUpdate( volunteer );
-                        return ResponseEntity.ok( validationResult.getValidatedEntity() );
-                    }
-                    else
-                    {
-                        return ResponseEntity.badRequest()
-                                .body( validationResult.getValidationViolations() );
-                    }
+                    userService.saveOrUpdate( volunteer );
+                    return ResponseEntity.ok( validationResult.getValidatedEntity() );
                 }
                 else
                 {
                     return ResponseEntity.badRequest()
-                            .body( MessageGenerator.getVolunteerNotFoundMessage( aVolunteerId ) );
+                            .body( validationResult.getValidationViolations() );
                 }
+
             }
-            else
-            {
-                return ResponseEntity.badRequest()
-                        .body( MessageGenerator.getUserNotFoundMessage( aVolunteerId ) );
-            }
+
+            return ResponseEntity.badRequest()
+                    .body( MessageGenerator.getUserNotFoundMessage( aVolunteerId ) );
         }
         catch ( Exception aE )
         {
@@ -207,8 +228,9 @@ public class VolunteerHandler
      */
     public ResponseEntity< ? > patchVolunteerInterests( final Long aUserId, final String interests )
     {
-        final User user = this.resolveVolunteer( aUserId );
+        final User user = ModelUtils.resolveVolunteer( aUserId, userService );
         user.getVolunteerData().setInterests( interests );
+
         this.userService.saveOrUpdate( user );
         return ResponseEntity.ok( user );
     }
@@ -225,25 +247,192 @@ public class VolunteerHandler
     public ResponseEntity< ? > patchVolunteerExperienceDescription( final Long aUserId,
                                                                     final String experienceDescription )
     {
-        final User user = this.resolveVolunteer( aUserId );
+        final User user = ModelUtils.resolveVolunteer( aUserId, userService );
         user.getVolunteerData().setExperienceDescription( experienceDescription );
+
         this.userService.saveOrUpdate( user );
         return ResponseEntity.ok( user );
     }
 
-    private User resolveVolunteer( final Long aVolunteerId )
+    /**
+     * Resolves all {@linkplain uam.volontario.model.offer.impl.Offer}s in which Volunteer of provided id participated.
+     *
+     * @param aVolunteerId Volunteer id.
+     *
+     * @return
+     *        - Response Entity with code 200 and List of Offers in which Volunteer participated
+     *        - Response Entity with code 401 if no user of given id was found or if user was found, but was not volunteer.
+     *        - Response Entity with code 500 in case of any unexpected server side error.
+     */
+    public ResponseEntity< ? > resolveAllPresencesOfVolunteer( final Long aVolunteerId )
     {
-        final Optional< User > optionalUser = this.userService.tryToFindById( aVolunteerId );
-        if ( optionalUser.isEmpty() )
+        try
         {
-            throw new EntityNotFoundException();
+            final List< Offer > offersInWhichUserParticipated = ModelUtils.resolveVolunteer( aVolunteerId, userService )
+                    .getVoluntaryPresences().stream()
+                    .filter( voluntaryPresence -> voluntaryPresence.getVolunteerReportedPresenceStateAsEnum().equals( VoluntaryPresenceStateEnum.CONFIRMED )
+                                && voluntaryPresence.getInstitutionReportedPresenceStateAsEnum().equals( VoluntaryPresenceStateEnum.CONFIRMED ) )
+                    .map( VoluntaryPresence::getOffer )
+                    .distinct()
+                    .toList();
+
+            return ResponseEntity.ok( offersInWhichUserParticipated.stream()
+                    .map( dtoService::createBaseInfoDtoOfOffer )
+                    .toList() );
         }
-        final User user = optionalUser.get();
-        if( !user.hasUserRole( UserRole.VOLUNTEER ) )
+        catch ( Exception aE )
         {
-            throw new RoleMismatchException( String
-                    .format( "User with username %s is not a volunteer", user.getUsername() ) );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
         }
-        return user;
+    }
+
+    /**
+     * Changes volunteer reported presence state to either CONFIRMED or DENIED.
+     *
+     * @param aVolunteerId id of Volunteer to change volunteer reported state.
+     *
+     * @param aOfferId id of Offer.
+     *
+     * @param aVoluntaryPresenceState voluntary presence state to be applied.
+     *
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 401 if User/Offer of given id was not found or if Application for Offer was not accepted.
+     *        - Response Entity with code 500 in case of any unexpected server side error.
+     */
+    public ResponseEntity< ? > changeVolunteerReportedPresenceState( final Long aVolunteerId, final Long aOfferId,
+                                                                     final VoluntaryPresenceStateEnum aVoluntaryPresenceState )
+    {
+        try
+        {
+            final User volunteer = ModelUtils.resolveVolunteer( aVolunteerId, userService );
+            final Offer offer = ModelUtils.resolveOffer( aOfferId, offerService );
+
+            final Optional< VoluntaryPresence > optionalVoluntaryPresence = volunteer.getVoluntaryPresences().stream()
+                    .filter( voluntaryPresence -> voluntaryPresence.getOffer()
+                            .equals( offer ) )
+                    .findAny();
+
+            if( optionalVoluntaryPresence.isEmpty() )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "Volunteer %s can not confirm/deny his presence on Offer %s because his Application was not accepted",
+                                volunteer.getUsername(), offer.getTitle() ) );
+            }
+
+            final Duration changeDecisionBuffer = ConfigurationEntryReader.readValueAsDurationOrDefault(
+                    ConfigurationEntryKeySet.VOL_VOLUNTARY_PRESENCE_DECISION_CHANGE_BUFFER, ChronoUnit.HOURS,
+                    Duration.ofDays( 14 ), configurationEntryService );
+
+            final VoluntaryPresence voluntaryPresence = optionalVoluntaryPresence.get();
+
+            if( !canPresenceStateBeSet( voluntaryPresence.getVolunteerReportedPresenceStateAsEnum(),
+                    voluntaryPresence.getVolunteerDecisionDate(), changeDecisionBuffer ) )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "Time to change decision has expired at: %s",
+                                voluntaryPresence.getVolunteerDecisionDate().plus( changeDecisionBuffer ) ) );
+            }
+
+            switch ( aVoluntaryPresenceState )
+            {
+                case CONFIRMED, DENIED ->
+                {
+                    voluntaryPresence.setVolunteerReportedPresenceState(
+                            ModelUtils.resolveVoluntaryPresenceState( aVoluntaryPresenceState, voluntaryPresenceStateService ) );
+                    voluntaryPresence.setVolunteerDecisionDate( Instant.now() );
+                }
+                case UNRESOLVED -> throw new UnsupportedOperationException(
+                        "Voluntary Presence State 'Unresolved' is initial state and can not be set again." );
+            }
+
+            userService.saveOrUpdate( volunteer );
+
+            return ResponseEntity.ok()
+                    .build();
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    /**
+     * Postpones Voluntary Presence Confirmation on Volunteer's side by 7 days.
+     *
+     * @param aVolunteerId id of Volunteer to postpone presence confirmation.
+     *
+     * @param aOfferId id of Offer.
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 401 if User/Offer of given id was not found or if Application for Offer was not accepted.
+     *        - Response Entity with code 500 in case of an unexpected server side error.
+     */
+    public ResponseEntity< ? > postponePresenceConfirmation( final Long aVolunteerId, final Long aOfferId )
+    {
+        try
+        {
+            final User volunteer = ModelUtils.resolveVolunteer( aVolunteerId, userService );
+            final Offer offer = ModelUtils.resolveOffer( aOfferId, offerService );
+
+            final Optional< VoluntaryPresence > optionalVoluntaryPresence = volunteer.getVoluntaryPresences().stream()
+                    .filter( voluntaryPresence -> voluntaryPresence.getOffer()
+                            .equals( offer ) )
+                    .findAny();
+
+            if( optionalVoluntaryPresence.isEmpty() )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "Volunteer %s can not postpone confirmation of his presence on Offer %s because his Application was not accepted",
+                                volunteer.getUsername(), offer.getTitle() ) );
+            }
+
+            final VoluntaryPresence voluntaryPresence = optionalVoluntaryPresence.get();
+
+            if( voluntaryPresence.getVolunteerLeftReminderCount() <= 0 )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "Volunteer %s has already reached the maximum allowed numbers of postponing Offer %s.",
+                                volunteer.getUsername(),
+                                offer.getTitle() ) );
+            }
+
+            final Duration reminderPostponeTime = ConfigurationEntryReader.readValueAsDurationOrDefault(
+                    ConfigurationEntryKeySet.VOLUNTARY_PRESENCE_POSTPONE_CONFIRMATION_TIME, ChronoUnit.HOURS,
+                    Duration.ofDays( 7 ), configurationEntryService );
+
+            voluntaryPresence.setVolunteerLeftReminderCount( voluntaryPresence.getVolunteerLeftReminderCount() - 1 );
+            voluntaryPresence.setVolunteerReminderDate( voluntaryPresence.getVolunteerReminderDate()
+                    .plus( reminderPostponeTime ) );
+            voluntaryPresence.setWasVolunteerReminded( false );
+
+            userService.saveOrUpdate( volunteer );
+
+            return ResponseEntity.ok()
+                    .build();
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    private boolean canDecisionBeChanged( final @Nullable Instant aVolunteerDecisionDate,
+                                          final Duration aChangeDecisionBuffer )
+    {
+        return aVolunteerDecisionDate != null && Duration.between( aVolunteerDecisionDate, Instant.now() )
+                        .compareTo( aChangeDecisionBuffer ) <= 0;
+    }
+
+    private boolean canPresenceStateBeSet( final VoluntaryPresenceStateEnum aPresenceState,
+                                           final @Nullable Instant aDecisionDate,
+                                           final Duration aChangeDecisionBuffer )
+    {
+        return aPresenceState.equals( VoluntaryPresenceStateEnum.UNRESOLVED )
+                || canDecisionBeChanged( aDecisionDate,
+                aChangeDecisionBuffer );
     }
 }

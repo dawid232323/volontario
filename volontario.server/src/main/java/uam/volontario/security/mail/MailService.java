@@ -22,16 +22,19 @@ import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.model.offer.impl.Application;
 import uam.volontario.model.offer.impl.Benefit;
 import uam.volontario.model.offer.impl.Offer;
+import uam.volontario.model.offer.impl.VoluntaryPresence;
 import uam.volontario.security.util.VolontarioBase64Coder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service for sending emails from backend.
@@ -48,6 +51,7 @@ public class MailService
     private final String volontarioModeratorAddress; //TODO remove after implementing moderator roles properly
 
     private final InternetAddress[] maintenanceEmails;
+
     private final String volontarioHost;
 
     /**
@@ -426,7 +430,7 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message, true );
 
-        final String sender = "test-sender";
+        final String sender = "VOLONTARIO REPORTS";
 
         helper.setFrom( noReplyVolontarioEmailAddress, sender );
         helper.setTo( maintenanceEmails );
@@ -441,6 +445,112 @@ public class MailService
         }
 
         return trySendMail( () -> mailSender.send( message ) );
+    }
+
+    /**
+     * Sends email to Volunteer to confirm/negate/postpone his presence at given Offer.
+     *
+     * @param aVoluntaryPresence voluntary presence.
+     *
+     * @param aDecisionDeadline decision deadline.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendMailToVolunteerAboutPresenceConfirmation( final VoluntaryPresence aVoluntaryPresence,
+                                                              final Instant aDecisionDeadline )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        final String sender = "Volontario";
+
+        final Offer offer = aVoluntaryPresence.getOffer();
+        final User volunteer = aVoluntaryPresence.getVolunteer();
+        final Application application = volunteer.getApplications().stream()
+                .filter( app -> app.getOffer()
+                        .equals( offer ) )
+                .findAny()
+                .orElseThrow( IllegalStateException::new );
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( volunteer.getContactEmailAddress() );
+        helper.setSubject( String.format( "Potwierdź obecność w wolontariacie: %s", offer.getTitle() ) );
+
+        String content = Resources.toString( Resources.getResource( "emails/volunteerPresenceReminder.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|decisionDeadline\\|", instantFormatter.format( aDecisionDeadline ) );
+        content = content.replaceAll( "\\|offerName\\|", offer.getTitle() );
+        content = content.replaceAll( "\\|confirmationLink\\|",
+                String.format( "%s/volunteer/%o/confirm-presence?a=%o&p=%o",
+                        volontarioHost,
+                        volunteer.getId(),
+                        application.getId(),
+                        aVoluntaryPresence.getId() ) );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
+    }
+
+    /**
+     * Sends email to Offer's Contact Person to confirm/negate/postpone Volunteers' presences at given Offer.
+     *
+     * @param aVoluntaryPresences voluntary presences.
+     *
+     * @param aDecisionDeadline decision deadline.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendMailToOfferContactPersonAboutPresenceConfirmation( final List< VoluntaryPresence > aVoluntaryPresences,
+                                                                       final Instant aDecisionDeadline )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        final String sender = "Volontario";
+
+        final VoluntaryPresence anyVoluntaryPresence = aVoluntaryPresences.stream()
+                .findAny()
+                .orElseThrow( IllegalStateException::new );
+
+        final Offer offer = anyVoluntaryPresence.getOffer();
+        final List< User > volunteers = aVoluntaryPresences.stream()
+                .map( VoluntaryPresence::getVolunteer )
+                .toList();
+
+        final String volunteersIdSeperatedBySemicolon = volunteers.stream()
+                .map( user -> String.valueOf( user.getId() ) )
+                .collect( Collectors.joining( ";" ) );
+
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( offer.getContactPerson().getContactEmailAddress() );
+        helper.setSubject( String.format( "Potwierdź obecność wolontariuszy na wydarzeniu: %s", offer.getTitle() ) );
+
+        String content = Resources.toString( Resources.getResource( "emails/institutionPresenceReminder.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|decisionDeadline\\|", instantFormatter.format( aDecisionDeadline ) );
+        content = content.replaceAll( "\\|offerName\\|", offer.getTitle() );
+        content = content.replaceAll( "\\|confirmationLink\\|",
+                String.format( "%s/institution/%o/confirm-presence?o=%o&t=%s",
+                        volontarioHost,
+                        offer.getInstitution().getId(),
+                        offer.getId(),
+                        VolontarioBase64Coder.encode( volunteersIdSeperatedBySemicolon ) ) );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
     }
 
     private String buildMailContentForInstitutionRegistration( final Institution aInstitution )
@@ -513,7 +623,8 @@ public class MailService
                 StandardCharsets.UTF_8 );
 
         content = content.replaceAll( "\\|offerName\\|", aOffer.getTitle() );
-        content = content.replaceAll( "\\|offerDescription\\|", aOffer.getDescription() );
+        content = content.replaceAll( "\\|offerDescription\\|", ObjectUtils.defaultIfNull( aOffer.getDescription(),
+                StringUtils.EMPTY ) );
         content = content.replaceAll( "\\|institutionName\\|", aOffer.getInstitution().getName() );
         content = content.replaceAll( "\\|offerTypeName\\|", aOffer.getOfferType().getName() );
         content = content.replaceAll( "\\|offerStartDate\\|", instantFormatter.format( aOffer.getStartDate() ) );

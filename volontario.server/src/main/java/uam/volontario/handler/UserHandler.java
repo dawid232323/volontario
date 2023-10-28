@@ -1,6 +1,5 @@
 package uam.volontario.handler;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,10 +17,10 @@ import uam.volontario.dto.user.UserProfileDto;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.common.impl.UserSearchQuery;
+import uam.volontario.model.utils.ModelUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Service responsible with all {@link uam.volontario.model.common.impl.User} operations except creating volunteer
@@ -31,9 +30,20 @@ import java.util.Optional;
 public class UserHandler
 {
     private final UserService userService;
+
     private final DtoService dtoService;
+
     private final RoleService roleService;
 
+    /**
+     * CDI constructor.
+     *
+     * @param aUserService user service.
+     *
+     * @param aDtoService dto service.
+     *
+     * @param aRoleService role service.
+     */
     @Autowired
     public UserHandler( final UserService aUserService, final DtoService aDtoService,
                         final RoleService aRoleService )
@@ -67,6 +77,7 @@ public class UserHandler
         final Pageable pageable = PageRequest
                 .of( aPageable.getPageNumber(), aPageable.getPageSize(), Sort.by( "firstName", "lastName" ) );
         final Page< User > filteredUsers = this.userService.findFiltered( userSpecification, pageable );
+
         return filteredUsers.map( dtoService::getAdmUserDetailsDtoFromUser );
     }
 
@@ -83,19 +94,14 @@ public class UserHandler
      */
     public ResponseEntity< ? > changeUserStatus( final Long aUserId, final Boolean isDeactivated )
     {
-        final User user;
-        try
-        {
-             user = this.getUserWithGivenId( aUserId );
-        } catch ( EntityNotFoundException aE )
-        {
-            return ResponseEntity.status( HttpStatus.BAD_REQUEST )
-                    .build();
-        }
+        final User user = ModelUtils.resolveUser( aUserId, userService );
+
         user.setVerified( !isDeactivated );
         this.userService.saveOrUpdate( user );
+
         final AdministrativeUserDetailsDto userDetailsDto = this.dtoService
                 .getAdmUserDetailsDtoFromUser( user );
+
         return ResponseEntity.status( HttpStatus.OK )
                 .body( userDetailsDto );
     }
@@ -113,22 +119,19 @@ public class UserHandler
      */
     public ResponseEntity< ? > assignUserRoles( final Long aUserId, final List< Map< String, Long > > aUserRoles )
     {
-        final User user;
-        try
-        {
-            user = this.getUserWithGivenId( aUserId );
-        } catch ( EntityNotFoundException aE )
-        {
-            return ResponseEntity.status( HttpStatus.BAD_REQUEST )
-                    .build();
-        }
+        final User user = ModelUtils.resolveUser( aUserId, userService );
+
         final List< Long > roleIds = aUserRoles.stream()
                 .map( roleMap -> roleMap.get( "roleId" ) ).toList();
+
         final List< Role > roles = this.roleService.findByIdIn( roleIds );
         user.setRoles( roles );
+
         this.userService.saveOrUpdate( user );
+
         final AdministrativeUserDetailsDto userDetailsDto = this.dtoService
                 .getAdmUserDetailsDtoFromUser( user );
+
         return ResponseEntity.status( HttpStatus.OK )
                 .body( userDetailsDto );
     }
@@ -143,13 +146,9 @@ public class UserHandler
      */
     public ResponseEntity< ? > getUserProfileDetails( final Long aUserId )
     {
-        final Optional< User > optionalUser = this.userService.tryToFindById( aUserId );
-        if ( optionalUser.isEmpty() )
-        {
-            return ResponseEntity.badRequest().body( "User with given id does not exist" );
-        }
-        final User user = optionalUser.get();
-        final UserProfileDto profileDto = this.dtoService.getUserProfileDtoFromUser( user );
+        final UserProfileDto profileDto = this.dtoService.getUserProfileDtoFromUser(
+                ModelUtils.resolveUser( aUserId, userService ) );
+
         return ResponseEntity.ok( profileDto );
     }
 
@@ -162,15 +161,5 @@ public class UserHandler
                 .lastName( aLastName )
                 .email( aEmail )
                 .build();
-    }
-
-    private User getUserWithGivenId( final Long aUserId ) throws EntityNotFoundException
-    {
-        final Optional< User > userOptional =  this.userService.tryToFindById( aUserId );
-        if( userOptional.isEmpty() )
-        {
-            throw new EntityNotFoundException();
-        }
-        return userOptional.get();
     }
 }

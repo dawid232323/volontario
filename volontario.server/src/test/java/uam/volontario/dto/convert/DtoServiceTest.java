@@ -180,7 +180,7 @@ class DtoServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", null, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, null, Collections.emptyList(), Collections.emptyList(),
+                null, null, Collections.emptyList(), Collections.emptyList(), null, null,
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
 
         //when
@@ -213,7 +213,7 @@ class DtoServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", user, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, null, Collections.emptyList(), Collections.emptyList(),
+                null, null, Collections.emptyList(), Collections.emptyList(), null, null,
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
 
         //when
@@ -247,7 +247,7 @@ class DtoServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", User.builder().id( 0L ).build(), null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, null, Collections.emptyList(), Collections.emptyList(),
+                null, null, Collections.emptyList(), Collections.emptyList(), null, null,
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
         VolunteerData volunteerData = VolunteerData.builder().id( 0l ).domainEmailAddress( "test@amu.edu.pl" )
                 .participationMotivation( "motivation ").fieldOfStudy( "informatyka" )
@@ -285,7 +285,7 @@ class DtoServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", null, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, null, Collections.emptyList(), Collections.emptyList(),
+                null, null, Collections.emptyList(), Collections.emptyList(), null, null,
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
 
         User user = User.builder().id( 1L ).firstName( "name" ).lastName( "surname" ).build();

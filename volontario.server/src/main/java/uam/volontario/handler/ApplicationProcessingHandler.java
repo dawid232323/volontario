@@ -1,5 +1,6 @@
 package uam.volontario.handler;
 
+import jakarta.mail.MessagingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,20 +8,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uam.volontario.crud.service.ApplicationService;
-import uam.volontario.crud.service.ApplicationStateService;
-import uam.volontario.crud.service.OfferService;
-import uam.volontario.crud.service.UserService;
+import uam.volontario.configuration.ConfigurationEntryKeySet;
+import uam.volontario.configuration.ConfigurationEntryReader;
+import uam.volontario.crud.service.*;
 import uam.volontario.crud.specification.ApplicationSpecification;
 import uam.volontario.dto.Application.ApplicationDto;
 import uam.volontario.dto.Application.ApplicationStateCheckDto;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.offer.impl.*;
+import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.security.mail.MailService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.ApplicationValidationService;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,7 +46,12 @@ public class ApplicationProcessingHandler
     private final OfferService offerService;
 
     private final MailService mailService;
+
     private final DtoService dtoService;
+
+    private final VoluntaryPresenceStateService voluntaryPresenceStateService;
+
+    private final ConfigurationEntryService configurationEntryService;
 
     /**
      * CDI constructor.
@@ -55,13 +65,24 @@ public class ApplicationProcessingHandler
      * @param aApplicationStateService application state service.
      *
      * @param aApplicationValidationService application validation service.
+     *
+     * @param aVoluntaryPresenceStateService voluntary presence state service.
+     *
+     * @param aConfigurationEntryService configuration entry service.
+     *
+     * @param aMailService mail service.
+     *
+     * @param aDtoService dto service.
+     *
      */
     @Autowired
     public ApplicationProcessingHandler( final ApplicationService aApplicationService, final OfferService aOfferService,
                                          final UserService aUserService,
                                          final ApplicationStateService aApplicationStateService,
                                          final ApplicationValidationService aApplicationValidationService,
-                                         final MailService aMailService, final DtoService aDtoService )
+                                         final MailService aMailService, final DtoService aDtoService,
+                                         final VoluntaryPresenceStateService aVoluntaryPresenceStateService,
+                                         final ConfigurationEntryService aConfigurationEntryService )
     {
         applicationService = aApplicationService;
         offerService = aOfferService;
@@ -70,7 +91,14 @@ public class ApplicationProcessingHandler
         applicationValidationService = aApplicationValidationService;
         mailService = aMailService;
         dtoService = aDtoService;
+        voluntaryPresenceStateService = aVoluntaryPresenceStateService;
+        configurationEntryService = aConfigurationEntryService;
     }
+
+    /**
+     * Logger.
+     */
+    private static final Logger LOGGER = LogManager.getLogger( ApplicationProcessingHandler.class );
 
     /**
      * Creates Application instance.
@@ -87,26 +115,15 @@ public class ApplicationProcessingHandler
     {
         try
         {
-            final Optional< User > optionalUser = userService.tryLoadEntity( aDto.getVolunteerId() );
-            final Optional< Offer > optionalOffer = offerService.tryLoadEntity( aDto.getOfferId() );
-
-            if( optionalUser.isEmpty() )
-            {
-                return ResponseEntity.badRequest()
-                        .body( MessageGenerator.getUserNotFoundMessage( aDto ) );
-            }
-            else if( optionalOffer.isEmpty() )
-            {
-                return ResponseEntity.badRequest()
-                        .body( MessageGenerator.getOfferNotFoundMessage( aDto ) );
-            }
+            final User volunteer  = ModelUtils.resolveVolunteer( aDto.getVolunteerId(), userService );
+            final Offer offer = ModelUtils.resolveOffer( aDto.getOfferId(), offerService );
 
             final Application application = Application.builder()
-                    .volunteer( optionalUser.get() )
-                    .offer( optionalOffer.get() )
+                    .volunteer( volunteer )
+                    .offer( offer )
                     .isStarred( false )
                     .participationMotivation( aDto.getParticipationMotivation() )
-                    .state( getApplicationState( ApplicationStateEnum.AWAITING ) )
+                    .state( ModelUtils.resolveApplicationState( ApplicationStateEnum.AWAITING, applicationStateService ) )
                     .build();
 
             final ValidationResult validationResult = applicationValidationService.validateEntity( application );
@@ -153,21 +170,12 @@ public class ApplicationProcessingHandler
     {
         try
         {
-            final Optional< Application > optionalApplication = applicationService.tryLoadEntity( aApplicationId );
-            if( optionalApplication.isPresent() )
-            {
-                final Application application = optionalApplication.get();
-                application.setStarred( aStar );
+            final Application application = ModelUtils.resolveApplication( aApplicationId, applicationService );
 
-                applicationService.saveOrUpdate( application );
+            application.setStarred( aStar );
+            applicationService.saveOrUpdate( application );
 
-                return ResponseEntity.ok( application );
-            }
-            else
-            {
-                return ResponseEntity.badRequest()
-                        .body( MessageGenerator.getApplicationNotFoundMessage( aApplicationId ) );
-            }
+            return ResponseEntity.ok( application );
         }
         catch ( Exception aE )
         {
@@ -199,51 +207,30 @@ public class ApplicationProcessingHandler
     {
         try
         {
-            final Optional< Application > optionalApplication = applicationService.tryLoadEntity( aApplicationId );
-            if( optionalApplication.isPresent() )
+            final Application application = ModelUtils.resolveApplication( aApplicationId, applicationService );
+
+            final Offer offer = application.getOffer();
+            final User volunteer = application.getVolunteer();
+
+            switch ( aDecision )
             {
-                final Application application = optionalApplication.get();
-
-                final Offer offer = application.getOffer();
-                final User volunteer = application.getVolunteer();
-
-                switch ( aDecision )
+                case AWAITING -> throw new IllegalArgumentException( "Awaiting state is not a proper resolve." );
+                case UNDER_RECRUITMENT -> handleUnderRecruitmentApplication( volunteer, application, offer );
+                case RESERVE_LIST -> handleReserveListApplication( volunteer, application, offer );
+                case DECLINED ->
                 {
-                    case AWAITING -> throw new IllegalArgumentException( "Awaiting state is not a proper resolve." );
-                    case UNDER_RECRUITMENT ->
+                    if( aDecisionReasonOptionalMap.isEmpty() )
                     {
-                        application.setState( getApplicationState( ApplicationStateEnum.UNDER_RECRUITMENT) );
-                        applicationService.saveOrUpdate( application );
-                        mailService.sendEmailAboutApplicationUnderRecruitment( volunteer.getContactEmailAddress(),
-                                offer.getTitle() );
+                        return ResponseEntity.badRequest()
+                                .body( "Decline reason should be present" );
                     }
-                    case RESERVE_LIST ->
-                    {
-                        application.setState( getApplicationState( ApplicationStateEnum.RESERVE_LIST ) );
-                        applicationService.saveOrUpdate( application );
-                        mailService.sendEmailAboutApplicationBeingMovedToReserveList( volunteer.getContactEmailAddress(),
-                                offer.getTitle() );
-                    }
-                    case DECLINED ->
-                    {
-                        if( aDecisionReasonOptionalMap.isEmpty() )
-                        {
-                            return ResponseEntity.badRequest().body( "Decline reason should be present" );
-                        }
-                        final Map< String, String > reasonMap = aDecisionReasonOptionalMap.get();
-                        final String decisionReason = reasonMap.get( "decisionReason" );
-                        application.setState( getApplicationState( ApplicationStateEnum.DECLINED ) );
-                        application.setDecisionReason( decisionReason );
-                        applicationService.saveOrUpdate( application );
-                        mailService.sendEmailAboutApplicationBeingDeclined( volunteer.getContactEmailAddress(),
-                                offer.getTitle(), decisionReason );
-                    }
+
+                    handleDeclinedApplication( volunteer, application, offer, aDecisionReasonOptionalMap.get()
+                            .get( "decisionReason" ) );
                 }
-                return ResponseEntity.ok( application );
             }
 
-            return ResponseEntity.badRequest()
-                    .body( MessageGenerator.getApplicationNotFoundMessage( aApplicationId ) );
+            return ResponseEntity.ok( application );
         }
         catch ( Exception aE )
         {
@@ -252,28 +239,17 @@ public class ApplicationProcessingHandler
         }
     }
 
-    private ApplicationState getApplicationState( final ApplicationStateEnum aApplicationStateEnum )
+    // TODO: mikmum add details javadoc.
+    public ResponseEntity< ? > loadApplicationInfoFiltered( final String aState, final Boolean aIsStarred, final Long aOfferId,
+                                                            final Long aVolunteerId, final Long aInstitutionId, final Pageable aPageable,
+                                                            final boolean aWithDetails )
     {
-        return applicationStateService.tryLoadByName( aApplicationStateEnum.getTranslatedState() )
-                .orElseThrow();
-    }
-
-
-    /**
-     * Logger.
-     */
-    private static final Logger LOGGER = LogManager.getLogger( CrudOfferDataHandler.class );
-
-    public ResponseEntity< ? > loadApplicationInfoFiltered( String state, Boolean isStarred, Long offerId,
-                                                            Long volunteerId, Long institutionId, Pageable aPageable,
-                                                            boolean withDetails )
-    {
-        ApplicationSearchQuery query = new ApplicationSearchQuery( state, isStarred, offerId, volunteerId, institutionId );
-        ApplicationSpecification specification = new ApplicationSpecification( query );
-
         try
         {
-            if ( withDetails )
+            final ApplicationSpecification specification = new ApplicationSpecification( new ApplicationSearchQuery(
+                    aState, aIsStarred, aOfferId, aVolunteerId, aInstitutionId ) );
+
+            if ( aWithDetails )
             {
                 return ResponseEntity.ok( applicationService.findFiltered( specification, aPageable )
                         .map( dtoService::createApplicationDetailsDto ) );
@@ -289,35 +265,30 @@ public class ApplicationProcessingHandler
         }
     }
 
-    public ResponseEntity< ? > checkState( Long offerId, Long volunteerId )
+    // TODO: mikmum add details javadoc.
+    public ResponseEntity< ? > checkState( final Long aOfferId, final Long aVolunteerId )
     {
-        try {
-            Optional< Offer > offer = offerService.tryLoadEntity(offerId);
-            if ( offer.isEmpty())
-            {
-                return ResponseEntity.badRequest()
-                        .body( MessageGenerator.getOfferNotFoundMessage( offerId ) );
-            }
-            Optional< User > volunteer = userService.tryLoadEntity( volunteerId );
-            if ( volunteer.isEmpty() )
-            {
-                return ResponseEntity.badRequest()
-                        .body( MessageGenerator.getVolunteerNotFoundMessage( volunteerId ) );
-            }
+        try
+        {
+            // check existence of Offer and Volunteer.
+            ModelUtils.resolveOffer( aOfferId, offerService );
+            ModelUtils.resolveVolunteer( aVolunteerId, userService );
 
-            ApplicationSearchQuery query = new ApplicationSearchQuery( null, null, offerId, volunteerId, null );
-            ApplicationSpecification specification = new ApplicationSpecification( query );
+            final ApplicationSpecification specification = new ApplicationSpecification( new ApplicationSearchQuery(
+                    null, null, aOfferId, aVolunteerId, null ));
 
-            Optional<Application> application = applicationService.findFiltered(specification, Pageable.unpaged()).get().findFirst();
+            final Optional< Application > optionalApplication = applicationService.findFiltered( specification, Pageable.unpaged() )
+                    .get()
+                    .findFirst();
 
-            if ( application.isEmpty() )
+            if ( optionalApplication.isEmpty() )
             {
                 return ResponseEntity.ok( new ApplicationStateCheckDto( null, false, null ) );
             }
 
-            return application.map( value -> ResponseEntity.ok(
-                    new ApplicationStateCheckDto( application.get().getId(), true, value.getState().getName() ) ) )
-                    .orElseGet( () -> ResponseEntity.ok(new ApplicationStateCheckDto( application.get().getId(), false, null) ) );
+            return optionalApplication.map( value -> ResponseEntity.ok(
+                    new ApplicationStateCheckDto( optionalApplication.get().getId(), true, value.getState().getName() ) ) )
+                    .orElseGet( () -> ResponseEntity.ok(new ApplicationStateCheckDto( optionalApplication.get().getId(), false, null) ) );
         }
         catch ( Exception aE )
         {
@@ -327,22 +298,87 @@ public class ApplicationProcessingHandler
         }
     }
 
-    public ResponseEntity<?> loadApplicationDetails( Long aApplicationId )
+    // TODO: mikmum add details javadoc.
+    public ResponseEntity< ? > loadApplicationDetails( final Long aApplicationId )
     {
-        try {
-            Optional<Application> application = applicationService.tryLoadEntity( aApplicationId );
-            if ( application.isPresent() )
-            {
-                return ResponseEntity.ok( dtoService.createApplicationDetailsDto( application.get() ) );
-            }
-            return ResponseEntity.status( HttpStatus.NOT_FOUND )
-                    .body( MessageGenerator.getApplicationNotFoundMessage( aApplicationId ) );
+        try
+        {
+            return ResponseEntity.ok( ModelUtils.resolveApplication( aApplicationId, applicationService ) );
         }
-        catch ( Exception aE)
+        catch ( Exception aE )
         {
             LOGGER.error( "Error on loading offer types: {}", aE.getMessage() );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
+    }
+
+    private void handleUnderRecruitmentApplication( final User aVolunteer, final Application aApplication, final Offer aOffer )
+            throws MessagingException, IOException
+    {
+
+        aApplication.setState( ModelUtils.resolveApplicationState( ApplicationStateEnum.UNDER_RECRUITMENT,
+                applicationStateService ) );
+
+        final VoluntaryPresenceState unresolvedPresenceState = ModelUtils.resolveVoluntaryPresenceState(
+                VoluntaryPresenceStateEnum.UNRESOLVED, voluntaryPresenceStateService );
+
+        final int leftReminderCount = ConfigurationEntryReader.readValueAsInteger(
+                ConfigurationEntryKeySet.VOLUNTARY_PRESENCE_MAX_REMINDER_COUNT, configurationEntryService );
+
+        final ConfigurationEntryKeySet appropriateConfigurationEntryKeyN = aOffer.getOfferTypeAsEnum().equals( OfferTypeEnum.ONE_TIME )
+                ? ConfigurationEntryKeySet.APPLICATION_ONE_TIME_CONFIRMATION_BUFFER
+                : ConfigurationEntryKeySet.APPLICATION_MULTI_TIME_CONFIRMATION_BUFFER;
+
+        final Duration buffer = ConfigurationEntryReader.readValueAsDurationOrDefault(
+                appropriateConfigurationEntryKeyN, ChronoUnit.HOURS, Duration.ofDays( 14 ), configurationEntryService );
+
+        final Instant reminderDate = aOffer.getOfferTypeAsEnum().equals( OfferTypeEnum.ONE_TIME )
+                ? aOffer.getEndDate().plus( buffer )
+                :  aOffer.getStartDate().plus( buffer );
+
+        final VoluntaryPresence voluntaryPresence = VoluntaryPresence.builder()
+                .volunteer( aVolunteer )
+                .offer( aOffer )
+                .volunteerReportedPresenceState( unresolvedPresenceState )
+                .institutionReportedPresenceState( unresolvedPresenceState )
+                .wasVolunteerReminded( false )
+                .wasInstitutionReminded( false )
+                .volunteerLeftReminderCount( leftReminderCount )
+                .institutionLeftReminderCount( leftReminderCount )
+                .volunteerReminderDate( reminderDate )
+                .institutionReminderDate( reminderDate )
+                .build();
+
+        aOffer.getVoluntaryPresences().add( voluntaryPresence );
+
+        applicationService.saveOrUpdate( aApplication );
+        offerService.saveOrUpdate( aOffer );
+
+        mailService.sendEmailAboutApplicationUnderRecruitment( aVolunteer.getContactEmailAddress(),
+                aOffer.getTitle() );
+    }
+
+    private void handleReserveListApplication( final User aVolunteer, final Application aApplication, final Offer aOffer )
+            throws MessagingException, IOException
+    {
+        aApplication.setState( ModelUtils.resolveApplicationState( ApplicationStateEnum.RESERVE_LIST,
+                applicationStateService) );
+
+        applicationService.saveOrUpdate( aApplication );
+        mailService.sendEmailAboutApplicationBeingMovedToReserveList( aVolunteer.getContactEmailAddress(),
+                aOffer.getTitle() );
+    }
+
+    private void handleDeclinedApplication( final User aVolunteer, final Application aApplication, final Offer aOffer,
+                                            final String aDecisionReason ) throws MessagingException, IOException
+    {
+        aApplication.setState( ModelUtils.resolveApplicationState( ApplicationStateEnum.DECLINED,
+                applicationStateService ) );
+        aApplication.setDecisionReason( aDecisionReason );
+
+        applicationService.saveOrUpdate( aApplication );
+        mailService.sendEmailAboutApplicationBeingDeclined( aVolunteer.getContactEmailAddress(),
+                aOffer.getTitle(), aDecisionReason );
     }
 }

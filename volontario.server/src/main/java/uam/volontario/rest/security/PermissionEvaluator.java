@@ -7,6 +7,7 @@ import uam.volontario.crud.service.UserService;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.offer.impl.Application;
+import uam.volontario.model.offer.impl.ApplicationStateEnum;
 import uam.volontario.model.offer.impl.Offer;
 
 import java.util.Optional;
@@ -148,7 +149,7 @@ public class PermissionEvaluator
 
     /**
      * Allows access to method only for Institution Employees or Institution Administrators which belong
-     * to Institution related to Offer..
+     * to Institution related to Offer.
      *
      * @param aContactEmailAddress user's contact email address.
      *
@@ -191,6 +192,16 @@ public class PermissionEvaluator
         return false;
     }
 
+    /**
+     * Allows access to method only for {@linkplain uam.volontario.model.institution.impl.Institution} which is the owner
+     * of the {@linkplain Offer} of created {@linkplain Application}.
+     *
+     * @param aContactEmailAddress user contact email address.
+     *
+     * @param aApplicationId id of Application
+     *
+     * @return true if Institution is the aforementioned owner, false otherwise.
+     */
     public boolean allowForInstitutionRelatedToTheApplication( final String aContactEmailAddress, final Long aApplicationId )
     {
         final Optional< User > optionalUser = userService.tryToLoadByContactEmail( aContactEmailAddress );
@@ -228,6 +239,15 @@ public class PermissionEvaluator
         return false;
     }
 
+    /**
+     * Allows access to method only for {@linkplain User} of type {@linkplain UserRole#VOLUNTEER} which created {@linkplain Application}.
+     *
+     * @param aContactEmailAddress user contact email address.
+     *
+     * @param aApplicationId id of Application.
+     *
+     * @return true if User is the aforementioned creator, false otherwise.
+     */
     public boolean allowForVolunteerRelatedToTheApplication( final String aContactEmailAddress, final Long aApplicationId )
     {
         final Optional< User > optionalUser = userService.tryToLoadByContactEmail( aContactEmailAddress );
@@ -251,6 +271,48 @@ public class PermissionEvaluator
                 if( user.hasUserRole( UserRole.VOLUNTEER ) )
                 {
                     return application.getVolunteer().equals( user );
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Allows access to method only for {@linkplain User} of type {@linkplain UserRole#VOLUNTEER} which created accepted
+     * {@linkplain Application} for given {@linkplain Offer}.
+     *
+     * @param aContactEmailAddress user contact email address.
+     *
+     * @param aOfferId id of Offer.
+     *
+     * @return true if User is the aforementioned owner of created Application, false otherwise.
+     */
+    public boolean allowForVolunteerWhichHasAcceptedApplicationForGivenOffer( final String aContactEmailAddress, final Long aOfferId )
+    {
+        final Optional< User > optionalUser = userService.tryToLoadByContactEmail( aContactEmailAddress );
+
+        if( optionalUser.isPresent() )
+        {
+            final User user = optionalUser.get();
+
+            if( Stream.of( UserRole.ADMIN, UserRole.MOD )
+                    .anyMatch( user::hasUserRole ) )
+            {
+                return true;
+            }
+
+            final Optional< Offer > optionalOffer = offerService.tryLoadEntity( aOfferId );
+
+            if( optionalOffer.isPresent() )
+            {
+                final Offer offer = optionalOffer.get();
+
+                if( user.hasUserRole( UserRole.VOLUNTEER ) )
+                {
+                    return offer.getApplications().stream().anyMatch( application ->
+                            application.getVolunteer().equals( user ) && application.getStateAsEnum()
+                                    .equals( ApplicationStateEnum.UNDER_RECRUITMENT ) );
                 }
             }
         }

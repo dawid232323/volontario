@@ -116,7 +116,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
       advertisementCategories: [[], [Validators.required]],
       isExperienceRequired: [false, []],
       experienceLevel: [null],
-      description: [null, [Validators.maxLength(3000)]],
+      description: [null, [Validators.required, Validators.maxLength(3000)]],
     });
   }
   private initializeOptionalInfoFormGroup() {

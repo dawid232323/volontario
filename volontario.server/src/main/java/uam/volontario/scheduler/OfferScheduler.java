@@ -7,16 +7,18 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import uam.volontario.configuration.ConfigurationEntryKeySet;
+import uam.volontario.configuration.ConfigurationEntryReader;
 import uam.volontario.crud.service.*;
-import uam.volontario.model.configuration.ConfigurationEntry;
 import uam.volontario.model.offer.impl.*;
+import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.security.mail.MailService;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Scheduler for handling outdated {@linkplain uam.volontario.model.offer.impl.Offer}s.
@@ -71,18 +73,33 @@ public class OfferScheduler
      */
     private static final Logger LOGGER = LogManager.getLogger( OfferScheduler.class );
 
+    /**
+     * Method invoked every day at 2AM to check whether Offers have expired or are expiring. Detailed mails are
+     * sent to Institutions and Applications related to expired Offers are set as declined if they were "awaiting" before.
+     *
+     * @throws MessagingException on error when sending mail.
+     *
+     * @throws IOException on error when sending mail.
+     */
     @Scheduled( cron = "${offerSchedulerInvocation.cron}" )
     public void handleOffers() throws MessagingException, IOException
     {
         final Instant now = Instant.now();
-        final Duration expirationBuffer = resolveExpirationBuffer();
+        final Duration expirationBuffer = ConfigurationEntryReader.readValueAsDurationOrDefault(
+                ConfigurationEntryKeySet.OFFER_EXPIRATION_BUFFER, ChronoUnit.HOURS,
+                Duration.ofDays( 7 ), configurationEntryService );
 
         LOGGER.info( "Offer maintenance invoked at: " + now );
 
         final List< Offer > expiringOffers = Lists.newArrayList();
         final List< Offer > expiredOffers = Lists.newArrayList();
 
-        for( final Offer offer : offerService.loadAllEntities() )
+        final List< Offer > notExpiredOffers = offerService.loadAllEntities().stream()
+                .filter( offer -> !offer.getOfferStateAsEnum()
+                        .equals( OfferStateEnum.EXPIRED ) )
+                .toList();
+
+        for( final Offer offer : notExpiredOffers )
         {
             if( offer.getEndDate()
                     .isAfter( now ) )
@@ -100,35 +117,11 @@ public class OfferScheduler
         handleExpiredOffers( expiredOffers );
     }
 
-    private Duration resolveExpirationBuffer()
-    {
-        final Optional< ConfigurationEntry > optionalExpirationOfferBufferConfig
-                = configurationEntryService.findByKey( "VOL.OFFER.EXPIRATION_BUFFER" );
-
-        if( optionalExpirationOfferBufferConfig.isPresent() )
-        {
-            try
-            {
-                final long bufferInHours = Long.parseLong( optionalExpirationOfferBufferConfig.get().
-                        getValue() );
-
-                return Duration.ofHours( bufferInHours );
-            }
-            catch ( Exception aE )
-            {
-                LOGGER.error( "Value of VOL.OFFER.EXPIRATION_BUFFER was not read properly." +
-                        " Buffer will be set to 1 week." );
-            }
-        }
-
-        LOGGER.warn( "Value of VOL.OFFER.EXPIRATION_BUFFER is undefined. Buffer will be set to 1 week." );
-        return Duration.ofDays( 7 );
-    }
-
     private void handleExpiredOffers( final List< Offer > aExpiredOffers )
     {
-        final OfferState expiredState = getExpiredOfferState();
-        final ApplicationState rejectedState = getRejectedApplicationState();
+        final OfferState expiredState = ModelUtils.resolveOfferState( OfferStateEnum.EXPIRED, offerStateService );
+        final ApplicationState rejectedState = ModelUtils.resolveApplicationState( ApplicationStateEnum.DECLINED,
+                applicationStateService );
 
         final List< Application > applications = applicationService.findAllByOffers( aExpiredOffers );
 
@@ -139,17 +132,5 @@ public class OfferScheduler
 
         offerService.saveAll( aExpiredOffers );
         applicationService.saveAll( applications );
-    }
-
-    private OfferState getExpiredOfferState()
-    {
-        return offerStateService.tryLoadByState( OfferStateEnum.EXPIRED.getTranslatedState() )
-                .orElseThrow();
-    }
-
-    private ApplicationState getRejectedApplicationState()
-    {
-        return applicationStateService.tryLoadByName( ApplicationStateEnum.DECLINED.getTranslatedState() )
-                .orElseThrow();
     }
 }

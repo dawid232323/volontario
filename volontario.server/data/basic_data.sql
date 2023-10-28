@@ -61,3 +61,10 @@ VALUES (1, 'Nocleg', false),
        (6, 'Dodatkowe szkolenia', true);
 
 SELECT setval('benefits_id_seq', 5, true);
+
+INSERT INTO public.voluntary_presence_states(id, state)
+VALUES (1, 'Nierozstrzygnięta'),
+       (2, 'Potwierdzona'),
+       (3, 'Zaprzeczona');
+
+SELECT setval('voluntary_presence_states_id_seq', 4, true);

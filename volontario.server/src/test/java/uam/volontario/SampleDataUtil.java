@@ -87,7 +87,7 @@ public class SampleDataUtil
         return new Offer( 0L, "Title", "Desc", user, null,
                 getSampleInstitution(), type, now, now.plusSeconds( 1000L ), false,
                 null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
-                Collections.emptyList(), now.plusSeconds( 2000L ), "periodicDesc",
+                Collections.emptyList(), null, null, now.plusSeconds( 2000L ), "periodicDesc",
                 "Place", false, false);
     }
 }

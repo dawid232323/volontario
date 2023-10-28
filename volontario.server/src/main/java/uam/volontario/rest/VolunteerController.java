@@ -9,6 +9,7 @@ import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.VolunteerPatchInfoDto;
 import uam.volontario.exception.user.RoleMismatchException;
 import uam.volontario.handler.VolunteerHandler;
+import uam.volontario.model.offer.impl.VoluntaryPresenceStateEnum;
 
 import java.util.Map;
 
@@ -117,5 +118,86 @@ public class VolunteerController
     {
         return this.volunteerHandler
                 .patchVolunteerExperienceDescription( aVolunteerId, aInterestsBody.get( "experienceDescription" ) );
+    }
+
+    /**
+     * Resolves all {@linkplain uam.volontario.model.offer.impl.Offer}s in which Volunteer of provided id participated.
+     *
+     * @param aVolunteerId Volunteer id.
+     *
+     * @return
+     *        - Response Entity with code 200 and List of Offers in which Volunteer participated
+     *        - Response Entity with code 401 if no user of given id was found or if user was found, but was not volunteer.
+     *        - Response Entity with code 500 in case of any unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )")
+    @GetMapping( "/{volunteerId}/all-presences" )
+    public ResponseEntity< ? > resolveAllPresencesOfVolunteer( @PathVariable( "volunteerId" ) final Long aVolunteerId )
+    {
+        return volunteerHandler.resolveAllPresencesOfVolunteer( aVolunteerId );
+    }
+
+    /**
+     * Changes volunteer reported presence state to CONFIRMED.
+     *
+     * @param aVolunteerId id of Volunteer to change volunteer reported state.
+     *
+     * @param aOfferId id of  Offer.
+     *
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 401 if User/Offer of given id was not found or if Application for Offer was not accepted.
+     *        - Response Entity with code 500 in case of any unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteerWhichHasAcceptedApplicationForGivenOffer(" +
+            " authentication.principal, #aOfferId )" )
+    @PostMapping( "/confirm-presence/{volunteerId}/{offerId}" )
+    public ResponseEntity< ? > confirmPresence( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                                @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return volunteerHandler.changeVolunteerReportedPresenceState( aVolunteerId, aOfferId,
+                VoluntaryPresenceStateEnum.CONFIRMED );
+    }
+
+    /**
+     * Changes volunteer reported presence state to DENIED.
+     *
+     * @param aVolunteerId id of Volunteer to change volunteer reported state.
+     *
+     * @param aOfferId id of Offer.
+     *
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 401 if User/Offer of given id was not found or if Application for Offer was not accepted.
+     *        - Response Entity with code 500 in case of any unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteerWhichHasAcceptedApplicationForGivenOffer(" +
+            " authentication.principal, #aOfferId )" )
+    @PostMapping( "/deny-presence/{volunteerId}/{offerId}" )
+    public ResponseEntity< ? > denyPresence( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                             @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return volunteerHandler.changeVolunteerReportedPresenceState( aVolunteerId, aOfferId,
+                VoluntaryPresenceStateEnum.DENIED );
+    }
+
+    /**
+     * Postpones Voluntary Presence Confirmation on Volunteer's side by 7 days.
+     *
+     * @param aVolunteerId id of Volunteer to postpone presence confirmation.
+     *
+     * @param aOfferId id of Offer.
+     * @return
+     *        - Response Entity with code 200 if everything went as expected.
+     *        - Response Entity with code 401 if User/Offer of given id was not found or if Application for Offer was not accepted.
+     *        - Response Entity with code 500 in case of an unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteerWhichHasAcceptedApplicationForGivenOffer( " +
+            "authentication.principal, #aOfferId )")
+    @PostMapping( "/postpone-presence-confirmation/{volunteerId}/{offerId}" )
+    public ResponseEntity< ? > postponePresenceConfirmation( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                                             @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return volunteerHandler.postponePresenceConfirmation( aVolunteerId, aOfferId );
     }
 }

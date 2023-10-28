@@ -43,7 +43,7 @@ class OfferValidationServiceTest {
         Offer offer = new Offer( 0L, "Title", "Desc", user, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
                 null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
-                Collections.emptyList(), now.plusSeconds( 1000L ), "periodicDesc",
+                Collections.emptyList(), null, null, now.plusSeconds( 1000L ), "periodicDesc",
                 "Place", false, false);
 
         //when
@@ -66,7 +66,7 @@ class OfferValidationServiceTest {
         Offer offer = new Offer( 0L, "Title", "Desc", user, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 1000L ), false,
                 null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
-                Collections.emptyList(), now.plusSeconds( 2000L ), "periodicDesc",
+                Collections.emptyList(),null, null, now.plusSeconds( 2000L ), "periodicDesc",
                 "Place", false, false);
 
         //when
@@ -92,7 +92,7 @@ class OfferValidationServiceTest {
         Offer offer = new Offer( 0L, "Title", "Desc", user, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), true,
                 null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
-                Collections.emptyList(), now.plusSeconds( 1000L ), "periodicDesc",
+                Collections.emptyList(), null, null, now.plusSeconds( 1000L ), "periodicDesc",
                 "Place", false, false);
 
         //when
@@ -118,7 +118,7 @@ class OfferValidationServiceTest {
         Offer offer = new Offer( 0L, "Title", "Desc", user, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
                 SampleDataUtil.getSampleExperienceLeve(), SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
-                Collections.emptyList(), now.plusSeconds( 1000L ), "periodicDesc",
+                Collections.emptyList(), null, null, now.plusSeconds( 1000L ), "periodicDesc",
                 "Place", false, false);
 
         //when

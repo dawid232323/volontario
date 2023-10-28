@@ -12,7 +12,6 @@ import uam.volontario.crud.repository.UserRepository;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.crud.specification.UserSpecification;
 import uam.volontario.model.common.impl.User;
-import uam.volontario.model.common.impl.UserSearchQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -114,5 +113,11 @@ public class UserServiceImpl implements UserService
     public Optional< User > tryToFindById( final Long aUserId )
     {
         return this.userRepository.findById( aUserId );
+    }
+
+    @Override
+    public List< User > saveOrUpdateAll( final List< User > aUsers )
+    {
+        return Lists.newArrayList( userRepository.saveAll( aUsers ) );
     }
 }
