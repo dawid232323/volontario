@@ -57,7 +57,10 @@ export class RegisterInstitutionComponent implements OnInit {
     });
     this.additionalInfoFormGroup = this.formBuilder.group({
       institutionTags: [[], [Validators.required, arrayLengthValidator(10)]],
-      institutionDescription: [null, [Validators.maxLength(200)]],
+      institutionDescription: [
+        null,
+        [Validators.required, Validators.maxLength(200)],
+      ],
       operationPlace: [null, [Validators.required]],
       rulesApprove: [false, [Validators.requiredTrue]],
       rodoApprove: [false, [Validators.requiredTrue]],
