@@ -123,7 +123,7 @@ export class ManageInstitutionWorkersComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         if (error.status === 207) {
           alert(
-            'Konto użytkownika zostało stworzone poprawnie, ale nie została wysłana do niego wiadomość email. Skontaktuj się z administracją'
+            'Konto użytkownika/czki zostało stworzone poprawnie, ale nie została wysłana do niego wiadomość email. Skontaktuj się z administracją'
           );
         } else {
           alert(JSON.stringify(error.error));

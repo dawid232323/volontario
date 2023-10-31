@@ -1,4 +1,4 @@
-<h1>Dodaj nowego pracownika</h1>
+<h1>Dodaj nowego pracownika/pracowniczkę</h1>
 <mat-dialog-content>
   <form [formGroup]="addEmployeeForm">
     <mat-form-field *ngIf="false">
@@ -6,7 +6,7 @@
     </mat-form-field>
     <mat-form-field color="accent" appearance="standard" class="flex w-full">
       <mat-icon matPrefix>person</mat-icon>
-      <mat-label>Imię pracownika</mat-label>
+      <mat-label>Imię</mat-label>
       <input matInput formControlName="firstName" />
       <mat-hint
         class="text-red-500"
@@ -23,7 +23,7 @@
     </mat-form-field>
     <mat-form-field color="accent" appearance="standard" class="flex w-full">
       <mat-icon matPrefix>person</mat-icon>
-      <mat-label>Nazwisko pracownika</mat-label>
+      <mat-label>Nazwisko</mat-label>
       <input matInput formControlName="lastName" />
       <mat-hint
         class="text-red-500"
@@ -40,7 +40,7 @@
     </mat-form-field>
     <mat-form-field color="accent" appearance="standard" class="flex w-full">
       <mat-icon matPrefix>alternate_email</mat-icon>
-      <mat-label>Email pracownika</mat-label>
+      <mat-label>Email</mat-label>
       <input matInput formControlName="contactEmail" />
       <mat-hint
         class="text-red-500"

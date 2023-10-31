@@ -34,7 +34,7 @@ public class ApplicationValidationServiceTest
     {
         //given
         ApplicationState state = new ApplicationState(3L, "Oczekujące");
-        User volunteer = SampleDataUtil.prepareUserBuilderWithCorrectVolunteerData().roles( List.of( new Role( 0L, "Wolontariusz",
+        User volunteer = SampleDataUtil.prepareUserBuilderWithCorrectVolunteerData().roles( List.of( new Role( 0L, "Wolontariusz(ka)",
                 Collections.emptyList() ) ) ).build();
         Application application = new Application( 0L, volunteer, SampleDataUtil.getSampleOffer(), state,
                 "Motivation", "Reason", false );

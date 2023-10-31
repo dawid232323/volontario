@@ -17,18 +17,18 @@ export class UserRole {
 export class UserRoles {
   static readonly InstitutionWorker = new UserRole(
     UserRoleEnum.InstitutionWorker,
-    'Pracownik instytucji'
+    'Pracownik/czka instytucji'
   );
   static readonly InstitutionAdmin = new UserRole(
     UserRoleEnum.InstitutionAdmin,
-    'Administrator instytucji'
+    'Administrator(ka) instytucji'
   );
   static readonly Volunteer = new UserRole(
     UserRoleEnum.Volunteer,
-    'Wolontariusz'
+    'Wolontariusz(ka)'
   );
-  static readonly Admin = new UserRole(UserRoleEnum.Admin, 'Administrator');
-  static readonly Moderator = new UserRole(UserRoleEnum.Moderator, 'Moderator');
+  static readonly Admin = new UserRole(UserRoleEnum.Admin, 'Administrator(ka)');
+  static readonly Moderator = new UserRole(UserRoleEnum.Moderator, 'Moderator(ka)');
 
   static getAllRoles(): UserRole[] {
     return [

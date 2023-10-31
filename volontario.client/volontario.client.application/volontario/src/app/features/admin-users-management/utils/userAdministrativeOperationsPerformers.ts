@@ -167,8 +167,8 @@ class UserActivityStatusChangePerformer
 
   private getConfirmationMessage(willUserBeDisabled: boolean): string {
     if (willUserBeDisabled) {
-      return 'Zablokowanie użytkownika odbierze mu możliwość wykonywania jakichkolwiek operacji w systemie włącznie z logowaniem. Jest to operacja odwracalna';
+      return 'Zablokowanie użytkownika/czki odbierze mu możliwość wykonywania jakichkolwiek operacji w systemie włącznie z logowaniem. Jest to operacja odwracalna';
     }
-    return 'Operacja spowoduje że użytkownik ponownie będzie mógł wykonywać wszystkie operacje powiązane z jego rolą';
+    return 'Operacja spowoduje że użytkownik/czka ponownie będzie mógł wykonywać wszystkie operacje powiązane z jego rolą';
   }
 }

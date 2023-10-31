@@ -60,7 +60,7 @@ public class SampleDataUtil
                 .password( "ABCdef123_" )
                 .phoneNumber( "123456789" )
                 .volunteerData( volunteerData )
-                .roles( List.of( new Role( 0L, "Wolontariusz", new ArrayList<>() ) ) )
+                .roles( List.of( new Role( 0L, "Wolontariusz(ka)", new ArrayList<>() ) ) )
                 .isVerified( true );
     }
 

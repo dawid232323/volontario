@@ -15,15 +15,15 @@ import java.util.function.Function;
 @Getter
 public enum UserRole
 {
-    ADMIN( "Administrator" ),
+    ADMIN( "Administrator(ka)" ),
 
-    MOD( "Moderator" ),
+    MOD( "Moderator(ka)" ),
 
-    VOLUNTEER( "Wolontariusz" ),
+    VOLUNTEER( "Wolontariusz(ka)" ),
 
-    INSTITUTION_EMPLOYEE( "Pracownik Instytucji" ),
+    INSTITUTION_EMPLOYEE( "Pracownik/czka Instytucji" ),
 
-    INSTITUTION_ADMIN( "Administrator Instytucji" );
+    INSTITUTION_ADMIN( "Administrator(ka) Instytucji" );
 
     private final String translatedRoleName;
 

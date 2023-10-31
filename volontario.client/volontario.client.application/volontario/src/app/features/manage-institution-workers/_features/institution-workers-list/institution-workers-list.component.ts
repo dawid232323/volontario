@@ -75,9 +75,9 @@ export class InstitutionWorkersListComponent implements AfterViewInit {
       worker.role?.toLowerCase() ===
       UserRoles.InstitutionWorker.name.toLowerCase()
     ) {
-      return 'Nadaj uprawnienia administratora instytucji';
+      return 'Nadaj uprawnienia administratora/ki instytucji';
     }
-    return 'Nadaj uprawnienia pracownika instytucji';
+    return 'Nadaj uprawnienia pracownika/czki instytucji';
   }
 
   public canChangeRoles(worker: InstitutionWorker): boolean {

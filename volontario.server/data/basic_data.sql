@@ -1,9 +1,9 @@
 INSERT INTO public.roles
-VALUES  (1, 'Pracownik Instytucji'),
-        (2, 'Administrator Instytucji'),
-        (3, 'Wolontariusz'),
-        (4, 'Administrator'),
-        (5, 'Moderator');
+VALUES  (1, 'Pracownik/czka Instytucji'),
+        (2, 'Administrator(ka) Instytucji'),
+        (3, 'Wolontariusz(ka)'),
+        (4, 'Administrator(ka)'),
+        (5, 'Moderator(ka)');
 
 SELECT setval('roles_id_seq', 6, true);
 
