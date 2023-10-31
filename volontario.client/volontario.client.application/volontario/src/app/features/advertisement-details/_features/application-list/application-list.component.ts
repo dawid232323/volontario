@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApplicationDetails } from 'src/app/core/model/application.model';
 import { MatTableDataSource } from '@angular/material/table';
 import {
@@ -15,8 +15,10 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { cloneDeep } from 'lodash';
-import { ApplicationActionIf } from 'src/app/core/interface/application.interface';
+import {
+  ApplicationActionIf,
+  ApplicationActionTypeEnum,
+} from 'src/app/core/interface/application.interface';
 
 @Component({
   selector: 'app-application-list',
@@ -110,6 +112,7 @@ export class ApplicationListComponent implements OnInit {
   }
 
   public onApplicationStatusChange(event: ApplicationActionIf) {
+    this.onAfterApplicationStatusChange(event);
     this.offerApplicationService
       .changeApplicationState(
         event.application.id,
@@ -121,6 +124,20 @@ export class ApplicationListComponent implements OnInit {
           throw new Error(err);
         },
       });
+  }
+
+  private onAfterApplicationStatusChange(event: ApplicationActionIf) {
+    if (event.actionType !== ApplicationActionTypeEnum.Reject) {
+      return;
+    }
+    const rowIndex = this._dataSource.data.findIndex(
+      value => value.id === event.application.id
+    );
+    if (rowIndex === -1) {
+      return;
+    }
+    this._dataSource.data[rowIndex].decisionReason = event.actionReason!;
+    this._dataSource.data = this._dataSource._orderData(this.dataSource.data);
   }
 
   private getOfferApplications() {

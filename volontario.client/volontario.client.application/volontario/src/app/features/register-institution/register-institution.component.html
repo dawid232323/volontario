@@ -1,8 +1,6 @@
-<div class="flex flex-row min-h-screen">
-  <div class="flex flex-col items-center max-h-screen lg:basis-1/2 w-full">
-    <div class="w-[90%] mx-auto">
-      <app-logo class="lg:hidden"></app-logo>
-    </div>
+<div class="flex flex-row min-h-screen pb-32 lg:pb-0">
+  <div
+    class="flex flex-col justify-items-center items-center justify-center min-h-screen lg:basis-1/2 w-full">
     <div
       *ngIf="isPerformingRegistration"
       class="flex flex-col items-center justify-center lg:w-full min-h-screen">
@@ -10,40 +8,44 @@
         [mode]="'indeterminate'"
         [color]="'accent'"></mat-progress-spinner>
     </div>
-    <span
-      class="pt-32"
-      *ngIf="!hasRegisteredCorrectly && !isPerformingRegistration">
-      <div class="text-4xl font-bold text-center">Zarejestruj Instytucję</div>
-    </span>
     <div
       *ngIf="!hasRegisteredCorrectly && !isPerformingRegistration"
-      class="flex flex-col items-center lg:w-full h-full pt-16">
-      <mat-stepper labelPosition="end" color="accent" class="w-3/4">
-        <mat-step
-          label="Informacje podstawowe"
-          [formGroup]="basicInfoFormGroup">
-          <app-register-basic-info-form
-            [basicInfoFormGroup]="basicInfoFormGroup">
-          </app-register-basic-info-form>
-        </mat-step>
-        <mat-step
-          label="Informacje dodatkowe"
-          [formGroup]="additionalInfoFormGroup">
-          <app-register-additional-info-form
-            [additionalInfoFormGroup]="additionalInfoFormGroup"
-            [canSubmit]="canSubmitForm"
-            (formSubmit)="onFormSubmit()"
-            class="lg:w-1/2 w-full px-5"></app-register-additional-info-form>
-        </mat-step>
-      </mat-stepper>
+      class="flex flex-col justify-center items-center w-full">
+      <span class="pt-10 w-3/4 lg:w-full">
+        <div class="text-4xl font-bold text-center">Zarejestruj Instytucję</div>
+      </span>
+      <div class="flex flex-col items-center lg:w-full h-full lg:pt-16 pt-6">
+        <mat-stepper labelPosition="end" color="accent" class="w-3/4">
+          <mat-step
+            label="Informacje podstawowe"
+            [formGroup]="basicInfoFormGroup">
+            <app-register-basic-info-form
+              [basicInfoFormGroup]="basicInfoFormGroup">
+            </app-register-basic-info-form>
+          </mat-step>
+          <mat-step
+            label="Informacje dodatkowe"
+            [formGroup]="additionalInfoFormGroup">
+            <app-register-additional-info-form
+              [additionalInfoFormGroup]="additionalInfoFormGroup"
+              [canSubmit]="canSubmitForm"
+              (formSubmit)="onFormSubmit()"
+              class="lg:w-1/2 w-full px-5"></app-register-additional-info-form>
+          </mat-step>
+        </mat-stepper>
+      </div>
     </div>
-    <div class="flex flex-col items-center justify-center lg:basis-1/2 w-full">
+    <div
+      class="flex flex-col items-center justify-center lg:basis-1/2 w-full"
+      *ngIf="hasRegisteredCorrectly">
       <app-success-info-card
         class="h-full w-3/4"
-        *ngIf="hasRegisteredCorrectly"
         [titleMessage]="successTitle"
         [cardContent]="successContent"
-        [buttonText]="buttonText"></app-success-info-card>
+        [buttonText]="buttonText"
+        (cardButtonClicked)="
+          onCardButtonClicked($event)
+        "></app-success-info-card>
     </div>
   </div>
   <div class="hidden lg:block basis-1/2">

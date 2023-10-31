@@ -1,12 +1,53 @@
-<main class="max-w-screen-2xl mx-auto my-10 py-3">
+<main class="max-w-screen-2xl lg:mx-10 mx-3 my-10 py-3">
   <div>
     <div class="my-3">
-      <h1 *ngIf="!loggedUser?.hasUserRole(UserRoleEnum.Volunteer)" class="py-3">
+      <h1
+        *ngIf="
+          !loggedUser?.hasUserRole(UserRoleEnum.Volunteer) &&
+          selectedAdvertisements.length > 0 &&
+          !isLoadingData
+        "
+        class="py-3">
         Twoje najnowsze ogłoszenia:
       </h1>
-      <h1 *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)" class="py-3">
+      <span
+        class="text-lg text-gray-700 py-3"
+        *ngIf="
+          !loggedUser?.hasUserRole(UserRoleEnum.Volunteer) &&
+          selectedAdvertisements.length === 0 &&
+          !isLoadingData
+        ">
+        Aktualnie nie masz żadnych przypisanych ogłoszeń,
+        <span
+          class="underline hover:cursor-pointer hover:text-btnAccentPrimary"
+          routerLink="/advertisement/add"
+          >dodaj je!</span
+        >
+      </span>
+      <h1
+        *ngIf="
+          loggedUser?.hasUserRole(UserRoleEnum.Volunteer) &&
+          selectedAdvertisements.length > 0 &&
+          !isLoadingData
+        "
+        class="py-3">
         Najnowsze ogłoszenia dla ciebie:
       </h1>
+      <span
+        class="text-lg text-gray-700 py-3"
+        *ngIf="
+          loggedUser?.hasUserRole(UserRoleEnum.Volunteer) &&
+          selectedAdvertisements.length === 0 &&
+          !isLoadingData
+        "
+        >Aktualnie nie możemy dopasować żadnych ofert specjalnie dla Ciebie,
+        spróbuj znaleźć coś na
+        <span
+          class="underline hover:cursor-pointer hover:text-btnAccentPrimary"
+          routerLink="/advertisement/list"
+          >liście ogłoszeń</span
+        ></span
+      >
       <div
         *ngIf="isLoadingData"
         class="flex flex-row w-full h-full items-center justify-center">
@@ -26,7 +67,7 @@
         loggedUser?.hasUserRoles([
           UserRoleEnum.InstitutionAdmin,
           UserRoleEnum.InstitutionWorker
-        ])
+        ]) && allAdvertisements.length > 0
       ">
       <h1 class="py-3">Najnowsze ogłoszenia twojej instytucji:</h1>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

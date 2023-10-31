@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InstitutionService } from 'src/app/core/service/institution.service';
 import { arrayLengthValidator } from 'src/app/utils/validator.utils';
+import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-institution',
@@ -27,7 +23,8 @@ export class RegisterInstitutionComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private institutionService: InstitutionService
+    private institutionService: InstitutionService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -67,7 +64,7 @@ export class RegisterInstitutionComponent implements OnInit {
     });
   }
 
-  onFormSubmit() {
+  public onFormSubmit() {
     if (!this.canSubmitForm) {
       return;
     }
@@ -81,6 +78,12 @@ export class RegisterInstitutionComponent implements OnInit {
       next: this.onRegisterSuccess.bind(this),
       error: err => console.log(err),
     });
+  }
+
+  public onCardButtonClicked($event: SuccessInfoCardButtonEnum) {
+    if ($event === SuccessInfoCardButtonEnum.Primary) {
+      this.router.navigate(['/']);
+    }
   }
 
   private onRegisterSuccess(result: any) {

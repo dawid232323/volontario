@@ -201,9 +201,7 @@
       </a>
       <a
         class="flex flex-col justify-center items-center w-1/4 p-1 whitespace-nowrap"
-        routerLink="
-        advertisement/list
-        ">
+        routerLink="/advertisement/list">
         <i class="fa-solid fa-magnifying-glass text-lg"></i>
         Lista ogłoszeń
       </a>
@@ -249,9 +247,13 @@
         Więcej
       </a>
       <mat-menu #menuMobile="matMenu">
-        <ul class="navbar-list" mat-menu-item>
+        <ul class="navbar-list" mat-menu-item (click)="onShowProfileCLick()">
           <i class="fa-solid fa-address-card"></i>
           Zobacz profil
+        </ul>
+        <ul mat-menu-item (click)="onReportIssue()">
+          <i class="fa-solid fa-bug"></i>
+          Zgłoś błąd
         </ul>
         <ul mat-menu-item (click)="onLogout()" class="!navbar-list">
           <i class="fa-solid fa-right-from-bracket"></i>
@@ -268,7 +270,7 @@
   </ul>
   <ul mat-menu-item (click)="onReportIssue()">
     <i class="fa-solid fa-bug"></i>
-    Wyloguj się
+    Zgłoś błąd
   </ul>
   <ul mat-menu-item (click)="onLogout()" class="navbar-list">
     <i class="fa-solid fa-right-from-bracket"></i>

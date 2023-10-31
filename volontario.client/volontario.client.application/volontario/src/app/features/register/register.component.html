@@ -1,11 +1,9 @@
 <div class="flex flex-row h-full">
-  <div class="flex flex-col items-center justify-center lg:basis-1/2 w-full">
-    <div class="w-[90%] mx-auto">
-      <app-logo class="lg:hidden"></app-logo>
-    </div>
+  <div
+    class="flex flex-col items-center justify-center lg:basis-1/2 w-full py-6">
     <app-register-form
       *ngIf="!hasRegisteredCorrectly"
-      class="h-full w-3/4"
+      class="min-h-screen w-3/4"
       (formSubmit)="onRegisterFormSubmit($event)"
       [availableCategories]="interestCategories"
       [availableExperiences]="experienceLevels"
@@ -18,7 +16,7 @@
       [cardContent]="successMessageContent"
       [buttonText]="successButtonText"></app-success-info-card>
   </div>
-  <div class="hidden lg:block basis-1/2">
+  <div class="hidden min-h-screen lg:block basis-1/2">
     <app-side-banner></app-side-banner>
   </div>
 </div>
