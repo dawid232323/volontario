@@ -54,7 +54,7 @@ export class RegisterFormComponent implements OnInit {
     interestCategories: new FormControl([1], [Validators.required]),
     participationMotivation: new FormControl('', [
       Validators.required,
-      Validators.maxLength(150),
+      Validators.maxLength(1500),
     ]),
     fieldOfStudy: new FormControl(null, [Validators.maxLength(100)]),
     phoneNumber: new FormControl(null, [phoneNumberValidator()]),

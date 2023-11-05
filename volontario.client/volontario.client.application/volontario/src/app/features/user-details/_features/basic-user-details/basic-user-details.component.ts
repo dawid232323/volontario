@@ -10,7 +10,7 @@ import {
   UserExperienceDescriptionConfigProvider,
   UserInterestsConfigProvider,
 } from 'src/app/features/user-details/_features/basic-user-details/_features/single-field-user-details-form/single-user-details-config.provider';
-import { firstValueFrom, Observable, Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { UploadProfilePictureModalComponent } from 'src/app/features/user-details/_features/basic-user-details/_features/upload-profile-picture-modal/upload-profile-picture-modal.component';
 
 @Component({
@@ -35,7 +35,7 @@ export class BasicUserDetailsComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public onInstitutionNameCLicked() {
+  public onInstitutionNameClicked() {
     if (isNil(this.userProfile?.institutionId)) {
       return;
     }
@@ -84,6 +84,12 @@ export class BasicUserDetailsComponent implements OnInit {
         afterClosedSubscription.unsubscribe();
       })
     );
+  }
+
+  public onEditDataButtonClicked(): void {
+    if (this.canQuicklyEditData) {
+      this.router.navigate(['user', this.userProfile?.id, 'edit-data']);
+    }
   }
 
   private async handleInterestsDialog(

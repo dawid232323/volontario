@@ -29,11 +29,22 @@
         userProfile?.userRoles?.join(', ')
       }}</mat-card-subtitle>
       <mat-card-subtitle
-        (click)="onInstitutionNameCLicked()"
+        (click)="onInstitutionNameClicked()"
         class="hover:text-btnAccentHover hover:cursor-pointer pt-2 pl-4"
         *ngIf="!isNil(userProfile?.institutionName)"
         >{{ userProfile?.institutionName }}</mat-card-subtitle
       >
+      <div
+        *ngIf="canQuicklyEditData"
+        class="absolute insert-y-0 right-0 pt-3 pr-5">
+        <button
+          mat-raised-button
+          class="hover:bg-btnWarnHover"
+          color="accent"
+          (click)="onEditDataButtonClicked()">
+          Edytuj dane
+        </button>
+      </div>
     </mat-card-title-group>
     <mat-card-content>
       <div class="grid lg:grid-cols-2 grid-cols-1">
