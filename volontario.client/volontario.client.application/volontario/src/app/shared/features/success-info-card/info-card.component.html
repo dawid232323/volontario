@@ -1,8 +1,17 @@
-<div class="flex flex-col justify-center min-h-screen">
+<div class="flex flex-col justify-center min-h-screen w-3/4">
   <mat-card>
     <mat-card-header>
-      <mat-icon mat-card-avatar [ngStyle]="{ color: 'green' }"
+      <mat-icon
+        *ngIf="infoType === InfoCardTypeEnum.Success"
+        mat-card-avatar
+        [ngStyle]="{ color: 'green' }"
         >task_alt</mat-icon
+      >
+      <mat-icon
+        *ngIf="infoType === InfoCardTypeEnum.Error"
+        mat-card-avatar
+        [ngStyle]="{ color: 'red' }"
+        >error_outline</mat-icon
       >
       <mat-card-title>{{ titleMessage }}</mat-card-title>
     </mat-card-header>
@@ -15,14 +24,14 @@
       <button
         mat-button
         color="accent"
-        (click)="cardButtonClicked.emit(SuccessInfoCardButtonEnum.Primary)">
+        (click)="cardButtonClicked.emit(InfoCardButtonEnum.Primary)">
         {{ buttonText }}
       </button>
       <button
         *ngIf="!isNil(secondaryButtonText)"
         mat-button
         color="accent"
-        (click)="cardButtonClicked.emit(SuccessInfoCardButtonEnum.Secondary)">
+        (click)="cardButtonClicked.emit(InfoCardButtonEnum.Secondary)">
         {{ secondaryButtonText }}
       </button>
     </mat-card-actions>

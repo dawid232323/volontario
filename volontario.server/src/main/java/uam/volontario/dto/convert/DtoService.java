@@ -25,6 +25,7 @@ import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.model.offer.impl.*;
+import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
@@ -33,7 +34,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service for DTO operations.
@@ -79,37 +79,39 @@ public class DtoService
      * Creates Volunteer {@linkplain User} from DTO.
      *
      * @param aDto dto.
+     *
      * @return Volunteer.
      */
     public User createVolunteerFromDto( final VolunteerDto aDto )
     {
-        final List<Role> roles = roleService.findByNameIn(UserRole.mapUserRolesToRoleNames(List.of(UserRole.VOLUNTEER)));
+        final List< Role > roles = ModelUtils.resolveRoles( roleService, UserRole.VOLUNTEER );
 
-        final ExperienceLevel experienceLevel = experienceLevelService.tryLoadEntity(aDto.getExperienceId())
-                .orElseThrow();
+        final ExperienceLevel experienceLevel = ModelUtils.resolveExperienceLevel( aDto.getExperienceId(),
+                experienceLevelService );
 
-        final List<InterestCategory> volunteerInterestCategories = interestCategoryService.findByIds(
-                aDto.getInterestCategoriesIds());
+        final List< InterestCategory > volunteerInterestCategories = interestCategoryService.findByIds(
+                aDto.getInterestCategoriesIds() );
 
         final VolunteerData volunteerData = VolunteerData.builder()
-                .experience(experienceLevel)
-                .participationMotivation(aDto.getParticipationMotivation())
-                .domainEmailAddress(aDto.getDomainEmail())
+                .experience( experienceLevel )
+                .participationMotivation( aDto.getParticipationMotivation() )
+                .domainEmailAddress( aDto.getDomainEmail() )
                 .fieldOfStudy( aDto.getFieldOfStudy() )
-                .interestCategories(volunteerInterestCategories).build();
+                .interestCategories( volunteerInterestCategories )
+                .build();
 
-        final User user = User.builder().firstName(aDto.getFirstName())
-                .lastName(aDto.getLastName())
-                .password(aDto.getPassword())
-                .contactEmailAddress(aDto.getContactEmail())
-                .phoneNumber(aDto.getPhoneNumber())
-                .roles(roles)
-                .isVerified(true) // TODO: for now until email verification is implemented.
-                .volunteerData(volunteerData)
+        final User user = User.builder().firstName( aDto.getFirstName() )
+                .lastName( aDto.getLastName() )
+                .password( aDto.getPassword() )
+                .contactEmailAddress( aDto.getContactEmail() )
+                .phoneNumber( aDto.getPhoneNumber() )
+                .roles( roles )
+                .isVerified( false )
+                .volunteerData( volunteerData )
                 .creationDate( Instant.now() )
                 .build();
 
-        user.getVolunteerData().setUser(user);
+        user.getVolunteerData().setUser( user );
 
         return user;
     }

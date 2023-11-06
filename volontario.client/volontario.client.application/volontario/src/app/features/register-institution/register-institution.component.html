@@ -38,14 +38,13 @@
     <div
       class="flex flex-col items-center justify-center lg:basis-1/2 w-full"
       *ngIf="hasRegisteredCorrectly">
-      <app-success-info-card
+      <app-info-card
         class="h-full w-3/4"
+        [infoType]="InfoCardTypeEnum.Success"
         [titleMessage]="successTitle"
         [cardContent]="successContent"
         [buttonText]="buttonText"
-        (cardButtonClicked)="
-          onCardButtonClicked($event)
-        "></app-success-info-card>
+        (cardButtonClicked)="onCardButtonClicked($event)"></app-info-card>
     </div>
   </div>
   <div class="hidden lg:block basis-1/2">

@@ -56,14 +56,15 @@
     <section
       id="successSection"
       class="flex flex-col items-center justify-center w-full">
-      <app-success-info-card
+      <app-info-card
         class="h-full w-3/4"
         *ngIf="hasAddedAdvertisement"
         (cardButtonClicked)="onSuccessSubmit($event)"
         [titleMessage]="successTitleMessage"
         [cardContent]="successContentMessage"
         [buttonText]="'Lista ogłoszeń'"
-        [secondaryButtonText]="'Szczegóły ogłoszenia'"></app-success-info-card>
+        [secondaryButtonText]="'Szczegóły ogłoszenia'"
+        [infoType]="InfoCardTypeEnum.Success"></app-info-card>
     </section>
   </div>
 </div>

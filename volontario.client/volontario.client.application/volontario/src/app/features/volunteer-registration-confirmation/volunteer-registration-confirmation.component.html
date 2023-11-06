@@ -1,0 +1,42 @@
+<div class="flex flex-col lg:flex-row">
+  <div *ngIf="isNil(isRegistrationConfirmed)" class="flex h-screen">
+    <mat-spinner
+      class="m-auto"
+      mode="indeterminate"
+      color="accent"></mat-spinner>
+  </div>
+  <div
+    class="lg:basis-1/2"
+    *ngIf="!isNil(isRegistrationConfirmed) && isRegistrationConfirmed">
+    <app-info-card
+      class="w-full h-full flex justify-center items-center"
+      [infoType]="InfoCardTypeEnum.Success"
+      [titleMessage]="'Weryfikacja przebiegła pomyślnie!'"
+      [cardContent]="
+        'Twoje konto wolontariusza zostało pomyślnie zweryfikowane i możesz teraz zalogować się do systemu!'
+      "
+      [buttonText]="'Zaloguj się'"
+      (cardButtonClicked)="navigateToLogin()">
+    </app-info-card>
+  </div>
+  <div
+    class="lg:basis-1/2"
+    *ngIf="!isNil(isRegistrationConfirmed) && !isRegistrationConfirmed">
+    <app-info-card
+      class="w-full h-full flex justify-center items-center"
+      [infoType]="InfoCardTypeEnum.Error"
+      [titleMessage]="'Błąd podczas weryfikacji!'"
+      [cardContent]="
+        'Wystąpił błąd podczas próby weryfikacji konta wolontariusza. Jeśli konto zostało wcześniej zweryfikowane to' +
+        ' zignoruj ten komunikat, a w przeciwnym wypadku skontaktuj się z administracją poprzez formularz zgłaszania błędów.'
+      "
+      [buttonText]="'Zgłoś błąd'"
+      (cardButtonClicked)="navigateToReportIssueForm()">
+    </app-info-card>
+  </div>
+  <div
+    *ngIf="!isNil(isRegistrationConfirmed)"
+    class="hidden lg:block basis-1/2">
+    <app-side-banner></app-side-banner>
+  </div>
+</div>

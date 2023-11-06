@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { SuccessInfoCardComponent } from 'src/app/shared/features/success-info-card/success-info-card.component';
+import { InfoCardComponent } from 'src/app/shared/features/success-info-card/info-card.component';
 
 @NgModule({
-  declarations: [SuccessInfoCardComponent],
+  declarations: [InfoCardComponent],
   imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule],
-  exports: [SuccessInfoCardComponent],
+  exports: [InfoCardComponent],
 })
-export class SuccessInfoCardModule {}
+export class InfoCardModule {}

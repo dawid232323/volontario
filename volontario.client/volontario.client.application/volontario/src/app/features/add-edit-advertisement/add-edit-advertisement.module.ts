@@ -9,7 +9,7 @@ import { AdvertisementBasicInfoModule } from 'src/app/features/add-edit-advertis
 import { AdvertisementAdditionalInfoModule } from 'src/app/features/add-edit-advertisement/_features/advertisement-additional-info/advertisement-additional-info.module';
 import { AdvertisementOptionalInfoModule } from 'src/app/features/add-edit-advertisement/_features/advertisement-optional-info/advertisement-optional-info.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SuccessInfoCardModule } from 'src/app/shared/features/success-info-card/success-info-card.module';
+import { InfoCardModule } from 'src/app/shared/features/success-info-card/info-card.module';
 import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
@@ -24,7 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
     AdvertisementAdditionalInfoModule,
     AdvertisementOptionalInfoModule,
     MatProgressSpinnerModule,
-    SuccessInfoCardModule,
+    InfoCardModule,
     MatButtonModule,
   ],
   exports: [AddEditAdvertisementComponent],

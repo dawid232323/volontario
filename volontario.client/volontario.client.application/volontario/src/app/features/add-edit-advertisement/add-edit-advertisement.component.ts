@@ -21,7 +21,10 @@ import {
   DateValidatorUsageEnum,
 } from 'src/app/utils/validator.utils';
 import { ViewportScroller } from '@angular/common';
-import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
+import {
+  InfoCardButtonEnum,
+  InfoCardTypeEnum,
+} from 'src/app/shared/features/success-info-card/info-card.component';
 import { OfferBenefitService } from 'src/app/core/service/offer-benefit.service';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { InstitutionService } from 'src/app/core/service/institution.service';
@@ -178,12 +181,12 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onSuccessSubmit(buttonType: SuccessInfoCardButtonEnum) {
-    if (buttonType === SuccessInfoCardButtonEnum.Primary) {
+  public onSuccessSubmit(buttonType: InfoCardButtonEnum) {
+    if (buttonType === InfoCardButtonEnum.Primary) {
       this.router.navigate(['/institution', 'advertisement-panel']);
       return;
     }
-    if (buttonType === SuccessInfoCardButtonEnum.Secondary) {
+    if (buttonType === InfoCardButtonEnum.Secondary) {
       this.router.navigate(['advertisement', this.currentOfferId]);
       return;
     }
@@ -307,4 +310,6 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
     }
     return 'Edytuj ogłoszenie';
   }
+
+  protected readonly InfoCardTypeEnum = InfoCardTypeEnum;
 }

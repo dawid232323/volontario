@@ -13,6 +13,7 @@ import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.LoginDto;
 import uam.volontario.handler.MessageGenerator;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.rest.VolunteerController;
 import uam.volontario.security.jwt.JWTService;
 
@@ -162,14 +163,8 @@ public class SecurityController
     public ResponseEntity< ? > changePasswordForSelectedUser( @PathVariable( "user_id" ) final Long aUserId,
                                                               @RequestBody final Map< String, String > aPasswordMap )
     {
-        final Optional< User > optionalUser = this.userService.tryToFindById( aUserId );
+        final User user = ModelUtils.resolveUser( aUserId, userService );
 
-        if( optionalUser.isEmpty() )
-        {
-            return ResponseEntity.status( HttpStatus.BAD_REQUEST ).build();
-        }
-
-        final User user = optionalUser.get();
         final String encodePassword = this.passwordEncoder
                 .encode( aPasswordMap.get( "password" ) );
 

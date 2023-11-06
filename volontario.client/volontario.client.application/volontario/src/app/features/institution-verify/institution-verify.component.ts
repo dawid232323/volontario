@@ -5,6 +5,7 @@ import {
 } from 'src/app/features/institution-verify/institution-verify.const';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstitutionService } from 'src/app/core/service/institution.service';
+import { InfoCardTypeEnum } from '../../shared/features/success-info-card/info-card.component';
 
 @Component({
   selector: 'app-institution-verify',
@@ -64,4 +65,6 @@ export class InstitutionVerifyComponent implements OnInit {
   public onCardButtonClicked(): Promise<boolean> {
     return this.router.navigate(['home']);
   }
+
+  protected readonly InfoCardTypeEnum = InfoCardTypeEnum;
 }

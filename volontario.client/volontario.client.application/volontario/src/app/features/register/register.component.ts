@@ -6,6 +6,7 @@ import { InterestCategoryService } from 'src/app/core/service/interestCategory.s
 import { SelectFieldModelIf } from 'src/app/core/interface/selectField.interface';
 import { forkJoin } from 'rxjs';
 import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
+import { InfoCardTypeEnum } from '../../shared/features/success-info-card/info-card.component';
 
 @Component({
   selector: 'app-register',
@@ -67,4 +68,6 @@ export class RegisterComponent implements OnInit {
     this.isPerformingRegistration = false;
     console.error(error);
   }
+
+  protected readonly InfoCardTypeEnum = InfoCardTypeEnum;
 }

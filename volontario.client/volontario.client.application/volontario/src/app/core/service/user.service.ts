@@ -12,10 +12,12 @@ import { EndpointUrls } from 'src/app/utils/url.util';
 import { AdminUsersManagementQueryParamsIf } from 'src/app/features/admin-users-management/_features/users-filter-pane/users-filter-pane.component';
 import { PageableModel } from 'src/app/core/model/pageable.model';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpOptionsInterface } from '../interface/httpOptions.interface';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private userData?: User;
+
   constructor(private restService: VolontarioRestService) {}
 
   public logout() {
@@ -115,6 +117,23 @@ export class UserService {
     return this.restService.patch(
       EndpointUrls.volunteerResource.concat(`/${volunteerId}/interests`),
       { interests: volunteerInterests }
+    );
+  }
+
+  public confirmVolunteerRegistrationProcess(
+    volunteerId: number,
+    token: string
+  ): Observable<any> {
+    const options: HttpOptionsInterface = {
+      params: new HttpParams({ fromObject: { t: token } }),
+    };
+
+    return this.restService.post(
+      EndpointUrls.volunteerResource.concat(
+        '/' + volunteerId + '/confirm-registration'
+      ),
+      {},
+      options
     );
   }
 

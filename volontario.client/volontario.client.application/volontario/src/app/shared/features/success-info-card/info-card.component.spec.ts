@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SuccessInfoCardComponent } from './success-info-card.component';
+import { InfoCardComponent } from './info-card.component';
 
 describe('SuccessInfoCardComponent', () => {
-  let component: SuccessInfoCardComponent;
-  let fixture: ComponentFixture<SuccessInfoCardComponent>;
+  let component: InfoCardComponent;
+  let fixture: ComponentFixture<InfoCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SuccessInfoCardComponent],
+      declarations: [InfoCardComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SuccessInfoCardComponent);
+    fixture = TestBed.createComponent(InfoCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

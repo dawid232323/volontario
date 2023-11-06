@@ -53,6 +53,27 @@ public class VolunteerController
     }
 
     /**
+     * Confirms registration of Volunteer.
+     *
+     * @param aVolunteerId id of Volunteer to confirm registration.
+     *
+     * @param aToken token containing encoded domain email passes in registration.
+     *
+     * @return
+     *        - Response Entity with status 200 if everything went as expected.
+     *        - Response Entity with status 400 if User of provided id was not found or was not volunteer, or if
+     *          provided token is not equal to Volunteer's domain email after decoding, or is Volunteer was already confirmed.
+     *        - Response Entity with code 501 in case of any unexpected server side error.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
+    @PostMapping( value = "/{volunteerId}/confirm-registration" )
+    public ResponseEntity< ? > confirmRegistration( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                                    @RequestParam( "t" ) final String aToken )
+    {
+        return volunteerHandler.confirmVolunteerRegistration( aVolunteerId, aToken );
+    }
+
+    /**
      * Updates Volunteer's contact data, experience level, interest categories and participation motivation. If
      * some of mentioned data is not provided in dto then update on those properties is not performed.
      *

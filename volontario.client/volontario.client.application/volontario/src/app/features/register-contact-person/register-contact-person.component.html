@@ -21,13 +21,14 @@
         *ngIf="!hasRegisteredCorrectly && !isPerformingRegistration"
         (formSubmitEvent)="registerUser($event)"
         class="w-1/2"></app-set-password-component>
-      <app-success-info-card
+      <app-info-card
         class="h-full w-3/4"
         titleMessage="Rejestracja przebiegła pomyślnie"
         cardContent="Twoje konto zostało pomyślnie stworzone. Przejdź do strony logowania aby zalogować się po raz pierwszy"
         (cardButtonClicked)="onSuccessCardButtonClicked()"
+        [infoType]="InfoCardTypeEnum.Success"
         buttonText="Strona logowania"
-        *ngIf="hasRegisteredCorrectly"></app-success-info-card>
+        *ngIf="hasRegisteredCorrectly"></app-info-card>
     </div>
   </div>
   <div class="hidden lg:block basis-1/2">

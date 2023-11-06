@@ -4,6 +4,7 @@ import { SetPasswordInterface } from 'src/app/core/interface/authorization.inter
 import { InstitutionService } from 'src/app/core/service/institution.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { InfoCardTypeEnum } from '../../shared/features/success-info-card/info-card.component';
 
 export enum EmployeeRegistrationModeEnum {
   RegisterContactPerson,
@@ -94,4 +95,6 @@ export class RegisterContactPersonComponent implements OnInit {
   public get isPerformingRegistration() {
     return this._isPerformingRegistration;
   }
+
+  protected readonly InfoCardTypeEnum = InfoCardTypeEnum;
 }

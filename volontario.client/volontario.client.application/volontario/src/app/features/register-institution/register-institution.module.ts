@@ -7,7 +7,7 @@ import { RegisterBasicInfoFormModule } from 'src/app/features/register-instituti
 import { RegisterAdditionalInfoFormModule } from 'src/app/features/register-institution/_features/register-additional-info-form/register-additional-info-form.module';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SuccessInfoCardModule } from 'src/app/shared/features/success-info-card/success-info-card.module';
+import { InfoCardModule } from 'src/app/shared/features/success-info-card/info-card.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
@@ -20,7 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     RegisterAdditionalInfoFormModule,
     MatStepperModule,
     ReactiveFormsModule,
-    SuccessInfoCardModule,
+    InfoCardModule,
     MatProgressSpinnerModule,
   ],
   exports: [RegisterInstitutionComponent],

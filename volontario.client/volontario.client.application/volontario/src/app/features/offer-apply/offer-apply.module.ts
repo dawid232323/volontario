@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ContactInfoFormModule } from 'src/app/features/offer-apply/_features/contact-info-form/contact-info-form.module';
 import { ReasonFormModule } from 'src/app/features/offer-apply/_features/reason-form/reason-form.module';
-import { SuccessInfoCardModule } from 'src/app/shared/features/success-info-card/success-info-card.module';
+import { InfoCardModule } from 'src/app/shared/features/success-info-card/info-card.module';
 
 @NgModule({
   declarations: [OfferApplyComponent],
@@ -17,7 +17,7 @@ import { SuccessInfoCardModule } from 'src/app/shared/features/success-info-card
     MatStepperModule,
     ContactInfoFormModule,
     ReasonFormModule,
-    SuccessInfoCardModule,
+    InfoCardModule,
   ],
   exports: [OfferApplyComponent],
 })

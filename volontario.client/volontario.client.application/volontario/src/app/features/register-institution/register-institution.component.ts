@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InstitutionService } from 'src/app/core/service/institution.service';
 import { arrayLengthValidator } from 'src/app/utils/validator.utils';
-import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
+import {
+  InfoCardButtonEnum,
+  InfoCardTypeEnum,
+} from 'src/app/shared/features/success-info-card/info-card.component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -80,8 +83,8 @@ export class RegisterInstitutionComponent implements OnInit {
     });
   }
 
-  public onCardButtonClicked($event: SuccessInfoCardButtonEnum) {
-    if ($event === SuccessInfoCardButtonEnum.Primary) {
+  public onCardButtonClicked($event: InfoCardButtonEnum) {
+    if ($event === InfoCardButtonEnum.Primary) {
       this.router.navigate(['/']);
     }
   }
@@ -94,4 +97,6 @@ export class RegisterInstitutionComponent implements OnInit {
   get canSubmitForm(): boolean {
     return this.basicInfoFormGroup.valid && this.additionalInfoFormGroup.valid;
   }
+
+  protected readonly InfoCardTypeEnum = InfoCardTypeEnum;
 }

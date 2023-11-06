@@ -7,7 +7,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OfferApplicationService } from 'src/app/core/service/offer-application.service';
 import { firstValueFrom } from 'rxjs';
 import { OfferApplicationModelDto } from 'src/app/core/model/offerApplication.model';
-import { SuccessInfoCardButtonEnum } from 'src/app/shared/features/success-info-card/success-info-card.component';
+import {
+  InfoCardButtonEnum,
+  InfoCardTypeEnum,
+} from 'src/app/shared/features/success-info-card/info-card.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
 import { ErrorDialogInitialData } from 'src/app/shared/features/error-dialog/error-dialog.component';
@@ -118,8 +121,8 @@ export class OfferApplyComponent implements OnInit {
     });
   }
 
-  public onSuccessCardButtonClicked(button: SuccessInfoCardButtonEnum) {
-    if (button === SuccessInfoCardButtonEnum.Secondary) {
+  public onSuccessCardButtonClicked(button: InfoCardButtonEnum) {
+    if (button === InfoCardButtonEnum.Secondary) {
       this.onReturnToOfferDetails();
     }
   }
@@ -176,4 +179,6 @@ export class OfferApplyComponent implements OnInit {
     );
     return this.router.navigate(['advertisement', 'list']);
   }
+
+  protected readonly InfoCardTypeEnum = InfoCardTypeEnum;
 }

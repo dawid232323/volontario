@@ -22,6 +22,8 @@ import uam.volontario.model.offer.impl.VoluntaryPresenceStateEnum;
 import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.rest.VolunteerController;
+import uam.volontario.security.mail.MailService;
+import uam.volontario.security.util.VolontarioBase64Coder;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.UserValidationService;
 
@@ -51,7 +53,7 @@ public class VolunteerHandler
 
     private final PasswordEncoder passwordEncoder;
 
-    private final ApplicationService applicationService;
+    private final MailService mailService;
 
     private final VoluntaryPresenceStateService voluntaryPresenceStateService;
 
@@ -74,7 +76,7 @@ public class VolunteerHandler
      *
      * @param aExperienceLevelService experience level service.
      *
-     * @param aApplicationService application service.
+     * @param aMailService mail service.
      *
      * @param aVoluntaryPresenceStateService voluntary presence state service.
      *
@@ -87,7 +89,7 @@ public class VolunteerHandler
                              final UserService aUserService, final PasswordEncoder aPasswordEncoder,
                              final InterestCategoryService aInterestCategoryService,
                              final ExperienceLevelService aExperienceLevelService,
-                             final ApplicationService aApplicationService,
+                             final MailService aMailService,
                              final VoluntaryPresenceStateService aVoluntaryPresenceStateService,
                              final ConfigurationEntryService aConfigurationEntryService,
                              final OfferService aOfferService )
@@ -98,7 +100,7 @@ public class VolunteerHandler
         userValidationService = aUserValidationService;
         interestCategoryService = aInterestCategoryService;
         experienceLevelService = aExperienceLevelService;
-        applicationService = aApplicationService;
+        mailService = aMailService;
         voluntaryPresenceStateService = aVoluntaryPresenceStateService;
         configurationEntryService = aConfigurationEntryService;
         offerService = aOfferService;
@@ -128,7 +130,10 @@ public class VolunteerHandler
             if( validationResult.isValidated() )
             {
                 user.setHashedPassword( passwordEncoder.encode( user.getPassword() ) );
+
                 userService.saveOrUpdate( user );
+
+                mailService.sendMailToVolunteerAboutRegistrationConfirmation( user );
 
                 LOGGER.debug( "A new user has been registered for contact email {}, userId: {}",
                         user.getContactEmailAddress(), user.getId() );
@@ -146,6 +151,55 @@ public class VolunteerHandler
         catch ( Exception aE )
         {
             LOGGER.error( "Exception occurred during registration of volunteer: {}", aE.getMessage(), aE );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    /**
+     * Confirms registration of Volunteer.
+     *
+     * @param aVolunteerId id of Volunteer to confirm registration.
+     *
+     * @param aToken token containing encoded domain email passes in registration.
+     *
+     * @return
+     *        - Response Entity with status 200 if everything went as expected.
+     *        - Response Entity with status 400 if User of provided id was not found or was not volunteer, or if
+     *          provided token is not equal to Volunteer's domain email after decoding, or is Volunteer was already confirmed.
+     *        - Response Entity with code 501 in case of any unexpected server side error.
+     */
+    public ResponseEntity< ? > confirmVolunteerRegistration( final Long aVolunteerId, final String aToken )
+    {
+        try
+        {
+            final User volunteer = ModelUtils.resolveVolunteer( aVolunteerId, userService );
+
+            if( !volunteer.getVolunteerData().getDomainEmailAddress()
+                    .equals( VolontarioBase64Coder.decode( aToken ) ) )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "Illegal access to confirm registration of volunteer: %s",
+                                volunteer.getUsername() ) );
+            }
+
+            if( volunteer.isVerified() )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "Volunteer %s has already confirmed registration",
+                                volunteer.getUsername() ) );
+            }
+
+            volunteer.setVerified( true );
+
+            userService.saveOrUpdate( volunteer );
+
+            return ResponseEntity.ok()
+                    .build();
+
+        }
+        catch ( Exception aE )
+        {
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }

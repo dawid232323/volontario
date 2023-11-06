@@ -37,15 +37,16 @@
     </section>
     <section
       class="flex flex-col items-center justify-center lg:w-full min-h-screen">
-      <app-success-info-card
+      <app-info-card
         class="h-full w-3/4"
         *ngIf="hasAppliedForOffer"
         (cardButtonClicked)="onSuccessCardButtonClicked($event)"
+        [infoType]="InfoCardTypeEnum.Success"
         [titleMessage]="'Aplikacja na ogłoszenie powiodła się'"
         [cardContent]="
           'Twoja aplikacja jest widoczna dla prowadzącego ogłoszenie'
         "
-        [secondaryButtonText]="'Szczegóły ogłoszenia'"></app-success-info-card>
+        [secondaryButtonText]="'Szczegóły ogłoszenia'"></app-info-card>
     </section>
   </div>
 </div>

@@ -37,6 +37,7 @@ import { FileUploaderModule } from './shared/features/file-uplodaer/file-uploade
 import { ReportIssueModule } from './features/report-issue/report-issue.module';
 import { UserDetailsModule } from './features/user-details/user-details.module';
 import { UserEditDataModule } from './features/user-edit-data/user-edit-data.module';
+import { VolunteerRegistrationConfirmationModule } from './features/volunteer-registration-confirmation/volunteer-registration-confirmation.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -74,6 +75,7 @@ import { UserEditDataModule } from './features/user-edit-data/user-edit-data.mod
     FileUploaderModule,
     DragAndDropModule,
     UserEditDataModule,
+    VolunteerRegistrationConfirmationModule,
   ],
   providers: [
     {

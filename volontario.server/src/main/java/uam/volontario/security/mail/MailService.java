@@ -553,6 +553,44 @@ public class MailService
         mailSender.send( message );
     }
 
+    /**
+     * Sends email to Volunteer to confirm his registration.
+     *
+     * @param aVolunteer volunteer.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendMailToVolunteerAboutRegistrationConfirmation( final User aVolunteer )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        final String sender = "Volontario";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( aVolunteer.getVolunteerData().getDomainEmailAddress() );
+        helper.setSubject( "Potwierdzenie rejestracji wolontariusza" );
+
+        String content = Resources.toString( Resources.getResource( "emails/volunteerRegistration.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|volunteerFirstName\\|", aVolunteer.getFirstName() );
+        content = content.replaceAll( "\\|volunteerLastName\\|", aVolunteer.getLastName() );
+        content = content.replaceAll( "\\|confirmationLink\\|",
+                String.format( "%s/user/%o/confirm-registration?t=%s",
+                        volontarioHost,
+                        aVolunteer.getId(),
+                        VolontarioBase64Coder.encode( aVolunteer.getVolunteerData().getDomainEmailAddress() ) ) );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
+    }
+
     private String buildMailContentForInstitutionRegistration( final Institution aInstitution )
             throws IOException
     {

@@ -5,10 +5,14 @@ import uam.volontario.crud.service.*;
 import uam.volontario.exception.VolontarioEntityNotFoundException;
 import uam.volontario.exception.user.RoleMismatchException;
 import uam.volontario.model.common.UserRole;
+import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.configuration.ConfigurationEntry;
 import uam.volontario.model.offer.impl.*;
+import uam.volontario.model.volunteer.impl.ExperienceLevel;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -283,5 +287,65 @@ public class ModelUtils
     {
         return aOfferStateLookupFunction.apply( aOfferStateEnum.getTranslatedState() )
                 .orElseThrow( () -> new VolontarioEntityNotFoundException( OfferState.class, aOfferStateEnum.getTranslatedState() ) );
+    }
+
+    /**
+     * Resolves Roles from given UserRoles.
+     * 
+     * @param aRoleService role service.
+     *                     
+     * @param aUserRoles user roles.
+     *                   
+     * @return list of Roles.
+     */
+    public List< Role > resolveRoles( final RoleService aRoleService, final UserRole ... aUserRoles )
+    {
+        return resolveRoles( aRoleService::findByNameIn, aUserRoles );
+    }
+
+    /**
+     * Resolves Roles from given UserRoles.
+     *
+     * @param aRolesLookupFunction function to retrieve Roles from database.
+     *
+     * @param aUserRoles user roles.
+     *
+     * @return list of Roles.
+     */
+    public List< Role > resolveRoles( final Function< List< String >, List< Role > > aRolesLookupFunction, final UserRole ... aUserRoles )
+    {
+        return aRolesLookupFunction.apply( 
+                UserRole.mapUserRolesToRoleNames( Arrays.stream( aUserRoles ).toList() ) );
+    }
+
+    /**
+     * Resolves ExperienceLevel from id.
+     *
+     * @param aExperienceLevelId id of ExperienceLevel.
+     *
+     * @param aExperienceLevelService ExperienceLevel service.
+     *
+     * @return ExperienceLevel of given id if it exists.
+     *
+     */
+    public ExperienceLevel resolveExperienceLevel( final Long aExperienceLevelId, final ExperienceLevelService aExperienceLevelService )
+    {
+        return resolveExperienceLevel( aExperienceLevelId, aExperienceLevelService::tryLoadEntity );
+    }
+
+    /**
+     * Resolves ExperienceLevel from id.
+     *
+     * @param aExperienceLevelId id of ExperienceLevel.
+     *
+     * @param aExperienceLevelLookupFunction function to retrieve ExperienceLevel instance from database.
+     *
+     * @return ExperienceLevel of given id if it exists.
+     *
+     */
+    public ExperienceLevel resolveExperienceLevel( final Long aExperienceLevelId, final Function< Long, Optional< ExperienceLevel > > aExperienceLevelLookupFunction )
+    {
+        return aExperienceLevelLookupFunction.apply( aExperienceLevelId )
+                .orElseThrow( () -> new VolontarioEntityNotFoundException( ExperienceLevel.class, aExperienceLevelId ) );
     }
 }

@@ -68,6 +68,12 @@ public class RoleServiceImpl implements RoleService
     }
 
     @Override
+    public Role findByName( final String aName )
+    {
+        return roleRepository.findByName( aName );
+    }
+
+    @Override
     public List< Role > findByIdIn( final List< Long > aIds )
     {
         return this.roleRepository.findByIdIn( aIds );

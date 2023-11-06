@@ -8,13 +8,14 @@
       [availableCategories]="interestCategories"
       [availableExperiences]="experienceLevels"
       [isRegistering]="isPerformingRegistration"></app-register-form>
-    <app-success-info-card
+    <app-info-card
+      [infoType]="InfoCardTypeEnum.Success"
       *ngIf="hasRegisteredCorrectly"
       class="h-full w-3/4"
       (cardButtonClicked)="router.navigate(['login'])"
       [titleMessage]="successMessageTitle"
       [cardContent]="successMessageContent"
-      [buttonText]="successButtonText"></app-success-info-card>
+      [buttonText]="successButtonText"></app-info-card>
   </div>
   <div class="hidden min-h-screen lg:block basis-1/2">
     <app-side-banner></app-side-banner>

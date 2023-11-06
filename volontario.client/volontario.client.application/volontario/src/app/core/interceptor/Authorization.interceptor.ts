@@ -62,7 +62,18 @@ export class AuthorizationInterceptor implements HttpInterceptor {
   }
 
   private isEndpointAuthenticated(url: string): boolean {
-    return !EndpointUrls.unauthorizedUrls.has(url);
+    const isAuthorizedStaticUrl: boolean =
+      !EndpointUrls.unauthorizedUrls.has(url);
+    let isAuthorizedParametrizedUrl: boolean = true;
+
+    for (let urlRegex of EndpointUrls.unauthorizedParametrizedUrlPatterns) {
+      if (urlRegex.test(url)) {
+        isAuthorizedParametrizedUrl = false;
+        break;
+      }
+    }
+
+    return isAuthorizedStaticUrl && isAuthorizedParametrizedUrl;
   }
 
   private isVolontarioApiUrl(url: string): boolean {

@@ -103,6 +103,10 @@ export class EndpointUrls {
     EndpointUrls.report,
   ]);
 
+  public static readonly unauthorizedParametrizedUrlPatterns = new Set<RegExp>([
+    /.*\/volunteer\/\d\/confirm-registration.*/,
+  ]);
+
   public static readonly resourcesRequiringNoContentType = new Set<string>([
     EndpointUrls.reportWithAttachment,
     EndpointUrls.report,

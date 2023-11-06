@@ -10,14 +10,15 @@
           [mode]="'indeterminate'"
           [color]="'accent'"></mat-progress-spinner>
       </div>
-      <app-success-info-card
+      <app-info-card
         class="h-full w-3/4"
         *ngIf="hasEndedOperation"
         [titleMessage]="title"
         [cardContent]="content"
+        [infoType]="InfoCardTypeEnum.Success"
         [buttonText]="'Strona domowa'"
         (cardButtonClicked)="onCardButtonClicked()">
-      </app-success-info-card>
+      </app-info-card>
     </div>
   </div>
   <div class="hidden lg:block basis-1/2">

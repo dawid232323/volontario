@@ -79,7 +79,8 @@ public class SecurityConfiguration
                 "/api/institution/register-contact-person",
                 "api/report",
                 "/api/report",
-                "/api/report/with-attachments" ) );
+                "/api/report/with-attachments",
+                "/api/volunteer/{volunteer_id:[0-9]+}/confirm-registration") );
 
         aHttp.cors();
         aHttp.csrf().disable();
