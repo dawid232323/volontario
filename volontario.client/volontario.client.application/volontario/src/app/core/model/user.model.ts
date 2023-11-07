@@ -69,13 +69,29 @@ export class PatchUserDto {
   constructor(
     public contactEmailAddress: string,
     public phoneNumber: string,
+    public firstName?: string,
+    public lastName?: string,
     public interestCategoriesIds?: number[],
     public experienceId?: number,
-    public participationMotivation?: string
+    public participationMotivation?: string,
+    public fieldOfStudy?: string
   ) {}
 
   public static fromApplyFormVerification(formValue: any): PatchUserDto {
     return new PatchUserDto(formValue.contactEmail, formValue.phoneNumber);
+  }
+
+  public static fromEditDataForm(formValue: any): PatchUserDto {
+    return new PatchUserDto(
+      formValue?.contactEmailAddress,
+      formValue?.phoneNumber,
+      formValue?.firstName,
+      formValue?.lastName,
+      formValue?.interestCategories,
+      formValue?.experienceLevel,
+      formValue?.participationMotivation,
+      formValue?.fieldOfStudy
+    );
   }
 }
 

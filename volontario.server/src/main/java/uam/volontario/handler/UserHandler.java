@@ -8,19 +8,29 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uam.volontario.crud.service.ExperienceLevelService;
+import uam.volontario.crud.service.InterestCategoryService;
 import uam.volontario.crud.service.RoleService;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.crud.specification.UserSpecification;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
+import uam.volontario.dto.user.UserPatchInfoDto;
 import uam.volontario.dto.user.UserProfileDto;
+import uam.volontario.exception.VolontarioEntityNotFoundException;
+import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.common.impl.UserSearchQuery;
 import uam.volontario.model.utils.ModelUtils;
+import uam.volontario.model.volunteer.impl.VolunteerData;
+import uam.volontario.validation.ValidationResult;
+import uam.volontario.validation.service.entity.UserValidationService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service responsible with all {@link uam.volontario.model.common.impl.User} operations except creating volunteer
@@ -35,6 +45,12 @@ public class UserHandler
 
     private final RoleService roleService;
 
+    private final UserValidationService userValidationService;
+
+    private final InterestCategoryService interestCategoryService;
+
+    private final ExperienceLevelService experienceLevelService;
+
     /**
      * CDI constructor.
      *
@@ -46,11 +62,15 @@ public class UserHandler
      */
     @Autowired
     public UserHandler( final UserService aUserService, final DtoService aDtoService,
-                        final RoleService aRoleService )
+                        final RoleService aRoleService, final UserValidationService aUserValidationService,
+                        final InterestCategoryService aInterestCategoryService, final ExperienceLevelService aExperienceLevelService )
     {
         this.userService = aUserService;
         this.dtoService = aDtoService;
         this.roleService = aRoleService;
+        this.userValidationService = aUserValidationService;
+        this.interestCategoryService = aInterestCategoryService;
+        this.experienceLevelService = aExperienceLevelService;
     }
 
     /**
@@ -150,6 +170,75 @@ public class UserHandler
                 ModelUtils.resolveUser( aUserId, userService ) );
 
         return ResponseEntity.ok( profileDto );
+    }
+
+    /**
+     * Updates User's contact data, name, and in case of Volunteer: interest categories, field of study and
+     * participation motivation. If some of mentioned data is not provided in dto then update on those properties
+     * is not performed.
+     *
+     * @param aUserId user id.
+     *
+     * @param aPatchDto user patch info dto.
+     *
+     * @return
+     *        - Response Entity with code 200 and patched User if everything went as expected.
+     *        - Response Entity with code 400 if:
+     *             1. There is no User with provided id found.
+     *             2. User does not pass validation after patch (in this case also validation violations
+     *                                                                are provided within the Response)
+     *
+     *        - Response Entity with code 500 when unexpected server-side error occurs.
+     */
+    public ResponseEntity< ? > updateUserInformation( final Long aUserId,
+                                                           final UserPatchInfoDto aPatchDto )
+    {
+        try
+        {
+            final User user = ModelUtils.resolveUser( aUserId, userService );
+
+            Optional.ofNullable( aPatchDto.getFirstName() )
+                    .ifPresent( user::setFirstName );
+            Optional.ofNullable( aPatchDto.getLastName() )
+                    .ifPresent( user::setLastName );
+            Optional.ofNullable( aPatchDto.getContactEmailAddress() )
+                    .ifPresent( user::setContactEmailAddress );
+            Optional.ofNullable( aPatchDto.getPhoneNumber() )
+                    .ifPresent( user::setPhoneNumber );
+
+            if( user.hasUserRole( UserRole.VOLUNTEER ) )
+            {
+                final VolunteerData volunteerData = user.getVolunteerData();
+
+                Optional.ofNullable( aPatchDto.getFieldOfStudy() )
+                        .ifPresent( volunteerData::setFieldOfStudy );
+                Optional.ofNullable( aPatchDto.getParticipationMotivation() )
+                        .ifPresent( volunteerData::setParticipationMotivation );
+                Optional.ofNullable( aPatchDto.getInterestCategoriesIds() )
+                        .ifPresent( idList -> volunteerData.setInterestCategories( idList.stream()
+                                .map( interestCategoryService::loadEntity )
+                                .collect( Collectors.toList() ) ) );
+                Optional.ofNullable( aPatchDto.getExperienceId() )
+                        .ifPresent( id -> volunteerData.setExperience( experienceLevelService.loadEntity( id ) ) );
+            }
+
+            final ValidationResult validationResult = userValidationService.validateEntity( user );
+            if( validationResult.isValidated() )
+            {
+                userService.saveOrUpdate( user );
+                return ResponseEntity.ok( validationResult.getValidatedEntity() );
+            }
+            else
+            {
+                return ResponseEntity.badRequest()
+                        .body( validationResult.getValidationViolations() );
+            }
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
     }
 
     private UserSearchQuery getUserSearchQuery( final List< Long > aRoleIds, final String aName,

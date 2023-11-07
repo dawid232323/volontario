@@ -8,9 +8,8 @@ describe('SingleFieldUserDetailsFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SingleFieldUserDetailsFormComponent ]
-    })
-    .compileComponents();
+      declarations: [SingleFieldUserDetailsFormComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SingleFieldUserDetailsFormComponent);
     component = fixture.componentInstance;

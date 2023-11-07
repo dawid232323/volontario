@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { phoneNumberValidator } from '../../utils/validator.utils';
 import { UserService } from '../../core/service/user.service';
 import { isNil } from 'lodash';
 import { InterestCategoryService } from '../../core/service/interestCategory.service';
 import { VolunteerExperienceService } from '../../core/service/volunteer-experience.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, firstValueFrom } from 'rxjs';
 import { UserRoleEnum } from '../../core/model/user-role.model';
-import { UserProfile } from '../../core/model/user.model';
+import { UserProfile, PatchUserDto } from '../../core/model/user.model';
 import { VolunteerExperience } from '../../core/model/volunteer-experience.model';
 import { InterestCategoryDTO } from '../../core/model/interestCategory.model';
 
@@ -31,6 +31,7 @@ export class UserEditDataComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private userService: UserService,
     private interestCategoryService: InterestCategoryService,
     private experienceLevelService: VolunteerExperienceService
@@ -44,8 +45,19 @@ export class UserEditDataComponent implements OnInit {
     this.preSelectFormWithUserData();
   }
 
-  onEditDataSubmit(): void {
-    // TODO: Mikołaj connect with backend.
+  onEditDataSubmit() {
+    this.userService
+      .patchUserData(
+        this.userId,
+        PatchUserDto.fromEditDataForm(this.registerFormGroup.value)
+      )
+      .subscribe(() => {
+        this.returnToProfile();
+      });
+  }
+
+  returnToProfile() {
+    this.router.navigate(['user', this.userId]);
   }
 
   createForm(): FormGroup {

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import uam.volontario.dto.user.UserPatchInfoDto;
 import uam.volontario.handler.ProfilePictureHandler;
 import uam.volontario.handler.UserHandler;
 
@@ -143,5 +144,31 @@ public class UserController
     public ResponseEntity< ? > getUserProfilePicture( @PathVariable( "user_id" ) final Long aUserId )
     {
         return this.profilePictureHandler.getUserProfilePicture( aUserId );
+    }
+
+    /**
+     * Updates User's contact data, name, and in case of Volunteers: interest categories, field of study and
+     * participation motivation. If some of mentioned data is not provided in dto then update on those properties
+     * is not performed.
+     *
+     * @param aUserId user id.
+     *
+     * @param aPatchDto user patch info dto.
+     *
+     * @return
+     *        - Response Entity with code 200 and patched User if everything went as expected.
+     *        - Response Entity with code 400 if:
+     *             1. There is no User with provided id found.
+     *             2. User does not pass validation after patch (in this case also validation violations
+     *                                                                are provided within the Response)
+     *
+     *        - Response Entity with code 500 when unexpected server-side error occurs.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForEveryUser( authentication.principal )" )
+    @PatchMapping( "/{userId}" )
+    public ResponseEntity< ? > updateUserInformation( @PathVariable( "userId" ) final Long aUserId,
+                                                     @RequestBody final UserPatchInfoDto aPatchDto )
+    {
+        return userHandler.updateUserInformation( aUserId, aPatchDto );
     }
 }

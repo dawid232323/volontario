@@ -53,6 +53,17 @@ export class UserService {
       );
   }
 
+  public patchUserData(userId: number, body: PatchUserDto): Observable<User> {
+    return this.restService
+      .patch(EndpointUrls.userResource.concat('/', userId.toString()), body)
+      .pipe(
+        map(updateResult => {
+          this.userData = User.fromPayload(updateResult);
+          return this.userData;
+        })
+      );
+  }
+
   public getUserProfileDetails(userId: number): Observable<UserProfile> {
     return this.restService
       .get(EndpointUrls.userProfile.concat(`/${userId}`))

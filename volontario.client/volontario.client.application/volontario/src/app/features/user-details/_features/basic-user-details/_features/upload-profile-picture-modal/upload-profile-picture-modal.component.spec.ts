@@ -8,9 +8,8 @@ describe('UploadProfilePictureModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UploadProfilePictureModalComponent ]
-    })
-    .compileComponents();
+      declarations: [UploadProfilePictureModalComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(UploadProfilePictureModalComponent);
     component = fixture.componentInstance;
