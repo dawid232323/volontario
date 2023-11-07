@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PasswordCheckCardModule } from 'src/app/shared/features/password-check-card/password-check-card.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 
 @NgModule({
   declarations: [RegisterFormComponent],
@@ -25,6 +26,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     FormsModule,
     PasswordCheckCardModule,
     MatTooltipModule,
+    RouterLink,
   ],
   exports: [RegisterFormComponent],
 })
