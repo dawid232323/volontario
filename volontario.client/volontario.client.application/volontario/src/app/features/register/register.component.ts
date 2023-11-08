@@ -7,6 +7,8 @@ import { SelectFieldModelIf } from 'src/app/core/interface/selectField.interface
 import { forkJoin } from 'rxjs';
 import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
 import { InfoCardTypeEnum } from '../../shared/features/success-info-card/info-card.component';
+import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +31,8 @@ export class RegisterComponent implements OnInit {
     private authService: SecurityService,
     private interestCategoryService: InterestCategoryService,
     private experienceService: VolunteerExperienceService,
-    public router: Router
+    public router: Router,
+    private errorDialogService: ErrorDialogService
   ) {}
 
   ngOnInit(): void {
@@ -64,9 +67,19 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  private handleRegisterError(error: any) {
+  private handleRegisterError(error: HttpErrorResponse) {
     this.isPerformingRegistration = false;
-    console.error(error);
+    const dialogTitle =
+      error.status === 400 ? 'Niepoprawne dane do rejestracji' : undefined;
+    const dialogMessage =
+      error.status === 400
+        ? 'Sprawdź treść błędu powyżej i popraw niepoprawne dane'
+        : undefined;
+    this.errorDialogService.openDefaultErrorDialog({
+      error: error,
+      dialogTitle: dialogTitle,
+      dialogMessage: dialogMessage,
+    });
   }
 
   protected readonly InfoCardTypeEnum = InfoCardTypeEnum;

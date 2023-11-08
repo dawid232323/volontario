@@ -185,7 +185,7 @@ public class VolunteerHandler
 
             if( volunteer.isVerified() )
             {
-                return ResponseEntity.badRequest()
+                return ResponseEntity.status( HttpStatus.ALREADY_REPORTED )
                         .body( String.format( "Volunteer %s has already confirmed registration",
                                 volunteer.getUsername() ) );
             }

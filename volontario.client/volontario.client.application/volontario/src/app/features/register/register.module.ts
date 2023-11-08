@@ -5,6 +5,7 @@ import { SideBannerModule } from 'src/app/shared/features/side-banner/side-banne
 import { LogoModule } from 'src/app/shared/features/logo/logo.module';
 import { RegisterFormModule } from './_features/register-form/register-form.module';
 import { InfoCardModule } from 'src/app/shared/features/success-info-card/info-card.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [RegisterComponent],
@@ -14,6 +15,7 @@ import { InfoCardModule } from 'src/app/shared/features/success-info-card/info-c
     LogoModule,
     RegisterFormModule,
     InfoCardModule,
+    MatProgressSpinnerModule,
   ],
   exports: [RegisterComponent],
 })

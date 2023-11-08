@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { isNil } from 'lodash';
 import { UserService } from '../../core/service/user.service';
 import { InfoCardTypeEnum } from '../../shared/features/success-info-card/info-card.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
 
 @Component({
   selector: 'app-volunteer-registration-confirmation',
@@ -53,8 +55,8 @@ export class VolunteerRegistrationConfirmationComponent implements OnInit {
     this.userService
       .confirmVolunteerRegistrationProcess(this.volunteerId, this.token)
       .subscribe({
-        error: () => {
-          this.isRegistrationConfirmed = false;
+        error: (error: HttpErrorResponse) => {
+          this.isRegistrationConfirmed = error.status === 208;
         },
         complete: () => {
           this.isRegistrationConfirmed = true;
