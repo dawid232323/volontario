@@ -61,6 +61,8 @@ public class UserSpecification implements Specification< User > {
         {
             return aBuilder.or( alternativePredicates.toArray( new Predicate[0] ) );
         }
+
+        aQuery.distinct( true );
         return aBuilder.and( conjunctionPredicates.toArray( new Predicate[0] ) );
     }
 }

@@ -54,6 +54,7 @@ public class ApplicationSpecification implements Specification< Application >
             predicateList.add( aCriteriaBuilder.equal( institutionId, query.getInstitutionId() ) );
         }
 
+        aQuery.distinct( true );
         return aCriteriaBuilder.and( predicateList.toArray( new Predicate[ 0 ] ) );
     }
 }

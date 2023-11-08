@@ -85,6 +85,7 @@ public class OfferSpecification implements Specification< Offer >
             predicateList.add( aCriteriaBuilder.equal( contactPersonId, query.getContactPersonId() ) );
         }
 
+        aQuery.distinct( true );
         return aCriteriaBuilder.and( predicateList.toArray( predicateList.toArray( new Predicate[0] ) ) );
     }
 }
