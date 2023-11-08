@@ -57,7 +57,10 @@ export class RegisterFormComponent implements OnInit {
       Validators.maxLength(1500),
     ]),
     fieldOfStudy: new FormControl(null, [Validators.maxLength(100)]),
-    phoneNumber: new FormControl(null, [phoneNumberValidator()]),
+    phoneNumber: new FormControl(null, [
+      Validators.required,
+      phoneNumberValidator(),
+    ]),
     rodo: new FormControl('', [Validators.required]),
   });
 

@@ -581,9 +581,9 @@ public class MailService
         content = content.replaceAll( "\\|volunteerFirstName\\|", aVolunteer.getFirstName() );
         content = content.replaceAll( "\\|volunteerLastName\\|", aVolunteer.getLastName() );
         content = content.replaceAll( "\\|confirmationLink\\|",
-                String.format( "%s/user/%o/confirm-registration?t=%s",
+                String.format( "%s/user/%d/confirm-registration?t=%s",
                         volontarioHost,
-                        aVolunteer.getId(),
+                        aVolunteer.getId().intValue(),
                         VolontarioBase64Coder.encode( aVolunteer.getVolunteerData().getDomainEmailAddress() ) ) );
 
         helper.setText( content, true );
