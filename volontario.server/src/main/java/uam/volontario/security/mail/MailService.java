@@ -54,6 +54,8 @@ public class MailService
 
     private final String volontarioHost;
 
+    private final String emailSender = "Volontario";
+
     /**
      * CDI constructor.
      *
@@ -99,6 +101,7 @@ public class MailService
         catch ( Exception aE )
         {
             LOGGER.warn( "Error while sending mail: " + aE.getMessage() );
+            LOGGER.error( aE );
             return false;
         }
     }
@@ -119,10 +122,9 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String sender = "Volontario";
         final String mailSubject = aInstitution.getName() + " prosi o weryfikację.";
 
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( volontarioModeratorAddress );
         helper.setSubject( mailSubject );
         helper.setText( buildMailContentForInstitutionRegistration( aInstitution ), true );
@@ -131,7 +133,7 @@ public class MailService
     }
 
     /**
-     * Sends email to Volunteer after he/she made an application for offer.
+     * Sends email to Volunteer and offer creator that he/she made an application for offer.
      *
      * @param aApplication
      *                            application.
@@ -142,25 +144,14 @@ public class MailService
      *
      * @return true if email was successfully sent, false otherwise.
      */
-    public boolean sendApplicationCreatedMailToVolunteer( final Application aApplication )
+    public boolean sendApplicationCreatedMail( final Application aApplication )
             throws MessagingException, IOException
     {
-        final MimeMessage message = mailSender.createMimeMessage();
-        final MimeMessageHelper helper = new MimeMessageHelper( message );
+        final MimeMessage volunteerMessage = getApplicationCreatedVolunteerMessage( aApplication );
+        final MimeMessage institutionMessage = getApplicationCreatedInstitutionMessage( aApplication );
 
-        final Offer offer = aApplication.getOffer();
-
-        final String volunteerContactEmail = aApplication.getVolunteer()
-                .getContactEmailAddress();
-        final String sender = "Volontario";
-        final String mailSubject = "Aplikacja na ofertę: " + offer.getTitle() + " została utworzona!";
-
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
-        helper.setTo( volunteerContactEmail );
-        helper.setSubject( mailSubject );
-        helper.setText( createContentForApplicationMadeEmail( aApplication.getOffer() ), true );
-
-        return trySendMail( () -> mailSender.send( message ) );
+        return trySendMail( () -> mailSender.send( volunteerMessage ) ) &&
+                trySendMail( () -> mailSender.send( institutionMessage ) );
     }
 
     /**
@@ -179,12 +170,11 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String sender = "Volontario";
         final String mailSubject = "Twoja instytucja " + aInstitution.getName() + " została zweryfikowana przez Volontario.";
 
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
 
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( contactPerson.getContactEmail() );
         helper.setSubject( mailSubject );
         helper.setText( buildMailContentForInstitutionAccepted( aInstitution ), true );
@@ -208,12 +198,11 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String sender = "Volontario";
         final String mailSubject = aInstitution.getName() + " - weryfikacja odrzucona.";
 
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
 
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( contactPerson.getContactEmail() );
         helper.setSubject( mailSubject );
         helper.setText( buildMailContentForInstitutionRejected( aInstitution ), true );
@@ -239,10 +228,9 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String sender = "Volontario";
         final String mailSubject = "Twoja aplikacja jest teraz w trakcie rekrutacji!";
 
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( aVolunteerContactEmail );
         helper.setSubject( mailSubject );
 
@@ -273,10 +261,9 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String sender = "Volontario";
         final String mailSubject = "Twoja aplikacja trafiła na listę rezerwową.";
 
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( aVolunteerContactEmail );
         helper.setSubject( mailSubject );
 
@@ -310,10 +297,9 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String sender = "Volontario";
         final String mailSubject = "Niestety, odrzucono twoją aplikację...";
 
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( aVolunteerContactEmail );
         helper.setSubject( mailSubject );
 
@@ -348,10 +334,9 @@ public class MailService
             final MimeMessage message = mailSender.createMimeMessage();
             final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-            final String sender = "Volontario";
             final String mailSubject = "Twoja oferta wkrótce wygaśnie...";
 
-            helper.setFrom( noReplyVolontarioEmailAddress, sender );
+            helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
             helper.setTo( offer.getContactPerson().getContactEmailAddress() );
             helper.setSubject( mailSubject );
 
@@ -466,7 +451,6 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message, true );
 
-        final String sender = "Volontario";
 
         final Offer offer = aVoluntaryPresence.getOffer();
         final User volunteer = aVoluntaryPresence.getVolunteer();
@@ -476,7 +460,7 @@ public class MailService
                 .findAny()
                 .orElseThrow( IllegalStateException::new );
 
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( volunteer.getContactEmailAddress() );
         helper.setSubject( String.format( "Potwierdź obecność w wolontariacie: %s", offer.getTitle() ) );
 
@@ -516,7 +500,6 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message, true );
 
-        final String sender = "Volontario";
 
         final VoluntaryPresence anyVoluntaryPresence = aVoluntaryPresences.stream()
                 .findAny()
@@ -532,7 +515,7 @@ public class MailService
                 .collect( Collectors.joining( ";" ) );
 
 
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( offer.getContactPerson().getContactEmailAddress() );
         helper.setSubject( String.format( "Potwierdź obecność wolontariuszy na wydarzeniu: %s", offer.getTitle() ) );
 
@@ -569,9 +552,7 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message, true );
 
-        final String sender = "Volontario";
-
-        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( aVolunteer.getVolunteerData().getDomainEmailAddress() );
         helper.setSubject( "Potwierdzenie rejestracji wolontariusza" );
 
@@ -683,4 +664,57 @@ public class MailService
         final String prefix = aShouldUseHttps ? "https://" : "http://";
         return prefix.concat( aHost );
     }
+
+    private MimeMessage getApplicationCreatedVolunteerMessage( final Application aApplication )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final Offer offer = aApplication.getOffer();
+
+        final String volunteerContactEmail = aApplication.getVolunteer()
+                .getContactEmailAddress();
+        final String sender = "Volontario";
+        final String mailSubject = "Aplikacja na ofertę: " + offer.getTitle() + " została utworzona!";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, sender );
+        helper.setTo( volunteerContactEmail );
+        helper.setSubject( mailSubject );
+        helper.setText( createContentForApplicationMadeEmail( aApplication.getOffer() ), true );
+
+        return message;
+    }
+
+    private MimeMessage getApplicationCreatedInstitutionMessage( final Application aApplication )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper messageHelper = new MimeMessageHelper( message );
+
+        final Offer offer = aApplication.getOffer();
+        final String contactPersonEmail = offer.getContactPerson()
+                .getContactEmailAddress();
+        final String mailSubject = String
+                .format( "Pojawiła się nowa aplikacja na twoje ogłoszenie %s", offer.getTitle() );
+
+        final String volunteerName = aApplication.getVolunteer().getFullName();
+        final String offerLink = String.format( "%s/advertisement/%d",
+                volontarioHost, offer.getId().intValue() );
+
+        String messageContent = Resources.toString( Resources
+                        .getResource( "emails/applicationMadeInstitution.html" ),
+                        StandardCharsets.UTF_8 );
+        messageContent = messageContent.replaceAll( "\\|volunteerName\\|", volunteerName );
+        messageContent = messageContent.replaceAll( "\\|offerTitle\\|", offer.getTitle() );
+        messageContent = messageContent.replaceAll( "\\|offerLink\\|", offerLink );
+
+        messageHelper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        messageHelper.setTo( contactPersonEmail );
+        messageHelper.setSubject( mailSubject );
+        messageHelper.setText( messageContent, true );
+
+        return message;
+    }
+
 }

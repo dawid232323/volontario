@@ -130,7 +130,7 @@ public class ApplicationProcessingHandler
             if( validationResult.isValidated() )
             {
                 applicationService.saveOrUpdate( application );
-                if( mailService.sendApplicationCreatedMailToVolunteer( application ) )
+                if( mailService.sendApplicationCreatedMail( application ) )
                 {
                     return ResponseEntity.status( HttpStatus.CREATED )
                             .body( application );

@@ -119,6 +119,11 @@ public class User implements UserIf
         return this.getPathToImage() != null && !StringUtils.isBlank( this.getPathToImage() );
     }
 
+    public String getFullName()
+    {
+        return getFirstName().concat( " " ).concat( getLastName() );
+    }
+
     @Override
     public int hashCode()
     {
