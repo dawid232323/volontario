@@ -9,36 +9,61 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { isNil } from 'lodash';
 import { OfferApplicationService } from 'src/app/core/service/offer-application.service';
 import { formatDate } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  VolConfirmPresenceInitialData,
+  VolunteerConfirmPresenceComponent,
+} from 'src/app/features/advertisement-details/_features/volunteer-confirm-presence/volunteer-confirm-presence.component';
+import {
+  InstitutionVoluntaryPresenceModel,
+  PresenceStateEnum,
+  VolunteerPresenceModel,
+} from 'src/app/core/model/offer-presence.model';
+import { OfferPresenceHandler } from 'src/app/features/advertisement-details/offer-presence.handler';
 
 @Component({
   selector: 'app-advertisement-details',
   templateUrl: './advertisement-details.component.html',
   styleUrls: ['./advertisement-details.component.scss'],
+  providers: [OfferPresenceHandler],
 })
 export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   public advertisementData: AdvertisementDto | null = null;
   public loggedUser?: User;
   private subscriptions = new Subscription();
   private _canManageOffer = false;
+  private _isOfferPresenceReady = false;
+  private _canConfirmPresence = false;
   private _hasAppliedForOffer = true;
+  private _canChangePresenceDecision = false;
+  private _hasVolunteerAlreadyMadePresenceDecision = false;
   private _applicationState?: string;
   private _advertisementId = <number>this.route.snapshot.params['adv_id'];
+  private _isLoadingData = true;
+
+  private _volunteerPresenceState?: VolunteerPresenceModel;
+  private _institutionPresenceState?: InstitutionVoluntaryPresenceModel;
+  private _hasNotAcceptedApplications: boolean = true;
 
   constructor(
     private advertisementService: AdvertisementService,
     private offerApplicationService: OfferApplicationService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private matDialog: MatDialog,
+    private presenceHandler: OfferPresenceHandler
   ) {}
 
   ngOnInit(): void {
     forkJoin([
       this.advertisementService.getAdvertisement(this._advertisementId),
       this.userService.getCurrentUserData(),
-    ]).subscribe(([advertisement, user]) => {
+      this.presenceHandler.resolveIsOfferPresenceReady(this._advertisementId),
+    ]).subscribe(([advertisement, user, isPresenceReady]) => {
       this.advertisementData = advertisement;
       this.loggedUser = user;
+      this._isOfferPresenceReady = isPresenceReady;
       this._canManageOffer = this.advertisementService.canManageOffer(
         this.advertisementData,
         this.loggedUser
@@ -87,6 +112,86 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     return this.router.navigate(['advertisement', 'list']);
   }
 
+  public onConfirmPresenceButtonCLicked() {
+    if (!this.canConfirmPresence) {
+      return;
+    }
+    if (!this.loggedUser?.hasUserRole(UserRoleEnum.Volunteer)) {
+      return this.router.navigate(
+        [
+          'institution',
+          this.advertisementData?.institutionId,
+          'confirm-presence',
+        ],
+        {
+          queryParams: {
+            o: this._advertisementId,
+          },
+        }
+      );
+    }
+    const initialData: VolConfirmPresenceInitialData = {
+      canPostponeReminder: this._volunteerPresenceState!.canPostponeReminder,
+    };
+    const dialogRef = this.matDialog.open(VolunteerConfirmPresenceComponent, {
+      data: initialData,
+    });
+    return dialogRef
+      .afterClosed()
+      .subscribe(this.handleVolunteerConfirmation.bind(this));
+  }
+
+  public getDecisionChangeLabel(): string | null {
+    return this.presenceHandler.resolveDecisionChangeLabel(
+      this._canConfirmPresence,
+      this._canChangePresenceDecision,
+      this._canManageOffer,
+      this.loggedUser!,
+      this._volunteerPresenceState,
+      this._institutionPresenceState
+    );
+  }
+
+  public getInstitutionConfirmPresenceButtonLabel() {
+    return this.presenceHandler.resolveInstitutionConfirmButtonLabel(
+      this._canChangePresenceDecision,
+      this._institutionPresenceState
+    );
+  }
+
+  public getVolunteerConfirmPresenceButtonLabel() {
+    return this.presenceHandler.resolveVolunteerConfirmButtonLabel(
+      this._canChangePresenceDecision,
+      this._volunteerPresenceState
+    );
+  }
+
+  private handleVolunteerConfirmation(decision: PresenceStateEnum) {
+    if (isNil(decision)) {
+      return;
+    }
+    if (decision === PresenceStateEnum.Unresolved) {
+      this.handlePostponeConfirmation();
+    } else {
+      this.advertisementService
+        .determineVoluntaryPresenceForVolunteer(
+          this.loggedUser!.id,
+          this._advertisementId,
+          decision
+        )
+        .subscribe(() => this.getVolunteerPresenceState());
+    }
+  }
+
+  private handlePostponeConfirmation() {
+    this.advertisementService
+      .postponePresenceConfirmationVolunteer(
+        this.loggedUser!.id,
+        this._advertisementId
+      )
+      .subscribe(() => this.getVolunteerPresenceState());
+  }
+
   private determineIfUserCanApply() {
     if (this?.loggedUser?.hasUserRole(UserRoleEnum.Volunteer)) {
       this.offerApplicationService
@@ -95,9 +200,53 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
           next: result => {
             this._hasAppliedForOffer = result.applied;
             this._applicationState = result.state;
+            this.determineIfUserCanConfirmPresence();
+            this.getVolunteerPresenceState();
           },
         });
     }
+    this.determineIfUserCanConfirmPresence();
+    this.getInstitutionPresenceState();
+  }
+
+  private determineIfUserCanConfirmPresence() {
+    this._canConfirmPresence = this.presenceHandler.canUserConfirmPresence(
+      this._applicationState,
+      this.canManageOffer
+    );
+  }
+
+  private getVolunteerPresenceState(): void {
+    if (!this._canConfirmPresence) {
+      this._isLoadingData = false;
+      return;
+    }
+    this.presenceHandler
+      .resolveVolunteerPresenceState(this._advertisementId, this.loggedUser!.id)
+      .subscribe(result => {
+        this._canChangePresenceDecision = result.canChangeDecision;
+        this._volunteerPresenceState = result.presenceState;
+        if (!isNil(result.canConfirmPresence)) {
+          this._canConfirmPresence = result.canConfirmPresence;
+        }
+        this._isLoadingData = false;
+      });
+  }
+
+  private getInstitutionPresenceState() {
+    if (!this._canConfirmPresence) {
+      this._isLoadingData = false;
+      return;
+    }
+    this.presenceHandler
+      .resolveInstitutionPresenceState(this._advertisementId)
+      .subscribe(presenceState => {
+        this._canChangePresenceDecision = presenceState.canChangeDecision;
+        this._institutionPresenceState = presenceState.presenceState;
+        this._hasNotAcceptedApplications =
+          presenceState.hasNotAcceptedApplications;
+        this._isLoadingData = false;
+      });
   }
 
   public onApplyButtonCLicked() {
@@ -107,11 +256,34 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['apply'], { relativeTo: this.route });
   }
 
+  public shouldDisableInstitutionPresence(): boolean {
+    return this._hasNotAcceptedApplications && this._isOfferPresenceReady;
+  }
+
+  public get canConfirmPresence(): boolean {
+    return this._canConfirmPresence;
+  }
+
+  public get hasVolunteerAlreadyMadePresenceDecision(): boolean {
+    return this._volunteerPresenceState?.hasAlreadyMadeDecision || false;
+  }
+
+  public get hasInstitutionAlreadyMadePresenceDecision(): boolean {
+    return this._institutionPresenceState?.wasPresenceConfirmed || false;
+  }
+
+  public get isLoadingData(): boolean {
+    return this._isLoadingData;
+  }
+
+  public get canChangePresenceDecision(): boolean {
+    return this._canChangePresenceDecision;
+  }
+
   protected readonly UserRoleEnum = UserRoleEnum;
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
-
   protected readonly isNil = isNil;
 }

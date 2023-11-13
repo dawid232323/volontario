@@ -1,0 +1,52 @@
+<div class="flex flex-col items-center min-h-screen bg-gray-100">
+  <div
+    *ngIf="isLoadingData"
+    class="flex flex-col justify-center items-center min-h-screen w-full lg:mx-0 mx-4 my-10">
+    <mat-progress-spinner
+      mode="indeterminate"
+      color="accent"></mat-progress-spinner>
+  </div>
+  <div
+    *ngIf="!isLoadingData"
+    class="flex flex-col lg:w-3/4 w-full lg:mx-0 mx-4 border-4 rounded-xl border-solid bg-white my-10">
+    <span
+      class="flex flex-row items-center justify-center w-full lg:space-x-5 py-16">
+      <div class="text-4xl font-bold text-center">
+        Potwierdź obecność wolontariuszy
+      </div>
+    </span>
+    <div class="w-full items-center justify-center">
+      <app-institution-offer-presence-volunteers-list
+        class="w-full"
+        [availableVolunteers]="
+          availableVolunteers
+        "></app-institution-offer-presence-volunteers-list>
+    </div>
+    <div
+      class="flex lg:flex-row flex-col w-full items-stretch justify-center lg:space-x-6 space-x-0 space-y-3 lg:space-y-0 py-16 px-4">
+      <button
+        (click)="onReturn()"
+        mat-raised-button
+        color="warn"
+        class="w-3/4 hover:bg-btnWarnHover">
+        Anuluj
+      </button>
+      <button
+        (click)="onPostpone()"
+        *ngIf="canPostponeReminder"
+        mat-raised-button
+        color="accent"
+        class="w-3/4 hover:bg-btnAccentHover">
+        <mat-icon class="text-black" matPrefix>snooze</mat-icon>
+        Przypomnij później
+      </button>
+      <button
+        (click)="onPresenceConfirmation()"
+        mat-raised-button
+        color="primary"
+        class="w-3/4 hover:bg-btnAccentHoverPrimary">
+        Zatwierdź
+      </button>
+    </div>
+  </div>
+</div>

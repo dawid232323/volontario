@@ -159,12 +159,15 @@ public class OfferPresenceHandler
 
             final boolean canDecisionBeChanged = canDecisionBeChanged( voluntaryPresence.getVolunteerDecisionDate(),
                     changeDecisionBuffer );
+            final boolean canPostponeReminder = voluntaryPresence.getVolunteerLeftReminderCount() > 0
+                    && voluntaryPresence.isWasVolunteerReminded();
 
             final VoluntaryPresenceVolunteerDataDto dto = VoluntaryPresenceVolunteerDataDto.builder()
                     .confirmationState( voluntaryPresence.getVolunteerReportedPresenceStateAsEnum() )
                     .canDecisionBeChanged( canDecisionBeChanged )
                     .decisionChangeDeadlineDate( canDecisionBeChanged ? voluntaryPresence.getVolunteerDecisionDate()
                             .plus( changeDecisionBuffer ) : null )
+                    .canPostponeReminder( canPostponeReminder )
                     .build();
 
             return ResponseEntity.ok( dto );
@@ -210,6 +213,8 @@ public class OfferPresenceHandler
 
             final boolean canDecisionBeChanged = canDecisionBeChanged( anyVoluntaryPresence.getInstitutionDecisionDate(),
                     changeDecisionBuffer );
+            final boolean canPostponeReminder = anyVoluntaryPresence.getInstitutionLeftReminderCount() > 0
+                    && anyVoluntaryPresence.isWasInstitutionReminded();
 
             final VoluntaryPresenceInstitutionDataDto dto = VoluntaryPresenceInstitutionDataDto.builder()
                     .wasPresenceConfirmed( !anyVoluntaryPresence.getInstitutionReportedPresenceStateAsEnum()
@@ -217,6 +222,7 @@ public class OfferPresenceHandler
                     .canDecisionBeChanged( canDecisionBeChanged )
                     .decisionChangeDeadlineDate( canDecisionBeChanged ? anyVoluntaryPresence.getInstitutionDecisionDate()
                             .plus( changeDecisionBuffer ) : null )
+                    .canPostponeReminder( canPostponeReminder )
                     .build();
 
             return ResponseEntity.ok( dto );

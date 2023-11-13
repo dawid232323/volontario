@@ -17,6 +17,8 @@ import { InstitutionDetailsComponent } from 'src/app/features/institution-detail
 import { InstitutionEditComponent } from 'src/app/features/institution-edit/institution-edit.component';
 import { InstitutionAdminGuard } from 'src/app/core/guard/institution-admin.guard';
 import { ManageInstitutionWorkersComponent } from 'src/app/features/manage-institution-workers/manage-institution-workers.component';
+import { InstitutionOfferPresenceComponent } from 'src/app/features/institution-offer-presence/institution-offer-presence.component';
+import { OfferPresenceGuard } from 'src/app/core/guard/offer-presence.guard';
 
 export const institutionRouting: Routes = [
   {
@@ -51,6 +53,17 @@ export const institutionRouting: Routes = [
         path: 'advertisement-panel',
         component: InstitutionAdvertisementPanelComponent,
         canActivate: [RouterGuard, RoleDependentGuard],
+        data: {
+          roles: [
+            UserRoleEnum.InstitutionWorker,
+            UserRoleEnum.InstitutionAdmin,
+          ],
+        },
+      },
+      {
+        path: ':institution_id/confirm-presence',
+        component: InstitutionOfferPresenceComponent,
+        canActivate: [RouterGuard, RoleDependentGuard, OfferPresenceGuard],
         data: {
           roles: [
             UserRoleEnum.InstitutionWorker,

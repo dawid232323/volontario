@@ -43,7 +43,23 @@ export class EndpointUrls {
     EndpointUrls.advertisementResource.concat('/type');
   public static readonly advertisementChangeVisibilityResource =
     EndpointUrls.advertisementResource.concat('/changeVisibility');
+  public static readonly isOfferPresenceAvailableResource =
+    EndpointUrls.advertisementResource.concat('/is-presence-available');
+  public static readonly makeInstitutionPresenceDecisionResource =
+    EndpointUrls.advertisementResource.concat('/make-decision-on-presence');
+  public static readonly postponePresenceConfirmationInstitution =
+    EndpointUrls.advertisementResource.concat(
+      '/postpone-presence-confirmation'
+    );
+  public static readonly postponePresenceConfirmationVolunteer =
+    EndpointUrls.volunteerResource.concat('/postpone-presence-confirmation');
+  public static readonly advertisementConfirmableVolunteers =
+    EndpointUrls.advertisementResource.concat('/confirmable-volunteers');
+  public static readonly institutionVoluntaryPresenceState =
+    EndpointUrls.advertisementResource.concat('/load-voluntary-presence');
   public static readonly offerApplicationResource = '/application';
+  public static readonly volunteerVoluntaryPresence =
+    EndpointUrls.offerApplicationResource.concat('/load-voluntary-presence');
   public static readonly offerApplicationSearchResource =
     EndpointUrls.offerApplicationResource.concat('/search');
   public static readonly offerApplicationSearchDetailsResource =

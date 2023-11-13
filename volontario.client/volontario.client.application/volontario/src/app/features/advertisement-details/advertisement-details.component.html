@@ -1,4 +1,6 @@
-<main class="min-h-screen max-w-screen-lg mx-auto pt-16 flex flex-col">
+<main
+  class="min-h-screen max-w-screen-lg mx-auto pt-16 flex flex-col"
+  [ngClass]="{ 'animate-pulse': isLoadingData, 'blur-lg': isLoadingData }">
   <div>
     <button
       mat-raised-button
@@ -39,7 +41,7 @@
     <div *ngTemplateOutlet="sideButtonContainer"></div>
   </div>
   <ng-template #advertisementDetailsMainPage>
-    <div class="min-h-screen w-full mx-auto">
+    <div class="min-h-screen w-full lg:basis-4/5 mx-auto">
       <mat-card class="my-8">
         <mat-card-title>
           <h1>{{ advertisementData?.offerTitle }}</h1>
@@ -191,7 +193,7 @@
   </ng-template>
   <ng-template #sideButtonContainer>
     <mat-card
-      class="w-full lg:h-[200px] lg:w-[200px] my-8 lg:mx-4"
+      class="w-full lg:basis-1/5 lg:h-[300px] my-8 lg:mx-4"
       *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer) || canManageOffer">
       <mat-card-title *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
         ><h3>Aplikuj na ogłoszenie</h3></mat-card-title
@@ -199,19 +201,34 @@
       <mat-card-content>
         <div
           *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Volunteer)"
-          class="w-full h-full"
-          [matTooltip]="applicationState"
-          [matTooltipDisabled]="canApplyForOffer">
+          class="flex flex-col space-y-4 w-full h-full">
           <button
             mat-raised-button
             class="w-full hover:bg-btnAccentHover"
             color="accent"
+            [matTooltip]="applicationState"
+            [matTooltipDisabled]="canApplyForOffer"
             [disabled]="!canApplyForOffer"
             (click)="onApplyButtonCLicked()">
             Aplikuj
           </button>
+          <button
+            *ngIf="canConfirmPresence && canChangePresenceDecision"
+            (click)="onConfirmPresenceButtonCLicked()"
+            matTooltip="Potwierdź swój udział"
+            mat-raised-button
+            color="primary"
+            class="hover:bg-btnAccentHoverPrimary">
+            {{ getVolunteerConfirmPresenceButtonLabel() }}
+          </button>
+          <span
+            *ngIf="hasVolunteerAlreadyMadePresenceDecision"
+            class="text-sm"
+            [innerHTML]="getDecisionChangeLabel()"></span>
         </div>
-        <div *ngIf="canManageOffer" class="w-full h-full">
+        <div
+          *ngIf="canManageOffer"
+          class="flex flex-col w-full h-full space-y-3">
           <button
             (click)="onEditButtonClicked()"
             mat-raised-button
@@ -219,6 +236,23 @@
             color="accent">
             Edytuj ogłoszenie
           </button>
+          <button
+            [disabled]="shouldDisableInstitutionPresence()"
+            (click)="onConfirmPresenceButtonCLicked()"
+            *ngIf="canConfirmPresence && canChangePresenceDecision"
+            mat-raised-button
+            color="primary"
+            class="hover:bg-btnAccentHoverPrimary">
+            {{ getInstitutionConfirmPresenceButtonLabel() }}
+          </button>
+          <span *ngIf="shouldDisableInstitutionPresence()"
+            >Ogłoszenie nie ma żadnych aplikacji przekazanych do dalszej
+            rekrutacji</span
+          >
+          <span
+            class="text-sm"
+            *ngIf="hasInstitutionAlreadyMadePresenceDecision"
+            [innerHTML]="getDecisionChangeLabel()"></span>
         </div>
       </mat-card-content>
     </mat-card>

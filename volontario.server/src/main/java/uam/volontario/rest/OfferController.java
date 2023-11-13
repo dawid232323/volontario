@@ -253,7 +253,7 @@ public class OfferController
      *        - Response Entity with code 200 and true/false which depends on whether presence can be confirmed.
      *        - Response Entity with code 401 when passed id does not match any existing Offer.
      */
-    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheOffer( authentication.principal, #aOfferId ) " )
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone() " )
     @GetMapping( "/is-presence-available/{offerId}" )
     public ResponseEntity< ? > isPresenceAvailable( @PathVariable( "offerId" ) final Long aOfferId )
     {

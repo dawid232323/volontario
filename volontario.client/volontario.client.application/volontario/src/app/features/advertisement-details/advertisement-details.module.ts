@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { VolunteerConfirmPresenceModule } from 'src/app/features/advertisement-details/_features/volunteer-confirm-presence/volunteer-confirm-presence.module';
 
 @NgModule({
   declarations: [AdvertisementDetailsComponent],
@@ -30,6 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatTabsModule,
     MatFormFieldModule,
     MatIconModule,
+    VolunteerConfirmPresenceModule,
   ],
   exports: [AdvertisementDetailsComponent],
 })

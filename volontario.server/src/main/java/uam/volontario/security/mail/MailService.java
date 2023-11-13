@@ -470,11 +470,9 @@ public class MailService
         content = content.replaceAll( "\\|decisionDeadline\\|", instantFormatter.format( aDecisionDeadline ) );
         content = content.replaceAll( "\\|offerName\\|", offer.getTitle() );
         content = content.replaceAll( "\\|confirmationLink\\|",
-                String.format( "%s/volunteer/%o/confirm-presence?a=%o&p=%o",
+                String.format( "%s/advertisement/%o",
                         volontarioHost,
-                        volunteer.getId(),
-                        application.getId(),
-                        aVoluntaryPresence.getId() ) );
+                        offer.getId() ) );
 
         helper.setText( content, true );
 

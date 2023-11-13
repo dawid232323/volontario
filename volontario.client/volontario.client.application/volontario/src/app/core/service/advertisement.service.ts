@@ -1,7 +1,6 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
 import {
-  AdvertisementBenefit,
   AdvertisementDto,
   AdvertisementDtoBuilder,
   AdvertisementPreview,
@@ -9,8 +8,8 @@ import {
   AdvertisementUpdateCreateDto,
 } from 'src/app/core/model/advertisement.model';
 import { EndpointUrls } from 'src/app/utils/url.util';
-import { map, Observable, Subject } from 'rxjs';
-import { HttpParams } from '@angular/common/http';
+import { catchError, map, Observable, of, Subject, throwError } from 'rxjs';
+import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from 'src/app/core/interface/httpOptions.interface';
 import { PageableModelInterface } from 'src/app/core/model/pageable.model';
 import { isNil } from 'lodash';
@@ -19,6 +18,13 @@ import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { OfferVisibilityInterface } from 'src/app/core/interface/offer-visibility.interface';
 import { Params } from '@angular/router';
 import { SecurityService } from 'src/app/core/service/security/security.service';
+import { OfferPresenceReadinessIf } from 'src/app/core/interface/offerPresence.interface';
+import {
+  InstitutionVoluntaryPresenceModel,
+  PresenceStateEnum,
+  VolunteerPresenceDto,
+  VolunteerPresenceModel,
+} from 'src/app/core/model/offer-presence.model';
 
 /**
  * Object that stores information about user filter preferences on the advertisement panel list.
@@ -120,6 +126,120 @@ export class AdvertisementService {
         visibilityIf
       )
       .pipe(map(result => AdvertisementPreview.fromPayload(result)));
+  }
+
+  public isOfferReadyToConfirmPresence(
+    offerId: number
+  ): Observable<OfferPresenceReadinessIf> {
+    return <Observable<OfferPresenceReadinessIf>>(
+      this.restService.get(
+        EndpointUrls.isOfferPresenceAvailableResource.concat(`/${offerId}`)
+      )
+    );
+  }
+
+  public getConfirmableVolunteersForOffer(offerId: number): Observable<User[]> {
+    return this.restService
+      .get(
+        EndpointUrls.advertisementConfirmableVolunteers.concat(`/${offerId}`)
+      )
+      .pipe(map(result => result.map(User.fromPayload)));
+  }
+
+  public getInstitutionVoluntaryPresenceState(
+    offerId: number
+  ): Observable<InstitutionVoluntaryPresenceModel | false> {
+    return this.restService
+      .get(EndpointUrls.institutionVoluntaryPresenceState.concat(`/${offerId}`))
+      .pipe(
+        catchError((error: HttpErrorResponse, caught) => {
+          if (error.status !== 400) {
+            return throwError(error);
+          }
+          return of(false);
+        }),
+        map(result => {
+          if (result === false) {
+            return false;
+          }
+          return InstitutionVoluntaryPresenceModel.fromPayload(result);
+        })
+      );
+  }
+
+  public determineVoluntaryPresenceForInstitution(
+    offerId: number,
+    presenceStates: VolunteerPresenceDto[]
+  ): Observable<any> {
+    return this.restService.post(
+      EndpointUrls.makeInstitutionPresenceDecisionResource.concat(
+        `/${offerId}`
+      ),
+      presenceStates
+    );
+  }
+
+  public determineVoluntaryPresenceForVolunteer(
+    volunteerId: number,
+    offerId: number,
+    presenceState: PresenceStateEnum.Confirmed | PresenceStateEnum.Denied
+  ): Observable<void> {
+    const finalUrl = EndpointUrls.volunteerResource.concat(
+      presenceState === PresenceStateEnum.Confirmed
+        ? '/confirm-presence'
+        : '/deny-presence',
+      `/${volunteerId}/${offerId}`
+    );
+    return this.restService.post(finalUrl, {});
+  }
+
+  public getVolunteerPresenceState(
+    offerId: number,
+    volunteerId: number
+  ): Observable<false | VolunteerPresenceModel> {
+    return this.restService
+      .get(
+        EndpointUrls.volunteerVoluntaryPresence.concat(
+          `/${volunteerId}/${offerId}`
+        )
+      )
+      .pipe(
+        catchError((error, caught) => {
+          if (error.status === 401 || error.status === 400) {
+            return of(false);
+          }
+          return throwError(error);
+        }),
+        map(result => {
+          if (result === false) {
+            return false;
+          }
+          return VolunteerPresenceModel.fromPayload(result);
+        })
+      );
+  }
+
+  public postponePresenceConfirmationInstitution(
+    offerId: number
+  ): Observable<void> {
+    return this.restService.post(
+      EndpointUrls.postponePresenceConfirmationInstitution.concat(
+        `/${offerId}`
+      ),
+      {}
+    );
+  }
+
+  public postponePresenceConfirmationVolunteer(
+    volunteerId: number,
+    offerId: number
+  ): Observable<void> {
+    return this.restService.post(
+      EndpointUrls.postponePresenceConfirmationVolunteer.concat(
+        `/${volunteerId}/${offerId}`
+      ),
+      {}
+    );
   }
 
   /**

@@ -20,5 +20,7 @@ public class VoluntaryPresenceInstitutionDataDto
 
     private boolean canDecisionBeChanged;
 
+    private boolean canPostponeReminder;
+
     private Instant decisionChangeDeadlineDate;
 }
