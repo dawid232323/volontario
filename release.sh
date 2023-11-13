@@ -7,6 +7,7 @@ VERSION=$1
 REGISTRY=dev.volontario.me:5000
 
 git checkout develop
+git pull origin develop
 git checkout -b "${VERSION}_prerelease"
 
 cd volontario.server
