@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volontario-db
+  labels:
+    app.kubernetes.io/component: volontario-db
+    app.kubernetes.io/name: volontario
+{{ toYaml .Values.volontarioDB.podLabels | indent 4 }}
+  annotations:
+{{ toYaml .Values.volontarioDB.podAnnotations | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: volontario-db
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: volontario-db
+        app.kubernetes.io/name: volontario
+    spec:
+      containers:
+      - name: volontario-db
+        image: {{ .Values.volontarioDB.image.repository }}:{{ .Values.volontarioDB.image.tag }}
+        ports:
+        - name: http
+          containerPort: 5432
+          protocol: TCP
+        imagePullPolicy: {{ .Values.volontarioDB.image.pullPolicy }}
+        envFrom:
+        - secretRef:
+            name: volontario-db-secret
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: volontario-db-data
+      volumes:
+      - name: volontario-db-data
+        persistentVolumeClaim:
+          claimName: volontario-db-data

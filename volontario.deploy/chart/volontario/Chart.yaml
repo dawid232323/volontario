@@ -1,0 +1,4 @@
+apiVersion: v2
+name: volontario
+description: Helm chart for Volontario application
+version: 1.0.0

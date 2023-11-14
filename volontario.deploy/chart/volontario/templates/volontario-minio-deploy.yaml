@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volontario-minio
+  labels:
+    app.kubernetes.io/component: volontario-minio
+    app.kubernetes.io/name: volontario
+{{ toYaml .Values.volontarioMinio.podLabels | indent 4 }}
+  annotations:
+{{ toYaml .Values.volontarioMinio.podAnnotations | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: volontario-minio
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: volontario-minio
+        app.kubernetes.io/name: volontario
+    spec:
+      containers:
+      - name: volontario-minio
+        image: {{ .Values.volontarioMinio.image.repository }}:{{ .Values.volontarioMinio.image.tag }}
+        command:
+        - /bin/bash
+        - -c
+        args: 
+        - minio server --console-address :9001 /data
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+        - containerPort: 9001
+          protocol: TCP
+        imagePullPolicy: {{ .Values.volontarioMinio.image.pullPolicy }}
+        envFrom:
+        - secretRef:
+            name: volontario-minio-secret
+        volumeMounts:
+        - mountPath: /data
+          name: volontario-minio-data
+      volumes:
+      - name: volontario-minio-data
+        persistentVolumeClaim:
+          claimName: volontario-minio-data

@@ -1,0 +1,92 @@
+volontarioGateway:
+  image:
+    repository: nginx
+    pullPolicy: Always
+    tag: "1.25-alpine"
+
+  ingress:
+    annotations: {}
+    host: volontario.192.168.49.2.nip.io
+
+  podAnnotations: {}
+  podLabels: {}
+
+volontarioDB:
+  image:
+    repository: postgres
+    pullPolicy: Always
+    tag: "15.4-alpine"
+  
+  persistence:
+    size: "100Mi"
+    storageClassName: "standard"
+    accessMode: "ReadWriteOnce"
+
+  podAnnotations: {}
+  podLabels: {}
+
+volontarioMinio:
+  image:
+    repository: minio/minio
+    pullPolicy: Always
+    tag: "latest"
+  
+  persistence:
+    size: "100Mi"
+    storageClassName: "standard"
+    accessMode: "ReadWriteOnce"
+
+  podAnnotations: {}
+  podLabels: {}
+
+volontarioFront:
+  image:
+    repository: dev.volontario.me:5000/volontario-front
+    pullPolicy: Always
+    tag: "latest"
+
+  podAnnotations: {}
+  podLabels: {}
+
+volontarioBack:
+  image:
+    repository: dev.volontario.me:5000/volontario-back
+    pullPolicy: Always
+    tag: "latest"
+
+  podAnnotations: {}
+  podLabels: {}
+
+env:
+  # enabling creation of demo data on start (users, institutions etc.)
+  # can be set to "false" or "true"
+  enableDemoData: "false"
+
+  # credentials for accessing the database
+  dbUsername: postgres
+  dbPassword: postgres
+
+  # credentials for accessing minio
+  minioUsername: volontario
+  minioPassword: volontario
+
+  # mailing configuration
+  mailserverUsername: volontario@example.com
+  mailserverPassword: volontario
+  mailserverHostname: smtp.example.com
+  mailserverPort: 587
+  mailserverSMTPAuth: "true"
+  mailserverTLSEnable: "true"
+
+  # email address that volontario sends mails from
+  volontarioEmailAddress: volontario@example.com
+
+  # email that receives requests for institution verification
+  volontarioModerator: moderator@example.com
+
+  # emails that receive bug reports from users
+  maintenanceEmails: "maintenance1@example.com,maintenance2@example.com"
+
+  # currently needed to be set to "true" or "false"
+  # but overall this variable is really dumb, should be removed from backend entirely
+  useHTTPS: "true"

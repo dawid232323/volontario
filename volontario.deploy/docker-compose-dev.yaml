@@ -1,7 +1,7 @@
 version: '3'
 services:
   volontario-gateway:
-    image: nginx:1.23-alpine
+    image: nginx:1.25-alpine
     restart: always
     volumes:
       - ./nginx/templates:/etc/nginx/templates
@@ -33,7 +33,7 @@ services:
       - '8080:8080'
     env_file: '.env'
   volontario-db:
-    image: postgres:15.2-alpine
+    image: postgres:15.4-alpine
     restart: always
     env_file: '.env'
     volumes:

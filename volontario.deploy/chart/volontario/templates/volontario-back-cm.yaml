@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volontario-back-cm
+  labels:
+    app.kubernetes.io/component: volontario-back
+    app.kubernetes.io/name: volontario
+data:
+  POSTGRES_HOSTNAME: volontario-db
+  MINIO_HOST_NAME: http://volontario-minio:9000
+  VOLONTARIO_DOMAIN: {{ .Values.volontarioGateway.ingress.host }}
+  MAILSERVER_HOSTNAME: {{ .Values.env.mailserverHostname }}
+  MAILSERVER_PORT: {{ .Values.env.mailserverPort | quote }}
+  MAILSERVER_SMTP_AUTH: {{ .Values.env.mailserverSMTPAuth | quote }}
+  MAILSERVER_TLS_ENABLE: {{ .Values.env.mailserverTLSEnable | quote }}
+  VOLONTARIO_EMAIL: {{ .Values.env.volontarioEmailAddress }}
+  VOLONTARIO_MODERATOR: {{ .Values.env.volontarioModerator }}
+  MAINTENANCE_EMAILS: {{ .Values.env.maintenanceEmails | quote }}
+  DEMO_DATA: {{ .Values.env.enableDemoData | quote }}
+  USE_HTTPS: {{ .Values.env.useHTTPS | quote }}

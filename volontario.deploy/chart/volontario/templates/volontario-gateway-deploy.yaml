@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volontario-gateway
+  labels:
+    app.kubernetes.io/component: volontario-gateway
+    app.kubernetes.io/name: volontario
+{{ toYaml .Values.volontarioGateway.podLabels | indent 4 }}
+  annotations:
+{{ toYaml .Values.volontarioGateway.podAnnotations | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: volontario-gateway
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: volontario-gateway
+        app.kubernetes.io/name: volontario
+    spec:
+      containers:
+      - name: volontario-gateway
+        image: {{ .Values.volontarioGateway.image.repository }}:{{ .Values.volontarioGateway.image.tag }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        imagePullPolicy: {{ .Values.volontarioGateway.image.pullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        volumeMounts:
+        - name: volontario-gateway-config
+          mountPath: /etc/nginx/templates
+      volumes:
+      - name: volontario-gateway-config
+        configMap:
+          name: volontario-gateway-cm

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volontario-front
+  labels:
+    app.kubernetes.io/component: volontario-front
+    app.kubernetes.io/name: volontario
+{{ toYaml .Values.volontarioFront.podLabels | indent 4 }}
+  annotations:
+{{ toYaml .Values.volontarioFront.podAnnotations | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: volontario-front
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: volontario-front
+        app.kubernetes.io/name: volontario
+    spec:
+      containers:
+      - name: volontario-front
+        image: {{ .Values.volontarioFront.image.repository }}:{{ .Values.volontarioFront.image.tag }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        imagePullPolicy: {{ .Values.volontarioFront.image.pullPolicy }}

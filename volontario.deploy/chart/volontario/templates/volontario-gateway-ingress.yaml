@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: volontario-gateway
+  labels:
+    app.kubernetes.io/name: volontario
+    app.kubernetes.io/component: volontario-gateway
+  annotations:
+{{ toYaml .Values.volontarioGateway.ingress.annotations | indent 4 }}
+spec:
+  rules:
+    - host: {{ .Values.volontarioGateway.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: volontario-gateway
+                port:
+                  number: 80

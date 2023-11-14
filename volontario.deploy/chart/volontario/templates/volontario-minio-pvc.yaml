@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: volontario-minio-data
+  labels:
+    app.kubernetes.io/component: volontario-minio
+    app.kubernetes.io/name: volontario
+spec:
+  accessModes:
+  - {{ .Values.volontarioMinio.persistence.accessMode }}
+  storageClassName: {{ .Values.volontarioMinio.persistence.storageClassName}}
+  resources:
+    requests:
+      storage: {{ .Values.volontarioMinio.persistence.size }}
