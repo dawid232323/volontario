@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uam.volontario.configuration.ConfigurationEntryKeySet;
 import uam.volontario.configuration.ConfigurationEntryReader;
 import uam.volontario.crud.service.ConfigurationEntryService;
@@ -76,6 +77,7 @@ public class PresenceScheduler
      * it did, then it sets default states for presences.
      */
     @SneakyThrows
+    @Transactional
     @Scheduled( cron = "${presenceSchedulerInvocation.cron}" )
     public void handlePresences()
     {

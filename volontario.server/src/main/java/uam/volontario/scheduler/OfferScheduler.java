@@ -102,7 +102,7 @@ public class OfferScheduler
         for( final Offer offer : notExpiredOffers )
         {
             if( offer.getEndDate()
-                    .isAfter( now ) )
+                    .isBefore( now ) )
             {
                 expiredOffers.add( offer );
             }
@@ -125,7 +125,7 @@ public class OfferScheduler
 
         final List< Application > applications = applicationService.findAllByOffers( aExpiredOffers );
 
-        aExpiredOffers.forEach( offer -> offer.setOfferState( expiredState ) );
+        aExpiredOffers.forEach( offer -> { offer.setOfferState( expiredState ); offer.setIsHidden( true ); } );
         applications.stream()
                 .filter( app -> app.getStateAsEnum() == ApplicationStateEnum.AWAITING )
                 .forEach( application -> application.setState( rejectedState ) );
