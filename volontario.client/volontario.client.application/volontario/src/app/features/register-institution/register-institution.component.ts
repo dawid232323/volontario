@@ -21,7 +21,7 @@ export class RegisterInstitutionComponent implements OnInit {
 
   successTitle = 'Wniosek złożony pomyślnie';
   successContent =
-    'Wniosek o rejestrację instytucji został złożony pomyślnie! Nasza modderacja rozpatrzy go w czasie do 5 dni roboczych.';
+    'Wniosek o rejestrację instytucji został złożony pomyślnie! Nasza moderacja rozpatrzy go jak najszybciej.';
   buttonText = 'Strona główna';
 
   constructor(
