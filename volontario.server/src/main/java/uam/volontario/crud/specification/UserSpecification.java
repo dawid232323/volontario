@@ -23,14 +23,14 @@ public class UserSpecification implements Specification< User > {
         final List< Predicate > conjunctionPredicates = new ArrayList<>();
         final List< Predicate > alternativePredicates = new ArrayList<>();
 
-        final Join< Role, User > rolesJoin = aRoot.join( "roles" );
+        final Path < List< Long > > roles = aRoot.get( "roles" ).get( "id" );
         final Path< String > namePath = aRoot.get( "firstName" );
         final Path< String > lastNamePath = aRoot.get( "lastName" );
         final Path< String > emailPath = aRoot.get( "contactEmailAddress" );
 
         if( this.userSearchQuery.getRoleIds() != null && !this.userSearchQuery.getRoleIds().isEmpty() )
         {
-            conjunctionPredicates.add( rolesJoin.get( "id" ).in( this.userSearchQuery.getRoleIds() ) );
+            conjunctionPredicates.add( roles.in( this.userSearchQuery.getRoleIds() ) );
         }
         if( this.userSearchQuery.getFirstName() != null )
         {
