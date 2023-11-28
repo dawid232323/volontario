@@ -6,6 +6,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { SecurityService } from 'src/app/core/service/security/security.service';
 
 @Component({
   selector: 'app-nav',
@@ -26,11 +27,15 @@ import {
 })
 export class MainPageNavComponent implements OnInit {
   public showSidebar: boolean = false;
-  constructor() {}
+  constructor(private authService: SecurityService) {}
 
   ngOnInit(): void {}
 
   public toggleMenu(): void {
     this.showSidebar = !this.showSidebar;
+  }
+
+  public get isUserLoggedIn(): boolean {
+    return this.authService.isUserLoggedIn();
   }
 }

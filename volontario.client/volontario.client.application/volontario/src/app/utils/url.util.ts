@@ -10,6 +10,8 @@ import { isNil } from 'lodash';
 import * as moment from 'moment';
 import { InstitutionWorkerRoleChangeTypeEnum } from 'src/app/core/service/institution.service';
 
+export const noNavUrls = new Set<string>(['/', '/login', '/register']);
+
 export class EndpointUrls {
   public static readonly login: string = '/login';
   public static readonly refreshToken: string = '/refresh/token';

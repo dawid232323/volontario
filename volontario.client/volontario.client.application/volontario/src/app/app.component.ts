@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { SecurityService } from './core/service/security/security.service';
 import { Subscription } from 'rxjs';
+import { noNavUrls } from 'src/app/utils/url.util';
 
 @Component({
   selector: 'app-root',
@@ -21,12 +22,14 @@ export class AppComponent implements OnInit, OnDestroy {
       })
     );
     this.router.events.subscribe(pathName => {
-      if (
-        pathName instanceof NavigationEnd &&
-        !this.authService.isUserLoggedIn()
-      ) {
-        this.showNav = false;
+      if (!(pathName instanceof NavigationStart)) {
+        return;
       }
+      if (noNavUrls.has(pathName.url) || !this.authService.isUserLoggedIn()) {
+        this.showNav = false;
+        return;
+      }
+      this.showNav = true;
     });
   }
 

@@ -25,7 +25,6 @@ export class SecurityService {
   private _logoutEvent = new Subject<void>();
 
   constructor(
-    private httpClient: HttpClient,
     private tokenService: TokenService,
     private volRestService: VolontarioRestService,
     private userService: UserService
