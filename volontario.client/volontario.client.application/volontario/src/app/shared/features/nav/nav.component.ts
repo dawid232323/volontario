@@ -74,5 +74,12 @@ export class NavComponent implements OnInit, OnDestroy {
     this.router.navigate(['user', this.loggedUser.id]);
   }
 
+  public onGoToInstitutionClicked() {
+    if (isNil(this.loggedUser?.institution)) {
+      return;
+    }
+    this.router.navigate(['institution', this.loggedUser?.institution.id]);
+  }
+
   protected readonly UserRoleEnum = UserRoleEnum;
 }

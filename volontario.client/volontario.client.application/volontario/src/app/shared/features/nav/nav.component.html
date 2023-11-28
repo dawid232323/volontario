@@ -20,9 +20,7 @@
           </div>
           <div class="hidden md:block">
             <nav aria-label="Site Nav">
-              <ul
-                *ngIf="loggedUser?.hasUserRoles([UserRoleEnum.Volunteer])"
-                class="flex items-center gap-6 text-sm navbar-list">
+              <ul class="flex items-center gap-6 text-sm navbar-list">
                 <li>
                   <a
                     class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
@@ -44,51 +42,30 @@
                     Twoje aplikacje
                   </a>
                 </li>
-              </ul>
-              <ul
-                *ngIf="
-                  loggedUser?.hasUserRoles([
-                    UserRoleEnum.InstitutionWorker,
-                    UserRoleEnum.InstitutionAdmin
-                  ])
-                "
-                class="flex items-center gap-6 text-sm navbar-list">
-                <li>
-                  <a
-                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
-                    routerLink="/home">
-                    Pulpit
-                  </a>
-                </li>
-
-                <li>
+                <li
+                  *ngIf="
+                    loggedUser?.hasUserRoles([
+                      UserRoleEnum.InstitutionWorker,
+                      UserRoleEnum.InstitutionAdmin
+                    ])
+                  ">
                   <a
                     class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
                     routerLink="/institution/advertisement-panel">
                     Ogłoszenia instytucji
                   </a>
                 </li>
-                <li>
-                  <a
-                    routerLink="/advertisement/list"
-                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
-                    Lista ogłoszeń
-                  </a>
-                </li>
-              </ul>
-              <ul
-                class="flex items-center gap-6 text-sm navbar-list"
-                *ngIf="
-                  loggedUser?.hasUserRoles([
-                    UserRoleEnum.Moderator,
-                    UserRoleEnum.Admin
-                  ])
-                ">
-                <li>
+                <li
+                  *ngIf="
+                    loggedUser?.hasUserRoles([
+                      UserRoleEnum.InstitutionWorker,
+                      UserRoleEnum.InstitutionAdmin
+                    ])
+                  ">
                   <a
                     class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
-                    routerLink="/home">
-                    Pulpit
+                    (click)="onGoToInstitutionClicked()">
+                    Twoja instytucja
                   </a>
                 </li>
                 <li *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
@@ -106,16 +83,15 @@
                     ])
                   ">
                   <a
+                    *ngIf="
+                      loggedUser?.hasUserRoles([
+                        UserRoleEnum.Moderator,
+                        UserRoleEnum.Admin
+                      ])
+                    "
                     [matMenuTriggerFor]="moderatorMenu"
                     class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
                     Moderacja
-                  </a>
-                </li>
-                <li>
-                  <a
-                    routerLink="/advertisement/list"
-                    class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition">
-                    Lista ogłoszeń
                   </a>
                 </li>
               </ul>
@@ -250,6 +226,19 @@
         <ul class="navbar-list" mat-menu-item (click)="onShowProfileCLick()">
           <i class="fa-solid fa-address-card"></i>
           Zobacz profil
+        </ul>
+        <ul
+          class="navbar-list"
+          mat-menu-item
+          (click)="onShowProfileCLick()"
+          *ngIf="
+            loggedUser?.hasUserRoles([
+              UserRoleEnum.InstitutionAdmin,
+              UserRoleEnum.InstitutionWorker
+            ])
+          ">
+          <i class="fa-solid fa-building"></i>
+          Twoja Instytucja
         </ul>
         <ul mat-menu-item (click)="onReportIssue()">
           <i class="fa-solid fa-bug"></i>
