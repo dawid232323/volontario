@@ -31,6 +31,10 @@ export class BasicUserDetailsComponent implements OnInit {
     new EventEmitter<UserExperienceDescriptionConfigProvider>();
   @Output() profilePictureChanged = new EventEmitter<File>();
 
+  public shouldAnonymizeEmail: boolean = true;
+  public shouldAnonymizeUniEmail: boolean = true;
+  public shouldAnonymizePhone: boolean = true;
+
   constructor(private router: Router, private matDialog: MatDialog) {}
 
   ngOnInit(): void {}

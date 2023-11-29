@@ -4,10 +4,17 @@ import { ApplicationDetailsRowComponent } from 'src/app/features/advertisement-d
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
+import { DirectiveModule } from 'src/app/core/directive/directive.module';
 
 @NgModule({
   declarations: [ApplicationDetailsRowComponent],
-  imports: [CommonModule, MatButtonModule, MatListModule, MatChipsModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatListModule,
+    MatChipsModule,
+    DirectiveModule,
+  ],
   exports: [ApplicationDetailsRowComponent],
 })
 export class ApplicationDetailsRowModule {}

@@ -55,9 +55,11 @@
           </div>
           <div class="flex justify-center flex-col px-2">
             <p class="font-semibold text-base !m-0">Email kontaktowy</p>
-            <p class="text-bgPrimary font-bold text-sm !m-0">
-              {{ userProfile?.contactEmailAddress }}
-            </p>
+            <p
+              class="text-bgPrimary font-bold text-sm !m-0"
+              appAnonymizable
+              [valueToAnonymize]="userProfile?.contactEmailAddress"
+              [(shouldAnonymize)]="shouldAnonymizeEmail"></p>
           </div>
         </div>
         <div
@@ -69,9 +71,11 @@
           </div>
           <div class="flex justify-center flex-col px-2">
             <p class="font-semibold text-base !m-0">Email uniwersytecki</p>
-            <p class="text-bgPrimary font-bold text-sm !m-0">
-              {{ userProfile?.domainEmailAddress }}
-            </p>
+            <p
+              class="text-bgPrimary font-bold text-sm !m-0"
+              appAnonymizable
+              [valueToAnonymize]="userProfile?.domainEmailAddress"
+              [(shouldAnonymize)]="shouldAnonymizeUniEmail"></p>
           </div>
         </div>
         <div class="flex items-center flex-row py-3">
@@ -81,9 +85,11 @@
           </div>
           <div class="flex justify-center flex-col px-2">
             <p class="font-semibold text-base !m-0">Numer telefonu</p>
-            <p class="text-bgPrimary font-bold text-sm !m-0">
-              {{ userProfile?.phoneNumber }}
-            </p>
+            <p
+              class="text-bgPrimary font-bold text-sm !m-0"
+              appAnonymizable
+              [valueToAnonymize]="userProfile?.phoneNumber"
+              [(shouldAnonymize)]="shouldAnonymizePhone"></p>
           </div>
         </div>
         <div

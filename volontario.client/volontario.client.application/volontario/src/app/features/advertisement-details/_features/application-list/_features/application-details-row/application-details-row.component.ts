@@ -27,6 +27,8 @@ export class ApplicationDetailsRowComponent implements OnInit {
   @Output() applicationDetailsChange = new EventEmitter<ApplicationActionIf>();
 
   public shouldDisableButtons = false;
+  public shouldAnonymizeEmail: boolean = true;
+  public shouldAnonymizePhone: boolean = true;
 
   constructor(private matModal: MatDialog, private router: Router) {}
 

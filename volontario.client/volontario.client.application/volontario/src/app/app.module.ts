@@ -39,6 +39,7 @@ import { UserDetailsModule } from './features/user-details/user-details.module';
 import { UserEditDataModule } from './features/user-edit-data/user-edit-data.module';
 import { VolunteerRegistrationConfirmationModule } from './features/volunteer-registration-confirmation/volunteer-registration-confirmation.module';
 import { InstitutionOfferPresenceModule } from 'src/app/features/institution-offer-presence/institution-offer-presence.module';
+import { DirectiveModule } from 'src/app/core/directive/directive.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -78,6 +79,7 @@ import { InstitutionOfferPresenceModule } from 'src/app/features/institution-off
     UserEditDataModule,
     VolunteerRegistrationConfirmationModule,
     InstitutionOfferPresenceModule,
+    DirectiveModule,
   ],
   providers: [
     {
