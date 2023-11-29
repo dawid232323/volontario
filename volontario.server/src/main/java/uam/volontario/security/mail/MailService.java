@@ -116,20 +116,11 @@ public class MailService
      * @throws UnsupportedEncodingException
      *                                          in case of wrong encoding of email.
      */
-    public void sendInstitutionVerificationMailToModerator( final Institution aInstitution )
+    public void sendInstitutionVerificationMailAndPasswordSetting( final Institution aInstitution )
         throws MessagingException, IOException
     {
-        final MimeMessage message = mailSender.createMimeMessage();
-        final MimeMessageHelper helper = new MimeMessageHelper( message );
-
-        final String mailSubject = aInstitution.getName() + " prosi o weryfikację.";
-
-        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
-        helper.setTo( volontarioModeratorAddress );
-        helper.setSubject( mailSubject );
-        helper.setText( buildMailContentForInstitutionRegistration( aInstitution ), true );
-
-        mailSender.send( message );
+        sendInstitutionVerificationMailToModerator( aInstitution );
+        sendInstitutionSetPasswordMail( aInstitution );
     }
 
     /**
@@ -152,6 +143,34 @@ public class MailService
 
         return trySendMail( () -> mailSender.send( volunteerMessage ) ) &&
                 trySendMail( () -> mailSender.send( institutionMessage ) );
+    }
+
+    /**
+     * Sends email to institution with link to change password.
+     *
+     * @param aInstitution
+     *                            institution.
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendInstitutionSetPasswordMail( Institution aInstitution )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final String mailSubject = aInstitution.getName() + ": ustaw hasło w serwisie Volontario.";
+
+        final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
+
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        helper.setTo( contactPerson.getContactEmail() );
+        helper.setSubject( mailSubject );
+        helper.setText( buildMailContentForInstitutionSetPassword( aInstitution ), true );
+
+        mailSender.send( message );
     }
 
     /**
@@ -297,7 +316,7 @@ public class MailService
         final MimeMessage message = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper( message );
 
-        final String mailSubject = "Niestety, odrzucono twoją aplikację...";
+        final String mailSubject = "Niestety, odrzucono Twoją aplikację...";
 
         helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
         helper.setTo( aVolunteerContactEmail );
@@ -644,6 +663,20 @@ public class MailService
         mailSender.send( message );
     }
 
+    private void sendInstitutionVerificationMailToModerator( Institution aInstitution ) throws MessagingException, IOException {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final String mailSubject = aInstitution.getName() + " prosi o weryfikację.";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        helper.setTo( volontarioModeratorAddress );
+        helper.setSubject( mailSubject );
+        helper.setText( buildMailContentForInstitutionRegistration(aInstitution), true );
+
+        mailSender.send( message );
+    }
+
     private String buildMailContentForInstitutionRegistration( final Institution aInstitution )
             throws IOException
     {
@@ -661,16 +694,28 @@ public class MailService
         return content;
     }
 
-    private String buildMailContentForInstitutionAccepted( Institution aInstitution )
+    private String buildMailContentForInstitutionSetPassword( Institution aInstitution )
             throws IOException
     {
         final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
         final String proceedUrl = this.volontarioHost + "/institution/register-contact-person?t=" + aInstitution.getRegistrationToken();
 
-        URL url = Resources.getResource( "emails/institutionRegistrationAccepted.html" );
+        URL url = Resources.getResource("emails/institutionRegistrationPassword.html");
 
         String content = createContentForInstitutionAcceptanceMail(aInstitution, contactPerson, url );
         content = content.replaceAll( "\\|proceedUrl\\|", proceedUrl );
+
+        return content;
+    }
+
+    private String buildMailContentForInstitutionAccepted( Institution aInstitution )
+            throws IOException
+    {
+        final InstitutionContactPerson contactPerson = aInstitution.getInstitutionContactPerson();
+
+        URL url = Resources.getResource("emails/institutionRegistrationAccepted.html");
+
+        String content = createContentForInstitutionAcceptanceMail(aInstitution, contactPerson, url );
 
         return content;
     }
@@ -768,7 +813,7 @@ public class MailService
         final String contactPersonEmail = offer.getContactPerson()
                 .getContactEmailAddress();
         final String mailSubject = String
-                .format( "Pojawiła się nowa aplikacja na twoje ogłoszenie %s", offer.getTitle() );
+                .format( "Pojawiła się nowa aplikacja na Twoje ogłoszenie %s", offer.getTitle() );
 
         final String volunteerName = aApplication.getVolunteer().getFullName();
         final String offerLink = String.format( "%s/advertisement/%d",

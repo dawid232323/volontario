@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InstitutionWorker, User } from 'src/app/core/model/user.model';
 import { UserService } from 'src/app/core/service/user.service';
-import { firstValueFrom, forkJoin, of, Subscription } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { AdvertisementService } from 'src/app/core/service/advertisement.service';
 import {
   AdvertisementAdditionalInfo,
@@ -58,6 +58,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
 
   private currentOfferId = 0;
   private subscription = new Subscription();
+  private loggedUser?: User;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -220,24 +221,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
   }
 
   private async downloadData() {
-    const loggedUser = await firstValueFrom(
-      this.userService.getCurrentUserData()
-    );
-    const loggedWorker = InstitutionWorker.fromUser(loggedUser);
-    const sources = {
-      workers: of([loggedWorker]),
-      advertisementTypes: this.advertisementService.getAllAdvertisementTypes(),
-      categories: this.interestCategoryService.getUsedValues(),
-      experiences: this.experienceService.getUsedValues(),
-      benefits: this.offerBenefitService.getUsedValues(),
-    };
-    if (loggedUser.hasUserRoles([UserRoleEnum.Moderator, UserRoleEnum.Admin])) {
-      sources.workers = this.institutionService.getAllInstitutionWorkers();
-    } else if (loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin)) {
-      sources.workers = this.institutionService.getInstitutionWorkers(
-        loggedUser.institution!.id!
-      );
-    }
+    const sources = await this.getInitialDownloadSources();
     forkJoin(sources).subscribe(
       ({
         workers: workers,
@@ -246,26 +230,53 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
         experiences: experiences,
         benefits: benefits,
       }) => {
-        this.institutionWorkers = workers.sort((a, b) =>
-          a.firstName.localeCompare(b.firstName)
+        this.institutionWorkers = workers.sort(
+          (a: InstitutionWorker, b: InstitutionWorker) =>
+            a.firstName.localeCompare(b.firstName)
         );
         this.advertisementTypes = types;
         this.interestCategories = categories;
         this.experienceLevel = experiences;
         this.advertisementBenefits = benefits;
         if (this.operationType === AdvertisementCrudOperationType.Add) {
-          this.setOfferUser(loggedUser);
+          this.setOfferUser(this.loggedUser!);
           this.isAddingAdvertisement = false;
         } else {
           this.setAdvertisementToEdit();
         }
         this.canSelectUser = this.institutionService.canManageInstitution(
-          loggedUser,
-          loggedUser.institution
+          this.loggedUser!,
+          this.loggedUser!.institution
         );
       },
       error => console.log(error)
     );
+  }
+
+  private async getInitialDownloadSources(): Promise<{
+    [sourceIdentifier: string]: Observable<any>;
+  }> {
+    this.loggedUser = await firstValueFrom(
+      this.userService.getCurrentUserData()
+    );
+    const loggedWorker = InstitutionWorker.fromUser(this.loggedUser);
+    const sources = {
+      workers: of([loggedWorker]),
+      advertisementTypes: this.advertisementService.getAllAdvertisementTypes(),
+      categories: this.interestCategoryService.getUsedValues(),
+      experiences: this.experienceService.getUsedValues(),
+      benefits: this.offerBenefitService.getUsedValues(),
+    };
+    if (
+      this.loggedUser.hasUserRoles([UserRoleEnum.Moderator, UserRoleEnum.Admin])
+    ) {
+      sources.workers = this.institutionService.getAllInstitutionWorkers();
+    } else if (this.loggedUser.hasUserRole(UserRoleEnum.InstitutionAdmin)) {
+      sources.workers = this.institutionService.getInstitutionWorkers(
+        this.loggedUser.institution!.id!
+      );
+    }
+    return sources;
   }
 
   private onFormReloadEvent() {
@@ -298,8 +309,17 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
   }
 
   public get successContentMessage(): string {
-    if (this.operationType === AdvertisementCrudOperationType.Add) {
+    if (
+      this.operationType === AdvertisementCrudOperationType.Add &&
+      this.isInstitutionVerified
+    ) {
       return 'Twoje ogłoszenie będzie widoczne dla użytkowników systemu';
+    }
+    if (
+      this.operationType === AdvertisementCrudOperationType.Add &&
+      !this.isInstitutionVerified
+    ) {
+      return 'Twoje ogłoszenie będzie widoczne dla użytkowników systemu. Do momentu weryfikacji Twojej instytucji pozostanie ono niewidoczne';
     }
     return 'Zaktualizowane dane są widoczne dla użytkowników systemu';
   }
@@ -309,6 +329,10 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
       return 'Dodaj nowe ogłoszenie';
     }
     return 'Edytuj ogłoszenie';
+  }
+
+  public get isInstitutionVerified(): boolean {
+    return this.loggedUser?.institution?.active || false;
   }
 
   protected readonly InfoCardTypeEnum = InfoCardTypeEnum;

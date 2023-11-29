@@ -70,19 +70,15 @@ export class InstitutionDetailsComponent implements OnInit {
       this.institutionService.getInstitutionDetails(this._institutionId),
       this.advertisementService.getAdvertisementPreviews(offerQueryParams),
       this.userService.getCurrentUserData(),
-    ]).subscribe(
-      ([institutionData, offers, userData]) => {
-        this._loadedInstitution = institutionData;
-        this._offers = offers.content;
-        this._loggedUser = userData;
-        this._canManageInstitution =
-          this.institutionService.canManageInstitution(
-            this._loggedUser!,
-            this._loadedInstitution!
-          );
-      },
-      () => this.router.navigate(['home'])
-    );
+    ]).subscribe(([institutionData, offers, userData]) => {
+      this._loadedInstitution = institutionData;
+      this._offers = offers.content;
+      this._loggedUser = userData;
+      this._canManageInstitution = this.institutionService.canManageInstitution(
+        this._loggedUser!,
+        this._loadedInstitution!
+      );
+    });
   }
 
   private getQueryParams(): AdvertisementFilterIf {

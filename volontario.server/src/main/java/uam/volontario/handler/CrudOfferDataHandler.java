@@ -47,6 +47,7 @@ public class CrudOfferDataHandler
     private final ApplicationService applicationService;
     private final JWTService jwtService;
     private final UserService userService;
+    private final InstitutionService institutionService;
 
     /**
      * CDI constructor.
@@ -62,7 +63,7 @@ public class CrudOfferDataHandler
                                 final BenefitService aBenefitService, final DtoService aDtoService,
                                 final OfferValidationService aOfferValidationService,
                                 final ApplicationService aApplicationService, final JWTService aJWTService,
-                                final UserService aUserService )
+                                final UserService aUserService, final InstitutionService aInstitutionService )
     {
         offerService = aOfferService;
         offerTypeService = aOfferTypeService;
@@ -72,6 +73,7 @@ public class CrudOfferDataHandler
         applicationService = aApplicationService;
         jwtService = aJWTService;
         userService = aUserService;
+        institutionService = aInstitutionService;
     }
 
     /**
@@ -169,6 +171,10 @@ public class CrudOfferDataHandler
             final ValidationResult offerValidationResult = this.offerValidationService
                     .validateEntity( newOffer );
             if ( offerValidationResult.isValidated() ) {
+                if ( !newOffer.getInstitution().isActive() )
+                {
+                    newOffer.setIsHidden( true );
+                }
                 newOffer = this.offerService.saveOrUpdate( newOffer );
                 return ResponseEntity.status( HttpStatus.CREATED )
                         .body( newOffer );
@@ -249,9 +255,14 @@ public class CrudOfferDataHandler
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aException.getMessage() );
         }
-        offerToUpdate.setIsHidden( isHidden );
-        this.offerService.saveOrUpdate( offerToUpdate );
-        return ResponseEntity.ok( this.dtoService.createBaseInfoDtoOfOffer( offerToUpdate ) );
+        if ( offerToUpdate.getInstitution().isActive() )
+        {
+            offerToUpdate.setIsHidden(isHidden);
+            this.offerService.saveOrUpdate(offerToUpdate);
+            return ResponseEntity.ok(this.dtoService.createBaseInfoDtoOfOffer(offerToUpdate));
+        }
+        return ResponseEntity.status( HttpStatus.FORBIDDEN )
+                .body( MessageGenerator.getInstitutionNotActiveMessage( offerToUpdate.getInstitution().getId() ) );
     }
 
     private Page< OfferBaseInfoDto > getProcessedOffers( final Page< Offer > aOffers )

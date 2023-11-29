@@ -131,7 +131,7 @@ export class OfferPresenceHandler implements OnDestroy {
       return 'Nie możesz już zmienić decyzji dotyczącej udziału wolontariuszy w wolontariacie';
     }
     if (!canChangePresenceDecision) {
-      return `Nie możesz już zmienić swojej decyzji dotyczącej udziału w wolontariacie. Status twojej decyzji to: <b>${volunteerPresenceState?.confirmationState}</b>`;
+      return `Nie możesz już zmienić swojej decyzji dotyczącej udziału w wolontariacie. Status Twojej decyzji to: <b>${volunteerPresenceState?.confirmationState}</b>`;
     }
     if (
       loggedUser.hasUserRoles([
@@ -142,7 +142,7 @@ export class OfferPresenceHandler implements OnDestroy {
       return `Podjąłeś(ęłaś) już decyzję dotyczącą wolontariuszy którzy wzięli udział w wydarzeniu.<br/> Możesz ją zmienić do: <b>${institutionPresenceState?.decisionChangeDeadlineDate.toLocaleDateString()}</b>`;
     }
     if (loggedUser.hasUserRole(UserRoleEnum.Volunteer)) {
-      return `Status twojej decyzji dotyczącej wzięcia udziału w wolontariacie: <b>${
+      return `Status Twojej decyzji dotyczącej wzięcia udziału w wolontariacie: <b>${
         volunteerPresenceState?.confirmationState
       }.</b><br/> Możesz ją zmienić do: ${volunteerPresenceState?.decisionChangeDeadlineDate.toLocaleDateString()}`;
     }

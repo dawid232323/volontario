@@ -106,7 +106,8 @@ export class Institution implements InstitutionInterface {
     public headquartersAddress?: string,
     public tags?: string[],
     public description?: string,
-    public localization?: string
+    public localization?: string,
+    public active?: boolean
   ) {}
 
   public static fromPayload(payload?: any): Institution {
@@ -118,7 +119,8 @@ export class Institution implements InstitutionInterface {
       payload?.headquartersAddress,
       payload?.tags,
       payload?.description,
-      payload?.localization
+      payload?.localization,
+      payload?.active
     );
   }
 }

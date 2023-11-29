@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uam.volontario.crud.service.InstitutionService;
+import uam.volontario.crud.service.OfferService;
 import uam.volontario.crud.service.RoleService;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.Institution.InstitutionDto;
@@ -18,6 +20,7 @@ import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
+import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.security.mail.MailService;
 import uam.volontario.security.util.VolontarioBase64Coder;
 import uam.volontario.validation.ValidationResult;
@@ -52,6 +55,8 @@ public class InstitutionRegistrationHandler
 
     private final UserService userService;
 
+    private final OfferService offerService;
+
     /**
      * CDI constructor.
      *
@@ -75,7 +80,8 @@ public class InstitutionRegistrationHandler
                                           final PasswordEncoder aPasswordEncoder,
                                           final UserValidationService aUserValidationService,
                                           final InstitutionValidationService aInstitutionValidationService,
-                                          final RoleService aRoleService, final UserService aUserService )
+                                          final RoleService aRoleService, final UserService aUserService,
+                                          final OfferService aOfferService )
     {
         dtoService = aDtoService;
         mailService = aMailService;
@@ -85,6 +91,7 @@ public class InstitutionRegistrationHandler
         institutionValidationService = aInstitutionValidationService;
         roleService = aRoleService;
         userService = aUserService;
+        offerService = aOfferService;
     }
 
     /**
@@ -111,7 +118,7 @@ public class InstitutionRegistrationHandler
             if( validationResult.isValidated() )
             {
                 institutionService.saveOrUpdate( institution );
-                mailService.sendInstitutionVerificationMailToModerator( institution );
+                mailService.sendInstitutionVerificationMailAndPasswordSetting( institution );
 
                 return ResponseEntity.status( HttpStatus.CREATED )
                         .body( institution );
@@ -148,6 +155,15 @@ public class InstitutionRegistrationHandler
             {
                 final Institution institution = optionalInstitution.get();
                 institution.setActive( true );
+                List<Offer> institutionOffers = institution.getOffers();
+                institutionOffers.forEach( offer -> offer.setIsHidden( false ) );
+
+                if ( !institution.getEmployees().isEmpty() )
+                {
+                    institution.setRegistrationToken( null ); // it will not be needed anymore.
+                }
+
+                offerService.saveAll( institutionOffers );
                 institutionService.saveOrUpdate( institution );
 
                 mailService.sendInstitutionAcceptedMail( institution );
@@ -175,6 +191,7 @@ public class InstitutionRegistrationHandler
      *         registration token was invalid, and if any error occurs then Response Entity with code 500 and
      *         error message.
      */
+    @Transactional
     public ResponseEntity< ? > rejectInstitution( final String aRegistrationToken )
     {
         try
@@ -185,6 +202,7 @@ public class InstitutionRegistrationHandler
             if( optionalInstitution.isPresent() )
             {
                 final Institution institution = optionalInstitution.get();
+                institution.getEmployees().stream().map( User::getId ).forEach( userService::deleteEntity );
                 institutionService.deleteEntity( institution.getId() );
 
                 mailService.sendInstitutionRejectedMail( institution );
@@ -226,11 +244,6 @@ public class InstitutionRegistrationHandler
             if( optionalInstitution.isPresent() )
             {
                 final Institution institution = optionalInstitution.get();
-                if( !institution.isActive() )
-                {
-                    return ResponseEntity.badRequest()
-                            .body( MessageGenerator.getInstitutionNotVerifiedMessage( institution ) );
-                }
 
                 final InstitutionContactPerson institutionContactPerson = institution.getInstitutionContactPerson();
 
@@ -251,8 +264,10 @@ public class InstitutionRegistrationHandler
                 if( userValidationResult.isValidated() )
                 {
                     contactPersonUser.setHashedPassword( passwordEncoder.encode( aPassword ) );
-
-                    institution.setRegistrationToken( null ); // it will not be needed anymore.
+                    if ( institution.isActive() )
+                    {
+                        institution.setRegistrationToken( null ); // it will not be needed anymore.
+                    }
                     institution.getEmployees().add( contactPersonUser );
 
                     institutionService.saveOrUpdate( institution );
@@ -286,7 +301,6 @@ public class InstitutionRegistrationHandler
      *     - Response Entity with code 201 and employee account if everything went as expected.
      *     - Response Entity with code 401 and failure reason if:
      *             - institution was not found.
-     *             - institution is not active.
      *             - dto contained data which did not pass user validation.
      *     - Response Entity with code 500 and exception message in case server-side error occurred.
      */
@@ -300,12 +314,6 @@ public class InstitutionRegistrationHandler
             if( optionalInstitution.isPresent() )
             {
                 final Institution institution = optionalInstitution.get();
-                if( !institution.isActive() )
-                {
-                    return ResponseEntity.badRequest()
-                            .body( MessageGenerator.getInstitutionNotVerifiedMessage( institution ) );
-                }
-
                 final String randomGeneratedPassword = "X" +
                         RandomStringUtils.randomNumeric( 5 ) +
                         RandomStringUtils.randomAlphabetic( 5 ) +
@@ -379,7 +387,6 @@ public class InstitutionRegistrationHandler
      *     - Response Entity with code 401 and failure reason if:
      *             - institution was not found.
      *             - employee was not found.
-     *             - institution is not active.
      *             - password chosen by user did not pass validation.
      *             - id of passed institution doesn't match id of institution resolved from employee.
      *             - one week has passed since creating employee account.
@@ -396,14 +403,6 @@ public class InstitutionRegistrationHandler
 
             if( optionalInstitution.isPresent() )
             {
-
-                final Institution institution = optionalInstitution.get();
-                if ( !institution.isActive() )
-                {
-                    return ResponseEntity.badRequest()
-                            .body( MessageGenerator.getInstitutionNotVerifiedMessage( institution ) );
-                }
-
                 final String decodedContactEmail = VolontarioBase64Coder.decode( aRegistrationToken );
                 final Optional< User > optionalEmployee = userService.tryToLoadByContactEmail(
                         decodedContactEmail );

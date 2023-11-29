@@ -55,6 +55,7 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
   private _canManageInstitution = false;
 
   public filterClearEvent = new EventEmitter<void>();
+  public isInstitutionActive = false;
 
   constructor(
     private interestCategoryService: InterestCategoryService,
@@ -129,6 +130,7 @@ export class InstitutionAdvertisementPanelComponent implements OnInit {
       this.types = types;
       this.categories = categories;
       this.loggedUser = user;
+      this.isInstitutionActive = user?.institution?.active || false;
       this._filterData = {
         institutionId: this.loggedUser!.institution!.id!,
         contactPersonId: this.loggedUser?.id,

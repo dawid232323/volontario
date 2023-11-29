@@ -23,6 +23,7 @@ import { AdvertisementPreviewActionIf } from 'src/app/features/institution-adver
 export class AdvertisementPreviewCardComponent implements OnInit {
   @Input() advertisement: AdvertisementPreview | undefined = undefined;
   @Input() shouldShowContextMenu: boolean = false;
+  @Input() canHideOffer: boolean = true;
 
   @Output() visibilityChangedEvent =
     new EventEmitter<AdvertisementPreviewActionIf>();

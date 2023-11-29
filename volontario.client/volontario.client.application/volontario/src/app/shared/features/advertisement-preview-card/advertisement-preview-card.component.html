@@ -61,7 +61,10 @@
       <mat-icon matPrefix color="accent">edit</mat-icon>
       Edytuj
     </button>
-    <button mat-menu-item (click)="onOfferVisibilityChange()">
+    <button
+      mat-menu-item
+      (click)="onOfferVisibilityChange()"
+      *ngIf="canHideOffer">
       <mat-icon *ngIf="advertisement?.isHidden" matPrefix color="primary"
         >visibility</mat-icon
       >
@@ -69,10 +72,6 @@
         >visibility_off</mat-icon
       >
       {{ advertisement?.isHidden ? 'Ustaw widoczne' : 'Ustaw niewidoczne' }}
-    </button>
-    <button mat-menu-item disabled>
-      <mat-icon disabled matPrefix color="warn">delete</mat-icon>
-      Usuń
     </button>
   </mat-menu>
 </mat-card>

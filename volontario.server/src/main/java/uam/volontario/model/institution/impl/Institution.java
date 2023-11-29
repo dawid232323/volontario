@@ -58,7 +58,8 @@ public class Institution implements VolontarioDomainElementIf
     private List< User > employees;
 
     @JsonIgnore
-    @OneToMany( mappedBy = "institution" )
+    @OneToMany( mappedBy = "institution",
+                cascade = { CascadeType.REMOVE })
     private List< Offer > offers;
 
     @JsonIgnore

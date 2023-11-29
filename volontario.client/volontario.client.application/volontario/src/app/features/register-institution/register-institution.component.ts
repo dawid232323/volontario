@@ -21,7 +21,8 @@ export class RegisterInstitutionComponent implements OnInit {
 
   successTitle = 'Wniosek złożony pomyślnie';
   successContent =
-    'Wniosek o rejestrację instytucji został złożony pomyślnie! Nasza moderacja rozpatrzy go jak najszybciej.';
+    'Wniosek o rejestrację instytucji został złożony pomyślnie! Sprawdź ' +
+    'skrzynkę mailową by ustawić hasło. Po ustawieniu hasła logowanie na założone konto będzie możliwe, natomiast do czasu weryfikacji przez naszych moderatorów wszystkie dodane przez Ciebie ogłoszenia będą niewidoczne.';
   buttonText = 'Strona główna';
 
   constructor(

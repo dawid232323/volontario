@@ -31,7 +31,7 @@
           !isLoadingData
         "
         class="py-3">
-        Najnowsze ogłoszenia dla ciebie:
+        Najnowsze ogłoszenia dla Ciebie:
       </h1>
       <span
         class="text-lg text-gray-700 py-3"
@@ -69,7 +69,7 @@
           UserRoleEnum.InstitutionWorker
         ]) && allAdvertisements.length > 0
       ">
-      <h1 class="py-3">Najnowsze ogłoszenia twojej instytucji:</h1>
+      <h1 class="py-3">Najnowsze ogłoszenia Twojej instytucji:</h1>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div *ngFor="let advertisement of allAdvertisements">
           <app-offer-card [advertisement]="advertisement"></app-offer-card>
