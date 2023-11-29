@@ -10,13 +10,17 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import uam.volontario.configuration.ConfigurationEntryKeySet;
 import uam.volontario.configuration.ConfigurationEntryReader;
-import uam.volontario.crud.service.*;
+import uam.volontario.crud.service.ConfigurationEntryService;
+import uam.volontario.crud.service.OfferService;
+import uam.volontario.crud.service.UserService;
+import uam.volontario.crud.service.VoluntaryPresenceStateService;
 import uam.volontario.dto.presence.VoluntaryPresenceInstitutionDataDto;
 import uam.volontario.dto.presence.VoluntaryPresenceVolunteerDataDto;
 import uam.volontario.dto.user.VolunteerPresenceDto;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.offer.impl.*;
 import uam.volontario.model.utils.ModelUtils;
+import uam.volontario.security.mail.MailService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -33,7 +37,7 @@ public class OfferPresenceHandler
 {
     private final OfferService offerService;
 
-    private final ApplicationService applicationService;
+    private final MailService mailService;
 
     private final ConfigurationEntryService configurationEntryService;
 
@@ -48,7 +52,7 @@ public class OfferPresenceHandler
      *
      * @param aOfferService offer service.
      *
-     * @param aApplicationService application service.
+     * @param aMailService mail service.
      *
      * @param aUserService user service.
      *
@@ -57,13 +61,13 @@ public class OfferPresenceHandler
     @Autowired
     public OfferPresenceHandler( final ConfigurationEntryService aConfigurationEntryService,
                                  final OfferService aOfferService,
-                                 final ApplicationService aApplicationService,
+                                 final MailService aMailService,
                                  final UserService aUserService,
                                  final VoluntaryPresenceStateService aVoluntaryPresenceStateService )
     {
         configurationEntryService = aConfigurationEntryService;
         offerService = aOfferService;
-        applicationService = aApplicationService;
+        mailService = aMailService;
         userService = aUserService;
         voluntaryPresenceStateService = aVoluntaryPresenceStateService;
     }
@@ -294,6 +298,12 @@ public class OfferPresenceHandler
                     }
                     case UNRESOLVED -> throw new UnsupportedOperationException(
                             "Voluntary Presence State 'Unresolved' is initial state and can not be set again." );
+                }
+
+                if( voluntaryPresence.isPresenceConfirmed() )
+                {
+                    mailService.sendMailToVolunteerAboutPossibilityToRateInstitution( voluntaryPresence );
+                    mailService.sendMailToInstitutionAboutPossibilityToRateVolunteer( voluntaryPresence );
                 }
 
                 volunteersToSave.add( volunteer );

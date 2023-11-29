@@ -16,6 +16,7 @@ import uam.volontario.model.common.UserRole;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.offer.impl.Application;
 import uam.volontario.model.offer.impl.VoluntaryPresence;
+import uam.volontario.model.offer.impl.VoluntaryRating;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.validation.annotation.Password;
 
@@ -100,6 +101,10 @@ public class User implements UserIf
     @JsonIgnore
     @OneToMany( mappedBy = "volunteer", cascade = CascadeType.PERSIST )
     private List< Application > applications;
+
+    @JsonIgnore
+    @OneToMany( mappedBy = "volunteer" )
+    private List< VoluntaryRating > voluntaryRatings;
 
     @Override
     public List< UserRole > getUserRoles()

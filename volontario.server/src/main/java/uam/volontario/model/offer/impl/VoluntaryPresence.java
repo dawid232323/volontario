@@ -94,13 +94,24 @@ public class VoluntaryPresence
     }
 
     /**
-     * We consider Volunteer to be present when his presence was confirmed by both him and Institution.
+     * We consider Volunteer to have presence resolved when his presence was resolved by both him and Institution.
      *
-     * @return true if presences were confirmed, false otherwise.
+     * @return true if presences were resolved, false otherwise.
      */
     public boolean isPresenceResolved()
     {
         return getInstitutionReportedPresenceStateAsEnum() != VoluntaryPresenceStateEnum.UNRESOLVED &&
                 getVolunteerReportedPresenceStateAsEnum() != VoluntaryPresenceStateEnum.UNRESOLVED;
+    }
+
+    /**
+     * We consider Volunteer to have presence confirmed when his presence was confirmed by both him and Institution.
+     *
+     * @return true if presences were confirmed, false otherwise.
+     */
+    public boolean isPresenceConfirmed()
+    {
+        return getInstitutionReportedPresenceStateAsEnum() == VoluntaryPresenceStateEnum.CONFIRMED &&
+                getVolunteerReportedPresenceStateAsEnum() == VoluntaryPresenceStateEnum.CONFIRMED;
     }
 }

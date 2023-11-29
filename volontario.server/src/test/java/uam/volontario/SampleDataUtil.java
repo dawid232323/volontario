@@ -25,7 +25,7 @@ public class SampleDataUtil
         InstitutionContactPerson expectedCPEntity = new InstitutionContactPerson( 0L, null, "Test", "Test", "000000000", "test@test.test");
 
         Institution institution = new Institution(0L, "Name", "Desc", "HQ", "Loc", "123",
-                Collections.emptyList(), Collections.emptyList(), expectedCPEntity, null, false, null, null);
+                Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), expectedCPEntity, null, false, null, null);
         expectedCPEntity.setInstitution( institution );
         return institution;
     }
@@ -87,7 +87,7 @@ public class SampleDataUtil
         return new Offer( 0L, "Title", "Desc", user, null,
                 getSampleInstitution(), type, now, now.plusSeconds( 1000L ), false,
                 null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
-                Collections.emptyList(), null, null, now.plusSeconds( 2000L ), "periodicDesc",
+                Collections.emptyList(), Collections.emptyList(), null, null, now.plusSeconds( 2000L ), "periodicDesc",
                 "Place", false, false);
     }
 }

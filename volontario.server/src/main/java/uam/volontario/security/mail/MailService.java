@@ -570,6 +570,80 @@ public class MailService
         mailSender.send( message );
     }
 
+    /**
+     * Sends email to Volunteer about Institution rating being possible.
+     *
+     * @param aVoluntaryPresence confirmed voluntary presence.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendMailToVolunteerAboutPossibilityToRateInstitution( final VoluntaryPresence aVoluntaryPresence )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        final User volunteer = aVoluntaryPresence.getVolunteer();
+        final Offer offer = aVoluntaryPresence.getOffer();
+        final Institution institution = offer.getInstitution();
+
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        helper.setTo( volunteer.getContactEmailAddress() );
+        helper.setSubject( String.format( "Oceń instytucję %s za ofertę %s", institution.getName(), offer.getTitle() ) );
+
+        String content = Resources.toString( Resources.getResource( "emails/institutionRatingReady.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|offerName\\|", offer.getTitle() );
+        content = content.replaceAll( "\\|institutionName\\|", institution.getName() );
+        content = content.replaceAll( "\\|ratingLink\\|", String.format( "%s/institution/%d?tab=1",
+                volontarioHost, institution.getId() ) );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
+    }
+
+    /**
+     * Sends email to Offer's contact person about Volunteer rating being possible.
+     *
+     * @param aVoluntaryPresence confirmed voluntary presence.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendMailToInstitutionAboutPossibilityToRateVolunteer( final VoluntaryPresence aVoluntaryPresence )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        final User volunteer = aVoluntaryPresence.getVolunteer();
+        final Offer offer = aVoluntaryPresence.getOffer();
+        final Institution institution = offer.getInstitution();
+
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        helper.setTo( offer.getContactPerson().getContactEmailAddress() );
+        helper.setSubject( String.format( "Oceń wolontariusza %s za ofertę %s", volunteer.getFullName(), offer.getTitle() ) );
+
+        String content = Resources.toString( Resources.getResource( "emails/volunteerRatingReady.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|volunteerFullName\\|", volunteer.getFullName() );
+        content = content.replaceAll( "\\|offerName\\|", institution.getName() );
+        content = content.replaceAll( "\\|ratingLink\\|", String.format( "%s/user/%d?tab=1",
+                volontarioHost, volunteer.getId() ) );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
+    }
+
     private String buildMailContentForInstitutionRegistration( final Institution aInstitution )
             throws IOException
     {

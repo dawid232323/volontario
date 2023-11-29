@@ -401,6 +401,12 @@ public class VolunteerHandler
                         "Voluntary Presence State 'Unresolved' is initial state and can not be set again." );
             }
 
+            if( voluntaryPresence.isPresenceConfirmed() )
+            {
+                mailService.sendMailToVolunteerAboutPossibilityToRateInstitution( voluntaryPresence );
+                mailService.sendMailToInstitutionAboutPossibilityToRateVolunteer( voluntaryPresence );
+            }
+
             userService.saveOrUpdate( volunteer );
 
             return ResponseEntity.ok()

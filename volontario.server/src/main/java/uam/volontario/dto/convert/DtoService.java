@@ -16,6 +16,8 @@ import uam.volontario.dto.Offer.OfferDetailsDto;
 import uam.volontario.dto.Offer.OfferDto;
 import uam.volontario.dto.Offer.OfferTypeDto;
 import uam.volontario.dto.VolunteerDto;
+import uam.volontario.dto.rating.InstitutionRatingDto;
+import uam.volontario.dto.rating.VolunteerRatingDto;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
 import uam.volontario.dto.user.InstitutionWorkerDto;
 import uam.volontario.dto.user.UserProfileDto;
@@ -419,6 +421,46 @@ public class DtoService
                     .institutionName( institution.getName() );
         }
         return userProfileDtoBuilder.build();
+    }
+
+    /**
+     * Maps Voluntary Rating of Volunteer to dto.
+     *
+     * @param aVoluntaryRating voluntary rating.
+     *
+     * @return volunteer rating dto.
+     */
+    public VolunteerRatingDto volunteerRatingToDto( final VoluntaryRating aVoluntaryRating )
+    {
+        return VolunteerRatingDto.builder()
+                .volunteerId( aVoluntaryRating.getVolunteer().getId() )
+                .rating( aVoluntaryRating.getVolunteerRating() )
+                .contactPersonId( aVoluntaryRating.getOffer().getContactPerson().getId() )
+                .contactPersonName( aVoluntaryRating.getOffer().getContactPerson().getFullName() )
+                .institutionName( aVoluntaryRating.getInstitution().getName() )
+                .ratingComment( aVoluntaryRating.getInstitutionRatingReason() )
+                .offerName( aVoluntaryRating.getOffer().getTitle() )
+                .offerId( aVoluntaryRating.getOffer().getId() )
+                .build();
+    }
+
+    /**
+     * Maps Voluntary Rating of Institution to dto.
+     *
+     * @param aVoluntaryRating voluntary rating.
+     *
+     * @return institution rating dto.
+     */
+    public InstitutionRatingDto institutionRatingToDto( final VoluntaryRating aVoluntaryRating )
+    {
+        return InstitutionRatingDto.builder()
+                .volunteerId( aVoluntaryRating.getVolunteer().getId() )
+                .volunteerName( aVoluntaryRating.getVolunteer().getFullName() )
+                .rating( aVoluntaryRating.getVolunteerRating() )
+                .ratingComment( aVoluntaryRating.getInstitutionRatingReason() )
+                .offerName( aVoluntaryRating.getOffer().getTitle() )
+                .offerId( aVoluntaryRating.getOffer().getId() )
+                .build();
     }
 
     private BenefitDto benefitToDto( Benefit aBenefit )

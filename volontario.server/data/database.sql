@@ -395,6 +395,44 @@ ALTER TABLE public.voluntary_presence_states_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.voluntary_presence_states_id_seq OWNED BY public.voluntary_presence_states.id;
 
 
+
+
+CREATE TABLE public.voluntary_ratings (
+                                            id bigint NOT NULL,
+                                            volunteer_id bigint,
+                                            offer_id bigint,
+                                            institution_id bigint,
+                                            volunteer_rating bigint,
+                                            institution_rating bigint,
+                                            volunteer_rating_reason character varying(255),
+                                            institution_rating_reason character varying(255)
+
+);
+
+
+ALTER TABLE public.voluntary_ratings OWNER TO postgres;
+
+--
+-- Name: experience_level_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.voluntary_ratings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.voluntary_ratings_id_seq OWNER TO postgres;
+
+--
+-- Name: experience_level_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.voluntary_ratings_id_seq OWNED BY public.voluntary_ratings.id;
+
+
 --
 -- Name: institution_contact_people; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -402,6 +440,8 @@ ALTER SEQUENCE public.voluntary_presence_states_id_seq OWNED BY public.voluntary
 ALTER TABLE ONLY public.voluntary_presence_states ALTER COLUMN id SET DEFAULT nextval('public.voluntary_presence_states_id_seq'::regclass);
 
 ALTER TABLE ONLY public.voluntary_presences ALTER COLUMN id SET DEFAULT nextval('public.voluntary_presences_id_seq'::regclass);
+
+ALTER TABLE ONLY public.voluntary_ratings ALTER COLUMN id SET DEFAULT nextval('public.voluntary_ratings_id_seq'::regclass);
 
 
 ALTER TABLE ONLY public.application_states ALTER COLUMN id SET DEFAULT nextval('public.application_states_id_seq'::regclass);
@@ -442,6 +482,9 @@ ALTER TABLE ONLY public.application_states
 
 ALTER TABLE ONLY public.applications
     ADD CONSTRAINT applications_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.voluntary_ratings
+    ADD CONSTRAINT voluntary_ratings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.benefits
     ADD CONSTRAINT benefits_pkey PRIMARY KEY (id);
@@ -517,6 +560,15 @@ ALTER TABLE ONLY public.offer_categories
 
 ALTER TABLE ONLY public.offer_benefits
     ADD CONSTRAINT offer_benefits_offer_id_fkey FOREIGN KEY (offer_id) REFERENCES public.offers(id);
+
+ALTER TABLE ONLY public.voluntary_ratings
+    ADD CONSTRAINT voluntary_ratings_volunteer_id_fkey FOREIGN KEY (volunteer_id) REFERENCES public.users(id);
+
+ALTER TABLE ONLY public.voluntary_ratings
+    ADD CONSTRAINT voluntary_ratings_institution_id_fkey FOREIGN KEY (institution_id) REFERENCES public.institution(id);
+
+ALTER TABLE ONLY public.voluntary_ratings
+    ADD CONSTRAINT voluntary_ratings_offer_id_fkey FOREIGN KEY (offer_id) REFERENCES public.offers(id);
 
 ALTER TABLE ONLY public.volunteer_interests
     ADD CONSTRAINT volunteer_interests_volunteer_data_id_fkey FOREIGN KEY (volunteer_data_id) REFERENCES public.volunteer_data(id);

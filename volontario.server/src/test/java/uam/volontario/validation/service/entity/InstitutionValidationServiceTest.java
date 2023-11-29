@@ -46,7 +46,7 @@ public class InstitutionValidationServiceTest
                 "Test", "000000000", "test@test.test");
 
         Institution institution = new Institution(0L, "Name", "Desc", "HQ", "Loc",
-                "1234567891", Collections.emptyList(), Collections.emptyList(), contactPerson, null,
+                "1234567891", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), contactPerson, null,
                 true, null, null );
         contactPerson.setInstitution( institution );
 
@@ -66,7 +66,7 @@ public class InstitutionValidationServiceTest
                 "Test", "000000000", "test@test.test");
 
         Institution institution = new Institution(0L, "Name", "Desc", "HQ", "Loc",
-                null, Collections.emptyList(), Collections.emptyList(), contactPerson, null,
+                null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), contactPerson, null,
                 true, null, null );
         contactPerson.setInstitution( institution );
 
@@ -87,7 +87,7 @@ public class InstitutionValidationServiceTest
         String krs = "1234567891";
 
         Institution institution = new Institution(1L, "Name2", "Desc2", "HQ2", "Loc2",
-                "1234567891", Collections.emptyList(), Collections.emptyList(), expectedCPEntity, null,
+                "1234567891", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), expectedCPEntity, null,
                 true, null, null );
         expectedCPEntity.setInstitution( institution );
 
@@ -114,7 +114,7 @@ public class InstitutionValidationServiceTest
                 "Test", "000000000", "test@test.test");
 
         Institution institution = new Institution(0L, "Name", "Desc", "HQ", "Loc",
-                "1234567891", Collections.emptyList(), Collections.emptyList(), contactPerson, null,
+                "1234567891", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), contactPerson, null,
                 true, null, null );
         contactPerson.setInstitution( institution );
 

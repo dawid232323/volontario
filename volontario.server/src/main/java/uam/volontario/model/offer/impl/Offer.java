@@ -113,6 +113,10 @@ public class Offer implements OfferIf
     @OneToMany( mappedBy = "offer", cascade = CascadeType.PERSIST )
     private List< VoluntaryPresence > voluntaryPresences;
 
+    @JsonIgnore
+    @OneToMany( mappedBy = "volunteer" )
+    private List< VoluntaryRating > voluntaryRatings;
+
     @Column
     private Instant expirationDate;
 

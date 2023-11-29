@@ -425,7 +425,9 @@ public class InstitutionRegistrationHandler
 
                     if( employeeValidationResult.isValidated() )
                     {
+
                         employee.setHashedPassword( passwordEncoder.encode( aPassword ) );
+
                         employee.setVerified( true );
 
                         userService.saveOrUpdate( employee );

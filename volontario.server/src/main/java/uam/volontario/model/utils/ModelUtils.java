@@ -8,6 +8,7 @@ import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.configuration.ConfigurationEntry;
+import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.offer.impl.*;
 import uam.volontario.model.volunteer.impl.ExperienceLevel;
 
@@ -156,6 +157,38 @@ public class ModelUtils
     {
         return aOfferLookupFunction.apply( aOfferId )
                 .orElseThrow( () -> new VolontarioEntityNotFoundException( Application.class, aOfferId ) );
+    }
+
+    /**
+     * Resolves Institution from id.
+     *
+     * @param aInstitutionId id of Institution.
+     *
+     * @param aInstitutionService Institution service.
+     *
+     * @return Institution of given id if it exists.
+     *
+     */
+    public Institution resolveInstitution( final Long aInstitutionId, final InstitutionService aInstitutionService )
+    {
+        return resolveInstitution( aInstitutionId, aInstitutionService::tryLoadEntity );
+    }
+
+    /**
+     * Resolves Institution from id.
+     *
+     * @param aInstitutionId id of Institution.
+     *
+     * @param aInstitutionLookupFunction function to retrieve Institution instance from database.
+     *
+     * @return Institution of given id if it exists.
+     *
+     */
+    public Institution resolveInstitution( final Long aInstitutionId,
+                                           final Function< Long, Optional< Institution > > aInstitutionLookupFunction )
+    {
+        return aInstitutionLookupFunction.apply( aInstitutionId )
+                .orElseThrow( () -> new VolontarioEntityNotFoundException( Application.class, aInstitutionId ) );
     }
 
     /**

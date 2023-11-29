@@ -12,6 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.VolontarioDomainElementIf;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.offer.impl.Offer;
+import uam.volontario.model.offer.impl.VoluntaryRating;
 
 import java.util.List;
 
@@ -59,6 +60,10 @@ public class Institution implements VolontarioDomainElementIf
     @JsonIgnore
     @OneToMany( mappedBy = "institution" )
     private List< Offer > offers;
+
+    @JsonIgnore
+    @OneToMany( mappedBy = "institution" )
+    private List< VoluntaryRating > voluntaryRatings;
 
     @JsonManagedReference
     @OneToOne( cascade = { CascadeType.PERSIST, CascadeType.REMOVE } )
