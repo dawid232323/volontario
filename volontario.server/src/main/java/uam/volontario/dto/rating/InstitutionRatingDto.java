@@ -19,7 +19,7 @@ public class InstitutionRatingDto
 
     private String volunteerName;
 
-    private int rating;
+    private Integer rating;
 
     private String ratingComment;
 }

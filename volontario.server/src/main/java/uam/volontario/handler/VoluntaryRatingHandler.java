@@ -393,13 +393,16 @@ public class VoluntaryRatingHandler
             return ResponseEntity.ok()
                     .body( InstitutionRatingDataDto.builder()
                             .averageRating( null )
-                            .institutionRatings( Collections.emptyList() ) );
+                            .institutionRatings( Collections.emptyList() )
+                            .build() );
         }
 
         return ResponseEntity.ok()
                 .body( InstitutionRatingDataDto.builder()
                         .averageRating( aRatingsSum / ((double)aRatingsQuantity) )
-                        .institutionRatings( aInstitutionRatingDtos ) );
+                        .institutionRatings( aInstitutionRatingDtos )
+                        .build()
+                );
     }
 
     private ResponseEntity< ? > createVolunteerRatingDto( final double aRatingsSum, final int aRatingsQuantity,
@@ -409,13 +412,15 @@ public class VoluntaryRatingHandler
         {
             return ResponseEntity.ok()
                     .body( VolunteerRatingDataDto.builder()
-                            .averageRating( null )
-                            .volunteerRatings( Collections.emptyList() ) );
+                            .averageRating( 0.0 )
+                            .volunteerRatings( Collections.emptyList() )
+                            .build()
+                    );
         }
 
         return ResponseEntity.ok()
                 .body( VolunteerRatingDataDto.builder()
                         .averageRating( aRatingsSum / ((double)aRatingsQuantity) )
-                        .volunteerRatings( aVolunteerRatingDtos ) );
+                        .volunteerRatings( aVolunteerRatingDtos ).build() );
     }
 }

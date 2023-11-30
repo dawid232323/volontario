@@ -109,6 +109,7 @@ export class EndpointUrls {
     EndpointUrls.benefitResource.concat('/revert-delete');
   public static readonly epxLevelRevertDelete =
     EndpointUrls.experienceLevelResource.concat('/revert-delete');
+  public static readonly evaluationResource = '/rating';
 
   public static readonly unauthorizedUrls = new Set<string>([
     EndpointUrls.institutionRegister,

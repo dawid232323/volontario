@@ -1,6 +1,9 @@
 <main class="flex flex-col w-full items-center min-h-screen bg-gray-100">
   <div class="flex flex-col justify-center lg:px-0 px-3 w-full lg:w-3/4 my-6">
-    <mat-tab-group color="accent">
+    <mat-tab-group
+      color="accent"
+      (selectedIndexChange)="onSelectTabIndexChange($event)"
+      #userTabs>
       <mat-tab label="Podstawowe dane">
         <app-basic-user-details
           (interestsChanged)="onUserInterestsChange($event)"
@@ -15,6 +18,15 @@
           [canEditAdditionalVolunteerInfo]="
             canEditAdditionalVolunteerInfo()
           "></app-basic-user-details>
+      </mat-tab>
+      <mat-tab
+        *ngIf="userProfile?.hasUserRole(UserRoleEnum.Volunteer)"
+        label="Oceny wolontariusza">
+        <app-evaluation
+          (evaluationPerformed)="onEvaluationPerformed($event)"
+          [canPerformEvaluation]="offersToEvaluate?.canEvaluateUser || false"
+          [availableOffers]="offersToEvaluate?.offersToEvaluate || []"
+          [evaluations]="evaluations"></app-evaluation>
       </mat-tab>
     </mat-tab-group>
   </div>

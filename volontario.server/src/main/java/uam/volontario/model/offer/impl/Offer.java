@@ -114,7 +114,7 @@ public class Offer implements OfferIf
     private List< VoluntaryPresence > voluntaryPresences;
 
     @JsonIgnore
-    @OneToMany( mappedBy = "volunteer" )
+    @OneToMany( mappedBy = "offer" )
     private List< VoluntaryRating > voluntaryRatings;
 
     @Column

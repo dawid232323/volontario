@@ -10,14 +10,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import uam.volontario.configuration.ConfigurationEntryKeySet;
 import uam.volontario.configuration.ConfigurationEntryReader;
-import uam.volontario.crud.service.ConfigurationEntryService;
-import uam.volontario.crud.service.OfferService;
-import uam.volontario.crud.service.UserService;
-import uam.volontario.crud.service.VoluntaryPresenceStateService;
+import uam.volontario.crud.service.*;
 import uam.volontario.dto.presence.VoluntaryPresenceInstitutionDataDto;
 import uam.volontario.dto.presence.VoluntaryPresenceVolunteerDataDto;
 import uam.volontario.dto.user.VolunteerPresenceDto;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.offer.impl.*;
 import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.security.mail.MailService;
@@ -44,6 +42,7 @@ public class OfferPresenceHandler
     private final UserService userService;
 
     private final VoluntaryPresenceStateService voluntaryPresenceStateService;
+    private final VoluntaryRatingService voluntaryRatingService;
 
     /**
      * CDI constructor.
@@ -63,13 +62,15 @@ public class OfferPresenceHandler
                                  final OfferService aOfferService,
                                  final MailService aMailService,
                                  final UserService aUserService,
-                                 final VoluntaryPresenceStateService aVoluntaryPresenceStateService )
+                                 final VoluntaryPresenceStateService aVoluntaryPresenceStateService,
+                                 final VoluntaryRatingService aVoluntaryRatingService )
     {
         configurationEntryService = aConfigurationEntryService;
         offerService = aOfferService;
         mailService = aMailService;
         userService = aUserService;
         voluntaryPresenceStateService = aVoluntaryPresenceStateService;
+        voluntaryRatingService = aVoluntaryRatingService;
     }
 
     /**
@@ -302,6 +303,7 @@ public class OfferPresenceHandler
 
                 if( voluntaryPresence.isPresenceConfirmed() )
                 {
+                    createOfferRating( voluntaryPresence.getOffer().getInstitution(), voluntaryPresence.getOffer(), volunteer );
                     mailService.sendMailToVolunteerAboutPossibilityToRateInstitution( voluntaryPresence );
                     mailService.sendMailToInstitutionAboutPossibilityToRateVolunteer( voluntaryPresence );
                 }
@@ -419,5 +421,15 @@ public class OfferPresenceHandler
         return aPresenceState.equals( VoluntaryPresenceStateEnum.UNRESOLVED )
                 || canDecisionBeChanged( aDecisionDate,
                 aChangeDecisionBuffer );
+    }
+
+    private void createOfferRating( final Institution aInstitution, final Offer aOffer, final User aVolunteer )
+    {
+        final VoluntaryRating voluntaryRating = VoluntaryRating.builder()
+                .institution( aInstitution )
+                .volunteer( aVolunteer )
+                .offer( aOffer )
+                .build();
+        this.voluntaryRatingService.saveOrUpdate( voluntaryRating );
     }
 }

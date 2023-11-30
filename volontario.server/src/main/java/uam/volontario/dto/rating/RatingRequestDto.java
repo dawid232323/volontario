@@ -15,7 +15,7 @@ public class RatingRequestDto
 
     private Long offerId;
 
-    private int rating;
+    private Integer rating;
 
     private String ratingReason;
 }

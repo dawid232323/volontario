@@ -438,7 +438,7 @@ public class DtoService
                 .contactPersonId( aVoluntaryRating.getOffer().getContactPerson().getId() )
                 .contactPersonName( aVoluntaryRating.getOffer().getContactPerson().getFullName() )
                 .institutionName( aVoluntaryRating.getInstitution().getName() )
-                .ratingComment( aVoluntaryRating.getInstitutionRatingReason() )
+                .ratingComment( aVoluntaryRating.getVolunteerRatingReason() )
                 .offerName( aVoluntaryRating.getOffer().getTitle() )
                 .offerId( aVoluntaryRating.getOffer().getId() )
                 .build();
@@ -456,7 +456,7 @@ public class DtoService
         return InstitutionRatingDto.builder()
                 .volunteerId( aVoluntaryRating.getVolunteer().getId() )
                 .volunteerName( aVoluntaryRating.getVolunteer().getFullName() )
-                .rating( aVoluntaryRating.getVolunteerRating() )
+                .rating( aVoluntaryRating.getInstitutionRating() )
                 .ratingComment( aVoluntaryRating.getInstitutionRatingReason() )
                 .offerName( aVoluntaryRating.getOffer().getTitle() )
                 .offerId( aVoluntaryRating.getOffer().getId() )

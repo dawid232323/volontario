@@ -1,8 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UserService } from 'src/app/core/service/user.service';
 import { User, UserProfile } from 'src/app/core/model/user.model';
-import { ActivatedRoute, Params } from '@angular/router';
-import { forkJoin, from, Observable, Subscription } from 'rxjs';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import {
+  firstValueFrom,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subscription,
+} from 'rxjs';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import {
   UserExperienceDescriptionConfigProvider,
@@ -12,6 +19,20 @@ import {
 import { isNil } from 'lodash';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
+import {
+  EvaluationDto,
+  OffersToEvaluateIf,
+  UserEvaluation,
+} from 'src/app/core/model/evaluation.model';
+import { MatTabGroup } from '@angular/material/tabs';
+import { updateActiveUrl } from 'src/app/utils/url.util';
+import { EvaluationService } from 'src/app/core/service/evaluation.service';
+import { EvaluationModalData } from 'src/app/shared/features/evaluation-modal/evaluation-modal.component';
+
+enum SelectedTabIndex {
+  BasicData,
+  Evaluation,
+}
 
 @Component({
   selector: 'app-user-details',
@@ -19,6 +40,8 @@ import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
   styleUrls: ['./user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild('userTabs', { static: false }) private userTabs!: MatTabGroup;
+
   private _userProfile?: UserProfile;
   private _loggedUser?: User;
   private _userId: number;
@@ -26,11 +49,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private _isLoadingData = true;
   public _userProfilePicture?: string;
+  private _evaluations?: UserEvaluation;
+  private _offersToEvaluate?: OffersToEvaluateIf;
 
   constructor(
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
-    private errorDialogService: ErrorDialogService
+    private errorDialogService: ErrorDialogService,
+    private router: Router,
+    private evaluationService: EvaluationService
   ) {
     this._userId = +this.activatedRoute.snapshot.params['user_id'];
   }
@@ -136,6 +163,30 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  public onEvaluationPerformed($event: EvaluationModalData) {
+    this._isLoadingData = true;
+    const requestBody: EvaluationDto = {
+      volunteerId: this._userId,
+      offerId: $event.selectedOfferId!,
+      rating: $event.evaluationValue!,
+      ratingReason: $event.comment,
+    };
+    this.evaluationService
+      .rateVolunteer(this._userId, requestBody)
+      .subscribe(async () => {
+        const result = await firstValueFrom(
+          this.resolveUserEvaluation(this._loggedUser!)
+        );
+        this._offersToEvaluate = result.canEvaluate;
+        this._evaluations = result.evaluation;
+        this._isLoadingData = false;
+      });
+  }
+
+  public onSelectTabIndexChange($event: number) {
+    updateActiveUrl(this.router, this.activatedRoute, { tab: $event }, 'merge');
+  }
+
   private makeSubscriptions() {
     this.subscriptions.add(
       this.activatedRoute.params.subscribe(this.onRouteParamsChange.bind(this))
@@ -153,13 +204,42 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.userService.getUserProfileDetails(this._userId),
       this.userService.getCurrentUserData(),
       from(this.userService.downloadUserProfilePicture(this._userId)),
-    ]).subscribe(([userProfileData, loggedUser, profilePicture]) => {
+    ]).subscribe(async ([userProfileData, loggedUser, profilePicture]) => {
       this._userProfile = userProfileData;
       this._loggedUser = loggedUser;
       if (!isNil(profilePicture)) {
         this._userProfilePicture = <string>profilePicture;
       }
+      if (userProfileData.hasUserRole(UserRoleEnum.Volunteer)) {
+        const userRolesResolve = await firstValueFrom(
+          this.resolveUserEvaluation(loggedUser)
+        );
+        this._offersToEvaluate = userRolesResolve.canEvaluate;
+        this._evaluations = userRolesResolve.evaluation;
+      }
+      this.determineSelectedTabIndex();
       this._isLoadingData = false;
+    });
+  }
+
+  private resolveUserEvaluation(loggedUser: User) {
+    let canEvaluate$: Observable<OffersToEvaluateIf>;
+    if (
+      loggedUser.hasUserRoles([
+        UserRoleEnum.InstitutionAdmin,
+        UserRoleEnum.InstitutionWorker,
+      ])
+    ) {
+      canEvaluate$ = this.evaluationService.getInstitutionOffersToRateVolunteer(
+        loggedUser.institution!.id!,
+        this._userId
+      );
+    } else {
+      canEvaluate$ = of({ canEvaluateUser: false, offersToEvaluate: [] });
+    }
+    return forkJoin({
+      evaluation: this.evaluationService.getUserEvaluation(this._userId),
+      canEvaluate: canEvaluate$,
     });
   }
 
@@ -170,4 +250,25 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ) {
     updateCallback(volunteerId, updateValue).subscribe();
   }
+
+  private determineSelectedTabIndex() {
+    const queryParamTabIndex = +this.activatedRoute.snapshot.queryParams['tab'];
+    if (isNil(queryParamTabIndex) || isNaN(queryParamTabIndex)) {
+      return;
+    }
+    if (Object.values(SelectedTabIndex).indexOf(queryParamTabIndex) === -1) {
+      return;
+    }
+    this.userTabs.selectedIndex = queryParamTabIndex;
+  }
+
+  public get evaluations(): UserEvaluation {
+    return this._evaluations!;
+  }
+
+  public get offersToEvaluate(): OffersToEvaluateIf | undefined {
+    return this._offersToEvaluate;
+  }
+
+  protected readonly UserRoleEnum = UserRoleEnum;
 }

@@ -8,6 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { OfferCardModule } from 'src/app/shared/features/offer-card/offer-card.module';
+import { MatTabsModule } from '@angular/material/tabs';
+import { UserEvaluationModule } from 'src/app/shared/features/evaluation/user-evaluation.module';
 
 @NgModule({
   declarations: [InstitutionDetailsComponent],
@@ -20,6 +22,8 @@ import { OfferCardModule } from 'src/app/shared/features/offer-card/offer-card.m
     MatInputModule,
     MatChipsModule,
     OfferCardModule,
+    MatTabsModule,
+    UserEvaluationModule,
   ],
   exports: [InstitutionDetailsComponent],
 })

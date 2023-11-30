@@ -111,7 +111,7 @@ public class CrudOfferDataHandler
         }
         catch ( Exception aE )
         {
-            LOGGER.error( "Error on loading offers: {}", aE.getMessage() );
+            LOGGER.error( "Error on loading offers", aE);
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }
@@ -231,7 +231,7 @@ public class CrudOfferDataHandler
         }
         catch ( Exception aE )
         {
-            LOGGER.error( "Error on loading offer types: {}", aE.getMessage() );
+            LOGGER.error( "Error on loading offer types", aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }

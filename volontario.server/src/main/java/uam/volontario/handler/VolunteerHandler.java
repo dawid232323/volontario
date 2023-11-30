@@ -16,9 +16,11 @@ import uam.volontario.dto.VolunteerPatchInfoDto;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.model.offer.impl.VoluntaryPresence;
 import uam.volontario.model.offer.impl.VoluntaryPresenceStateEnum;
+import uam.volontario.model.offer.impl.VoluntaryRating;
 import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.rest.VolunteerController;
@@ -60,6 +62,7 @@ public class VolunteerHandler
     private final ConfigurationEntryService configurationEntryService;
 
     private final OfferService offerService;
+    private final VoluntaryRatingService voluntaryRatingService;
 
     /**
      * CDI constructor.
@@ -92,7 +95,8 @@ public class VolunteerHandler
                              final MailService aMailService,
                              final VoluntaryPresenceStateService aVoluntaryPresenceStateService,
                              final ConfigurationEntryService aConfigurationEntryService,
-                             final OfferService aOfferService )
+                             final OfferService aOfferService,
+                             final VoluntaryRatingService aVoluntaryRatingService )
     {
         dtoService = aDtoService;
         userService = aUserService;
@@ -104,6 +108,7 @@ public class VolunteerHandler
         voluntaryPresenceStateService = aVoluntaryPresenceStateService;
         configurationEntryService = aConfigurationEntryService;
         offerService = aOfferService;
+        voluntaryRatingService = aVoluntaryRatingService;
     }
 
     /**
@@ -403,6 +408,7 @@ public class VolunteerHandler
 
             if( voluntaryPresence.isPresenceConfirmed() )
             {
+                createOfferRating( voluntaryPresence.getOffer().getInstitution(), voluntaryPresence.getOffer(), volunteer );
                 mailService.sendMailToVolunteerAboutPossibilityToRateInstitution( voluntaryPresence );
                 mailService.sendMailToInstitutionAboutPossibilityToRateVolunteer( voluntaryPresence );
             }
@@ -494,5 +500,15 @@ public class VolunteerHandler
         return aPresenceState.equals( VoluntaryPresenceStateEnum.UNRESOLVED )
                 || canDecisionBeChanged( aDecisionDate,
                 aChangeDecisionBuffer );
+    }
+
+    private void createOfferRating( final Institution aInstitution, final Offer aOffer, final User aVolunteer )
+    {
+        final VoluntaryRating voluntaryRating = VoluntaryRating.builder()
+                .institution( aInstitution )
+                .volunteer( aVolunteer )
+                .offer( aOffer )
+                .build();
+        this.voluntaryRatingService.saveOrUpdate( voluntaryRating );
     }
 }

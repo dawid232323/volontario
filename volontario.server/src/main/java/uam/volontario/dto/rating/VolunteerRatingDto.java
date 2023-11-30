@@ -23,7 +23,7 @@ public class VolunteerRatingDto
 
     private String contactPersonName;
 
-    private int rating;
+    private Integer rating;
 
     private String ratingComment;
 }
