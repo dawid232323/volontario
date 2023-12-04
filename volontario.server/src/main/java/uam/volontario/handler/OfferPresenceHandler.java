@@ -425,11 +425,14 @@ public class OfferPresenceHandler
 
     private void createOfferRating( final Institution aInstitution, final Offer aOffer, final User aVolunteer )
     {
-        final VoluntaryRating voluntaryRating = VoluntaryRating.builder()
-                .institution( aInstitution )
-                .volunteer( aVolunteer )
-                .offer( aOffer )
-                .build();
-        this.voluntaryRatingService.saveOrUpdate( voluntaryRating );
+        if( voluntaryRatingService.findByOfferAndVolunteer( aOffer, aVolunteer ).isEmpty() )
+        {
+            final VoluntaryRating voluntaryRating = VoluntaryRating.builder()
+                    .institution( aInstitution )
+                    .volunteer( aVolunteer )
+                    .offer( aOffer )
+                    .build();
+            this.voluntaryRatingService.saveOrUpdate( voluntaryRating );
+        }
     }
 }
