@@ -20,6 +20,8 @@ public enum OfferStateEnum
 
     EXPIRED( "Wygasłe" ),
 
+    EXPIRING( "Wygasające" ),
+
     CLOSED( "Zamknięte" );
 
     private final String translatedState;
@@ -39,8 +41,9 @@ public enum OfferStateEnum
                     case "W trakcie weryfikacji" -> UNDER_VERIFICATION;
                     case "Odrzucone" -> REJECTED;
                     case "Opublikowane" -> PUBLISHED;
-                    case "Zamknięte" -> CLOSED;
+                    case "Wygasające" -> EXPIRING;
                     case "Wygasłe" -> EXPIRED;
+                    case "Zamknięte" -> CLOSED;
                     default -> throw new IllegalArgumentException( aOfferState.getState() + " is not a defined offer state in the system." );
                 };
     }
@@ -61,6 +64,7 @@ public enum OfferStateEnum
             case UNDER_VERIFICATION -> "W trakcie weryfikacji";
             case REJECTED -> "Odrzucone";
             case PUBLISHED -> "Opublikowane";
+            case EXPIRING -> "Wygasające";
             case EXPIRED -> "Wygasłe";
             case CLOSED -> "Zamknięte";
         };

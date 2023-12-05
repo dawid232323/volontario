@@ -21,9 +21,10 @@ VALUES  (1, 'Nowe'),
         (3, 'Odrzucone'),
         (4, 'Opublikowane'),
         (5, 'Zamknięte'),
-        (6, 'Wygasłe');
+        (6, 'Wygasłe'),
+        (7, 'Wygasające');
 
-SELECT setval('offer_states_id_seq', 7, true);
+SELECT setval('offer_states_id_seq', 8, true);
 
 INSERT INTO public.experience_level
 VALUES  (1, 'Początkujący', 'Początkujący', 10, true),

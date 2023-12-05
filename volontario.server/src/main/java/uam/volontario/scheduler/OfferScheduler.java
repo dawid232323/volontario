@@ -101,19 +101,22 @@ public class OfferScheduler
 
         for( final Offer offer : notExpiredOffers )
         {
-            if( offer.getEndDate()
+            if( offer.getExpirationDate()
                     .isBefore( now ) )
             {
                 expiredOffers.add( offer );
             }
-            else if( Duration.between( now, offer.getEndDate() )
-                    .compareTo( expirationBuffer ) < 0 )
+            else if( Duration.between( now, offer.getExpirationDate() )
+                    .compareTo( expirationBuffer ) < 0 && !offer.getOfferStateAsEnum().equals( OfferStateEnum.EXPIRING ) )
             {
+                offer.setOfferState( ModelUtils.resolveOfferState( OfferStateEnum.EXPIRING, offerStateService ) );
                 expiringOffers.add( offer );
             }
         }
 
         mailService.sendEmailsAboutOffersExpiringSoon( expiringOffers );
+        offerService.saveAll( expiringOffers );
+
         handleExpiredOffers( expiredOffers );
     }
 

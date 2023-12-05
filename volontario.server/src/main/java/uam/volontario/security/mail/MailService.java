@@ -362,7 +362,7 @@ public class MailService
             String content = Resources.toString( Resources.getResource( "emails/offerExpiring.html" ),
                     StandardCharsets.UTF_8 );
             content = content.replaceAll( "\\|offerName\\|", offer.getTitle() );
-            content = content.replaceAll( "\\|expirationDate\\|", instantFormatter.format( offer.getStartDate() ) );
+            content = content.replaceAll( "\\|expirationDate\\|", instantFormatter.format( offer.getExpirationDate() ) );
             content = content.replaceAll( "\\|offerEditUrl\\|",
                     this.volontarioHost.concat( "/advertisement/edit/ )" + offer.getId() ) );
 

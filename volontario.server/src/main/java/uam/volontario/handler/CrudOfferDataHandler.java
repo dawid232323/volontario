@@ -18,6 +18,8 @@ import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.model.offer.impl.OfferSearchQuery;
+import uam.volontario.model.offer.impl.OfferStateEnum;
+import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.security.jwt.JWTService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.OfferValidationService;
@@ -47,6 +49,7 @@ public class CrudOfferDataHandler
     private final ApplicationService applicationService;
     private final JWTService jwtService;
     private final UserService userService;
+    private final OfferStateService offerStateService;
     private final InstitutionService institutionService;
 
     /**
@@ -63,7 +66,8 @@ public class CrudOfferDataHandler
                                 final BenefitService aBenefitService, final DtoService aDtoService,
                                 final OfferValidationService aOfferValidationService,
                                 final ApplicationService aApplicationService, final JWTService aJWTService,
-                                final UserService aUserService, final InstitutionService aInstitutionService )
+                                final UserService aUserService, final OfferStateService aOfferStateService,
+                                final InstitutionService aInstitutionService )
     {
         offerService = aOfferService;
         offerTypeService = aOfferTypeService;
@@ -73,6 +77,7 @@ public class CrudOfferDataHandler
         applicationService = aApplicationService;
         jwtService = aJWTService;
         userService = aUserService;
+        offerStateService = aOfferStateService;
         institutionService = aInstitutionService;
     }
 
@@ -199,10 +204,15 @@ public class CrudOfferDataHandler
         try
         {
             Offer offer = this.dtoService.createOfferFromDto( aOfferDto );
+            Offer oldOffer = offerService.loadEntity( aId );
+            if ( shouldUpdateOfferState( oldOffer, offer ) )
+            {
+                offer.setOfferState( ModelUtils.resolveOfferState( OfferStateEnum.NEW, offerStateService ) );
+            }
             final ValidationResult offerValidationResult = this.offerValidationService
                     .validateEntity( offer );
             if ( offerValidationResult.isValidated() ) {
-                offer.setId( offerService.loadEntity( aId ).getId() ) ; //To check if entity being updated exists
+                offer.setId( oldOffer.getId() ) ; //To check if entity being updated exists
                 offer = this.offerService.saveOrUpdate( offer );
                 return ResponseEntity.status( HttpStatus.OK )
                         .body( offer );
@@ -217,6 +227,7 @@ public class CrudOfferDataHandler
                     .body( aE.getMessage() );
         }
     }
+
 
     public ResponseEntity<?> loadOfferDetails( Long aId )
     {
@@ -300,5 +311,11 @@ public class CrudOfferDataHandler
     {
         return Stream.of( UserRole.ADMIN, UserRole.INSTITUTION_EMPLOYEE, UserRole.INSTITUTION_ADMIN, UserRole.MOD )
                 .anyMatch( aLoggedUser::hasUserRole );
+    }
+
+    private boolean shouldUpdateOfferState( Offer oldOffer, Offer offer )
+    {
+        return oldOffer.getOfferStateAsEnum().equals( OfferStateEnum.EXPIRING )
+                && !offer.getExpirationDate().equals( oldOffer.getExpirationDate() );
     }
 }
