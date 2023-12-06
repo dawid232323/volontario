@@ -3,7 +3,6 @@ package uam.volontario.crud.specification;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.common.impl.UserSearchQuery;
 
@@ -27,10 +26,15 @@ public class UserSpecification implements Specification< User > {
         final Path< String > namePath = aRoot.get( "firstName" );
         final Path< String > lastNamePath = aRoot.get( "lastName" );
         final Path< String > emailPath = aRoot.get( "contactEmailAddress" );
+        final Path < List< Long > > interestIds = aRoot.get( "volunteerData" ).get( "interestCategories").get( "id" );
 
         if( this.userSearchQuery.getRoleIds() != null && !this.userSearchQuery.getRoleIds().isEmpty() )
         {
             conjunctionPredicates.add( roles.in( this.userSearchQuery.getRoleIds() ) );
+        }
+        if( this.userSearchQuery.getInterestCategoriesIds() != null && !this.userSearchQuery.getInterestCategoriesIds().isEmpty() )
+        {
+            conjunctionPredicates.add( interestIds.in( this.userSearchQuery.getInterestCategoriesIds() ) );
         }
         if( this.userSearchQuery.getFirstName() != null )
         {

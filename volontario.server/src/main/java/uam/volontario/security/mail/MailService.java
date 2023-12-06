@@ -23,6 +23,7 @@ import uam.volontario.model.offer.impl.Application;
 import uam.volontario.model.offer.impl.Benefit;
 import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.model.offer.impl.VoluntaryPresence;
+import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.security.util.VolontarioBase64Coder;
 
 import java.io.IOException;
@@ -375,6 +376,43 @@ public class MailService
         }
 
         LOGGER.error( String.format( "Email failed to be sent to %o users", contactEmailAddressesToWhichEmailsWereNotSend.size() ) );
+    }
+
+    /**
+     * Send email to Volunteer informing about new Offer.
+     *
+     * @param aNewOffer new Offer.
+     *
+     *
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     *
+     * @return true if email was successfully sent, false otherwise.
+     */
+    public boolean sendEmailsAboutNewOffer( Offer aNewOffer, User aVolunteer )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message );
+
+        final String mailSubject = "Nowe ogłoszenie w Volontario które może cię zainteresować!";
+
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        helper.setTo( aVolunteer.getContactEmailAddress() );
+        helper.setSubject( mailSubject );
+
+        String content = Resources.toString( Resources.getResource( "emails/newOffer.html" ),
+                StandardCharsets.UTF_8 );
+        content = content.replaceAll( "\\|offerName\\|", aNewOffer.getTitle() );
+        content = content.replaceAll( "\\|offerUrl\\|",
+                this.volontarioHost.concat( "/advertisement/" + aNewOffer.getId() ) );
+
+        helper.setText( content, true );
+
+        return trySendMail( () -> mailSender.send( message ) );
     }
 
     /**

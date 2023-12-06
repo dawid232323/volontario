@@ -13,8 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 public class UserSearchQuery
 {
-    private List<Long> roleIds;
+    private List< Long > roleIds;
     private String firstName;
     private String lastName;
     private String email;
+    private List< Long > interestCategoriesIds;
 }
