@@ -29,7 +29,7 @@ services:
       context: ../volontario.server
     env_file: '.env'
   volontario-db:
-    image: postgres:15.4-alpine
+    image: postgres:16.1-alpine
     restart: always
     env_file: '.env'
     volumes: 

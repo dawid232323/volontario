@@ -10,7 +10,7 @@ services:
     ports:
       - '4200:80'
   volontario-db:
-    image: postgres:15.4-alpine
+    image: postgres:16.1-alpine
     restart: always
     env_file: '.env'
     volumes:

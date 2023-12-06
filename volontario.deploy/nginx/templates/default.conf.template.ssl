@@ -15,8 +15,8 @@ server {
 
     listen       443 ssl;
     server_name  ${VOLONTARIO_DOMAIN};
-    ssl_certificate     /etc/letsencrypt/live/dev.volontario.me/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/dev.volontario.me/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/${VOLONTARIO_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${VOLONTARIO_DOMAIN}/privkey.pem;
 
     # block traffic from auto link checking in outlook
     deny         40.94.0.0/16;

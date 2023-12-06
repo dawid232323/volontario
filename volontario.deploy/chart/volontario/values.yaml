@@ -15,7 +15,7 @@ volontarioDB:
   image:
     repository: postgres
     pullPolicy: Always
-    tag: "15.4-alpine"
+    tag: "16.1-alpine"
   
   persistence:
     size: "100Mi"

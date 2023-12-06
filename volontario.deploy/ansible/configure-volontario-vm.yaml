@@ -1,3 +1,5 @@
+# playbook for Ubuntu 22 LTS
+
 ---
 - hosts: all
   remote_user: root
@@ -26,11 +28,13 @@
         name: docker-ce
         state: present
         update_cache: yes
-      #notify: Start docker on boot
     - name: Install docker-compose
       get_url: 
         url : https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: 'u+x,g+x'
-
-# to-do: maybe automatic repo copying to vm and running docker-compose?
+    - name: Install certbot
+      apt:
+        name: certbot
+        state: present
+        update_cache: yes

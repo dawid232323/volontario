@@ -9,8 +9,7 @@ services:
       - VOLONTARIO_DOMAIN=${VOLONTARIO_DOMAIN}
     ports:
       - '80:80'
-      # https to be configured once we get new environment
-      # - '443:443'
+      - '443:443' 
   volontario-front:
     image: volontario-front:latest
     restart: always
@@ -33,7 +32,7 @@ services:
       - '8080:8080'
     env_file: '.env'
   volontario-db:
-    image: postgres:15.4-alpine
+    image: postgres:16.1-alpine
     restart: always
     env_file: '.env'
     volumes:
