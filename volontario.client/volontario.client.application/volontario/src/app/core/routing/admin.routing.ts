@@ -3,6 +3,7 @@ import { AdminUsersManagementComponent } from 'src/app/features/admin-users-mana
 import { RouterGuard } from 'src/app/core/guard/router.guard';
 import { RoleDependentGuard } from 'src/app/core/guard/role-dependent.guard';
 import { UserRoleEnum } from 'src/app/core/model/user-role.model';
+import { MainPageEditorComponent } from 'src/app/features/main-page-editor/main-page-editor.component';
 
 export const adminRouting: Routes = [
   {
@@ -11,6 +12,14 @@ export const adminRouting: Routes = [
       {
         path: 'users',
         component: AdminUsersManagementComponent,
+        canActivate: [RouterGuard, RoleDependentGuard],
+        data: {
+          roles: [UserRoleEnum.Admin],
+        },
+      },
+      {
+        path: 'edit-main-page',
+        component: MainPageEditorComponent,
         canActivate: [RouterGuard, RoleDependentGuard],
         data: {
           roles: [UserRoleEnum.Admin],

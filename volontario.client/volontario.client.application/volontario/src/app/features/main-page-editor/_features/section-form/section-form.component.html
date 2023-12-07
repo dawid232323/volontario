@@ -1,0 +1,92 @@
+<div
+  class="flex flex-col w-full items-center justify-center border border-solid rounded-2xl border-black">
+  <section
+    id="arrows-section"
+    class="flex flex-row justify-end space-x-6 w-3/4 py-6">
+    <p
+      *ngIf="canMoveUp"
+      class="hover:cursor-pointer hover:text-bgPrimary"
+      (click)="sectionUpEvent.emit()">
+      <i class="fa-solid fa-arrow-up"></i>
+    </p>
+    <p
+      *ngIf="canMoveDown"
+      class="hover:cursor-pointer hover:text-bgPrimary"
+      (click)="sectionDownEvent.emit()">
+      <i class="fa-solid fa-arrow-down"></i>
+    </p>
+    <p
+      class="hover:cursor-pointer hover:text-warnColor"
+      (click)="sectionRemovedEvent.emit()">
+      <i class="fa-solid fa-trash"></i>
+    </p>
+  </section>
+  <section
+    id="inputs"
+    class="flex flex-col w-full lg:w-3/4 items-center justify-center pb-10">
+    <mat-form-field appearance="outline" color="accent" class="w-full">
+      <mat-label>Identyfikator sekcji</mat-label>
+      <input matInput [(ngModel)]="section.id" [formControl]="idFormControl" />
+      <mat-hint
+        class="text-warnColor"
+        *ngIf="idFormControl?.hasError('required')"
+        >Pole jest wymagane</mat-hint
+      >
+    </mat-form-field>
+    <mat-form-field appearance="outline" color="accent" class="w-full">
+      <mat-label>Tytuł sekcji</mat-label>
+      <input
+        matInput
+        [(ngModel)]="section.title"
+        [formControl]="titleFormControl" />
+      <mat-hint
+        class="text-warnColor"
+        *ngIf="titleFormControl?.hasError('required')"
+        >Pole jest wymagane</mat-hint
+      >
+    </mat-form-field>
+    <mat-form-field appearance="outline" color="accent" class="w-full">
+      <mat-label>Typ zawartości sekcji</mat-label>
+      <mat-select [(ngModel)]="section.type" [formControl]="typeFormControl">
+        <mat-option
+          *ngFor="let sectionType of SectionType | keyvalue"
+          [value]="sectionType.key"
+          >{{ sectionType.value }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field
+      appearance="outline"
+      color="accent"
+      class="w-full"
+      *ngIf="typeFormControl?.value === 'TextOnly'">
+      <mat-label>Kategoria obrazka</mat-label>
+      <mat-select
+        [(ngModel)]="section.imageCategory"
+        [formControl]="imageFormControl">
+        <mat-option
+          *ngFor="let image of ConfigurationImages"
+          [value]="image.type"
+          >{{ image.name }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <div class="w-full" *ngIf="!areTilesSelected(section.type)">
+      <mat-label>Zawartość sekcji</mat-label>
+      <angular-editor
+        [config]="editorConfig"
+        [formControl]="contentFormControl"></angular-editor>
+      <mat-hint
+        class="text-warnColor"
+        *ngIf="contentFormControl?.hasError('required')"
+        >Pole jest wymagane</mat-hint
+      >
+    </div>
+    <div *ngIf="areTilesSelected(section.type)" class="w-full">
+      <app-tile-form-row
+        #tileForm
+        class="w-full"
+        [tiles]="section.tiles"></app-tile-form-row>
+    </div>
+  </section>
+</div>

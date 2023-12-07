@@ -19,6 +19,9 @@ module.exports = {
       },
       animation: {
         'bounce-slow': 'bounce 2s linear infinite'
+      },
+      screens: {
+        '2xl': '2000px'
       }
     },
   },

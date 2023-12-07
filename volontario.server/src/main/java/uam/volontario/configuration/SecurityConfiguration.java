@@ -80,6 +80,7 @@ public class SecurityConfiguration
                 "api/report",
                 "/api/report",
                 "/api/report/with-attachments",
+                "/api/configuration/landingPage",
                 "/api/volunteer/{volunteer_id:[0-9]+}/confirm-registration") );
 
         aHttp.cors();

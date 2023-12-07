@@ -7,8 +7,9 @@ import lombok.experimental.UtilityClass;
 /**
  * Utility class that stores constants with file service qualifiers
  */
-@UtilityClass
-public class FileServiceQualifiers
+@NoArgsConstructor( access = AccessLevel.PRIVATE )
+public final class FileServiceQualifiers
 {
-    public final String PROFILE_PICTURE_FILES_SERVICE = "profilePicturesFileService";
+    public static final String PROFILE_PICTURE_FILES_SERVICE = "profilePicturesFileService";
+    public static final String LANDING_PAGE_FILES_SERVICE = "landingPageFileService";
 }

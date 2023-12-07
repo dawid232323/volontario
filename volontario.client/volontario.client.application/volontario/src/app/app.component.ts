@@ -25,7 +25,10 @@ export class AppComponent implements OnInit, OnDestroy {
       if (!(pathName instanceof NavigationStart)) {
         return;
       }
-      if (noNavUrls.has(pathName.url) || !this.authService.isUserLoggedIn()) {
+      if (
+        this.hasNoNavUrl(pathName.url) ||
+        !this.authService.isUserLoggedIn()
+      ) {
         this.showNav = false;
         return;
       }
@@ -35,5 +38,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  private hasNoNavUrl(url: string) {
+    const withoutQueryParams = url.split('?')[0];
+    const withoutPageRef = withoutQueryParams.split('#')[0];
+    return noNavUrls.has(withoutPageRef);
   }
 }

@@ -1,0 +1,78 @@
+{
+  "sections": [
+    {
+      "tiles": [],
+      "title": "Dołącz do Volontario",
+      "id": "join-us-section",
+      "type": "TextOnly",
+      "content": "<div class=\"OutlineElement Ltr SCXW235381819 BCX0\"><p class=\"Paragraph SCXW235381819 BCX0\"><span>Niniejsze aplikacja s&#322;u&#380;y &#322;&#261;czeniu student&#243;w i studentek UAM zainteresowanych wolontariatem z organizacjami i instytucjami poszukuj&#261;cymi wolontariuszy do swoich dzia&#322;a&#324; &#8211; sta&#322;ych lub akcyjnych.  &#10;Volontario natomiast to Wydzia&#322;owe Centrum Wolontariatu dzia&#322;aj&#261;ce na Wydziale Studi&#243;w Edukacyjnych Uniwersytetu im. Adama Mickiewicza w Poznaniu od 2005 roku, kt&#243;re u&#380;yczy&#322;o nazwy stronie i kt&#243;re dba o rozw&#243;j wolontariatu na UAM. &#10;&#10;Wolontariusze Volontario od wielu ju&#380; lat bior&#261; udzia&#322; we wspania&#322;ej przygodzie- staj&#261; przed nowymi wyzwaniami, a jednocze&#347;nie maj&#261; okazj&#281; do zawarcia nowych znajomo&#347;ci, rozwijania swoich zainteresowa&#324; i zdobywania nowych do&#347;wiadcze&#324;. &#10;Zapraszamy do korzystania z narz&#281;dzie sieciuj&#261;cego <b>VOLONTARIO</b>! </span><br></p></div>",
+      "imageCategory": "Default"
+    },
+    {
+      "tiles": [],
+      "title": "Jak działamy?",
+      "id": "how-we-work-section",
+      "type": "TextOnly",
+      "content": "Studenci i instytucje lub organizacje zak&#322;adaj&#261; tu swoje profile, a ci ostatni umieszczaj&#261; og&#322;oszenia. W przypadku dopasowania zainteresowanych student&#243;w z ofert&#261; wsp&#243;&#322;pracy szczeg&#243;&#322;y dotycz&#261;ce wolontariatu omawiane s&#261; ju&#380; w bezpo&#347;rednim kontakcie &#8211; mailowo lub telefonicznie. Obie strony maj&#261; mo&#380;liwo&#347;&#263; dodania oceny wsp&#243;&#322;pracy przy wolontariacie ze swoich perspektyw. Szczeg&#243;&#322;owe informacje znajdziecie w regulaminie.&#160;",
+      "imageCategory": "Collaboration"
+    },
+    {
+      "tiles": [
+        {
+          "stepIcon": "app_registration",
+          "stepContent": "Zarejestruj swój profil z użyciem maila uczelnianego. Określ swoje zainteresowania i doświadczenie – będziesz otrzymywać oferty maksymalnie odpowiadające Twoim oczekiwaniom.  ",
+          "title": "Pierwsze kroki"
+        },
+        {
+          "stepIcon": "feed",
+          "stepContent": "Na maila będziesz otrzymywać powiadomienia o nowych ofertach pasujących do Twojego profilu – przejrzyj je i zaaplikuj na te, które Ci odpowiadają. ",
+          "title": "Bieżące informacje"
+        },
+        {
+          "stepIcon": "gavel",
+          "stepContent": "Gdy Twoje zgłoszenie zostanie przyjęte szczegóły wolontariatu (czas, miejsce, rodzaj oczekiwanego wsparcia, ewentualne dodatkowe świadczenia – posiłek, pokrycie kosztów dojazdu itp.) omów bezpośrednio z ogłoszeniodawcą. Nie zapomnij podpisać porozumienia – wzór znajdziesz tutaj. ",
+          "title": "Aplikowanie"
+        },
+        {
+          "stepIcon": "star",
+          "stepContent": "Oceń swój wolontariat. Weź pod uwagę takie aspekty: czy powierzone zadania odpowiadały opisowi w ogłoszeniu, czy traktowany byłeś z szacunkiem, czy czegoś się nauczyłeś? ",
+          "title": "Oceny"
+        }
+      ],
+      "title": "Dla Wolontariuszy/ek",
+      "id": "for-volunteers-section",
+      "type": "WithTiles",
+      "content": null,
+      "imageCategory": null
+    },
+    {
+      "tiles": [
+        {
+          "stepIcon": "app_registration",
+          "stepContent": "Zarejestruj swój profil. Określ dokładnie obszary i charakter swojej działalności – warto rzetelnie przedstawić się potencjalnym wolontariuszom. ",
+          "title": "Rejestracja"
+        },
+        {
+          "stepIcon": "add",
+          "stepContent": "Po zaakceptowaniu przez moderatora będziesz mógł dodawać ogłoszenia i rozpocząć poszukiwanie wolontariuszy. Nowe ogłoszenia zostaną rozesłane studentom o podobnych zainteresowaniach. ",
+          "title": "Ogłoszenia"
+        },
+        {
+          "stepIcon": "contact_page",
+          "stepContent": "Przejrzyj aplikacje, które otrzymasz w odpowiedzi na swoje ogłoszenia. Gdy wybierzesz wolontariusza z bazy bezpośrednio z nim/nią ustal szczegóły wolontariatu (czas, miejsce, rodzaj oczekiwanego wsparcia, ewentualne dodatkowe świadczenia – posiłek, pokrycie kosztów dojazdu itp.). Nie zapomnij podpisać porozumienia – wzór znajdziesz tutaj. ",
+          "title": "Interakcje"
+        },
+        {
+          "stepIcon": "star",
+          "stepContent": "Oceń pracę wolontariuszy. Weź pod uwagę takie aspekty: zaangażowanie, punktualności rzetelność",
+          "title": "Oceny"
+        }
+      ],
+      "title": "Dla Instytucji",
+      "id": "for-institutions-section",
+      "type": "WithTiles",
+      "content": null,
+      "imageCategory": null
+    }
+  ]
+}

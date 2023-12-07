@@ -140,6 +140,13 @@
                 <i class="fa-solid fa-users"></i>
                 Zarządzaj użytkownikami
               </ul>
+              <ul
+                routerLink="/admin/edit-main-page"
+                mat-menu-item
+                *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
+                <i class="fa-solid fa-file-pen"></i>
+                Edytuj stronę główną
+              </ul>
             </mat-menu>
             <mat-menu #moderatorMenu="matMenu">
               <ul mat-menu-item (click)="routeToManageDictValues()">

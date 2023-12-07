@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   animate,
   state,
@@ -7,6 +7,8 @@ import {
   trigger,
 } from '@angular/animations';
 import { SecurityService } from 'src/app/core/service/security/security.service';
+import { LandingPageSection } from 'src/app/core/model/configuration.model';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
@@ -27,7 +29,11 @@ import { SecurityService } from 'src/app/core/service/security/security.service'
 })
 export class MainPageNavComponent implements OnInit {
   public showSidebar: boolean = false;
-  constructor(private authService: SecurityService) {}
+
+  @Input() sections: LandingPageSection[] = [];
+  @Input() isPreviewMode: boolean = false;
+
+  constructor(private authService: SecurityService, private router: Router) {}
 
   ngOnInit(): void {}
 
@@ -37,5 +43,11 @@ export class MainPageNavComponent implements OnInit {
 
   public get isUserLoggedIn(): boolean {
     return this.authService.isUserLoggedIn();
+  }
+
+  onBackToEdit() {
+    this.router.navigate(['admin', 'edit-main-page'], {
+      queryParams: { prev: this.isPreviewMode },
+    });
   }
 }

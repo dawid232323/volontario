@@ -41,6 +41,7 @@ import { VolunteerRegistrationConfirmationModule } from './features/volunteer-re
 import { InstitutionOfferPresenceModule } from 'src/app/features/institution-offer-presence/institution-offer-presence.module';
 import { DirectiveModule } from 'src/app/core/directive/directive.module';
 import { EvaluationModalModule } from 'src/app/shared/features/evaluation-modal/evaluation-modal.module';
+import { MainPageEditorModule } from 'src/app/features/main-page-editor/main-page-editor.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -82,6 +83,7 @@ import { EvaluationModalModule } from 'src/app/shared/features/evaluation-modal/
     InstitutionOfferPresenceModule,
     DirectiveModule,
     EvaluationModalModule,
+    MainPageEditorModule,
   ],
   providers: [
     {

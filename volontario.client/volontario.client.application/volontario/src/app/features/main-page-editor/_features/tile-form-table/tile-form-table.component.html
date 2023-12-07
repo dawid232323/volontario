@@ -1,0 +1,78 @@
+<div class="flex flex-col w-full">
+  <table class="table-fixed w-full border-separate border-spacing-2">
+    <thead>
+      <tr>
+        <th class="w-1/6">Nazwa kroku</th>
+        <th class="w-4/6">Opis kroku</th>
+        <th class="w-1/12">Nazwa ikony kroku</th>
+        <th class="w-1/12"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let tile of tiles; let i = index"
+        class="space-x-1"
+        [formGroup]="formGroups[i]">
+        <td>
+          <mat-form-field color="accent" class="w-full h-full">
+            <textarea formControlName="title" class="h-30" matInput></textarea>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field color="accent" class="w-full h-full">
+            <textarea
+              formControlName="stepContent"
+              class="h-30"
+              matInput></textarea>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field color="accent" class="w-full h-full">
+            <textarea
+              formControlName="stepIcon"
+              class="h-30"
+              matInput></textarea>
+          </mat-form-field>
+        </td>
+        <td class="flex flex-col space-y-2 h-full min-h-fit">
+          <span class="flex flex-row space-x-2 px-6">
+            <span
+              *ngIf="i !== 0"
+              class="hover:cursor-pointer hover:text-bgPrimary"
+              (click)="onTileUp(i)">
+              <i class="fa-solid fa-arrow-up"></i>
+            </span>
+            <span
+              *ngIf="i !== tiles.length - 1"
+              class="hover:cursor-pointer hover:text-bgPrimary"
+              (click)="onTileDown(i)">
+              <i class="fa-solid fa-arrow-down"></i>
+            </span>
+          </span>
+          <span class="px-6">
+            <span
+              class="hover:cursor-pointer hover:text-warnColor"
+              (click)="onTileRemove(i)">
+              <i class="fa-solid fa-trash"></i>
+            </span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <section class="flex flex-row w-full justify-end">
+    <button mat-raised-button color="accent" (click)="onAddTile()">
+      <mat-icon matPrefix>add</mat-icon> Dodaj krok
+    </button>
+  </section>
+  <section class="text-sm text-gray-400">
+    Kliknij
+    <a
+      target="_blank"
+      href="https://fonts.google.com/icons"
+      class="hover:text-btnAccentPrimary underline hover:cursor-pointer"
+      >tutaj</a
+    >
+    aby przejść do listy dostępnych ikon
+  </section>
+</div>

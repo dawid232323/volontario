@@ -8,36 +8,12 @@
       </div>
       <div class="hidden md:block">
         <nav aria-label="Site Nav">
-          <ul class="flex items-center gap-6 text-sm list-none">
-            <li>
+          <ul class="flex items-center w-full gap-x-6 text-sm list-none">
+            <li class="w-full" *ngFor="let section of sections">
               <a
                 class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
-                href="#about">
-                O nas
-              </a>
-            </li>
-
-            <li>
-              <a
-                class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
-                href="#howwework">
-                Jak działamy
-              </a>
-            </li>
-
-            <li>
-              <a
-                class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
-                href="#forVolonteers">
-                Dla wolontariuszy/ek
-              </a>
-            </li>
-
-            <li>
-              <a
-                class="text-bgWhite hover:cursor-pointer hover:text-btnAccentPrimary transition"
-                href="#forInstitutions">
-                Dla organizacji
+                [href]="'#' + section.id">
+                {{ section.title }}
               </a>
             </li>
           </ul>
@@ -45,60 +21,32 @@
       </div>
       <nav
         [@sidebarTrigger]="showSidebar ? 'open' : 'close'"
-        class="md:hidden bg-white fixed bottom-0 top-20 right-0 w-full h-1/2"
+        class="md:hidden bg-white fixed bottom-0 top-20 right-0 w-full h-3/4"
         aria-label="Site Nav">
-        <ul class="flex flex-col items-center justify-center gap-6 text-sm">
-          <li>
+        <ul
+          class="flex flex-col items-center justify-center gap-6 text-sm !list-none">
+          <li *ngFor="let section of sections">
             <a
               class="text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
-              href="#about">
-              O nas
+              [href]="'#' + section.id">
+              {{ section.title }}
             </a>
           </li>
-
-          <li>
+          <li *ngIf="!isUserLoggedIn">
             <a
               class="text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
-              href="#howwework">
-              Jak działamy
+              routerLink="/login">
+              Zaloguj się
             </a>
           </li>
-
-          <li>
+          <li *ngIf="!isUserLoggedIn">
             <a
               class="text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
-              href="#forVolonteers">
-              Dla wolontariuszy/ek
-            </a>
-          </li>
-
-          <li>
-            <a
-              class="text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
-              href="#forInstitutions">
-              Dla organizacji
+              routerLink="/register">
+              Zarejestruj się
             </a>
           </li>
         </ul>
-        <div
-          class="mt-10 flex flex-row justify-center items-center"
-          *ngIf="!isUserLoggedIn">
-          <a
-            class="text-center text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
-            routerLink="/login">
-            Zaloguj się
-          </a>
-        </div>
-        <div
-          class="mt-10 flex flex-row justify-center items-center"
-          *ngIf="!isUserLoggedIn">
-          <a
-            class="text-center text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
-            routerLink="/register">
-            Nie masz konta? <br />
-            Zarejestruj się!
-          </a>
-        </div>
         <div
           class="mt-10 flex flex-row justify-center items-center"
           *ngIf="isUserLoggedIn">
@@ -106,6 +54,15 @@
             class="text-center text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition"
             routerLink="/home">
             Przejdź do aplikacji
+          </a>
+        </div>
+        <div
+          class="mt-10 flex flex-row justify-center items-center"
+          *ngIf="isPreviewMode">
+          <a
+            (click)="onBackToEdit()"
+            class="text-center text-bgPrimary font-bold text-3xl hover:cursor-pointer hover:text-btnAccentPrimary transition">
+            Wróć do edycji
           </a>
         </div>
       </nav>
@@ -129,6 +86,13 @@
             class="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600"
             routerLink="/home">
             Przejdź do aplikacji
+          </a>
+        </div>
+        <div class="hidden md:flex sm:gap-4" *ngIf="isPreviewMode">
+          <a
+            (click)="onBackToEdit()"
+            class="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600">
+            Wróć do edycji
           </a>
         </div>
         <div class="block md:hidden">

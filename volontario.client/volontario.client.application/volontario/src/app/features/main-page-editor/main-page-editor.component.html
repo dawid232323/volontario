@@ -1,0 +1,63 @@
+<main class="flex flex-col w-full min-h-screen bg-gray-100 items-center">
+  <div
+    class="flex bg-white flex-col lg:px-16 my-10 py-16 space-y-6 lg:w-3/4 w-full items-center justify-start border-2 rounded-2xl border-solid">
+    <section
+      id="title-section"
+      class="flex flex-col items-center justify-center w-full">
+      <div class="w-full">
+        <p class="text-2xl font-bold text-center">Edytor strony głównej</p>
+      </div>
+    </section>
+    <section id="form-section" class="w-full">
+      <section id="sections-section" class="w-full">
+        <div
+          *ngFor="let section of pageContent.sections; let i = index"
+          class="flex flex-col w-full h-full">
+          <app-section-form
+            (sectionDownEvent)="moveSectionDown(section)"
+            (sectionUpEvent)="moveSectionUp(section)"
+            (sectionRemovedEvent)="removeSection(i)"
+            [section]="section"
+            [canMoveUp]="i !== 0"
+            [canMoveDown]="i !== pageContent.sections.length - 1"
+            class="py-10"></app-section-form>
+          <mat-divider></mat-divider>
+        </div>
+      </section>
+      <section class="flex justify-center items-center w-full py-10">
+        <button
+          mat-raised-button
+          class="w-full lg:w-3/4"
+          color="primary"
+          (click)="addSection()">
+          <mat-icon matPrefix>add</mat-icon> Dodaj sekcję
+        </button>
+      </section>
+    </section>
+    <section
+      class="flex lg:flex-row flex-col w-full items-stretch justify-center lg:space-x-6">
+      <button
+        mat-raised-button
+        color="warn"
+        class="hover:bg-btnWarnHover w-full">
+        Anuluj
+      </button>
+      <button
+        (click)="onShowPreview()"
+        [disabled]="canNotSubmit()"
+        mat-raised-button
+        color="primary"
+        class="hover:bg-btnAccentHoverPrimary w-full">
+        Podgląd
+      </button>
+      <button
+        (click)="onSubmitChanges()"
+        [disabled]="canNotSubmit()"
+        mat-raised-button
+        color="accent"
+        class="hover:bg-btnAccentHover w-full">
+        Zapisz
+      </button>
+    </section>
+  </div>
+</main>
