@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -40,11 +41,11 @@ public class User implements UserIf
     @Column
     private Long id;
 
-    @Column
+    @Column( length = 100 )
     @NotBlank( message = "First name must be defined" )
     private String firstName;
 
-    @Column
+    @Column( length = 100 )
     @NotBlank( message = "Last name must be defined" )
     private String lastName;
 

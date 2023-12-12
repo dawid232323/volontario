@@ -35,16 +35,33 @@
           appearance="standard"
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
           #institutionDescriptionInput>
-          <mat-label>Opis działalności instytucji</mat-label>
+          <mat-label
+            >Opis działalności instytucji
+            {{
+              countCharacters(
+                'institutionDescription',
+                additionalInfoFormGroup,
+                500
+              )
+            }}</mat-label
+          >
           <textarea
             matInput
             formControlName="institutionDescription"
             placeholder="Podaj krótki opis działalności instytucji"></textarea>
           <mat-error
             *ngIf="
-              additionalInfoFormGroup.controls['institutionDescription'].invalid
+              additionalInfoFormGroup.controls[
+                'institutionDescription'
+              ].hasError('maxlength')
             "
-            >Opis powinien być któtszy niż 200 znaków</mat-error
+            >Opis powinien być któtszy niż
+            {{
+              additionalInfoFormGroup.controls[
+                'institutionDescription'
+              ].getError('maxlength').requiredLength
+            }}
+            znaków</mat-error
           >
         </mat-form-field>
       </div>

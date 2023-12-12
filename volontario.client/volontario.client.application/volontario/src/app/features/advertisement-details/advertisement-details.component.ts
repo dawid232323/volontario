@@ -20,6 +20,7 @@ import {
   VolunteerPresenceModel,
 } from 'src/app/core/model/offer-presence.model';
 import { OfferPresenceHandler } from 'src/app/features/advertisement-details/offer-presence.handler';
+import { InstitutionService } from '../../core/service/institution.service';
 
 @Component({
   selector: 'app-advertisement-details',
@@ -52,7 +53,8 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private matDialog: MatDialog,
-    private presenceHandler: OfferPresenceHandler
+    private presenceHandler: OfferPresenceHandler,
+    private institutionService: InstitutionService
   ) {}
 
   ngOnInit(): void {
@@ -256,6 +258,21 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['apply'], { relativeTo: this.route });
   }
 
+  public isWorkingForInstitutionWhichOwnsOffer(): boolean {
+    return (
+      !isNil(this.loggedUser?.institution) &&
+      this.loggedUser?.institution.id === this.advertisementData?.institutionId
+    );
+  }
+
+  public isInstitutionActive(): boolean {
+    return (
+      !isNil(this.advertisementData?.institutionId) &&
+      this.canManageOffer &&
+      (this.loggedUser?.institution?.active || false)
+    );
+  }
+
   public shouldDisableInstitutionPresence(): boolean {
     return this._hasNotAcceptedApplications && this._isOfferPresenceReady;
   }
@@ -285,5 +302,6 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
+
   protected readonly isNil = isNil;
 }

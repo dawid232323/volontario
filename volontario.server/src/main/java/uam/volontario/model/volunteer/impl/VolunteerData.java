@@ -43,8 +43,8 @@ public class VolunteerData implements VolontarioDomainElementIf
     @DomainEmail
     private String domainEmailAddress;
 
-    @Size( max = 1500 )
-    @Column( length = 1500 )
+    @Size( max = 500 )
+    @Column( length = 500 )
     private String participationMotivation;
 
     @Size( max = 100 )

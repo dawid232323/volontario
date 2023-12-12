@@ -6,9 +6,9 @@ import { UserService } from '../../core/service/user.service';
 import { isNil } from 'lodash';
 import { InterestCategoryService } from '../../core/service/interestCategory.service';
 import { VolunteerExperienceService } from '../../core/service/volunteer-experience.service';
-import { forkJoin, firstValueFrom } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { UserRoleEnum } from '../../core/model/user-role.model';
-import { UserProfile, PatchUserDto } from '../../core/model/user.model';
+import { PatchUserDto, UserProfile } from '../../core/model/user.model';
 import { VolunteerExperience } from '../../core/model/volunteer-experience.model';
 import { InterestCategoryDTO } from '../../core/model/interestCategory.model';
 
@@ -65,10 +65,12 @@ export class UserEditDataComponent implements OnInit {
       firstName: new FormControl('', [
         Validators.required,
         Validators.pattern('^[A-źa-ź]+$'),
+        Validators.maxLength(100),
       ]),
       lastName: new FormControl('', [
         Validators.required,
         Validators.pattern('^[A-źa-ź]+$'),
+        Validators.maxLength(100),
       ]),
       contactEmailAddress: new FormControl('', [
         Validators.required,
@@ -78,7 +80,7 @@ export class UserEditDataComponent implements OnInit {
       interestCategories: new FormControl(null, [Validators.required]),
       participationMotivation: new FormControl('', [
         Validators.required,
-        Validators.maxLength(1500),
+        Validators.maxLength(500),
       ]),
       fieldOfStudy: new FormControl(null, [Validators.maxLength(100)]),
       phoneNumber: new FormControl(null, [phoneNumberValidator()]),

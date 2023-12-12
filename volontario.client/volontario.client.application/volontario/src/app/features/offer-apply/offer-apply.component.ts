@@ -155,7 +155,7 @@ export class OfferApplyComponent implements OnInit {
 
   private initializePurposeFormData() {
     this.reasonFormGroup = this.formBuilder.group({
-      reason: [null, [Validators.required, Validators.maxLength(100)]],
+      reason: [null, [Validators.required, Validators.maxLength(500)]],
     });
   }
 

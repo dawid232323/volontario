@@ -37,7 +37,7 @@ public class Institution implements VolontarioDomainElementIf
     @NotBlank( message = "Institution name must be defined." )
     private String name;
 
-    @Column( length = 4000 )
+    @Column( length = 500 )
     private String description;
 
     @Column

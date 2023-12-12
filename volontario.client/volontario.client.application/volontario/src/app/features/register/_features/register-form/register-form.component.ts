@@ -7,9 +7,11 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { isNil } from 'lodash';
 import { SelectFieldModelIf } from 'src/app/core/interface/selectField.interface';
 import { VolunteerRegisterDTO } from 'src/app/core/model/volunteer.model';
 import {
+  countCharacters,
   hasMaxLengthError,
   phoneNumberValidator,
 } from 'src/app/utils/validator.utils';
@@ -33,10 +35,12 @@ export class RegisterFormComponent implements OnInit {
     firstName: new FormControl('', [
       Validators.required,
       Validators.pattern('^[A-źa-ź]+$'),
+      Validators.maxLength(100),
     ]),
     lastName: new FormControl('', [
       Validators.required,
       Validators.pattern('^[A-źa-ź]+$'),
+      Validators.maxLength(100),
     ]),
     domainEmail: new FormControl('', [
       Validators.required,
@@ -56,14 +60,18 @@ export class RegisterFormComponent implements OnInit {
     interestCategories: new FormControl([1], [Validators.required]),
     participationMotivation: new FormControl('', [
       Validators.required,
-      Validators.maxLength(1500),
+      Validators.maxLength(500),
     ]),
     fieldOfStudy: new FormControl(null, [Validators.maxLength(100)]),
     phoneNumber: new FormControl(null, [
       Validators.required,
       phoneNumberValidator(),
     ]),
-    rodo: new FormControl('', [Validators.required]),
+    rodo: new FormControl('', [Validators.required, Validators.requiredTrue]),
+    regulations: new FormControl('', [
+      Validators.required,
+      Validators.requiredTrue,
+    ]),
   });
 
   constructor() {}
@@ -135,5 +143,10 @@ export class RegisterFormComponent implements OnInit {
     let confirmPass = group.get('passwordRepeat')?.value;
     return pass === confirmPass ? null : { notSame: true };
   };
+
   protected readonly hasMaxLengthError = hasMaxLengthError;
+
+  protected readonly isNil = isNil;
+
+  protected readonly countCharacters = countCharacters;
 }

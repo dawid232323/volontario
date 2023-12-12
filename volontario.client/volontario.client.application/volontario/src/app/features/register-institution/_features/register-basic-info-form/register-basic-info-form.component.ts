@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { countCharacters } from '../../../../utils/validator.utils';
 
 @Component({
   selector: 'app-register-basic-info-form',
@@ -12,4 +13,6 @@ export class RegisterBasicInfoFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
+
+  protected readonly countCharacters = countCharacters;
 }

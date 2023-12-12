@@ -125,7 +125,7 @@ export class RegisterInstitutionComponent implements OnInit {
       institutionTags: [[], [Validators.required, arrayLengthValidator(10)]],
       institutionDescription: [
         null,
-        [Validators.required, Validators.maxLength(200)],
+        [Validators.required, Validators.maxLength(500)],
       ],
       operationPlace: [null, [Validators.required]],
       rulesApprove: [false, [Validators.requiredTrue]],

@@ -1,15 +1,27 @@
 <main
-  class="min-h-screen max-w-screen-lg mx-auto pt-16 flex flex-col"
+  class="min-h-screen max-w-screen-lg mx-auto pt-8 flex flex-col"
   [ngClass]="{ 'animate-pulse': isLoadingData, 'blur-lg': isLoadingData }">
-  <div>
-    <button
-      mat-raised-button
-      class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5"
-      (click)="onGoBackToOfferListButtonClicked()"
-      color="accent">
-      <mat-icon matPrefix>arrow_back</mat-icon>
-      Wróć do listy ogłoszeń
-    </button>
+  <div class="flex flex-col">
+    <div
+      class="flex items-center justify-center text-xl animate-pulse text-red-600">
+      <label
+        *ngIf="
+          isWorkingForInstitutionWhichOwnsOffer() && !isInstitutionActive()
+        ">
+        Twoje ogłoszenia będą widoczne dopiero po zatwierdzeniu
+        instytucji.</label
+      >
+    </div>
+    <div class="pt-8">
+      <button
+        mat-raised-button
+        class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5"
+        (click)="onGoBackToOfferListButtonClicked()"
+        color="accent">
+        <mat-icon matPrefix>arrow_back</mat-icon>
+        Wróć do listy ogłoszeń
+      </button>
+    </div>
   </div>
 
   <mat-tab-group class="w-full py-5" *ngIf="canManageOffer">

@@ -1,5 +1,15 @@
 <div class="flex flex-col justify-center min-h-screen">
   <div class="text-4xl font-bold text-center pb-8">Zarejestruj się</div>
+  <div class="pt-2 pb-5">
+    <p class="text-lg">
+      Reprezentujesz instytucję?
+      <span
+        routerLink="/institution/register"
+        class="hover:text-btnAccentPrimary hover:cursor-pointer underline"
+        >Przejdź do rejestracji dla instytucji</span
+      >
+    </p>
+  </div>
   <div>
     <form [formGroup]="registerFormGroup" (ngSubmit)="onFormSubmit()">
       <div class="flex flex-col lg:flex-row items-stretch">
@@ -7,23 +17,31 @@
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
           appearance="standard"
           color="accent">
-          <mat-label>Imię</mat-label>
+          <mat-label
+            >Imię
+            {{
+              countCharacters('firstName', registerFormGroup, 100)
+            }}</mat-label
+          >
           <input matInput formControlName="firstName" />
           <mat-icon matPrefix color="accent">person</mat-icon>
           <mat-hint *ngIf="registerFormGroup.controls['firstName'].invalid"
-            >Pole wymagane</mat-hint
-          >
+            >Pole wymagane
+          </mat-hint>
         </mat-form-field>
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
           appearance="standard"
           color="accent">
-          <mat-label>Nazwisko </mat-label>
+          <mat-label
+            >Nazwisko
+            {{ countCharacters('lastName', registerFormGroup, 100) }}</mat-label
+          >
           <input matInput formControlName="lastName" />
           <mat-icon matPrefix color="accent">person</mat-icon>
           <mat-hint *ngIf="registerFormGroup.controls['lastName'].invalid"
-            >Pole wymagane</mat-hint
-          >
+            >Pole wymagane
+          </mat-hint>
         </mat-form-field>
       </div>
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
@@ -31,23 +49,23 @@
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
           appearance="standard"
           color="accent">
-          <mat-label>Adres email uczelniany </mat-label>
+          <mat-label>Adres email uczelniany</mat-label>
           <input matInput formControlName="domainEmail" />
           <mat-icon matPrefix color="accent">mail</mat-icon>
           <mat-hint *ngIf="registerFormGroup.controls['domainEmail'].invalid"
-            >Pole wymagane</mat-hint
-          >
+            >Pole wymagane
+          </mat-hint>
         </mat-form-field>
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
           appearance="standard"
           color="accent">
-          <mat-label>Adres email kontaktowy </mat-label>
+          <mat-label>Adres email kontaktowy</mat-label>
           <input matInput formControlName="contactEmail" />
           <mat-icon matPrefix color="accent">mail</mat-icon>
           <mat-hint *ngIf="registerFormGroup.controls['contactEmail'].invalid"
-            >Pole wymagane</mat-hint
-          >
+            >Pole wymagane
+          </mat-hint>
         </mat-form-field>
       </div>
       <div class="flex flex-col lg:flex-row justify-between items-stretch">
@@ -72,7 +90,7 @@
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
           appearance="standard"
           color="accent">
-          <mat-label>Powtórz hasło </mat-label>
+          <mat-label>Powtórz hasło</mat-label>
           <input matInput formControlName="passwordRepeat" type="password" />
           <mat-icon matPrefix color="accent">lock</mat-icon>
         </mat-form-field>
@@ -88,17 +106,28 @@
           <input matInput formControlName="phoneNumber" />
           <mat-icon matPrefix color="accent">phone_iphone</mat-icon>
           <mat-hint
+            *ngIf="
+              !registerFormGroup.controls['phoneNumber']?.hasError('pattern')
+            "
+            >Podaj numer telefonu w formacie XXXXXXXXX (X to cyfra).
+          </mat-hint>
+          <mat-hint
             class="text-red-500"
             *ngIf="
               registerFormGroup.controls['phoneNumber']?.hasError('pattern')
             "
-            >Podaj prawidłowy numer telefonu</mat-hint
-          >
+            >Podaj prawidłowy numer telefonu
+          </mat-hint>
         </mat-form-field>
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
           color="accent">
-          <mat-label>Kierunek studiów</mat-label>
+          <mat-label
+            >Kierunek studiów
+            {{
+              countCharacters('fieldOfStudy', registerFormGroup, 100)
+            }}</mat-label
+          >
           <mat-icon matPrefix color="accent">school</mat-icon>
           <input matInput formControlName="fieldOfStudy" />
           <mat-hint
@@ -118,7 +147,7 @@
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
           color="accent">
-          <mat-label>Poziom doświadczenia </mat-label>
+          <mat-label>Poziom doświadczenia</mat-label>
           <mat-select formControlName="experience">
             <mat-option
               *ngFor="let experience of availableExperiences"
@@ -133,7 +162,7 @@
         <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
           color="accent">
-          <mat-label>Wybierz zainteresowania </mat-label>
+          <mat-label>Wybierz zainteresowania</mat-label>
           <mat-select
             formControlName="interestCategories"
             id="interestCategories"
@@ -148,16 +177,21 @@
         </mat-form-field>
       </div>
       <mat-form-field class="w-full" appearance="fill" color="accent">
-        <mat-label>Motywacja do uczestnictwa: </mat-label>
+        <mat-label
+          >Motywacja do uczestnictwa:
+          {{
+            countCharacters('participationMotivation', registerFormGroup, 500)
+          }}</mat-label
+        >
         <textarea matInput formControlName="participationMotivation">
         </textarea>
         <mat-hint
           *ngIf="registerFormGroup.controls['participationMotivation'].invalid"
-          >Pole wymagane, podaj maksymalnie 1500 znaków</mat-hint
-        >
+          >Pole wymagane, podaj maksymalnie 1500 znaków
+        </mat-hint>
       </mat-form-field>
       <div class="flex flex-row space-x-3 w-full pt-6">
-        <mat-checkbox formControlName="rodo" color="accent"> </mat-checkbox>
+        <mat-checkbox formControlName="rodo" color="accent"></mat-checkbox>
         <label class="font-medium break-normal"
           >Akceptuję zgodę na przetwarzanie moich danych osobowych (<span
             (click)="showRodoRegulations.emit()"
@@ -166,15 +200,17 @@
           >)</label
         >
       </div>
-      <div class="pt-10">
-        <p class="text-lg">
-          Reprezentujesz instytucję?
-          <span
-            routerLink="/institution/register"
-            class="hover:text-btnAccentPrimary hover:cursor-pointer underline"
-            >Przejdź do rejestracji dla instytucji</span
-          >
-        </p>
+      <div class="flex flex-row space-x-3 w-full pt-6">
+        <mat-checkbox formControlName="regulations" color="accent">
+        </mat-checkbox>
+        <label class="font-medium break-normal"
+          >Oznajmiam, że zapoznałem się z regulaminem systemu Volontario i
+          akceptuję go (<span
+            (click)="showUseRegulations.emit()"
+            class="underline hover:text-btnAccentHover hover:cursor-pointer"
+            >regulamin dostępny tutaj</span
+          >)</label
+        >
       </div>
       <div class="flex flex-col items-center">
         <app-primary-button

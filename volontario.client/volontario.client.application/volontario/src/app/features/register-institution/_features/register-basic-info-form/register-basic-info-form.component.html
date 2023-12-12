@@ -7,7 +7,12 @@
           color="accent"
           #institutionNameInput
           class="flex pt-3 pb-3 flex-col w-full lg:mr-3">
-          <mat-label>Nazwa Instytucji</mat-label>
+          <mat-label
+            >Nazwa Instytucji
+            {{
+              countCharacters('institutionName', basicInfoFormGroup, 50)
+            }}</mat-label
+          >
           <input
             matInput
             formControlName="institutionName"
@@ -31,6 +36,7 @@
             formControlName="krsNumber"
             placeholder="Podaj numer krs" />
           <mat-icon matPrefix color="accent">pin</mat-icon>
+          <mat-hint>Numer KRS musi składać się z 10 cyfr.</mat-hint>
         </mat-form-field>
         <mat-form-field
           appearance="standard"

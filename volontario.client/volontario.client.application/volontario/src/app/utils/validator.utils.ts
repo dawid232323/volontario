@@ -1,6 +1,7 @@
 import {
   AbstractControl,
   FormControl,
+  FormGroup,
   ValidationErrors,
   ValidatorFn,
   Validators,
@@ -97,4 +98,22 @@ export function hasMaxLengthError(
  */
 export function hasRequiredError(formControl: AbstractControl): boolean {
   return !isNil(formControl.errors?.['required']);
+}
+
+export function countCharacters(
+  controlName: string,
+  formGroup: FormGroup,
+  maxCharacters: number
+): string {
+  const controlValueLength: number = isNil(
+    formGroup.controls[controlName].value
+  )
+    ? 0
+    : formGroup.controls[controlName].value.length;
+
+  if (controlValueLength === 0) {
+    return '';
+  }
+
+  return '(' + controlValueLength + '/' + maxCharacters + ')';
 }

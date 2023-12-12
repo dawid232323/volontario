@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { FormGroup } from '@angular/forms';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { countCharacters } from '../../../../utils/validator.utils';
 
 @Component({
   selector: 'app-register-additional-info-form',
@@ -48,4 +49,6 @@ export class RegisterAdditionalInfoFormComponent implements OnInit {
       this.institutionTags?.updateValueAndValidity();
     }
   }
+
+  protected readonly countCharacters = countCharacters;
 }
