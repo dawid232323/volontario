@@ -1,4 +1,5 @@
 version: '3'
+name: volontario
 services:
   volontario-gateway:
     image: nginx:1.25-alpine

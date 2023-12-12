@@ -77,14 +77,14 @@ public class MailService
                         final @Value("${volontarioModeratorEmailPlaceholder}") String aModeratorAddress,
                         final @Value("${maintenanceEmails}") String aMaintenanceEmails,
                         final @Value( "${volontarioHost}" ) String aVolontarioHost,
-                        final @Value( "${useHttps}" ) Boolean aShouldUseHttps) throws AddressException {
+                        final @Value( "${schema}" ) String aSchema ) throws AddressException {
         mailSender = aJavaMailSender;
         noReplyVolontarioEmailAddress = aNoReplyVolontarioEmailAddress;
         instantFormatter = DateTimeFormatter.ofPattern( "dd.MM.yyyy" )
                 .withZone( ZoneId.systemDefault() );
         volontarioModeratorAddress = aModeratorAddress;
         maintenanceEmails = InternetAddress.parse( aMaintenanceEmails );
-        volontarioHost = this.resolveHostLink( aVolontarioHost, aShouldUseHttps );
+        volontarioHost = this.resolveHostLink( aVolontarioHost, aSchema );
     }
 
     /**
@@ -815,8 +815,8 @@ public class MailService
         return content;
     }
 
-    private String resolveHostLink( final String aHost, final Boolean aShouldUseHttps ) {
-        final String prefix = aShouldUseHttps ? "https://" : "http://";
+    private String resolveHostLink( final String aHost, final String aSchema ) {
+        final String prefix = aSchema.concat("://");
         return prefix.concat( aHost );
     }
 

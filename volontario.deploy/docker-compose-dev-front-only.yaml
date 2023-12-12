@@ -1,4 +1,5 @@
 version: '3'
+name: volontario
 services:
   volontario-front:
     image: volontario-front:latest

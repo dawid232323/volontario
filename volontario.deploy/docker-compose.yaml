@@ -1,4 +1,5 @@
 version: '3'
+name: volontario
 services:
   volontario-gateway:
     image: nginx:1.25-alpine
@@ -10,7 +11,8 @@ services:
       - VOLONTARIO_DOMAIN=${VOLONTARIO_DOMAIN}
     ports:
       - '80:80'
-      - '443:443' 
+      - '443:443'
+      - '9001:9001'
   volontario-front:
     image: volontario-front:latest
     restart: always
@@ -34,11 +36,12 @@ services:
     env_file: '.env'
     volumes: 
       - volontario-db:/var/lib/postgresql/data
+      - ${POSTGRES_BACKUP_DIR}:/var/volontariodumps
   volontario-minio:
     image: minio/minio
-    ports:
-      - "9000:9000"
-      - "9001:9001"
+    environment:
+      - MINIO_SERVER_URL=${SCHEMA}://${VOLONTARIO_DOMAIN}:9001
+      - MINIO_BROWSER_REDIRECT_URL=${SCHEMA}://${VOLONTARIO_DOMAIN}:9001/minio/ui
     volumes:
       - minio-storage:/data
     env_file: '.env'

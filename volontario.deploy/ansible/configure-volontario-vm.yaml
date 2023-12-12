@@ -33,6 +33,13 @@
         url : https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: 'u+x,g+x'
+    - name: Create directory for backups
+      ansible.builtin.file:
+        path: /var/volontariodumps
+        state: directory
+        owner: root
+        group: root
+        mode: 0775
     - name: Install certbot
       apt:
         name: certbot
