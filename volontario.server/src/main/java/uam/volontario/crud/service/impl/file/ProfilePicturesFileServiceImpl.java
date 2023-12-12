@@ -15,9 +15,10 @@ import uam.volontario.crud.service.FileService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Service
-@Qualifier( FileServiceQualifiers.PROFILE_PICTURE_FILES_SERVICE )
+@Qualifier(FileServiceQualifiers.PROFILE_PICTURE_FILES_SERVICE)
 public class ProfilePicturesFileServiceImpl implements FileService< MultipartFile, byte[] >
 {
 
@@ -25,7 +26,7 @@ public class ProfilePicturesFileServiceImpl implements FileService< MultipartFil
     private final String bucketName;
 
     public ProfilePicturesFileServiceImpl( final AmazonS3 aAmazonS3,
-                                           @Value( "${cloud.aws.s3.bucket.name}" ) final String aBucketName )
+                                           @Value("${cloud.aws.s3.bucket.name}") final String aBucketName )
     {
         this.simpleStorageClient = aAmazonS3;
         this.bucketName = aBucketName;
@@ -45,8 +46,18 @@ public class ProfilePicturesFileServiceImpl implements FileService< MultipartFil
     @Override
     public String saveFile( final MultipartFile aFileContent ) throws IOException
     {
-        final File convertedFile = this.convertMultipartToFile( aFileContent );
-        simpleStorageClient.putObject( this.bucketName, this.getImageDirectoryPrefix().concat( convertedFile.getName() ), convertedFile );
+        final String finalName = Arrays.toString( DigestUtils.sha256( RandomStringUtils.randomAlphabetic( 100 ) ) )
+                .concat( ObjectUtils.defaultIfNull( aFileContent.getOriginalFilename(),
+                        RandomStringUtils.random( 10 ).concat( ".jpeg" ) ) );
+        return saveFile( finalName, aFileContent );
+    }
+
+    @Override
+    public String saveFile( final String aFileName, final MultipartFile aFileContent ) throws IOException
+    {
+        final File convertedFile = this.convertMultipartToFile( aFileContent, aFileName );
+        simpleStorageClient.putObject( this.bucketName,
+                this.getImageDirectoryPrefix().concat( convertedFile.getName() ), convertedFile );
         convertedFile.delete();
         return this.getImageDirectoryPrefix().concat( convertedFile.getName() );
     }
@@ -57,18 +68,23 @@ public class ProfilePicturesFileServiceImpl implements FileService< MultipartFil
         this.simpleStorageClient.deleteObject( this.bucketName, aFileName );
     }
 
-    private String getImageDirectoryPrefix() {
+    @Override
+    public boolean doesFileExist( final String aFileName )
+    {
+        final String finalName = getImageDirectoryPrefix().concat( aFileName );
+        return simpleStorageClient.doesObjectExist( bucketName, finalName );
+    }
+
+    private String getImageDirectoryPrefix()
+    {
         return "profilePictures/";
     }
 
-    private File convertMultipartToFile( final MultipartFile aFile ) throws IOException
+    private File convertMultipartToFile( final MultipartFile aFile, final String aFileName ) throws IOException
     {
-        final String finalName = DigestUtils.sha256( RandomStringUtils.randomAlphabetic( 100 ) ).toString()
-                .concat( ObjectUtils.defaultIfNull( aFile.getOriginalFilename(),
-                        RandomStringUtils.random( 10 ).concat( ".jpeg" ) ) ).toString();
-        final File newFile = new File( finalName );
+        final File newFile = new File( aFileName );
         newFile.createNewFile();
-        try( final FileOutputStream fileOutputStream = new FileOutputStream( newFile ) )
+        try ( final FileOutputStream fileOutputStream = new FileOutputStream( newFile ) )
         {
             fileOutputStream.write( aFile.getBytes() );
         }

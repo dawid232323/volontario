@@ -42,6 +42,8 @@ import { InstitutionOfferPresenceModule } from 'src/app/features/institution-off
 import { DirectiveModule } from 'src/app/core/directive/directive.module';
 import { EvaluationModalModule } from 'src/app/shared/features/evaluation-modal/evaluation-modal.module';
 import { MainPageEditorModule } from 'src/app/features/main-page-editor/main-page-editor.module';
+import { RegulationPreviewModalModule } from 'src/app/shared/features/regulation-preview-modal/regulation-preview-modal.module';
+import { RegulationsEditorModule } from 'src/app/features/regulations-editor/regulations-editor.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -84,6 +86,8 @@ import { MainPageEditorModule } from 'src/app/features/main-page-editor/main-pag
     DirectiveModule,
     EvaluationModalModule,
     MainPageEditorModule,
+    RegulationPreviewModalModule,
+    RegulationsEditorModule,
   ],
   providers: [
     {

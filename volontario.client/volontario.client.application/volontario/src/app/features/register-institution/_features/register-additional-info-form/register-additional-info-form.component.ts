@@ -13,6 +13,8 @@ export class RegisterAdditionalInfoFormComponent implements OnInit {
   @Input() canSubmit: boolean = false;
 
   @Output() formSubmit = new EventEmitter<void>();
+  @Output() showUseRegulations = new EventEmitter<void>();
+  @Output() showRodoRegulations = new EventEmitter<void>();
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   constructor() {}

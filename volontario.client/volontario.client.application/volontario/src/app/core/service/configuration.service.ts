@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
-import { LandingPageDto } from 'src/app/core/model/configuration.model';
+import {
+  LandingPageDto,
+  Regulations,
+} from 'src/app/core/model/configuration.model';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -18,10 +21,20 @@ export class ConfigurationService {
     });
   }
 
+  public getRegulationsData(): Observable<Regulations> {
+    return this.restService.get('/configuration/regulations', {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    });
+  }
+
   public saveNewLandingPage(
     landingPageData: LandingPageDto
   ): Observable<LandingPageDto> {
     return this.restService.post('/configuration/landingPage', landingPageData);
+  }
+
+  public saveRegulations(regulations: Regulations): Observable<void> {
+    return this.restService.post('/configuration/regulations', regulations);
   }
 
   get landingPagePreview(): LandingPageDto | undefined {

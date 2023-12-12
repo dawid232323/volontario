@@ -20,6 +20,8 @@ import {
   styleUrls: ['./register-form.component.scss'],
 })
 export class RegisterFormComponent implements OnInit {
+  @Output() showUseRegulations = new EventEmitter<void>();
+  @Output() showRodoRegulations = new EventEmitter<void>();
   @Output() formSubmit = new EventEmitter<VolunteerRegisterDTO>();
   @Input() isRegistering: boolean = false;
   @Input() availableCategories: SelectFieldModelIf[] = [];

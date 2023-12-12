@@ -1,0 +1,16 @@
+<span>
+  <span class="flex flex-row items-center space-x-6">
+    <img
+      src="/assets/connection.svg"
+      width="100"
+      height="85"
+      alt="Image containing user grades" />
+    <span class="font-bold text-2xl">{{ title }}</span>
+  </span>
+</span>
+<mat-dialog-content>
+  <span class="w-full" [innerHTML]="content"></span>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" matDialogClose>Zamknij</button>
+</mat-dialog-actions>

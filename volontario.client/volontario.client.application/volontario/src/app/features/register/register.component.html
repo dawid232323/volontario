@@ -10,6 +10,8 @@
       *ngIf="!hasRegisteredCorrectly && !isPerformingRegistration"
       class="min-h-screen w-3/4"
       (formSubmit)="onRegisterFormSubmit($event)"
+      (showRodoRegulations)="onShowRodoRegulations()"
+      (showUseRegulations)="onShowUseRegulations()"
       [availableCategories]="interestCategories"
       [availableExperiences]="experienceLevels"
       [isRegistering]="isPerformingRegistration"></app-register-form>

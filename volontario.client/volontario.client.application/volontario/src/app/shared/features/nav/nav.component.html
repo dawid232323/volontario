@@ -147,6 +147,13 @@
                 <i class="fa-solid fa-file-pen"></i>
                 Edytuj stronę główną
               </ul>
+              <ul
+                routerLink="/admin/edit-regulations"
+                mat-menu-item
+                *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
+                <i class="fa-regular fa-handshake"></i>
+                Edytuj zgody i regulaminy
+              </ul>
             </mat-menu>
             <mat-menu #moderatorMenu="matMenu">
               <ul mat-menu-item (click)="routeToManageDictValues()">
@@ -281,6 +288,13 @@
     *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
     <i class="fa-solid fa-users"></i>
     Zarządzaj użytkownikami
+  </ul>
+  <ul
+    routerLink="/admin/edit-regulations"
+    mat-menu-item
+    *ngIf="loggedUser?.hasUserRole(UserRoleEnum.Admin)">
+    <i class="fa-regular fa-handshake"></i>
+    Edytuj zgody i regulaminy
   </ul>
 </mat-menu>
 <mat-menu #moderatorMenu="matMenu">

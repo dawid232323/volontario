@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.dto.templates.LandingPageDto;
+import uam.volontario.dto.templates.RegulationsDto;
 import uam.volontario.handler.ConfigurationHandler;
 
 import java.io.IOException;
@@ -32,5 +33,20 @@ public class ConfigurationController
     public LandingPageDto storeNewConfiguration( @RequestBody final LandingPageDto newConfiguration ) throws IOException
     {
         return configurationHandler.soreNewLandingPageConfiguration( newConfiguration );
+    }
+
+    @GetMapping("/regulations")
+    @ResponseStatus(HttpStatus.OK)
+    public RegulationsDto resolveRegulations() throws IOException
+    {
+        return configurationHandler.resolveRegulationsData();
+    }
+
+    @PostMapping("/regulations")
+    @PreAuthorize("@permissionEvaluator.allowForAdministrators( authentication.principal )")
+    @ResponseStatus(HttpStatus.CREATED)
+    public RegulationsDto storeNewRegulationsConfiguration( @RequestBody final RegulationsDto aRegulationsDto ) throws IOException
+    {
+        return configurationHandler.storeNewRegulationsConfiguration( aRegulationsDto );
     }
 }

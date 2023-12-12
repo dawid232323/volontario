@@ -1,0 +1,43 @@
+<main class="flex flex-col min-h-screen bg-gray-100 items-center">
+  <div
+    class="flex bg-white flex-col lg:px-16 my-10 py-16 space-y-6 lg:w-3/4 w-full items-center justify-start border-2 rounded-2xl border-solid">
+    <section
+      id="title-section"
+      class="flex flex-col items-center justify-center w-full">
+      <div class="w-full">
+        <p class="text-2xl font-bold text-center">Edytor zgód i regulaminów</p>
+      </div>
+    </section>
+    <section id="form-section" class="w-full">
+      <form
+        [formGroup]="regulationsForm"
+        class="flex flex-col w-full space-y-6">
+        <span class="flex flex-col space-y-3">
+          <label class="text-base">Regulamin serwisu</label>
+          <angular-editor
+            [config]="editorConfig"
+            formControlName="useRegulations"></angular-editor>
+        </span>
+        <span class="flex flex-col space-y-3">
+          <label class="text-base">Zasady przetwarzania danych osobowych</label>
+          <angular-editor
+            [config]="editorConfig"
+            formControlName="rodo"></angular-editor>
+        </span>
+      </form>
+    </section>
+    <section id="buttons-section" class="flex justify-center w-full">
+      <div class="flex flex-col lg:flex-row w-full lg:w-3/4 gap-3">
+        <button mat-raised-button color="warn" class="w-full">Anuluj</button>
+        <button
+          class="w-full"
+          mat-raised-button
+          color="primary"
+          (click)="onFormSubmit()"
+          [disabled]="regulationsForm.invalid">
+          Zapisz
+        </button>
+      </div>
+    </section>
+  </div>
+</main>

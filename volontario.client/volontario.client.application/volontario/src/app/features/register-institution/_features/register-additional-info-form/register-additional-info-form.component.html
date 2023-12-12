@@ -65,15 +65,28 @@
           >
         </mat-form-field>
       </div>
-      <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <mat-checkbox formControlName="rulesApprove" color="accent"
-          >Akceptacja regulaminu</mat-checkbox
-        >
+      <div class="flex flex-row space-x-3 w-full pt-6">
+        <mat-checkbox formControlName="rulesApprove" color="accent">
+        </mat-checkbox>
+        <label
+          >Akceptuję regulamin (<span
+            (click)="showUseRegulations.emit()"
+            class="underline hover:text-btnAccentHover hover:cursor-pointer"
+            >dostępny tutaj</span
+          >)
+        </label>
       </div>
-      <div class="flex flex-col lg:flex-row justify-between items-stretch">
-        <mat-checkbox formControlName="rodoApprove" color="accent"
-          >Zgoda na przetwarzanie danych osobowych</mat-checkbox
-        >
+      <div class="flex flex-row space-x-3 w-full pt-6">
+        <mat-checkbox
+          formControlName="rodoApprove"
+          color="accent"></mat-checkbox
+        ><label
+          >Akceptuję zasady przetwarzania danych osobowych (<span
+            (click)="showRodoRegulations.emit()"
+            class="underline hover:text-btnAccentHover hover:cursor-pointer"
+            >dostępne tutaj</span
+          >)
+        </label>
       </div>
       <div class="flex flex-row items-center gap-x-5 justify-between pt-10">
         <button

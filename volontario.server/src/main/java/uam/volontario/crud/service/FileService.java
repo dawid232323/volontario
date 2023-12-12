@@ -36,9 +36,32 @@ public interface FileService<T, K>
     String saveFile( final T aFileContent ) throws IOException;
 
     /**
+     * Saves file in the file system storage with custom file name.
+     *
+     * @param aFileContent file content to be stored
+     *
+     * @param aFileName name of the file to be saved
+     *
+     * @return name of the stored file to be persisted in the corresponding entity
+     *
+     * @throws IOException when save operation fails
+     */
+    String saveFile( final String aFileName, final T aFileContent ) throws IOException;
+
+    /**
      * Deletes single file.
      *
      * @param aFileName name of the file to be deleted
      */
     void deleteFile( final String aFileName );
+
+    /**
+     * Checks if file with given name exists in system bucket.
+     * S3 storage directory prefixes should be added on the implementation level
+     *
+     * @param aFileName name of the file to be checked
+     *
+     * @return boolean value that depends on file existence
+     */
+    boolean doesFileExist( final String aFileName );
 }

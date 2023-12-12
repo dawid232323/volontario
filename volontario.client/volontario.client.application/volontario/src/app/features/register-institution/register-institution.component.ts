@@ -7,6 +7,16 @@ import {
   InfoCardTypeEnum,
 } from 'src/app/shared/features/success-info-card/info-card.component';
 import { Router } from '@angular/router';
+import { ConfigurationService } from 'src/app/core/service/configuration.service';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  Regulations,
+  RegulationType,
+} from 'src/app/core/model/configuration.model';
+import {
+  RegulationPreviewModalComponent,
+  RegulationPreviewModalInitialData,
+} from 'src/app/shared/features/regulation-preview-modal/regulation-preview-modal.component';
 
 @Component({
   selector: 'app-register-institution',
@@ -25,13 +35,68 @@ export class RegisterInstitutionComponent implements OnInit {
     'skrzynkę mailową by ustawić hasło. Po ustawieniu hasła logowanie na założone konto będzie możliwe, natomiast do czasu weryfikacji przez naszych moderatorów wszystkie dodane przez Ciebie ogłoszenia będą niewidoczne.';
   buttonText = 'Strona główna';
 
+  private _regulations?: Regulations;
+
   constructor(
     private formBuilder: FormBuilder,
     private institutionService: InstitutionService,
-    private router: Router
+    private router: Router,
+    private configurationService: ConfigurationService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.initForms();
+    this.downloadInitialData();
+  }
+
+  public onFormSubmit() {
+    if (!this.canSubmitForm) {
+      return;
+    }
+    this.isPerformingRegistration = true;
+    const institutionModel =
+      this.institutionService.getInstitutionModelFromFormData(
+        this.basicInfoFormGroup.value,
+        this.additionalInfoFormGroup.value
+      );
+    this.institutionService.createInstitution(institutionModel).subscribe({
+      next: this.onRegisterSuccess.bind(this),
+    });
+  }
+
+  public onCardButtonClicked($event: InfoCardButtonEnum) {
+    if ($event === InfoCardButtonEnum.Primary) {
+      this.router.navigate(['/']);
+    }
+  }
+
+  public onShowUseRegulations() {
+    this.openRegulationsDialog(
+      RegulationType.Use,
+      this._regulations?.useRegulation!
+    );
+  }
+
+  public onShowRodoRegulations() {
+    this.openRegulationsDialog(
+      RegulationType.Rodo,
+      this._regulations?.rodoRegulation!
+    );
+  }
+
+  private openRegulationsDialog(
+    regulationType: RegulationType,
+    content: string
+  ) {
+    const initialData: RegulationPreviewModalInitialData = {
+      regulationType,
+      modalContent: content,
+    };
+    this.dialog.open(RegulationPreviewModalComponent, { data: initialData });
+  }
+
+  private initForms() {
     this.basicInfoFormGroup = this.formBuilder.group({
       institutionName: [null, [Validators.required, Validators.maxLength(50)]],
       krsNumber: [
@@ -68,26 +133,10 @@ export class RegisterInstitutionComponent implements OnInit {
     });
   }
 
-  public onFormSubmit() {
-    if (!this.canSubmitForm) {
-      return;
-    }
-    this.isPerformingRegistration = true;
-    const institutionModel =
-      this.institutionService.getInstitutionModelFromFormData(
-        this.basicInfoFormGroup.value,
-        this.additionalInfoFormGroup.value
-      );
-    this.institutionService.createInstitution(institutionModel).subscribe({
-      next: this.onRegisterSuccess.bind(this),
-      error: err => console.log(err),
+  private downloadInitialData() {
+    this.configurationService.getRegulationsData().subscribe(regulations => {
+      this._regulations = regulations;
     });
-  }
-
-  public onCardButtonClicked($event: InfoCardButtonEnum) {
-    if ($event === InfoCardButtonEnum.Primary) {
-      this.router.navigate(['/']);
-    }
   }
 
   private onRegisterSuccess(result: any) {

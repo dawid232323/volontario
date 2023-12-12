@@ -56,6 +56,19 @@ public class LandingPageFileServiceImpl implements FileService< LandingPageDto, 
     }
 
     @Override
+    public String saveFile( final String aFileName, final LandingPageDto aFileContent ) throws IOException
+    {
+        throw new UnsupportedOperationException( "Landing page file title cannot be changed" );
+    }
+
+    @Override
+    public boolean doesFileExist( final String aFileName )
+    {
+        final String finalName = prefix.concat( aFileName );
+        return simpleStorageClient.doesObjectExist( bucketName, finalName );
+    }
+
+    @Override
     public void deleteFile( final String aFileName )
     {
         throw new UnsupportedOperationException( "Landing page configuration file cannot be deleted" );

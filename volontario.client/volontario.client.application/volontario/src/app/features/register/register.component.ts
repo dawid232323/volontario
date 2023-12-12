@@ -9,6 +9,16 @@ import { VolunteerExperienceService } from 'src/app/core/service/volunteer-exper
 import { InfoCardTypeEnum } from '../../shared/features/success-info-card/info-card.component';
 import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ConfigurationService } from 'src/app/core/service/configuration.service';
+import {
+  Regulations,
+  RegulationType,
+} from 'src/app/core/model/configuration.model';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  RegulationPreviewModalComponent,
+  RegulationPreviewModalInitialData,
+} from 'src/app/shared/features/regulation-preview-modal/regulation-preview-modal.component';
 
 @Component({
   selector: 'app-register',
@@ -27,19 +37,25 @@ export class RegisterComponent implements OnInit {
     '        niego aby zweryfikować swoje konto i zacząć korzystać z Volontario';
   successButtonText = 'Ekran logowania';
 
+  private regulations?: Regulations;
+
   constructor(
     private authService: SecurityService,
     private interestCategoryService: InterestCategoryService,
     private experienceService: VolunteerExperienceService,
     public router: Router,
-    private errorDialogService: ErrorDialogService
+    private errorDialogService: ErrorDialogService,
+    private configurationService: ConfigurationService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     forkJoin([
       this.interestCategoryService.getPublicValues(),
       this.experienceService.getPublicValues(),
-    ]).subscribe(([categories, experiences]) => {
+      this.configurationService.getRegulationsData(),
+    ]).subscribe(([categories, experiences, regulations]) => {
+      this.regulations = regulations;
       this.interestCategories = categories.map(category => {
         return {
           value: category.id,
@@ -67,6 +83,20 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  public onShowUseRegulations() {
+    this.openRegulationsDialog(
+      RegulationType.Use,
+      this.regulations?.useRegulation!
+    );
+  }
+
+  public onShowRodoRegulations() {
+    this.openRegulationsDialog(
+      RegulationType.Rodo,
+      this.regulations?.rodoRegulation!
+    );
+  }
+
   private handleRegisterError(error: HttpErrorResponse) {
     this.isPerformingRegistration = false;
     const dialogTitle =
@@ -80,6 +110,17 @@ export class RegisterComponent implements OnInit {
       dialogTitle: dialogTitle,
       dialogMessage: dialogMessage,
     });
+  }
+
+  private openRegulationsDialog(
+    regulationType: RegulationType,
+    content: string
+  ) {
+    const initialData: RegulationPreviewModalInitialData = {
+      regulationType,
+      modalContent: content,
+    };
+    this.dialog.open(RegulationPreviewModalComponent, { data: initialData });
   }
 
   protected readonly InfoCardTypeEnum = InfoCardTypeEnum;

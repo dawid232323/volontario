@@ -159,7 +159,11 @@
       <div class="flex flex-row space-x-3 w-full pt-6">
         <mat-checkbox formControlName="rodo" color="accent"> </mat-checkbox>
         <label class="font-medium break-normal"
-          >Wyrazam zgode na przetwarzanie moich danych.....</label
+          >Akceptuję zgodę na przetwarzanie moich danych osobowych (<span
+            (click)="showRodoRegulations.emit()"
+            class="underline hover:text-btnAccentHover hover:cursor-pointer"
+            >zasady dostępne tutaj</span
+          >)</label
         >
       </div>
       <div class="pt-10">

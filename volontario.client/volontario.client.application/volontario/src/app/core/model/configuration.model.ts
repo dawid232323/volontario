@@ -8,6 +8,11 @@ export enum ImageCategories {
   Collaboration = 'Collaboration',
 }
 
+export enum RegulationType {
+  Use,
+  Rodo,
+}
+
 export type ConfigurationImage = {
   type: ImageCategories;
   path: string;
@@ -26,6 +31,11 @@ export const ConfigurationImages: ConfigurationImage[] = [
     name: 'Współpraca',
   },
 ];
+
+export interface Regulations {
+  useRegulation: string;
+  rodoRegulation: string;
+}
 
 export class LandingPageTile {
   constructor(
