@@ -60,4 +60,16 @@ public interface OfferService extends EntityService< Offer >
      * @return saved/created offers.
      */
     List< Offer > saveAll( List< Offer > aOffers );
+
+    /**
+     * Retrieves list of offers common between given user and given volunteer.
+     * Common means that volunteer has applied for certain offer and his application is in state under recruitment.
+     *
+     * @param aUser user that should represent institution
+     *
+     * @param aVolunteerId id of volunteer
+     *
+     * @return list of common offers
+     */
+    List< Offer > findCommonOffers( final User aUser, final Long aVolunteerId );
 }

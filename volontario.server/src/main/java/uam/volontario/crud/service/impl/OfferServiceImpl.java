@@ -114,4 +114,14 @@ public class OfferServiceImpl implements OfferService
 
         return aOffer.getContactPerson().getId().equals( aLoggedUser.getId() );
     }
+
+    @Override
+    public List< Offer > findCommonOffers( final User aUser, final Long aVolunteerId )
+    {
+        if( aUser.hasUserRole( UserRole.INSTITUTION_ADMIN ) )
+        {
+            return offerRepository.findCommonOffersWithInstitution( aUser.getInstitution().getId(), aVolunteerId );
+        }
+        return offerRepository.findCommonOffersWithInstitutionWorker( aUser.getId(), aVolunteerId );
+    }
 }

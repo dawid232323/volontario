@@ -48,6 +48,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   private subscriptions = new Subscription();
   private _isLoadingData = true;
+  private _canSeePersonalInfo = false;
   public _userProfilePicture?: string;
   private _evaluations?: UserEvaluation;
   private _offersToEvaluate?: OffersToEvaluateIf;
@@ -204,22 +205,32 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.userService.getUserProfileDetails(this._userId),
       this.userService.getCurrentUserData(),
       from(this.userService.downloadUserProfilePicture(this._userId)),
-    ]).subscribe(async ([userProfileData, loggedUser, profilePicture]) => {
-      this._userProfile = userProfileData;
-      this._loggedUser = loggedUser;
-      if (!isNil(profilePicture)) {
-        this._userProfilePicture = <string>profilePicture;
+      this.userService.isUserEntitledToSeePersonalData(this._userId),
+    ]).subscribe(
+      async ([
+        userProfileData,
+        loggedUser,
+        profilePicture,
+        isEntitledToSeePersonalData,
+      ]) => {
+        this._userProfile = userProfileData;
+        this._loggedUser = loggedUser;
+        this._canSeePersonalInfo =
+          isEntitledToSeePersonalData.isEntitledForPersonalData;
+        if (!isNil(profilePicture)) {
+          this._userProfilePicture = <string>profilePicture;
+        }
+        if (userProfileData.hasUserRole(UserRoleEnum.Volunteer)) {
+          const userRolesResolve = await firstValueFrom(
+            this.resolveUserEvaluation(loggedUser)
+          );
+          this._offersToEvaluate = userRolesResolve.canEvaluate;
+          this._evaluations = userRolesResolve.evaluation;
+        }
+        this.determineSelectedTabIndex();
+        this._isLoadingData = false;
       }
-      if (userProfileData.hasUserRole(UserRoleEnum.Volunteer)) {
-        const userRolesResolve = await firstValueFrom(
-          this.resolveUserEvaluation(loggedUser)
-        );
-        this._offersToEvaluate = userRolesResolve.canEvaluate;
-        this._evaluations = userRolesResolve.evaluation;
-      }
-      this.determineSelectedTabIndex();
-      this._isLoadingData = false;
-    });
+    );
   }
 
   private resolveUserEvaluation(loggedUser: User) {
@@ -268,6 +279,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   public get offersToEvaluate(): OffersToEvaluateIf | undefined {
     return this._offersToEvaluate;
+  }
+
+  public get canSeePersonalInfo(): boolean {
+    return this._canSeePersonalInfo;
   }
 
   protected readonly UserRoleEnum = UserRoleEnum;

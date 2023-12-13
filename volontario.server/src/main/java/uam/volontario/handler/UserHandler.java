@@ -1,5 +1,6 @@
 package uam.volontario.handler;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,10 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uam.volontario.crud.service.ExperienceLevelService;
-import uam.volontario.crud.service.InterestCategoryService;
-import uam.volontario.crud.service.RoleService;
-import uam.volontario.crud.service.UserService;
+import uam.volontario.crud.service.*;
 import uam.volontario.crud.specification.UserSpecification;
 import uam.volontario.dto.convert.DtoService;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
@@ -37,6 +35,7 @@ import java.util.stream.Collectors;
  * and updating volunteer basic info
  */
 @Service
+@RequiredArgsConstructor
 public class UserHandler
 {
     private final UserService userService;
@@ -51,27 +50,8 @@ public class UserHandler
 
     private final ExperienceLevelService experienceLevelService;
 
-    /**
-     * CDI constructor.
-     *
-     * @param aUserService user service.
-     *
-     * @param aDtoService dto service.
-     *
-     * @param aRoleService role service.
-     */
-    @Autowired
-    public UserHandler( final UserService aUserService, final DtoService aDtoService,
-                        final RoleService aRoleService, final UserValidationService aUserValidationService,
-                        final InterestCategoryService aInterestCategoryService, final ExperienceLevelService aExperienceLevelService )
-    {
-        this.userService = aUserService;
-        this.dtoService = aDtoService;
-        this.roleService = aRoleService;
-        this.userValidationService = aUserValidationService;
-        this.interestCategoryService = aInterestCategoryService;
-        this.experienceLevelService = aExperienceLevelService;
-    }
+    private final OfferService offerService;
+
 
     /**
      * Returns paged result of basic user data required for administrators optionally filtered.
@@ -241,6 +221,24 @@ public class UserHandler
         }
     }
 
+    public boolean isUserEntitledToSeePersonalDetails( final Long userId ) {
+        final Optional< User > loggedUserOptional = userService.tryToGetLoggedUser();
+        if( loggedUserOptional.isEmpty() )
+        {
+            throw new IllegalStateException( "Cannot find logged user with given credentials" );
+        }
+        final User loggedUser = loggedUserOptional.get();
+        if( isUserEntitled( loggedUser ) || loggedUser.getId().equals( userId ) )
+        {
+            return true;
+        }
+        if( isUserVolunteer( loggedUser ) )
+        {
+            return false;
+        }
+        return areUsersConnected( loggedUser, userId );
+    }
+
     private UserSearchQuery getUserSearchQuery( final List< Long > aRoleIds, final String aName,
                                                 final String aLastName, final String aEmail )
     {
@@ -250,5 +248,20 @@ public class UserHandler
                 .lastName( aLastName )
                 .email( aEmail )
                 .build();
+    }
+
+    private boolean isUserEntitled( final User aUser )
+    {
+        return aUser.hasUserRole( UserRole.ADMIN ) || aUser.hasUserRole( UserRole.MOD );
+    }
+
+    private boolean isUserVolunteer( final User aUser )
+    {
+        return aUser.hasUserRole( UserRole.VOLUNTEER );
+    }
+
+    private boolean areUsersConnected( final User aLoggedUser, final Long aTargetUserId )
+    {
+        return !offerService.findCommonOffers( aLoggedUser, aTargetUserId ).isEmpty();
     }
 }

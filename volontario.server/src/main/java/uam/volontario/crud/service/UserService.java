@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import uam.volontario.crud.specification.UserSpecification;
 import uam.volontario.model.common.impl.User;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,4 +58,18 @@ public interface UserService extends EntityService< User >, UserDetailsService
      * @return list of saved/updated Users.
      */
     List< User > saveOrUpdateAll( final List< User > aUsers );
+
+    /**
+     * Tries to load currently logged user based on authentication principals.
+     *
+     * @return currently logged user or empty optional if user with given credentials does not appear in database
+     */
+    Optional< User > tryToGetLoggedUser();
+
+    /**
+     * Retrieves current user email based on token principal
+     *
+     * @return email String value
+     */
+    String getCurrentUserEmail();
 }

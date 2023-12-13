@@ -9,6 +9,10 @@ import { Institution } from 'src/app/core/model/institution.model';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 
+export interface UserEntitlementToSeePersonalInfoIf {
+  isEntitledForPersonalData: boolean;
+}
+
 interface UserRoleIf {
   /**
    * Checks if user has given role.

@@ -21,7 +21,12 @@
           {{ applicationDetails?.participationMotivation }}
         </p>
       </div>
-      <div class="flex flex-col">
+      <div
+        class="flex flex-col"
+        *ngIf="
+          applicationDetails?.state ===
+          ApplicationStateEnumName.UnderRecruitment
+        ">
         <p class="font-semibold text-base !m-0">Email kontaktowy</p>
         <p
           class="text-bgPrimary font-bold text-sm !m-0"
@@ -29,7 +34,12 @@
           [valueToAnonymize]="applicationDetails?.contactEmail"
           [(shouldAnonymize)]="shouldAnonymizeEmail"></p>
       </div>
-      <div class="flex flex-col">
+      <div
+        class="flex flex-col"
+        *ngIf="
+          applicationDetails?.state ===
+          ApplicationStateEnumName.UnderRecruitment
+        ">
         <p class="font-semibold text-base !m-0">Numer telefonu</p>
         <p
           class="text-bgPrimary font-bold text-sm !m-0"

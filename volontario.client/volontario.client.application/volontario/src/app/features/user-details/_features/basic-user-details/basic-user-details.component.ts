@@ -25,6 +25,7 @@ export class BasicUserDetailsComponent implements OnInit {
   @Input() canQuicklyEditData = false;
   @Input() isLoadingData = true;
   @Input() canEditAdditionalVolunteerInfo = false;
+  @Input() canSeePersonalInfo = false;
 
   @Output() interestsChanged = new EventEmitter<UserInterestsConfigProvider>();
   @Output() experienceDescriptionChanged =

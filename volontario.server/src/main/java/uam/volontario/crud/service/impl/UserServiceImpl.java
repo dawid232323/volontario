@@ -2,9 +2,12 @@ package uam.volontario.crud.service.impl;
 
 import com.google.common.collect.Lists;
 import jakarta.persistence.NoResultException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import uam.volontario.crud.repository.UserRepository;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.crud.specification.UserSpecification;
 import uam.volontario.model.common.impl.User;
+import uam.volontario.security.jwt.JWTService;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,20 +24,11 @@ import java.util.Optional;
  * Basic implementation of {@linkplain UserService}.
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService
 {
     private final UserRepository userRepository;
 
-    /**
-     * CDI constructor.
-     *
-     * @param aUserRepository user repository.
-     */
-    @Autowired
-    public UserServiceImpl( final UserRepository aUserRepository )
-    {
-        userRepository = aUserRepository;
-    }
 
     @Override
     public User loadEntity( final Long aUserId )
@@ -119,5 +114,20 @@ public class UserServiceImpl implements UserService
     public List< User > saveOrUpdateAll( final List< User > aUsers )
     {
         return Lists.newArrayList( userRepository.saveAll( aUsers ) );
+    }
+
+    @Override
+    public Optional< User > tryToGetLoggedUser()
+    {
+        final String loggedUserEmail = getCurrentUserEmail();
+        return tryToLoadByContactEmail( loggedUserEmail );
+    }
+
+    @Override
+    public String getCurrentUserEmail()
+    {
+        final Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        return String.valueOf( authentication.getPrincipal() );
     }
 }

@@ -2,6 +2,7 @@ package uam.volontario.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -170,5 +171,19 @@ public class UserController
                                                      @RequestBody final UserPatchInfoDto aPatchDto )
     {
         return userHandler.updateUserInformation( aUserId, aPatchDto );
+    }
+
+    /**
+     * Determines if logged user is allowed to se another user personal information such as contact email or phone number
+     *
+     * @param aUserId id of user that data are going to be displayed
+     *
+     * @return Response entity with simple map with key "isEntitledForPersonalData" with boolean value and status 200
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/isEntitledForPersonalData/{userId}")
+    public Map< String, Boolean > isUserEntitledToSeePersonalDetails( @PathVariable( "userId" ) final Long aUserId )
+    {
+        return Map.of( "isEntitledForPersonalData", userHandler.isUserEntitledToSeePersonalDetails( aUserId ) );
     }
 }

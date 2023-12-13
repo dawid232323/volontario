@@ -48,7 +48,7 @@
     </mat-card-title-group>
     <mat-card-content>
       <div class="grid lg:grid-cols-2 grid-cols-1">
-        <div class="flex items-center flex-row py-3">
+        <div class="flex items-center flex-row py-3" *ngIf="canSeePersonalInfo">
           <div
             class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
             <i class="fa-regular fa-envelope text-lg"></i>
@@ -64,7 +64,7 @@
         </div>
         <div
           class="flex items-center flex-row py-3"
-          *ngIf="!isNil(userProfile?.domainEmailAddress)">
+          *ngIf="!isNil(userProfile?.domainEmailAddress) && canSeePersonalInfo">
           <div
             class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
             <i class="fa-regular fa-envelope text-lg"></i>
@@ -78,7 +78,7 @@
               [(shouldAnonymize)]="shouldAnonymizeUniEmail"></p>
           </div>
         </div>
-        <div class="flex items-center flex-row py-3">
+        <div class="flex items-center flex-row py-3" *ngIf="canSeePersonalInfo">
           <div
             class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
             <i class="fa-solid fa-phone text-lg"></i>

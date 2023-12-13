@@ -136,9 +136,7 @@ public class JWTService
      */
     public String getCurrentUserEmail()
     {
-        final Authentication authentication = SecurityContextHolder
-                .getContext().getAuthentication();
-        return String.valueOf( authentication.getPrincipal() );
+        return userService.getCurrentUserEmail();
     }
 
     private String createToken( final User aUser, final int aExpirationOffsetFromNowInMinutes )

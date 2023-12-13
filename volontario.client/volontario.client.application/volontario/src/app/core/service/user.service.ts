@@ -5,6 +5,7 @@ import {
   AdministrativeUserDetails,
   PatchUserDto,
   User,
+  UserEntitlementToSeePersonalInfoIf,
   UserProfile,
 } from 'src/app/core/model/user.model';
 import { isNil } from 'lodash';
@@ -198,5 +199,16 @@ export class UserService {
       );
       reader.readAsDataURL(image);
     });
+  }
+
+  public isUserEntitledToSeePersonalData(
+    targetUserId: number
+  ): Observable<UserEntitlementToSeePersonalInfoIf> {
+    return this.restService.get(
+      EndpointUrls.userResource.concat(
+        '/isEntitledForPersonalData/',
+        targetUserId.toString()
+      )
+    );
   }
 }

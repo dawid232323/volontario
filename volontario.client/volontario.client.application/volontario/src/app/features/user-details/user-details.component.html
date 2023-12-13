@@ -11,6 +11,7 @@
             onUserExperienceDescriptionChange($event)
           "
           (profilePictureChanged)="onPictureChanged($event)"
+          [canSeePersonalInfo]="canSeePersonalInfo"
           [userProfile]="userProfile"
           [userPhoto]="_userProfilePicture"
           [isLoadingData]="isLoadingData"
