@@ -30,4 +30,7 @@ public class OfferDto
     private String periodicDescription;
     private Boolean isPoznanOnly;
     private List<Long> offerBenefitIds;
+    private String otherBenefits;
+    private String otherCategories;
+
 }

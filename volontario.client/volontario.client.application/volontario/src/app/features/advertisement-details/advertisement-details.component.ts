@@ -297,6 +297,14 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     return this._canChangePresenceDecision;
   }
 
+  public get shouldShowBenefits(): boolean {
+    return (
+      (!isNil(this.advertisementData?.offerBenefitIds) &&
+        this.advertisementData!.offerBenefitIds.length > 0) ||
+      !isNil(this.advertisementData?.otherBenefits)
+    );
+  }
+
   protected readonly UserRoleEnum = UserRoleEnum;
 
   ngOnDestroy() {

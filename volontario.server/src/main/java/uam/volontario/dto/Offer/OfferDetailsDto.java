@@ -33,4 +33,6 @@ public class OfferDetailsDto
     private List< BenefitDto > offerBenefits;
     private Long institutionId;
     private String institutionName;
+    private String otherCategories;
+    private String otherBenefits;
 }

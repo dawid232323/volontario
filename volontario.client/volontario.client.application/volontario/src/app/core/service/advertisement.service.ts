@@ -267,6 +267,8 @@ export class AdvertisementService {
       .setOfferPlace(value.eventPlace)
       .setBenefitIds(value.benefits)
       .setPeriodicDescription(value.periodicDescription)
+      .setOtherCategories(value.otherCategories)
+      .setOtherBenefits(value.otherBenefits)
       .build();
   }
 

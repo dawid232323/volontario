@@ -249,6 +249,8 @@ public class DtoService
         createdOffer.setIsPoznanOnly(aOfferDto.getIsPoznanOnly());
         createdOffer.setBenefits(benefits);
         createdOffer.setOfferState(offerState);
+        createdOffer.setOtherBenefits( aOfferDto.getOtherBenefits() );
+        createdOffer.setOtherCategories( aOfferDto.getOtherCategories() );
         createdOffer.setIsHidden(false);
         return createdOffer;
     }
@@ -305,7 +307,8 @@ public class DtoService
         return new OfferDetailsDto(aOffer.getId(), aOffer.getTitle(), expirationDate, institutionContactPersonDto,
                 offerTypeDto, startDate, endDate, interestCategoryDtos, aOffer.getIsExperienceRequired(),
                 experienceLevelDto, aOffer.getDescription(), aOffer.getPlace(), aOffer.getPeriodicDescription(),
-                aOffer.getIsPoznanOnly(), benefitDtos, aOffer.getInstitution().getId(), aOffer.getInstitution().getName() );
+                aOffer.getIsPoznanOnly(), benefitDtos, aOffer.getInstitution().getId(),
+                aOffer.getInstitution().getName(), aOffer.getOtherCategories(), aOffer.getOtherBenefits() );
     }
 
     /**

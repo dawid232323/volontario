@@ -8,9 +8,10 @@ import {
 } from '@angular/core';
 import { AdvertisementBenefit } from 'src/app/core/model/advertisement.model';
 import { FormGroup, Validators } from '@angular/forms';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Subscription } from 'rxjs';
 import { AdvertisementCrudOperationType } from 'src/app/features/add-edit-advertisement/add-edit-advertisement.component';
+import { isNil } from 'lodash';
+import { countCharacters } from 'src/app/utils/validator.utils';
 
 @Component({
   selector: 'app-advertisement-optional-info',
@@ -29,11 +30,7 @@ export class AdvertisementOptionalInfoComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
-    this.subscriptions.add(
-      this.optionalInfoFormGroup.controls[
-        'isPoznanOnly'
-      ].valueChanges.subscribe(this.onIsPoznanOnlyChange.bind(this))
-    );
+    this.makeSubscriptions();
   }
 
   ngOnDestroy() {
@@ -58,6 +55,42 @@ export class AdvertisementOptionalInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  private makeSubscriptions() {
+    this.subscriptions.add(
+      this.optionalInfoFormGroup.controls[
+        'isPoznanOnly'
+      ].valueChanges.subscribe(this.onIsPoznanOnlyChange.bind(this))
+    );
+    this.subscriptions.add(
+      this.optionalInfoFormGroup
+        .get('benefits')
+        ?.valueChanges.subscribe(this.onBenefitsChange.bind(this))
+    );
+  }
+
+  private onBenefitsChange() {
+    const otherBenefitsCtrl = this.optionalInfoFormGroup.get('otherBenefits');
+    if (this.isOtherOptionSelected) {
+      otherBenefitsCtrl?.addValidators([
+        Validators.required,
+        Validators.maxLength(500),
+      ]);
+    } else {
+      otherBenefitsCtrl?.clearValidators();
+      otherBenefitsCtrl?.patchValue(null);
+    }
+    otherBenefitsCtrl?.updateValueAndValidity();
+  }
+
+  public get isOtherOptionSelected() {
+    return !isNil(
+      (<number[]>this.optionalInfoFormGroup.controls['benefits']?.value)?.find(
+        selectedId => selectedId === -1
+      )
+    );
+  }
+
   protected readonly AdvertisementCrudOperationType =
     AdvertisementCrudOperationType;
+  protected readonly countCharacters = countCharacters;
 }

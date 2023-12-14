@@ -35,7 +35,33 @@
           <mat-option *ngFor="let benefit of benefits" [value]="benefit.id">
             {{ benefit.name }}
           </mat-option>
+          <mat-option [value]="-1">Inne</mat-option>
         </mat-select>
+      </mat-form-field>
+    </div>
+    <div
+      class="flex flex-col lg:flex-row items-stretch"
+      *ngIf="isOtherOptionSelected">
+      <mat-form-field
+        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+        appearance="standard"
+        color="accent">
+        <mat-label
+          >Podaj inne świadczenia
+          {{
+            countCharacters('otherBenefits', optionalInfoFormGroup, 500)
+          }}</mat-label
+        >
+        <mat-icon matPrefix color="accent">category</mat-icon>
+        <mat-hint
+          *ngIf="
+            optionalInfoFormGroup.controls['otherBenefits']?.hasError(
+              'required'
+            )
+          "
+          >Pole jest wymagane</mat-hint
+        >
+        <textarea matInput formControlName="otherBenefits"></textarea>
       </mat-form-field>
     </div>
     <div class="flex flex-row items-center gap-x-5 justify-between pt-10">

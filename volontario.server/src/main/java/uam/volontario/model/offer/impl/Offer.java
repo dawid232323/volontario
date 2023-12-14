@@ -132,6 +132,16 @@ public class Offer implements OfferIf
     @Column
     private Boolean isHidden;
 
+    @Column( length = 500 )
+    @Size( max = 500, message = "Other categories must be under 500 characters long" )
+    @Nullable
+    private String otherCategories;
+
+    @Column( length = 500 )
+    @Size( max = 500, message = "Other benefits must be under 500 characters long" )
+    @Nullable
+    private String otherBenefits;
+
     public Instant getStartDate()
     {
         if( startDate != null )

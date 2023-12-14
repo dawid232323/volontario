@@ -12,7 +12,7 @@
         instytucji.</label
       >
     </div>
-    <div class="pt-8">
+    <div class="pt-8" *ngIf="canManageOffer">
       <button
         mat-raised-button
         class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5"
@@ -48,8 +48,20 @@
     </mat-tab>
   </mat-tab-group>
 
-  <div class="flex flex-col lg:flex-row" *ngIf="!canManageOffer">
-    <div *ngTemplateOutlet="advertisementDetailsMainPage"></div>
+  <div class="flex flex-col lg:flex-row w-full" *ngIf="!canManageOffer">
+    <div class="flex flex-col">
+      <div class="pt-8">
+        <button
+          mat-raised-button
+          class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5"
+          (click)="onGoBackToOfferListButtonClicked()"
+          color="accent">
+          <mat-icon matPrefix>arrow_back</mat-icon>
+          Wróć do listy ogłoszeń
+        </button>
+      </div>
+      <div *ngTemplateOutlet="advertisementDetailsMainPage"></div>
+    </div>
     <div *ngTemplateOutlet="sideButtonContainer"></div>
   </div>
   <ng-template #advertisementDetailsMainPage>
@@ -161,6 +173,11 @@
               class="!bg-btnAccentHover text-xs md:text-base"
               >{{ category.name }}</mat-chip
             >
+            <mat-chip
+              *ngIf="!isNil(advertisementData?.otherCategories)"
+              class="!bg-btnAccentHover text-xs md:text-base">
+              {{ advertisementData?.otherCategories }}
+            </mat-chip>
           </mat-chip-list>
         </mat-card-content>
       </mat-card>
@@ -186,7 +203,7 @@
         }}</mat-card-content>
       </mat-card>
 
-      <mat-card *ngIf="advertisementData?.offerBenefitIds" class="my-8">
+      <mat-card *ngIf="shouldShowBenefits" class="my-8">
         <mat-card-title>
           <h1>Dodatkowe świadczenia</h1>
         </mat-card-title>
@@ -197,6 +214,11 @@
               *ngFor="let benefits of advertisementData?.offerBenefitIds"
               class="!bg-btnAccentHover text-xs md:text-base"
               >{{ benefits.name }}</mat-chip
+            >
+            <mat-chip
+              *ngIf="!isNil(advertisementData?.otherBenefits)"
+              class="!bg-btnAccentHover text-xs md:text-base"
+              >{{ advertisementData?.otherBenefits }}</mat-chip
             >
           </mat-chip-list>
         </mat-card-content>

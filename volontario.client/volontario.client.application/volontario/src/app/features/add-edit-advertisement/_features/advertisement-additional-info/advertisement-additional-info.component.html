@@ -13,7 +13,33 @@
             [value]="category.id"
             >{{ category.name }}</mat-option
           >
+          <mat-option [value]="-1">Inne</mat-option>
         </mat-select>
+      </mat-form-field>
+    </div>
+    <div
+      class="flex flex-col lg:flex-row items-stretch"
+      *ngIf="isOtherCategoriesSelected">
+      <mat-form-field
+        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
+        appearance="standard"
+        color="accent">
+        <mat-label
+          >Podaj inne kategorie ogłoszenia
+          {{
+            countCharacters('otherCategories', additionalInfoFormGroup, 500)
+          }}</mat-label
+        >
+        <mat-icon matPrefix color="accent">category</mat-icon>
+        <mat-hint
+          *ngIf="
+            additionalInfoFormGroup.controls['otherCategories']?.hasError(
+              'required'
+            )
+          "
+          >Pole jest wymagane</mat-hint
+        >
+        <textarea matInput formControlName="otherCategories"></textarea>
       </mat-form-field>
     </div>
     <div class="flex flex-col lg:flex-row items-stretch">

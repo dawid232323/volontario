@@ -209,7 +209,7 @@ public class CrudOfferDataHandler
         }
         catch( Exception aE )
         {
-            aE.printStackTrace();
+            LOGGER.error( aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                 .body( aE.getMessage() );
         }
@@ -239,7 +239,7 @@ public class CrudOfferDataHandler
         }
         catch( Exception aE )
         {
-            aE.printStackTrace();
+            LOGGER.error( aE );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                 .body( aE.getMessage() );
         }
@@ -281,7 +281,7 @@ public class CrudOfferDataHandler
         }
         catch( Exception aException )
         {
-            LOGGER.error( "Error on changing offer visibility " + aException.getMessage() );
+            LOGGER.error( "Error on changing offer visibility", aException );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                 .body( aException.getMessage() );
         }

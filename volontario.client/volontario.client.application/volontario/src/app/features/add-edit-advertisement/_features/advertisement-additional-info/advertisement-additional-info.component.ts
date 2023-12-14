@@ -1,33 +1,32 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { isNil } from 'lodash';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import {
-  defaultAngularEditorConfig,
-  DefaultAngularEditorConfigProvider,
-} from 'src/app/utils/angular-editor.const';
+import { DefaultAngularEditorConfigProvider } from 'src/app/utils/angular-editor.const';
+import { Subscription } from 'rxjs';
+import { countCharacters } from '../../../../utils/validator.utils';
 
 @Component({
   selector: 'app-advertisement-additional-info',
   templateUrl: './advertisement-additional-info.component.html',
   styleUrls: ['./advertisement-additional-info.component.scss'],
 })
-export class AdvertisementAdditionalInfoComponent implements OnInit {
+export class AdvertisementAdditionalInfoComponent implements OnInit, OnDestroy {
   @Input() additionalInfoFormGroup: FormGroup = new FormGroup<any>({});
   @Input() experienceLevels: VolunteerExperience[] = [];
   @Input() interestCategories: InterestCategoryDTO[] = [];
+
+  private subscription = new Subscription();
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.makeSubscription();
+  }
 
-  public get maxDescriptionLength(): any {
-    const validatorMessage =
-      this.additionalInfoFormGroup.controls['description'].errors?.[
-        'maxlength'
-      ];
-    return validatorMessage?.['requiredLength'];
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   public onExperienceRequiredChange(toggleChange: MatSlideToggleChange) {
@@ -42,7 +41,39 @@ export class AdvertisementAdditionalInfoComponent implements OnInit {
     }
   }
 
+  private makeSubscription() {
+    this.subscription.add(
+      this.additionalInfoFormGroup.controls[
+        'advertisementCategories'
+      ]?.valueChanges.subscribe(this.onCategoriesSelectionChange.bind(this))
+    );
+  }
+
+  private onCategoriesSelectionChange() {
+    const otherCategoriesCtrl =
+      this.additionalInfoFormGroup.controls['otherCategories'];
+    if (this.isOtherCategoriesSelected) {
+      otherCategoriesCtrl?.addValidators([
+        Validators.required,
+        Validators.maxLength(500),
+      ]);
+    } else {
+      otherCategoriesCtrl?.clearValidators();
+      otherCategoriesCtrl?.patchValue(null);
+    }
+    otherCategoriesCtrl?.updateValueAndValidity();
+  }
+
+  public get isOtherCategoriesSelected(): boolean {
+    return !isNil(
+      (<number[]>(
+        this.additionalInfoFormGroup.controls['advertisementCategories']?.value
+      ))?.find(selectedId => selectedId === -1)
+    );
+  }
+
   protected readonly isNil = isNil;
   protected readonly defaultAngularEditorConfig =
     new DefaultAngularEditorConfigProvider().config;
+  protected readonly countCharacters = countCharacters;
 }

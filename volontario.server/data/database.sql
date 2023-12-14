@@ -228,7 +228,9 @@ CREATE TABLE public.offers (
                                institution_id bigint,
                                minimum_experience_id bigint,
                                offer_state_id bigint,
-                               offer_type_id bigint
+                               offer_type_id bigint,
+                               other_categories VARCHAR(500),
+                               other_benefits VARCHAR(500)
 );
 
 ALTER TABLE public.offers OWNER TO postgres;

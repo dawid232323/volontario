@@ -55,6 +55,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
   public isAddingAdvertisement = false;
   public hasAddedAdvertisement = false;
   public canSelectUser = false;
+  public isLoadingData = true;
 
   private currentOfferId = 0;
   private subscription = new Subscription();
@@ -121,6 +122,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
       isExperienceRequired: [false, []],
       experienceLevel: [null],
       description: [null, [Validators.required, Validators.maxLength(3000)]],
+      otherCategories: [null],
     });
   }
   private initializeOptionalInfoFormGroup() {
@@ -128,6 +130,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
       isPoznanOnly: [true, []],
       eventPlace: [null, []],
       benefits: [[], []],
+      otherBenefits: [null],
     });
     this.optionalInfoFormGroup.controls['eventPlace'].disable({
       onlySelf: true,
@@ -217,6 +220,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
           'isPoznanOnly'
         ].updateValueAndValidity({ onlySelf: true, emitEvent: true });
         this.isAddingAdvertisement = false;
+        this.isLoadingData = false;
       });
   }
 
@@ -241,6 +245,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
         if (this.operationType === AdvertisementCrudOperationType.Add) {
           this.setOfferUser(this.loggedUser!);
           this.isAddingAdvertisement = false;
+          this.isLoadingData = false;
         } else {
           this.setAdvertisementToEdit();
         }
@@ -248,8 +253,7 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
           this.loggedUser!,
           this.loggedUser!.institution
         );
-      },
-      error => console.log(error)
+      }
     );
   }
 

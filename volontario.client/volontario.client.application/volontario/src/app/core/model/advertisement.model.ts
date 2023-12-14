@@ -42,6 +42,8 @@ interface AdvertisementDtoIf {
   isPoznanOnly?: boolean;
   offerBenefitIds?: number[];
   periodicDescription?: string;
+  otherCategories?: string;
+  otherBenefits?: string;
 }
 
 export class AdvertisementDtoBuilder
@@ -61,6 +63,8 @@ export class AdvertisementDtoBuilder
   offerTypeId?: number;
   startDate?: Date;
   periodicDescription?: string;
+  otherCategories?: string;
+  otherBenefits?: string;
 
   public static builder(): AdvertisementDtoBuilder {
     return new AdvertisementDtoBuilder();
@@ -81,7 +85,9 @@ export class AdvertisementDtoBuilder
       this.offerPlace,
       this.isPoznanOnly,
       this.offerBenefitIds,
-      this.periodicDescription
+      this.periodicDescription,
+      this.otherCategories,
+      this.otherBenefits
     );
   }
 
@@ -154,6 +160,16 @@ export class AdvertisementDtoBuilder
     this.periodicDescription = description;
     return this;
   }
+
+  public setOtherCategories(otherCategories: string): AdvertisementDtoBuilder {
+    this.otherCategories = otherCategories;
+    return this;
+  }
+
+  public setOtherBenefits(otherBenefits: string): AdvertisementDtoBuilder {
+    this.otherBenefits = otherBenefits;
+    return this;
+  }
 }
 
 /**
@@ -174,7 +190,9 @@ export class AdvertisementUpdateCreateDto implements AdvertisementDtoIf {
     public offerPlace?: string,
     public isPoznanOnly?: boolean,
     public offerBenefitIds?: number[],
-    public periodicDescription?: string
+    public periodicDescription?: string,
+    public otherCategories?: string,
+    public otherBenefits?: string
   ) {}
 }
 
@@ -230,7 +248,9 @@ export class AdvertisementDto {
     public offerBenefitIds: AdvertisementBenefit[],
     public periodicDescription: string,
     public institutionId: number,
-    public institutionName: string
+    public institutionName: string,
+    public otherCategories: string,
+    public otherBenefits: string
   ) {}
 
   public static fromPayload(payload?: any): AdvertisementDto {
@@ -251,7 +271,9 @@ export class AdvertisementDto {
       payload?.offerBenefits,
       payload?.periodicDescription,
       payload?.institutionId,
-      payload?.institutionName
+      payload?.institutionName,
+      payload?.otherCategories,
+      payload?.otherBenefits
     );
   }
 }
@@ -287,19 +309,27 @@ export class AdvertisementAdditionalInfo {
     public advertisementCategories: number[],
     public isExperienceRequired: boolean,
     public experienceLevel: number | null,
-    public description: string
+    public description: string,
+    public otherCategories: string | null
   ) {}
 
   public static fromAdvertisementDto(
     advertisement: AdvertisementDto
   ): AdvertisementAdditionalInfo {
+    const categoryIds = advertisement.interestCategories.map(
+      category => category.id
+    );
+    if (!isNil(advertisement?.otherCategories)) {
+      categoryIds.push(-1);
+    }
     return new AdvertisementAdditionalInfo(
-      advertisement.interestCategories.map(category => category.id),
+      categoryIds,
       advertisement?.isExperienceRequired,
       isNil(advertisement?.experienceLevel?.id)
         ? null
         : advertisement?.experienceLevel?.id,
-      advertisement?.offerDescription
+      advertisement?.offerDescription,
+      advertisement?.otherCategories
     );
   }
 }
@@ -308,16 +338,22 @@ export class AdvertisementOptionalInfo {
   constructor(
     public isPoznanOnly: boolean,
     public eventPlace: string,
-    public benefits: number[]
+    public benefits: number[],
+    public otherBenefits: string | null
   ) {}
 
   public static fromAdvertisementDto(
     advertisement: AdvertisementDto
   ): AdvertisementOptionalInfo {
+    const benefitIds = this.getBenefitIds(advertisement?.offerBenefitIds);
+    if (!isNil(advertisement?.otherBenefits)) {
+      benefitIds.push(-1);
+    }
     return new AdvertisementOptionalInfo(
       advertisement?.isPoznanOnly,
       advertisement?.offerPlace,
-      this.getBenefitIds(advertisement?.offerBenefitIds)
+      benefitIds,
+      advertisement?.otherBenefits
     );
   }
 
