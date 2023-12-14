@@ -177,11 +177,6 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
         this.isAddingAdvertisement = false;
         this.hasAddedAdvertisement = true;
       },
-      error: error => {
-        this.isAddingAdvertisement = false;
-        console.log(error);
-        alert(JSON.stringify(error.error));
-      },
     });
   }
 

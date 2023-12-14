@@ -67,7 +67,12 @@
     </div>
   </div>
   <ng-template #advertisementDetailsMainPage>
-    <div class="min-h-screen w-full lg:basis-4/5 mx-auto">
+    <div
+      [ngClass]="{
+        'lg:basis-4/5':
+          loggedUser?.hasUserRole(UserRoleEnum.Volunteer) || canManageOffer
+      }"
+      class="min-h-screen w-full mx-auto">
       <mat-card class="my-8">
         <mat-card-title>
           <h1>{{ advertisementData?.offerTitle }}</h1>
