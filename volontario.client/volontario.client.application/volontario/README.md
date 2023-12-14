@@ -1,10 +1,9 @@
 # Volontario
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.2.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.2 and npm version 9.1.2.
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Install dependencies
+To install all necessary dependencies run `npm i` in this directory.
 
 ## Code scaffolding
 
@@ -14,13 +13,13 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Running development server
+To start development server run 
+```bash
+ng serve --configuration=localdev8080
+```
+Keep in mind that volontario backend server should be up and running on port 8080.
+From now on Volontario is available at `http://localhost:4200/`. Server will be refreshed automatically after any changes are made.
 
 ## Further help
 
