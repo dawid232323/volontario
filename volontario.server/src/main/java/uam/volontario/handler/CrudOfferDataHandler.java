@@ -346,12 +346,16 @@ public class CrudOfferDataHandler
 
     private void handleMailNotificationsForVolunteers( Offer newOffer )
     {
-        List< Long > interstCategoriesIds = newOffer.getInterestCategories()
+        if( !newOffer.getInstitution().isActive() )
+        {
+            return;
+        }
+        List< Long > interestCategoriesIds = newOffer.getInterestCategories()
             .stream()
             .map( InterestCategory::getId )
             .toList();
         userService.findFiltered( new UserSpecification( UserSearchQuery.builder()
-            .interestCategoriesIds( interstCategoriesIds )
+            .interestCategoriesIds( interestCategoriesIds )
             .build() ), Pageable.unpaged() )
             .stream()
             .forEach( user -> {
