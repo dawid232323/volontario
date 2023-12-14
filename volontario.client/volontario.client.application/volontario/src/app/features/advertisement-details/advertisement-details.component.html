@@ -12,7 +12,7 @@
         instytucji.</label
       >
     </div>
-    <div class="pt-8" *ngIf="canManageOffer">
+    <div class="hidden lg:flex pt-8" *ngIf="canManageOffer">
       <button
         mat-raised-button
         class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5"
@@ -26,7 +26,7 @@
 
   <mat-tab-group class="w-full py-5" *ngIf="canManageOffer">
     <mat-tab label="Szczegóły ogłoszenia">
-      <div class="flex lg:flex-row flex-col">
+      <div class="flex lg:flex-row flex-col-reverse">
         <div *ngTemplateOutlet="advertisementDetailsMainPage"></div>
         <div *ngTemplateOutlet="sideButtonContainer"></div>
       </div>
@@ -49,8 +49,8 @@
   </mat-tab-group>
 
   <div class="flex flex-col lg:flex-row w-full" *ngIf="!canManageOffer">
-    <div class="flex flex-col">
-      <div class="pt-8">
+    <div class="flex lg:flex-col flex-col-reverse">
+      <div class="lg:pt-8 lg:pb-0 pb-8">
         <button
           mat-raised-button
           class="hover:bg-btnAccentHover lg:w-1/4 w-full py-5"
@@ -60,9 +60,11 @@
           Wróć do listy ogłoszeń
         </button>
       </div>
-      <div *ngTemplateOutlet="advertisementDetailsMainPage"></div>
+      <div class="flex flex-col lg:flex-row-reverse">
+        <div *ngTemplateOutlet="sideButtonContainer"></div>
+        <div *ngTemplateOutlet="advertisementDetailsMainPage"></div>
+      </div>
     </div>
-    <div *ngTemplateOutlet="sideButtonContainer"></div>
   </div>
   <ng-template #advertisementDetailsMainPage>
     <div class="min-h-screen w-full lg:basis-4/5 mx-auto">

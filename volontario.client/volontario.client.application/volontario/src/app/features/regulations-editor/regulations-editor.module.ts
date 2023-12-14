@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 @NgModule({
   declarations: [RegulationsEditorComponent],
@@ -14,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     AngularEditorModule,
     MatButtonModule,
+    RouterLink,
   ],
   exports: [RegulationsEditorComponent],
 })
