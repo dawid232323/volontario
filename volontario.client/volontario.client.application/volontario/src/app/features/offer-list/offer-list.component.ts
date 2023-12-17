@@ -1,10 +1,11 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { forkJoin } from 'rxjs';
 import {
   AdvertisementFilterIf,
   AdvertisementService,
+  AdvertisementVisibilityEnum,
 } from 'src/app/core/service/advertisement.service';
 import {
   AdvertisementPreview,
@@ -20,6 +21,7 @@ import { PageEvent } from '@angular/material/paginator';
 import * as moment from 'moment';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
+  addQueryParamFromBoolean,
   addQueryParamFromDate,
   addQueryParamFromNumber,
   addQueryParamFromSet,
@@ -27,6 +29,7 @@ import {
   updateActiveUrl,
 } from '../../utils/url.util';
 import { HttpParams } from '@angular/common/http';
+import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 
 @Component({
   selector: 'app-offer-list',
@@ -46,6 +49,7 @@ export class OfferListComponent implements OnInit {
   private _availablePageSizes = [5, 10, 15];
   private _selectedPageIndex = 0;
   private _selectedPageSize = this._availablePageSizes[0];
+  private _showHiddenOffers = false;
 
   public typedText?: string | null = null;
   public dateFrom?: Date | null = null;
@@ -65,26 +69,6 @@ export class OfferListComponent implements OnInit {
     this.downloadData();
   }
 
-  public get interestCategories(): InterestCategoryDTO[] {
-    return this._interestCategories;
-  }
-
-  public get offerTypes(): AdvertisementType[] {
-    return this._offerTypes;
-  }
-
-  public get offerPreviews(): AdvertisementPreview[] {
-    return this._offerPreviews;
-  }
-
-  get selectedCategories(): Set<number> {
-    return this._selectedCategories;
-  }
-
-  get selectedTypes(): Set<number> {
-    return this._selectedTypes;
-  }
-
   public openMobileFilterDialog(): void {
     const dialogRef = this.dialog.open(MobileFilterViewComponent, {
       width: '100vw',
@@ -95,6 +79,8 @@ export class OfferListComponent implements OnInit {
           selectedCategories: this.selectedCategories,
           offerTypes: this.offerTypes,
           selectedTypes: this.selectedTypes,
+          canSeeHiddenOffers: this.canSeeHiddenOffers,
+          showHidden: this._showHiddenOffers,
         },
       },
     });
@@ -121,6 +107,13 @@ export class OfferListComponent implements OnInit {
     addQueryParamFromString('text', this.typedText, httpParams);
     addQueryParamFromDate('dateFrom', this.dateFrom, httpParams);
     addQueryParamFromDate('dateTo', this.dateTo, httpParams);
+    if (this.canSeeHiddenOffers) {
+      addQueryParamFromBoolean(
+        'showHidden',
+        this._showHiddenOffers,
+        httpParams
+      );
+    }
 
     delete httpParams['encoder']; // to get rid of obsolete http param.
 
@@ -136,7 +129,6 @@ export class OfferListComponent implements OnInit {
 
   private initStateFromQueryParamsAfterRefresh() {
     const urlParams = Object.fromEntries(new URLSearchParams(location.search));
-
     this.initStateFromQueryParams(urlParams);
   }
 
@@ -177,6 +169,14 @@ export class OfferListComponent implements OnInit {
 
     if (!isNil(urlParams['dateTo'])) {
       this.dateTo = new Date(urlParams['dateTo']);
+    }
+    if (
+      this.canSeeHiddenOffers &&
+      urlParams['showHidden'] &&
+      JSON.parse(urlParams['showHidden']) === true &&
+      this.canSeeHiddenOffers
+    ) {
+      this._showHiddenOffers = true;
     }
 
     updateActiveUrl(this.router, this.activatedRoute, urlParams);
@@ -235,17 +235,35 @@ export class OfferListComponent implements OnInit {
     if (!isNil(this.selectedTypes) && this.selectedTypes.size > 0) {
       filters.typeIds = [...this.selectedTypes.values()];
     }
+    if (this.canSeeHiddenOffers) {
+      if (this._showHiddenOffers) {
+        filters.visibility = AdvertisementVisibilityEnum.Hidden;
+      } else {
+        filters.visibility = AdvertisementVisibilityEnum.Active;
+      }
+    }
     return filters;
   }
 
   private onMobileFilterClose(dialogFilters: OfferListDialogDataIf) {
-    const { typedText, dateFrom, dateTo, selectedCategories, selectedTypes } =
-      dialogFilters;
+    if (isNil(dialogFilters)) {
+      return;
+    }
+    const {
+      typedText,
+      dateFrom,
+      dateTo,
+      selectedCategories,
+      selectedTypes,
+      showHidden,
+    } = dialogFilters;
     this.typedText = typedText;
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;
     this._selectedCategories = selectedCategories;
     this._selectedTypes = selectedTypes;
+    this._showHiddenOffers = showHidden || false;
+    this.onSelectionChanged();
     this.downloadOffers();
   }
 
@@ -268,6 +286,7 @@ export class OfferListComponent implements OnInit {
     this.typedText = null;
     this.dateFrom = null;
     this.dateTo = null;
+    this._showHiddenOffers = false;
     this.selectedCategories.clear();
     this.selectedTypes.clear();
     this.onSelectionChanged();
@@ -319,6 +338,43 @@ export class OfferListComponent implements OnInit {
   public get pageIndex(): number {
     return this._selectedPageIndex;
   }
+
+  public get showHiddenOffers(): boolean {
+    return this._showHiddenOffers;
+  }
+
+  public set showHiddenOffers(value: boolean) {
+    this._showHiddenOffers = value;
+  }
+
+  public get canSeeHiddenOffers(): boolean {
+    return (
+      this._loggedUser?.hasUserRoles([
+        UserRoleEnum.Admin,
+        UserRoleEnum.Moderator,
+      ]) || false
+    );
+  }
+
+  public get interestCategories(): InterestCategoryDTO[] {
+    return this._interestCategories;
+  }
+
+  public get offerTypes(): AdvertisementType[] {
+    return this._offerTypes;
+  }
+
+  public get offerPreviews(): AdvertisementPreview[] {
+    return this._offerPreviews;
+  }
+
+  get selectedCategories(): Set<number> {
+    return this._selectedCategories;
+  }
+
+  get selectedTypes(): Set<number> {
+    return this._selectedTypes;
+  }
 }
 
 export interface OfferListDialogDataIf {
@@ -326,7 +382,9 @@ export interface OfferListDialogDataIf {
   selectedCategories: Set<number>;
   offerTypes: AdvertisementType[];
   selectedTypes: Set<number>;
+  canSeeHiddenOffers: boolean;
   typedText?: string;
   dateFrom?: Date;
   dateTo?: Date;
+  showHidden?: boolean;
 }

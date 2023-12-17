@@ -13,6 +13,11 @@ export class VolontarioGlobalErrorHandlerInterceptor implements ErrorHandler {
       if (error instanceof HttpErrorResponse && error.status === 401) {
         return;
       }
+      // Endpoint userData throws unrecognised and not deterministic content not supported error which in fact didn't affect anything
+      // so to not spoil user experience we made the decision to handle it temporary this way.
+      if (error instanceof HttpErrorResponse && error.status === 415) {
+        return;
+      }
       const initialData: ErrorDialogInitialData = {
         error: error,
       };

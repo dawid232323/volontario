@@ -166,6 +166,23 @@
                 </p>
               </div>
             </div>
+            <div class="flex items-center flex-row py-3">
+              <div
+                class="rounded-full bg-btnAccentHover w-10 h-10 flex justify-center items-center">
+                <i class="fa-solid fa-building text-lg"></i>
+              </div>
+              <div class="flex justify-center flex-col px-2">
+                <p class="font-semibold text-base !m-0">Instytucja</p>
+                <p
+                  [routerLink]="[
+                    '/institution',
+                    advertisementData?.institutionId || 0
+                  ]"
+                  class="text-bgPrimary font-bold text-sm !m-0 hover:cursor-pointer hover:text-btnAccentHover">
+                  {{ advertisementData?.institutionName }}
+                </p>
+              </div>
+            </div>
           </div>
         </mat-card-content>
       </mat-card>
@@ -276,6 +293,22 @@
             class="w-full hover:bg-btnAccentHover"
             color="accent">
             Edytuj ogłoszenie
+          </button>
+          <button
+            mat-raised-button
+            class="hover:text-bgPrimary"
+            (click)="onShowHideOffer()">
+            <mat-icon *ngIf="advertisementData?.hidden" matPrefix
+              >visibility</mat-icon
+            >
+            <mat-icon *ngIf="!advertisementData?.hidden" matPrefix
+              >visibility_off</mat-icon
+            >
+            {{
+              advertisementData?.hidden
+                ? 'Pokaż ogłoszenie'
+                : 'Ukryj ogłoszenie'
+            }}
           </button>
           <button
             [disabled]="shouldDisableInstitutionPresence()"

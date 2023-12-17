@@ -30,7 +30,10 @@
         [(offerEndDate)]="dateTo!"
         (offerStartDateChange)="onSelectionChanged()"
         (offerEndDateChange)="onSelectionChanged()"
-        (offerNameChange)="onSelectionChanged()"></app-top-filter-panel>
+        (offerNameChange)="onSelectionChanged()"
+        [canSeeHiddenOffers]="canSeeHiddenOffers"
+        [(showHiddenOffers)]="showHiddenOffers"
+        (showHiddenOffersChange)="onSelectionChanged()"></app-top-filter-panel>
     </section>
     <div
       class="flex flex-row lg:space-x-3 min-h-screen"

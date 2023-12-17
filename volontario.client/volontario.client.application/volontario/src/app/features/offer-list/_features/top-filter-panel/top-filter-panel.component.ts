@@ -15,7 +15,11 @@ export class TopFilterPanelComponent implements OnInit {
   @Input() offerEndDate?: Date;
   @Output() offerEndDateChange: EventEmitter<Date> = new EventEmitter<Date>();
 
+  @Input() showHiddenOffers: boolean = false;
+  @Output() showHiddenOffersChange = new EventEmitter<boolean>();
+
   @Input() hasActiveFilters: boolean = false;
+  @Input() canSeeHiddenOffers: boolean = false;
 
   @Output() searchClicked = new EventEmitter<void>();
   @Output() filtersCleared = new EventEmitter<void>();
@@ -41,5 +45,10 @@ export class TopFilterPanelComponent implements OnInit {
   public onEndDateChange(value: Date) {
     this.offerEndDate = value;
     this.offerEndDateChange.emit(this.offerEndDate);
+  }
+
+  public onShowHiddenOffersChange(value: boolean) {
+    this.showHiddenOffers = value;
+    this.showHiddenOffersChange.emit(value);
   }
 }

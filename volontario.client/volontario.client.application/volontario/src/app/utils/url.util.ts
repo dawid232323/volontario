@@ -223,6 +223,16 @@ export function addQueryParamFromString(
   }
 }
 
+export function addQueryParamFromBoolean(
+  paramId: string,
+  fromBoolean: boolean,
+  existingParams: Params
+) {
+  if (!isNil(fromBoolean)) {
+    existingParams[paramId] = fromBoolean;
+  }
+}
+
 export function addQueryParamFromDate(
   paramId: string,
   fromDate: Date | null | undefined,

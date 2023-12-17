@@ -38,6 +38,15 @@
         [for]="endDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #endDatePicker color="accent"></mat-datepicker>
     </mat-form-field>
+    <div
+      class="flex flex-col items-center justify-center h-3/4"
+      *ngIf="canSeeHiddenOffers">
+      <mat-slide-toggle
+        [ngModel]="showHiddenOffers"
+        (ngModelChange)="onShowHiddenOffersChange($event)"
+        >Pokaż ukryte ogłoszenia</mat-slide-toggle
+      >
+    </div>
   </section>
   <section
     id="buttons-section"

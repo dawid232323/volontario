@@ -148,7 +148,7 @@ class DtoServiceTest {
         OfferDto dto = new OfferDto( "Title", Date.from( now.plusSeconds( 1000L ) ), 0L, 0L,
                 Date.from( now ), Date.from( now.plusSeconds( 2000L ) ), Collections.emptyList(),
                 false, null, "desc", "place", "periodicDesc", true,
-                Collections.emptyList() );
+                Collections.emptyList(), null, null );
 
         //when
         assertThatTypeIsReturned();
@@ -181,7 +181,7 @@ class DtoServiceTest {
         Offer offer = new Offer( 0L, "Title", "Desc", null, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
                 null, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
-                now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
+                now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false, null, null);
 
         //when
         OfferBaseInfoDto baseInfoDtoOfOffer = dtoService.createBaseInfoDtoOfOffer(offer);
@@ -215,7 +215,7 @@ class DtoServiceTest {
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
                 null, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                 null, null,
-                now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
+                now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false, null, null);
 
         //when
         OfferDetailsDto offerDetailsDto = dtoService.createOfferDetailsDto( offer );
@@ -249,7 +249,7 @@ class DtoServiceTest {
         Offer offer = new Offer( 0L, "Title", "Desc", User.builder().id( 0L ).build(), null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
                 null, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
-                now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
+                now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false, null, null);
         VolunteerData volunteerData = VolunteerData.builder().id( 0l ).domainEmailAddress( "test@amu.edu.pl" )
                 .participationMotivation( "motivation ").fieldOfStudy( "informatyka" )
                 .experience( getSampleExperienceLevel() ).interestCategories( Collections.emptyList() ).build();
@@ -287,7 +287,7 @@ class DtoServiceTest {
         Offer offer = new Offer( 0L, "Title", "Desc", null, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
                 null, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
-                now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false);
+                now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false, null, null);
 
         User user = User.builder().id( 1L ).firstName( "name" ).lastName( "surname" ).build();
 

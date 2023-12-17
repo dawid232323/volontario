@@ -250,7 +250,8 @@ export class AdvertisementDto {
     public institutionId: number,
     public institutionName: string,
     public otherCategories: string,
-    public otherBenefits: string
+    public otherBenefits: string,
+    public hidden: boolean
   ) {}
 
   public static fromPayload(payload?: any): AdvertisementDto {
@@ -273,7 +274,8 @@ export class AdvertisementDto {
       payload?.institutionId,
       payload?.institutionName,
       payload?.otherCategories,
-      payload?.otherBenefits
+      payload?.otherBenefits,
+      payload?.hidden
     );
   }
 }

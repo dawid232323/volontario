@@ -21,6 +21,12 @@ import {
 } from 'src/app/core/model/offer-presence.model';
 import { OfferPresenceHandler } from 'src/app/features/advertisement-details/offer-presence.handler';
 import { InstitutionService } from '../../core/service/institution.service';
+import {
+  ConfirmationAlertComponent,
+  ConfirmationAlertInitialData,
+  ConfirmationAlertResult,
+  ConfirmationAlertResultIf,
+} from 'src/app/shared/features/confirmation-alert/confirmation-alert.component';
 
 @Component({
   selector: 'app-advertisement-details',
@@ -161,6 +167,21 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  public onShowHideOffer() {
+    const initialData: ConfirmationAlertInitialData = {
+      confirmationMessage: this.getHideOfferMessage(),
+    };
+    const dialogRef = this.matDialog.open(ConfirmationAlertComponent, {
+      data: initialData,
+    });
+    dialogRef.afterClosed().subscribe((result: ConfirmationAlertResultIf) => {
+      if (result.confirmationAlertResult !== ConfirmationAlertResult.Accept) {
+        return;
+      }
+      this.onAfterShowHideOffer();
+    });
+  }
+
   public getVolunteerConfirmPresenceButtonLabel() {
     return this.presenceHandler.resolveVolunteerConfirmButtonLabel(
       this._canChangePresenceDecision,
@@ -247,6 +268,25 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
         this._institutionPresenceState = presenceState.presenceState;
         this._hasNotAcceptedApplications =
           presenceState.hasNotAcceptedApplications;
+        this._isLoadingData = false;
+      });
+  }
+
+  private getHideOfferMessage() {
+    if (this.advertisementData?.hidden) {
+      return 'Pokazanie ogłoszenia zmieni jego widoczność i sprawi, że będzie widoczne dla wszystkich użytkowników systemu.';
+    }
+    return 'Ukrycie ogłoszenia zmieni jego widoczność i sprawi, że przestanie być widoczne dla wszystkich użytkowników systemu.';
+  }
+
+  private onAfterShowHideOffer() {
+    this._isLoadingData = true;
+    this.advertisementService
+      .changeOfferVisibility(this._advertisementId, {
+        isHidden: !this.advertisementData!.hidden!,
+      })
+      .subscribe(result => {
+        this.advertisementData!.hidden! = result.isHidden;
         this._isLoadingData = false;
       });
   }

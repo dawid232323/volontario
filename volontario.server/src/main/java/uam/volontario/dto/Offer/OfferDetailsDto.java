@@ -35,4 +35,5 @@ public class OfferDetailsDto
     private String institutionName;
     private String otherCategories;
     private String otherBenefits;
+    private Boolean hidden;
 }
