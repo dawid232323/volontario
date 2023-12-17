@@ -3,7 +3,6 @@ package uam.volontario.dto.Application;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uam.volontario.dto.ExperienceLevelDto;
 import uam.volontario.dto.Institution.InterestCategoryDto;
 import uam.volontario.dto.Offer.OfferBaseInfoDto;
 
@@ -21,7 +20,6 @@ public class ApplicationDetailsDto
     private String contactEmail;
     private String domainEmail;
     private String phoneNumber;
-    private ExperienceLevelDto experienceLevel;
     private String participationMotivation;
     private List< InterestCategoryDto > interestCategories;
     private OfferBaseInfoDto offerInfo;

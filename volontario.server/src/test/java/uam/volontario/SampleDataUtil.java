@@ -8,7 +8,6 @@ import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.model.offer.impl.OfferState;
 import uam.volontario.model.offer.impl.OfferType;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 
@@ -39,11 +38,6 @@ public class SampleDataUtil
     {
         return new InterestCategory( 0L, "Testowa kategoria", "Test", Collections.emptyList(),
                 Collections.emptyList(), true );
-    }
-
-    public static ExperienceLevel getSampleExperienceLeve()
-    {
-        return new ExperienceLevel( 0L, "Początkujący", "Początkujący", 0L, true );
     }
 
     public static User.UserBuilder prepareUserBuilderWithCorrectVolunteerData()
@@ -86,8 +80,8 @@ public class SampleDataUtil
 
         return new Offer( 0L, "Title", "Desc", user, null,
                 getSampleInstitution(), type, now, now.plusSeconds( 1000L ), false,
-                null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
+                SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
                 Collections.emptyList(), Collections.emptyList(), null, null, now.plusSeconds( 2000L ), "periodicDesc",
-                "Place", false, false);
+                "Place", false, false, "", "");
     }
 }

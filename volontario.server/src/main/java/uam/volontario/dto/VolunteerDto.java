@@ -28,8 +28,6 @@ public class VolunteerDto
 
     private String participationMotivation;
 
-    private Long experienceId;
-
     private String fieldOfStudy;
 
     private List< Long > interestCategoriesIds;

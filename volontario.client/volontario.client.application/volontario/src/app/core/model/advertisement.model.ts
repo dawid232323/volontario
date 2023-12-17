@@ -1,6 +1,5 @@
 import { ObjectBuilderIf } from 'src/app/core/interface/object-builder.interface';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
-import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { isNil } from 'lodash';
 import { User } from 'src/app/core/model/user.model';
 import { DictionaryValueInterface } from 'src/app/core/interface/dictionary-value.interface';
@@ -36,7 +35,6 @@ interface AdvertisementDtoIf {
   endDate?: Date;
   interestCategoryIds?: number[];
   isExperienceRequired?: boolean;
-  experienceLevelId?: number;
   offerDescription?: string;
   offerPlace?: string;
   isPoznanOnly?: boolean;
@@ -51,7 +49,6 @@ export class AdvertisementDtoBuilder
 {
   contactPersonId?: number;
   endDate?: Date;
-  experienceLevelId?: number;
   interestCategoryIds?: number[];
   isExperienceRequired?: boolean;
   isPoznanOnly?: boolean;
@@ -80,7 +77,6 @@ export class AdvertisementDtoBuilder
       this.endDate,
       this.interestCategoryIds,
       this.isExperienceRequired,
-      this.experienceLevelId,
       this.offerDescription,
       this.offerPlace,
       this.isPoznanOnly,
@@ -128,11 +124,6 @@ export class AdvertisementDtoBuilder
 
   public setIsExperienceRequired(isRequired: boolean): AdvertisementDtoBuilder {
     this.isExperienceRequired = isRequired;
-    return this;
-  }
-
-  public setExperienceLevelId(experienceId: number): AdvertisementDtoBuilder {
-    this.experienceLevelId = experienceId;
     return this;
   }
 
@@ -185,7 +176,6 @@ export class AdvertisementUpdateCreateDto implements AdvertisementDtoIf {
     public endDate?: Date,
     public interestCategoryIds?: number[],
     public isExperienceRequired?: boolean,
-    public experienceLevelId?: number,
     public offerDescription?: string,
     public offerPlace?: string,
     public isPoznanOnly?: boolean,
@@ -241,7 +231,6 @@ export class AdvertisementDto {
     public endDate: Date,
     public interestCategories: InterestCategoryDTO[],
     public isExperienceRequired: boolean,
-    public experienceLevel: VolunteerExperience,
     public offerDescription: string,
     public offerPlace: string,
     public isPoznanOnly: boolean,
@@ -265,7 +254,6 @@ export class AdvertisementDto {
       payload?.endDate,
       payload?.interestCategories,
       payload?.isExperienceRequired,
-      payload?.experienceLevel,
       payload?.offerDescription,
       payload?.offerPlace,
       payload?.isPoznanOnly,
@@ -310,7 +298,6 @@ export class AdvertisementAdditionalInfo {
   constructor(
     public advertisementCategories: number[],
     public isExperienceRequired: boolean,
-    public experienceLevel: number | null,
     public description: string,
     public otherCategories: string | null
   ) {}
@@ -327,9 +314,6 @@ export class AdvertisementAdditionalInfo {
     return new AdvertisementAdditionalInfo(
       categoryIds,
       advertisement?.isExperienceRequired,
-      isNil(advertisement?.experienceLevel?.id)
-        ? null
-        : advertisement?.experienceLevel?.id,
       advertisement?.offerDescription,
       advertisement?.otherCategories
     );

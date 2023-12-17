@@ -11,7 +11,6 @@ import uam.volontario.SampleDataUtil;
 import uam.volontario.crud.service.*;
 import uam.volontario.dto.Application.ApplicationBaseInfoDto;
 import uam.volontario.dto.Application.ApplicationDetailsDto;
-import uam.volontario.dto.ExperienceLevelDto;
 import uam.volontario.dto.Institution.InstitutionContactPersonDto;
 import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.dto.Institution.InterestCategoryDto;
@@ -23,7 +22,6 @@ import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.model.offer.impl.*;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 
@@ -39,9 +37,6 @@ import static org.mockito.Mockito.doReturn;
 
 @RunWith( MockitoJUnitRunner.Silent.class )
 class DtoServiceTest {
-
-    @Spy
-    ExperienceLevelService experienceLevelService;
     @Spy
     RoleService roleService;
     @Spy
@@ -65,10 +60,9 @@ class DtoServiceTest {
 
         //given
         VolunteerDto dto = new VolunteerDto( "Name", "Surname", "pas", "test@amu.edu.pl", "test@test.pl", "000000000",
-                "motivation", 0L, "informatyka", Collections.emptyList() );
+                "motivation", "informatyka", Collections.emptyList() );
 
         //when
-        assertThatExperienceLevelIsReturned();
         User volunteerFromDto = dtoService.createVolunteerFromDto(dto);
 
         //then
@@ -79,11 +73,6 @@ class DtoServiceTest {
         assertEquals( "000000000", volunteerFromDto.getPhoneNumber() );
         assertEquals( "test@amu.edu.pl", volunteerFromDto.getVolunteerData().getDomainEmailAddress() );
         assertEquals( "motivation", volunteerFromDto.getVolunteerData().getParticipationMotivation() );
-
-         ExperienceLevel level = volunteerFromDto.getVolunteerData().getExperience();
-        assertEquals( "exLevel", level.getName() );
-        assertEquals( "def", level.getDefinition() );
-        assertEquals( 0L, level.getId() );
     }
 
     @Test
@@ -124,22 +113,6 @@ class DtoServiceTest {
         assertEquals( "Name", interestCategoryDto.getName() );
         assertEquals( "Desc", interestCategoryDto.getDescription() );
     }
-
-    @Test
-    void shouldConvertVolunteerExperienceToDto() {
-        //given
-        ExperienceLevel ex = new ExperienceLevel( 0L, "Name", "Def", 1L, true );
-
-        //when
-        ExperienceLevelDto dto = dtoService.volunteerExperienceToDto( ex );
-
-        //then
-        assertEquals( 0L, dto.getId() );
-        assertEquals( "Name", dto.getName() );
-        assertEquals( "Def", dto.getDefinition() );
-        assertEquals( dto.getValue(), 1L );
-    }
-
     @Test
     void shouldCreateOfferFromDto()
     {
@@ -147,7 +120,7 @@ class DtoServiceTest {
         //given
         OfferDto dto = new OfferDto( "Title", Date.from( now.plusSeconds( 1000L ) ), 0L, 0L,
                 Date.from( now ), Date.from( now.plusSeconds( 2000L ) ), Collections.emptyList(),
-                false, null, "desc", "place", "periodicDesc", true,
+                false, "desc", "place", "periodicDesc", true,
                 Collections.emptyList(), null, null );
 
         //when
@@ -180,7 +153,7 @@ class DtoServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", null, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
+                null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false, null, null);
 
         //when
@@ -213,7 +186,7 @@ class DtoServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", user, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+                null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                 null, null,
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false, null, null);
 
@@ -248,11 +221,11 @@ class DtoServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", User.builder().id( 0L ).build(), null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
+                null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false, null, null);
         VolunteerData volunteerData = VolunteerData.builder().id( 0l ).domainEmailAddress( "test@amu.edu.pl" )
                 .participationMotivation( "motivation ").fieldOfStudy( "informatyka" )
-                .experience( getSampleExperienceLevel() ).interestCategories( Collections.emptyList() ).build();
+                .interestCategories( Collections.emptyList() ).build();
 
         User user = User.builder().id( 1L ).firstName( "name" ).lastName( "surname" ).contactEmailAddress("test@test.pl")
                 .volunteerData( volunteerData ).phoneNumber( "000000000" ).build();
@@ -286,7 +259,7 @@ class DtoServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", null, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
+                null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null, null,
                 now.plusSeconds( 1000L ), "periodicDesc", "Place", false, false, null, null);
 
         User user = User.builder().id( 1L ).firstName( "name" ).lastName( "surname" ).build();
@@ -304,16 +277,6 @@ class DtoServiceTest {
         assertEquals( "motivation", applicationBaseInfosDto.getParticipationMotivation() );
         assertEquals( "name", applicationBaseInfosDto.getFirstName() );
         assertEquals( "surname", applicationBaseInfosDto.getLastName() );
-    }
-
-    private void assertThatExperienceLevelIsReturned()
-    {
-        doReturn( Optional.of( getSampleExperienceLevel() ) )
-                .when( experienceLevelService ).tryLoadEntity( 0L );
-    }
-
-    private static ExperienceLevel getSampleExperienceLevel() {
-        return new ExperienceLevel( 0L, "exLevel", "def", 0L, true );
     }
 
     private void assertThatTypeIsReturned()

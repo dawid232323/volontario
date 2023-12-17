@@ -69,7 +69,6 @@ public class SecurityConfiguration
                 "/api/volunteer/register",
                 "/api/login",
                 "/api/interestCategories",
-                "/api/experienceLevels",
                 "/api/refresh/token",
                 "/api/institution/register",
                 "/api/institution/accept",

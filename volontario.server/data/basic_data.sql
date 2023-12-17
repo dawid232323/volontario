@@ -26,13 +26,6 @@ VALUES  (1, 'Nowe'),
 
 SELECT setval('offer_states_id_seq', 8, true);
 
-INSERT INTO public.experience_level
-VALUES  (1, 'Początkujący', 'Początkujący', 10, true),
-        (2, 'Średniozaawansowany', 'Średniozaawansowany', 20, true),
-        (3, 'Weteran', 'Weteran', 30, true);
-
-SELECT setval('experience_level_id_seq', 4, true);
-
 INSERT INTO public.interest_categories
 VALUES  (1, 'Praca z osobami starszymi', 'Praca z osobami starszymi', true),
         (2, 'Praca z dziećmi', 'Praca z dziećmi', true),

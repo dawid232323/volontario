@@ -16,7 +16,6 @@ import {
 import { Injectable } from '@angular/core';
 import { DictValueFormComponent } from 'src/app/features/manage-dict-values/_features/dict-value-form/dict-value-form.component';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
-import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
 import { OfferBenefitService } from 'src/app/core/service/offer-benefit.service';
 
 @Injectable()
@@ -24,7 +23,6 @@ export class DictValuesModalFactory {
   constructor(
     private interestCategoryService: InterestCategoryService,
     private offerBenefitService: OfferBenefitService,
-    private experienceService: VolunteerExperienceService,
     private dialog: MatDialog
   ) {}
 
@@ -42,11 +40,6 @@ export class DictValuesModalFactory {
       case DictionaryValueTypeEnum.AddBenefits:
         return new OfferBenefitsOperationPerformer(
           this.offerBenefitService,
-          this.dialog
-        );
-      case DictionaryValueTypeEnum.ExpLevel:
-        return new ExperienceLevelOperationPerformer(
-          this.experienceService,
           this.dialog
         );
     }
@@ -129,7 +122,5 @@ abstract class AbstractDictValueOperationPerformer
 }
 
 class InterestCategoryOperationPerformer extends AbstractDictValueOperationPerformer {}
-
-class ExperienceLevelOperationPerformer extends AbstractDictValueOperationPerformer {}
 
 class OfferBenefitsOperationPerformer extends AbstractDictValueOperationPerformer {}

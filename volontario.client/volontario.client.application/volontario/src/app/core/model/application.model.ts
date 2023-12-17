@@ -1,5 +1,4 @@
 import { AdvertisementPreview } from 'src/app/core/model/advertisement.model';
-import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 
 export class ApplicationBaseInfo {
@@ -35,7 +34,6 @@ export class ApplicationDetails {
     public contactEmail: string,
     public domainEmail: string,
     public phoneNumber: string,
-    public experienceLevel: VolunteerExperience,
     public participationMotivation: string,
     public interestCategories: InterestCategoryDTO[],
     public offerInfo: AdvertisementPreview,
@@ -54,7 +52,6 @@ export class ApplicationDetails {
       payload?.contactEmail,
       payload?.domainEmail,
       payload?.phoneNumber,
-      VolunteerExperience.fromPayload(payload?.experienceLevel),
       payload?.participationMotivation,
       payload?.interestCategories?.map(InterestCategoryDTO.fromPayload),
       AdvertisementPreview.fromPayload(payload?.offerInfo),

@@ -1,6 +1,5 @@
 package uam.volontario.model.common.impl;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +7,6 @@ import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.RoleIf;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
 
 import java.util.List;
 import java.util.Set;

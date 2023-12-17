@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
-import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
-import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { AdvertisementBenefit } from 'src/app/core/model/advertisement.model';
 import { forkJoin, Observable } from 'rxjs';
 import {
@@ -31,17 +29,13 @@ export class ManageDictValuesComponent implements OnInit {
   private _interestCategoryList?: DictValuesListComponent;
   @ViewChild('benefitsList')
   private _offerBenefitsList?: DictValuesListComponent;
-  @ViewChild('experienceLevelsList')
-  private _experienceLevelsList?: DictValuesListComponent;
 
   private _interestCategories: InterestCategoryDTO[] = [];
-  private _volunteerExperience: VolunteerExperience[] = [];
   private _offerBenefits: AdvertisementBenefit[] = [];
   private _isLoadingData = true;
 
   constructor(
     private interestCategoryService: InterestCategoryService,
-    private volunteerExpService: VolunteerExperienceService,
     private offerBenefitService: OfferBenefitService,
     private operationPerformerFactory: DictValuesModalFactory
   ) {}
@@ -52,10 +46,6 @@ export class ManageDictValuesComponent implements OnInit {
 
   public get interestCategories(): InterestCategoryDTO[] {
     return this._interestCategories;
-  }
-
-  public get volunteerExperience(): VolunteerExperience[] {
-    return this._volunteerExperience;
   }
 
   public get offerBenefits(): AdvertisementBenefit[] {
@@ -96,11 +86,9 @@ export class ManageDictValuesComponent implements OnInit {
     this._isLoadingData = true;
     forkJoin([
       this.interestCategoryService.getAllValues(),
-      this.volunteerExpService.getAllValues(),
       this.offerBenefitService.getAllValues(),
-    ]).subscribe(([categories, expLevels, benefits]) => {
+    ]).subscribe(([categories, benefits]) => {
       this._interestCategories = categories;
-      this._volunteerExperience = expLevels;
       this._offerBenefits = benefits;
       this._isLoadingData = false;
     });
@@ -154,9 +142,6 @@ export class ManageDictValuesComponent implements OnInit {
         break;
       case DictionaryValueTypeEnum.AddBenefits:
         this._offerBenefitsList?.updateValue(valueData);
-        break;
-      case DictionaryValueTypeEnum.ExpLevel:
-        this._experienceLevelsList?.updateValue(valueData);
         break;
     }
   }

@@ -47,10 +47,10 @@ export class AdvertisementBasicInfoComponent implements OnInit, OnDestroy {
     if (this.isDescriptionOfCycleHidden) {
       periodicDescriptionControl.removeValidators(Validators.required);
       periodicDescriptionControl.setValue(null);
-      periodicDescriptionControl.updateValueAndValidity();
     } else {
       periodicDescriptionControl.addValidators(Validators.required);
     }
+    periodicDescriptionControl.updateValueAndValidity();
   }
 
   protected readonly DateValidatorUsageEnum = DateValidatorUsageEnum;

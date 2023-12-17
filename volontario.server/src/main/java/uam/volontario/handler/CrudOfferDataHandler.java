@@ -101,21 +101,18 @@ public class CrudOfferDataHandler
      * @param aOfferPlace
      *                                 offer place - will return offers where saved place contains this
      *                                 substring.
-     * @param aExperienceLevelId
-     *                                 experience level id - will return offers with matching or lower
-     *                                 required experience level.
      * @param isPoznanOnly
      *                                 whether offer is Poznan only - will return matching.
      * @return Response Entity with code 200 and list of offers or Response Entity with code 500 when error
      *         occurred during fetching offers.
      */
     public ResponseEntity< ? > loadBaseOffersInfoFiltered( String aTitle, Long aOfferTypeId, Date aStartDate,
-        Date aEndDate, List< Long > aInterestCategoryIds, String aOfferPlace, Long aExperienceLevelId,
+        Date aEndDate, List< Long > aInterestCategoryIds, String aOfferPlace,
         Boolean isPoznanOnly, Long aInstitutionId, Long aContactPersonId, String aVisibility,
         Pageable pageable )
     {
         OfferSearchQuery query = new OfferSearchQuery( aTitle, aOfferTypeId, aStartDate, aEndDate,
-            aInterestCategoryIds, aOfferPlace, aExperienceLevelId, isPoznanOnly, aVisibility, aInstitutionId,
+            aInterestCategoryIds, aOfferPlace, isPoznanOnly, aVisibility, aInstitutionId,
             aContactPersonId );
         OfferSpecification specification = new OfferSpecification( query );
 

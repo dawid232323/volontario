@@ -13,8 +13,6 @@ import {
 } from 'src/app/core/model/advertisement.model';
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
-import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
-import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   dateBeforeAfterValidator,
@@ -47,7 +45,6 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
   public institutionWorkers: InstitutionWorker[] = [];
   public advertisementTypes: AdvertisementType[] = [];
   public interestCategories: InterestCategoryDTO[] = [];
-  public experienceLevel: VolunteerExperience[] = [];
   public advertisementBenefits: AdvertisementBenefit[] = [];
   public operationType: AdvertisementCrudOperationType =
     AdvertisementCrudOperationType.Add;
@@ -66,7 +63,6 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private advertisementService: AdvertisementService,
     private interestCategoryService: InterestCategoryService,
-    private experienceService: VolunteerExperienceService,
     private router: Router,
     private route: ActivatedRoute,
     private viewPort: ViewportScroller,
@@ -120,7 +116,6 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
     this.additionalInfoFormGroup = this.formBuilder.group({
       advertisementCategories: [[], [Validators.required]],
       isExperienceRequired: [false, []],
-      experienceLevel: [null],
       description: [null, [Validators.required, Validators.maxLength(3000)]],
       otherCategories: [null],
     });
@@ -226,7 +221,6 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
         workers: workers,
         advertisementTypes: types,
         categories: categories,
-        experiences: experiences,
         benefits: benefits,
       }) => {
         this.institutionWorkers = workers.sort(
@@ -235,7 +229,6 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
         );
         this.advertisementTypes = types;
         this.interestCategories = categories;
-        this.experienceLevel = experiences;
         this.advertisementBenefits = benefits;
         if (this.operationType === AdvertisementCrudOperationType.Add) {
           this.setOfferUser(this.loggedUser!);
@@ -263,7 +256,6 @@ export class AddEditAdvertisementComponent implements OnInit, OnDestroy {
       workers: of([loggedWorker]),
       advertisementTypes: this.advertisementService.getAllAdvertisementTypes(),
       categories: this.interestCategoryService.getUsedValues(),
-      experiences: this.experienceService.getUsedValues(),
       benefits: this.offerBenefitService.getUsedValues(),
     };
     if (

@@ -50,9 +50,6 @@ export class DictValueFormComponent implements OnInit {
       name: this.dictValueFormGroup.value['name'],
       description: this.dictValueFormGroup.value['description'],
     };
-    if (this.data.valueType === DictionaryValueTypeEnum.ExpLevel) {
-      result.definition = cloneDeep(result.description);
-    }
     this.dialogRef?.close(result);
   }
 

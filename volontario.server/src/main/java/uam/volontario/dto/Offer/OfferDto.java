@@ -24,7 +24,6 @@ public class OfferDto
     private Date endDate;
     private List<Long> interestCategoryIds;
     private Boolean isExperienceRequired;
-    private Long experienceLevelId;
     private String offerDescription;
     private String offerPlace;
     private String periodicDescription;

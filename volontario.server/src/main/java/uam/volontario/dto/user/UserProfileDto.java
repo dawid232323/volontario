@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uam.volontario.dto.ExperienceLevelDto;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 
 import java.util.List;
@@ -26,7 +25,6 @@ public class UserProfileDto
     private String interests;
     private String experienceDescription;
     private List<String> userRoles;
-    private ExperienceLevelDto experienceLevel;
     private List< InterestCategory > interestCategories;
     private Long institutionId;
     private String institutionName;

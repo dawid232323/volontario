@@ -12,7 +12,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.offer.OfferIf;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 
 import java.time.Instant;
@@ -76,12 +75,6 @@ public class Offer implements OfferIf
     @Column
     @NotNull( message = "Indication whether we need experience needs to be provided." )
     private Boolean isExperienceRequired;
-
-    @JsonManagedReference
-    @ManyToOne
-    @Nullable
-    @JoinColumn( name = "minimum_experience_id" )
-    private ExperienceLevel minimumExperience;
 
     @JsonManagedReference
     @ManyToOne

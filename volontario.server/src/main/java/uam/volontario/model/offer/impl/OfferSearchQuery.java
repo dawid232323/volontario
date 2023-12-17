@@ -16,14 +16,13 @@ public class OfferSearchQuery
     private Date endDate;
     private List<Long> interestCategoryIds;
     private String offerPlace;
-    private Long experienceLevelId;
     private Boolean isPoznanOnly;
     private Boolean isHidden;
     private Long institutionId;
     private Long contactPersonId;
 
     public OfferSearchQuery( String aTitle, Long aOfferTypeId, Date aStartDate, Date aEndDate, List<Long> aInterestCategoryIds,
-                             String aOfferPlace, Long aExperienceLevelId, Boolean aIsPoznanOnly,
+                             String aOfferPlace, Boolean aIsPoznanOnly,
                              String aVisibility, Long aInstitutionId, Long aContactPersonId ) {
         this.title = aTitle;
         this.offerTypeId = aOfferTypeId;
@@ -31,7 +30,6 @@ public class OfferSearchQuery
         this.endDate = aEndDate;
         this.interestCategoryIds = aInterestCategoryIds;
         this.offerPlace = aOfferPlace;
-        this.experienceLevelId = aExperienceLevelId;
         this.isPoznanOnly = aIsPoznanOnly;
         this.isHidden = resolveVisibility( aVisibility );
         this.institutionId = aInstitutionId;

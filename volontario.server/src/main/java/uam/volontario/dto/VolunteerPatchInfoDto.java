@@ -17,7 +17,5 @@ public class VolunteerPatchInfoDto
 
     private List< Long > interestCategoriesIds;
 
-    private Long experienceId;
-
     private String participationMotivation;
 }

@@ -7,7 +7,6 @@ import uam.volontario.crud.service.*;
 import uam.volontario.dto.Application.ApplicationBaseInfoDto;
 import uam.volontario.dto.Application.ApplicationDetailsDto;
 import uam.volontario.dto.BenefitDto;
-import uam.volontario.dto.ExperienceLevelDto;
 import uam.volontario.dto.Institution.InstitutionContactPersonDto;
 import uam.volontario.dto.Institution.InstitutionDto;
 import uam.volontario.dto.Institution.InterestCategoryDto;
@@ -28,7 +27,6 @@ import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
 import uam.volontario.model.offer.impl.*;
 import uam.volontario.model.utils.ModelUtils;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 
@@ -45,8 +43,6 @@ public class DtoService
 {
     private final InterestCategoryService interestCategoryService;
 
-    private final ExperienceLevelService experienceLevelService;
-
     private final RoleService roleService;
 
     private final BenefitService benefitService;
@@ -61,15 +57,13 @@ public class DtoService
      * CDI constructor.
      *
      * @param aInterestCategoryService interest category service.
-     * @param aExperienceLevelService  experience level service.
      */
     @Autowired
-    public DtoService( final InterestCategoryService aInterestCategoryService, final ExperienceLevelService
-            aExperienceLevelService, final RoleService aRoleService, final BenefitService aBenefitService,
-                      final UserService aUserService, final OfferTypeService aOfferTypeService, final OfferStateService aOfferStateService )
+    public DtoService( final InterestCategoryService aInterestCategoryService,
+                       final RoleService aRoleService, final BenefitService aBenefitService, final UserService aUserService,
+                       final OfferTypeService aOfferTypeService, final OfferStateService aOfferStateService )
     {
         interestCategoryService = aInterestCategoryService;
-        experienceLevelService = aExperienceLevelService;
         roleService = aRoleService;
         benefitService = aBenefitService;
         userService = aUserService;
@@ -88,14 +82,11 @@ public class DtoService
     {
         final List< Role > roles = ModelUtils.resolveRoles( roleService, UserRole.VOLUNTEER );
 
-        final ExperienceLevel experienceLevel = ModelUtils.resolveExperienceLevel( aDto.getExperienceId(),
-                experienceLevelService );
 
         final List< InterestCategory > volunteerInterestCategories = interestCategoryService.findByIds(
                 aDto.getInterestCategoriesIds() );
 
         final VolunteerData volunteerData = VolunteerData.builder()
-                .experience( experienceLevel )
                 .participationMotivation( aDto.getParticipationMotivation() )
                 .domainEmailAddress( aDto.getDomainEmail() )
                 .fieldOfStudy( aDto.getFieldOfStudy() )
@@ -186,18 +177,6 @@ public class DtoService
     }
 
     /**
-     * Maps {@linkplain ExperienceLevel} to its DTO.
-     *
-     * @param aExperienceLevel volunteer experience level to map.
-     * @return dto.
-     */
-    public ExperienceLevelDto volunteerExperienceToDto( final ExperienceLevel aExperienceLevel )
-    {
-        return new ExperienceLevelDto(aExperienceLevel.getId(), aExperienceLevel.getName(),
-                aExperienceLevel.getDefinition(), aExperienceLevel.getValue());
-    }
-
-    /**
      * Maps {@linkplain OfferDto} to its entity {@linkplain Offer}
      *
      * @param aOfferDto dto to be mapped
@@ -216,15 +195,9 @@ public class DtoService
         final OfferState offerState = offerStateService.tryLoadByState( OfferStateEnum.NEW.getTranslatedState() )
                 .orElseThrow();
 
-        ExperienceLevel offerMinExperience = null;
         List<Benefit> benefits = null;
         Instant offerEndDate = null;
 
-        if (aOfferDto.getIsExperienceRequired())
-        {
-            offerMinExperience = this.experienceLevelService
-                    .loadEntity(aOfferDto.getExperienceLevelId());
-        }
         if (aOfferDto.getOfferBenefitIds() != null && !aOfferDto.getOfferBenefitIds().isEmpty())
         {
             benefits = this.benefitService.findByIds(aOfferDto.getOfferBenefitIds());
@@ -243,7 +216,6 @@ public class DtoService
         createdOffer.setPeriodicDescription(aOfferDto.getPeriodicDescription());
         createdOffer.setInterestCategories(offerCategories);
         createdOffer.setIsExperienceRequired(aOfferDto.getIsExperienceRequired());
-        createdOffer.setMinimumExperience(offerMinExperience);
         createdOffer.setDescription(aOfferDto.getOfferDescription());
         createdOffer.setPlace(aOfferDto.getOfferPlace());
         createdOffer.setIsPoznanOnly(aOfferDto.getIsPoznanOnly());
@@ -296,8 +268,6 @@ public class DtoService
         OfferTypeDto offerTypeDto = offerTypeToDto(aOffer.getOfferType());
         List<InterestCategoryDto> interestCategoryDtos =
                 aOffer.getInterestCategories().stream().map(this::interestCategoryToDto).toList();
-        ExperienceLevelDto experienceLevelDto = aOffer.getMinimumExperience() != null
-                ? volunteerExperienceToDto(aOffer.getMinimumExperience()) : null;
         List<BenefitDto> benefitDtos = aOffer.getBenefits().stream().map(this::benefitToDto).toList();
 
         Date expirationDate = aOffer.getExpirationDate() != null ? Date.from(aOffer.getExpirationDate()) : null;
@@ -306,7 +276,7 @@ public class DtoService
 
         return new OfferDetailsDto(aOffer.getId(), aOffer.getTitle(), expirationDate, institutionContactPersonDto,
                 offerTypeDto, startDate, endDate, interestCategoryDtos, aOffer.getIsExperienceRequired(),
-                experienceLevelDto, aOffer.getDescription(), aOffer.getPlace(), aOffer.getPeriodicDescription(),
+                aOffer.getDescription(), aOffer.getPlace(), aOffer.getPeriodicDescription(),
                 aOffer.getIsPoznanOnly(), benefitDtos, aOffer.getInstitution().getId(),
                 aOffer.getInstitution().getName(), aOffer.getOtherCategories(), aOffer.getOtherBenefits(),
                 aOffer.getIsHidden() );
@@ -322,12 +292,11 @@ public class DtoService
     {
         User volunteer = aApplication.getVolunteer();
         OfferBaseInfoDto offer = createBaseInfoDtoOfOffer( aApplication.getOffer() );
-        ExperienceLevelDto experience = volunteerExperienceToDto( volunteer.getVolunteerData().getExperience() );
         List< InterestCategoryDto > interestCategories = volunteer.getVolunteerData().getInterestCategories().stream()
                 .map( this::interestCategoryToDto ).toList();
         return new ApplicationDetailsDto( aApplication.getId(), aApplication.getState().getName(), volunteer.getFirstName(),
                 volunteer.getLastName(), volunteer.getContactEmailAddress(),
-                volunteer.getVolunteerData().getDomainEmailAddress(), volunteer.getPhoneNumber(), experience,
+                volunteer.getVolunteerData().getDomainEmailAddress(), volunteer.getPhoneNumber(),
                 aApplication.getParticipationMotivation(), interestCategories, offer, aApplication.isStarred(),
                 aApplication.getOffer().getContactPerson().getId(), aApplication.getDecisionReason(), volunteer.getId() );
     }
@@ -408,8 +377,6 @@ public class DtoService
         {
             final VolunteerData volunteerData = aUser.getVolunteerData();
             userProfileDtoBuilder
-                    .experienceLevel(
-                        this.volunteerExperienceToDto( volunteerData.getExperience() ) )
                     .domainEmailAddress( volunteerData.getDomainEmailAddress() )
                     .interestCategories( volunteerData.getInterestCategories() )
                     .participationMotivation( volunteerData.getParticipationMotivation() )

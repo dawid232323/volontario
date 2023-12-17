@@ -8,7 +8,6 @@ import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uam.volontario.model.common.VolontarioDomainElementIf;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
 
 /**
  * Definition of institution's data.

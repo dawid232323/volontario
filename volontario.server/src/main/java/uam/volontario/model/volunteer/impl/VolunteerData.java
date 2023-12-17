@@ -52,11 +52,6 @@ public class VolunteerData implements VolontarioDomainElementIf
     private String fieldOfStudy;
 
     @JsonManagedReference
-    @ManyToOne
-    @JoinColumn( name = "volunteer_experience_id" )
-    private ExperienceLevel experience;
-
-    @JsonManagedReference
     @ManyToMany( cascade =  { CascadeType.PERSIST }, fetch = FetchType.EAGER )
     @JoinTable( name = "volunteer_interests",
                 joinColumns = { @JoinColumn( name = "volunteer_data_id" ) },

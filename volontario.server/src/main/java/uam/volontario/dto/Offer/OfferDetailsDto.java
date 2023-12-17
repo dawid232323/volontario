@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uam.volontario.dto.BenefitDto;
-import uam.volontario.dto.ExperienceLevelDto;
 import uam.volontario.dto.Institution.InstitutionContactPersonDto;
 import uam.volontario.dto.Institution.InterestCategoryDto;
 
@@ -25,7 +24,6 @@ public class OfferDetailsDto
     private Date endDate;
     private List<InterestCategoryDto> interestCategories;
     private Boolean isExperienceRequired;
-    private ExperienceLevelDto experienceLevel;
     private String offerDescription;
     private String offerPlace;
     private String periodicDescription;

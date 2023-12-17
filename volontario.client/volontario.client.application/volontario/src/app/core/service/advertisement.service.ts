@@ -261,7 +261,6 @@ export class AdvertisementService {
       .setEndDate(value.endDate)
       .setInterestCategoriesIds(value.advertisementCategories)
       .setIsExperienceRequired(value.isExperienceRequired)
-      .setExperienceLevelId(value.experienceLevel)
       .setOfferDescription(value.description)
       .setIsPoznanOnly(value.isPoznanOnly)
       .setOfferPlace(value.eventPlace)

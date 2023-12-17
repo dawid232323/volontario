@@ -1,12 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
-import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 import { isNil } from 'lodash';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DefaultAngularEditorConfigProvider } from 'src/app/utils/angular-editor.const';
 import { Subscription } from 'rxjs';
-import { countCharacters } from '../../../../utils/validator.utils';
+import { countCharacters } from 'src/app/utils/validator.utils';
 
 @Component({
   selector: 'app-advertisement-additional-info',
@@ -15,7 +14,6 @@ import { countCharacters } from '../../../../utils/validator.utils';
 })
 export class AdvertisementAdditionalInfoComponent implements OnInit, OnDestroy {
   @Input() additionalInfoFormGroup: FormGroup = new FormGroup<any>({});
-  @Input() experienceLevels: VolunteerExperience[] = [];
   @Input() interestCategories: InterestCategoryDTO[] = [];
 
   private subscription = new Subscription();

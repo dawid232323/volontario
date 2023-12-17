@@ -15,7 +15,6 @@ import uam.volontario.dto.convert.DtoService;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
 import uam.volontario.dto.user.UserPatchInfoDto;
 import uam.volontario.dto.user.UserProfileDto;
-import uam.volontario.exception.VolontarioEntityNotFoundException;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
@@ -48,7 +47,6 @@ public class UserHandler
 
     private final InterestCategoryService interestCategoryService;
 
-    private final ExperienceLevelService experienceLevelService;
 
     private final OfferService offerService;
 
@@ -198,8 +196,6 @@ public class UserHandler
                         .ifPresent( idList -> volunteerData.setInterestCategories( idList.stream()
                                 .map( interestCategoryService::loadEntity )
                                 .collect( Collectors.toList() ) ) );
-                Optional.ofNullable( aPatchDto.getExperienceId() )
-                        .ifPresent( id -> volunteerData.setExperience( experienceLevelService.loadEntity( id ) ) );
             }
 
             final ValidationResult validationResult = userValidationService.validateEntity( user );

@@ -6,7 +6,6 @@ export class VolunteerRegisterDTO {
     public domainEmail: string,
     public contactEmail: string,
     public participationMotivation: string,
-    public experienceId: number,
     public interestCategoriesIds: number[],
     public fieldOfStudy: string | null,
     public phoneNumber?: string | null
@@ -20,7 +19,6 @@ export class VolunteerRegisterDTO {
       payload?.domainEmail,
       payload?.contactEmail,
       payload?.participationMotivation,
-      payload?.experience,
       payload?.interestCategories,
       payload?.fieldOfStudy,
       payload?.phoneNumber

@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uam.volontario.dto.convert.DtoService;
-import uam.volontario.handler.ExperienceLevelHandler;
 import uam.volontario.handler.InterestCategoryHandler;
-import uam.volontario.model.volunteer.impl.ExperienceLevel;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.security.jwt.JWTService;
 
@@ -34,8 +32,6 @@ public class FetchingController
 {
     private final DtoService dtoService;
 
-    private final ExperienceLevelHandler experienceLevelHandler;
-
     private final JWTService jwtService;
 
     private final InterestCategoryHandler interestCategoryHandler;
@@ -47,17 +43,13 @@ public class FetchingController
      *
      * @param aInterestCategoryHandler interest category handler.
      *
-     * @param aExperienceLevelHandler volunteer experience handler.
-     *
      * @param aJwtService jwt service.
      */
     public FetchingController( final DtoService aDtoService, final InterestCategoryHandler aInterestCategoryHandler,
-                               final ExperienceLevelHandler aExperienceLevelHandler,
                                final JWTService aJwtService )
     {
         dtoService = aDtoService;
         interestCategoryHandler = aInterestCategoryHandler;
-        experienceLevelHandler = aExperienceLevelHandler;
         jwtService = aJwtService;
     }
 
@@ -88,36 +80,6 @@ public class FetchingController
         catch ( Exception aE )
         {
             LOGGER.error( "Error on loading interest categories: {}", aE.getMessage() );
-            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-                    .body( aE.getMessage() );
-        }
-    }
-
-    /**
-     * Loads all {@linkplain ExperienceLevel}s in the system.
-     *
-     * @return Response Entity with 200 code with List of Volunteer Experiences or Response Entity with 500 code when
-     *         error on server side occurred.
-     */
-    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
-    @GetMapping( value = "/experienceLevels" )
-    public ResponseEntity< ? > loadExperienceLevels()
-    {
-        try
-        {
-            final List< ExperienceLevel > experienceLevels = Lists.newArrayList();
-            Optional.ofNullable( experienceLevelHandler.loadAllUsedExperienceLevels().getBody() )
-                    .filter( List.class::isInstance )
-                    .map( List.class::cast )
-                    .ifPresent( experienceLevels::addAll );
-
-            return ResponseEntity.ok( experienceLevels.stream()
-                    .map( dtoService::volunteerExperienceToDto )
-                    .toList() );
-        }
-        catch ( Exception aE )
-        {
-            LOGGER.error( "Error on loading experience levels: {}", aE.getMessage() );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
                     .body( aE.getMessage() );
         }

@@ -19,13 +19,6 @@
             [valueType]="DictionaryValueTypeEnum.InterestCategory"
             [valuesList]="interestCategories"></app-dict-values-list>
         </mat-tab>
-        <mat-tab label="Poziomy doświadczenia">
-          <app-dict-values-list
-            #experienceLevelsList
-            (operationEvent)="onOperationAction($event)"
-            [valueType]="DictionaryValueTypeEnum.ExpLevel"
-            [valuesList]="volunteerExperience"></app-dict-values-list>
-        </mat-tab>
         <mat-tab label="Dodatkowe świadczenia ogłoszenia">
           <app-dict-values-list
             #benefitsList

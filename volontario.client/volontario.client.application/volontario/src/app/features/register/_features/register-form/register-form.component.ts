@@ -27,7 +27,6 @@ export class RegisterFormComponent implements OnInit {
   @Output() formSubmit = new EventEmitter<VolunteerRegisterDTO>();
   @Input() isRegistering: boolean = false;
   @Input() availableCategories: SelectFieldModelIf[] = [];
-  @Input() availableExperiences: SelectFieldModelIf[] = [];
 
   private _isPasswordShown: boolean = false;
 
@@ -56,7 +55,6 @@ export class RegisterFormComponent implements OnInit {
       Validators.pattern('.*[!@#$%^&*()_+].*'),
     ]),
     passwordRepeat: new FormControl('', [Validators.required]),
-    experience: new FormControl(null, [Validators.required]),
     interestCategories: new FormControl([1], [Validators.required]),
     participationMotivation: new FormControl('', [
       Validators.required,
@@ -98,7 +96,6 @@ export class RegisterFormComponent implements OnInit {
       domainEmail,
       contactEmail,
       password,
-      experience,
       interestCategories,
       participationMotivation,
       fieldOfStudy,
@@ -112,7 +109,6 @@ export class RegisterFormComponent implements OnInit {
       contactEmail: <string>contactEmail,
       password: <string>password,
       participationMotivation: <string>participationMotivation,
-      experienceId: <number>1,
       interestCategoriesIds: <number[]>interestCategories,
       fieldOfStudy: fieldOfStudy || null,
       phoneNumber: phoneNumber,

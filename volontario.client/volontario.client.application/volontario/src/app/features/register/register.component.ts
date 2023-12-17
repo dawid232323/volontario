@@ -5,7 +5,6 @@ import { SecurityService } from 'src/app/core/service/security/security.service'
 import { InterestCategoryService } from 'src/app/core/service/interestCategory.service';
 import { SelectFieldModelIf } from 'src/app/core/interface/selectField.interface';
 import { forkJoin } from 'rxjs';
-import { VolunteerExperienceService } from 'src/app/core/service/volunteer-experience.service';
 import { InfoCardTypeEnum } from '../../shared/features/success-info-card/info-card.component';
 import { ErrorDialogService } from 'src/app/core/service/error-dialog.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -29,7 +28,6 @@ export class RegisterComponent implements OnInit {
   isPerformingRegistration: boolean = false;
   hasRegisteredCorrectly = false;
   interestCategories: SelectFieldModelIf[] = [];
-  experienceLevels: SelectFieldModelIf[] = [];
 
   successMessageTitle = 'Rejestracja przebiegła pomyślnie';
   successMessageContent =
@@ -42,7 +40,6 @@ export class RegisterComponent implements OnInit {
   constructor(
     private authService: SecurityService,
     private interestCategoryService: InterestCategoryService,
-    private experienceService: VolunteerExperienceService,
     public router: Router,
     private errorDialogService: ErrorDialogService,
     private configurationService: ConfigurationService,
@@ -52,9 +49,8 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     forkJoin([
       this.interestCategoryService.getPublicValues(),
-      this.experienceService.getPublicValues(),
       this.configurationService.getRegulationsData(),
-    ]).subscribe(([categories, experiences, regulations]) => {
+    ]).subscribe(([categories, regulations]) => {
       this.regulations = regulations;
       this.interestCategories = categories.map(category => {
         return {
@@ -62,13 +58,7 @@ export class RegisterComponent implements OnInit {
           viewValue: category.name,
         };
       });
-      this.experienceLevels = experiences.map(expLevel => {
-        return {
-          value: expLevel.id,
-          viewValue: expLevel.name,
-          helpValue: expLevel.description,
-        };
-      });
+
     });
   }
 

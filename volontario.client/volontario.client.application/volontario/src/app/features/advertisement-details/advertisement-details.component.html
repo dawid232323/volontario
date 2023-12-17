@@ -110,19 +110,13 @@
                 <i class="fa-solid fa-hand-point-up text-lg"></i>
               </div>
               <div class="flex justify-center flex-col px-2">
-                <p class="font-semibold text-base !m-0">Poziom doświadczenia</p>
+                <p class="font-semibold text-base !m-0">Czy wymagamy doświadczenia?</p>
                 <p class="text-bgPrimary font-bold text-sm !m-0">
                   {{
-                    !advertisementData?.isExperienceRequired
-                      ? 'Każdy poziom doświadczenia'
-                      : advertisementData?.experienceLevel?.name
+                    advertisementData?.isExperienceRequired
+                      ? 'Tak'
+                      : 'Nie'
                   }}
-                  <i
-                    *ngIf="advertisementData?.isExperienceRequired"
-                    [matTooltip]="
-                      advertisementData?.experienceLevel?.definition || ''
-                    "
-                    class="fa-regular fa-circle-question hover:text-btnAccentHover"></i>
                 </p>
               </div>
             </div>

@@ -87,28 +87,18 @@ export class EndpointUrls {
   public static readonly benefitResource = '/benefit';
   public static readonly notUsedBenefits =
     EndpointUrls.benefitResource.concat('/all-not-used');
-  public static readonly experienceLevelResource = '/experience-level';
-  public static readonly experienceLevelPublic = '/experienceLevels';
-  public static readonly notUsedExpLevels =
-    EndpointUrls.experienceLevelResource.concat('/all-not-used');
   public static readonly advertisementBenefits =
     EndpointUrls.benefitResource.concat('/all-used');
   public static readonly interestCategories: string =
     EndpointUrls.interestCategoryResource.concat('/all-used');
-  public static readonly experienceLevels: string =
-    EndpointUrls.experienceLevelResource.concat('/all-used');
   public static readonly interestCategorySoftDelete =
     EndpointUrls.interestCategoryResource.concat('/soft-delete');
   public static readonly benefitSoftDelete =
     EndpointUrls.benefitResource.concat('/soft-delete');
-  public static readonly expLevelsSoftDelete =
-    EndpointUrls.experienceLevelResource.concat('/soft-delete');
   public static readonly interestCategoryRevertDelete =
     EndpointUrls.interestCategoryResource.concat('/revert-delete');
   public static readonly benefitRevertDelete =
     EndpointUrls.benefitResource.concat('/revert-delete');
-  public static readonly epxLevelRevertDelete =
-    EndpointUrls.experienceLevelResource.concat('/revert-delete');
   public static readonly evaluationResource = '/rating';
 
   public static readonly unauthorizedUrls = new Set<string>([

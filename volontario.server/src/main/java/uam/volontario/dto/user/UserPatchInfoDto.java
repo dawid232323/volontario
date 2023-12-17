@@ -23,8 +23,6 @@ public class UserPatchInfoDto
 
     private String participationMotivation;
 
-    private Long experienceId;
-
     private List< Long > interestCategoriesIds;
 
 }

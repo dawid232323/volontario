@@ -6,7 +6,6 @@ import {
 import { VolunteerData } from 'src/app/core/model/volunteer-data.model';
 import { isNil } from 'lodash';
 import { Institution } from 'src/app/core/model/institution.model';
-import { VolunteerExperience } from 'src/app/core/model/volunteer-experience.model';
 import { InterestCategoryDTO } from 'src/app/core/model/interestCategory.model';
 
 export interface UserEntitlementToSeePersonalInfoIf {
@@ -76,7 +75,6 @@ export class PatchUserDto {
     public firstName?: string,
     public lastName?: string,
     public interestCategoriesIds?: number[],
-    public experienceId?: number,
     public participationMotivation?: string,
     public fieldOfStudy?: string
   ) {}
@@ -92,7 +90,6 @@ export class PatchUserDto {
       formValue?.firstName,
       formValue?.lastName,
       formValue?.interestCategories,
-      formValue?.experienceLevel,
       formValue?.participationMotivation,
       formValue?.fieldOfStudy
     );
@@ -175,7 +172,6 @@ export class UserProfile implements UserRoleIf {
     public userRoles: string[],
     public domainEmailAddress?: string,
     public participationMotivation?: string,
-    public experienceLevel?: VolunteerExperience,
     public interestCategories?: InterestCategoryDTO[],
     public institutionId?: number,
     public institutionName?: string,
@@ -208,7 +204,6 @@ export class UserProfile implements UserRoleIf {
       payload?.userRoles,
       payload?.domainEmailAddress,
       payload?.participationMotivation,
-      VolunteerExperience.fromPayload(payload?.experienceLevel),
       payload?.interestCategories?.map(InterestCategoryDTO.fromPayload),
       payload?.institutionId,
       payload?.institutionName,

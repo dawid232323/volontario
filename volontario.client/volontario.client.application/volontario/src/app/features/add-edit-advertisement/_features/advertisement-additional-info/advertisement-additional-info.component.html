@@ -47,33 +47,8 @@
         class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
         formControlName="isExperienceRequired"
         color="accent"
-        (change)="onExperienceRequiredChange($event)"
         >Czy doświadczenie jest wymagane?</mat-slide-toggle
       >
-    </div>
-    <div class="flex flex-col lg:flex-row items-stretch">
-      <mat-form-field
-        class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-        appearance="standard"
-        color="accent">
-        <mat-label>Minimalny poziom doświadczenia</mat-label>
-        <mat-icon matPrefix color="accent">category</mat-icon>
-        <mat-select
-          formControlName="experienceLevel"
-          [disabled]="
-            additionalInfoFormGroup.controls['isExperienceRequired'].value ===
-            false
-          ">
-          <mat-option
-            *ngFor="let experience of experienceLevels"
-            [value]="experience.id"
-            >{{ experience.name }}
-            <i
-              [matTooltip]="experience.description || ''"
-              class="fa-regular fa-circle-question hover:text-btnAccentHover"></i>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
     <div class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
       <angular-editor

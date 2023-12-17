@@ -5,11 +5,9 @@ import { phoneNumberValidator } from '../../utils/validator.utils';
 import { UserService } from '../../core/service/user.service';
 import { isNil } from 'lodash';
 import { InterestCategoryService } from '../../core/service/interestCategory.service';
-import { VolunteerExperienceService } from '../../core/service/volunteer-experience.service';
 import { forkJoin } from 'rxjs';
 import { UserRoleEnum } from '../../core/model/user-role.model';
 import { PatchUserDto, UserProfile } from '../../core/model/user.model';
-import { VolunteerExperience } from '../../core/model/volunteer-experience.model';
 import { InterestCategoryDTO } from '../../core/model/interestCategory.model';
 
 @Component({
@@ -25,16 +23,13 @@ export class UserEditDataComponent implements OnInit {
 
   userProfile?: UserProfile;
 
-  availableExperienceLevels: VolunteerExperience[] = [];
-
   availableInterestCategories: InterestCategoryDTO[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private interestCategoryService: InterestCategoryService,
-    private experienceLevelService: VolunteerExperienceService
+    private interestCategoryService: InterestCategoryService
   ) {
     this.isDataLoading = true;
     this.userId = this.resolveUserId();
@@ -100,16 +95,7 @@ export class UserEditDataComponent implements OnInit {
     forkJoin([
       this.userService.getUserProfileDetails(this.userId),
       this.interestCategoryService.getPublicValues(),
-      this.experienceLevelService.getPublicValues(),
-    ]).subscribe(([userProfile, interestCategories, experienceLevels]) => {
-      this.availableExperienceLevels = experienceLevels.map(experienceLevel => {
-        return new VolunteerExperience(
-          experienceLevel.id,
-          experienceLevel.name,
-          experienceLevel.isUsed,
-          experienceLevel.definition
-        );
-      });
+    ]).subscribe(([userProfile, interestCategories]) => {
 
       this.availableInterestCategories = interestCategories.map(
         interestCategory => {
@@ -131,7 +117,6 @@ export class UserEditDataComponent implements OnInit {
         contactEmailAddress: userProfile.contactEmailAddress,
         fieldOfStudy: userProfile.fieldOfStudy,
         participationMotivation: userProfile.participationMotivation,
-        experienceLevel: userProfile.experienceLevel?.id,
         interestCategories: userProfile.interestCategories?.map(
           interestCategory => interestCategory.id
         ),

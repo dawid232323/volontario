@@ -51,8 +51,6 @@ public class VolunteerHandler
 
     private final InterestCategoryService interestCategoryService;
 
-    private final ExperienceLevelService experienceLevelService;
-
     private final PasswordEncoder passwordEncoder;
 
     private final MailService mailService;
@@ -75,9 +73,7 @@ public class VolunteerHandler
      *
      * @param aPasswordEncoder password encoder.
      *
-     * @param aInterestCategoryService interest category service.
-     *
-     * @param aExperienceLevelService experience level service.
+     * @param aInterestCategoryService interest category service
      *
      * @param aMailService mail service.
      *
@@ -91,7 +87,6 @@ public class VolunteerHandler
     public VolunteerHandler( final UserValidationService aUserValidationService, final DtoService aDtoService,
                              final UserService aUserService, final PasswordEncoder aPasswordEncoder,
                              final InterestCategoryService aInterestCategoryService,
-                             final ExperienceLevelService aExperienceLevelService,
                              final MailService aMailService,
                              final VoluntaryPresenceStateService aVoluntaryPresenceStateService,
                              final ConfigurationEntryService aConfigurationEntryService,
@@ -103,7 +98,6 @@ public class VolunteerHandler
         passwordEncoder = aPasswordEncoder;
         userValidationService = aUserValidationService;
         interestCategoryService = aInterestCategoryService;
-        experienceLevelService = aExperienceLevelService;
         mailService = aMailService;
         voluntaryPresenceStateService = aVoluntaryPresenceStateService;
         configurationEntryService = aConfigurationEntryService;
@@ -249,8 +243,6 @@ public class VolunteerHandler
                         .ifPresent( idList -> volunteerData.setInterestCategories( idList.stream()
                                 .map( interestCategoryService::loadEntity )
                                 .collect( Collectors.toList() ) ) );
-                Optional.ofNullable( aPatchDto.getExperienceId() )
-                        .ifPresent( id -> volunteerData.setExperience( experienceLevelService.loadEntity( id ) ) );
 
                 final ValidationResult validationResult = userValidationService.validateEntity( volunteer );
                 if( validationResult.isValidated() )

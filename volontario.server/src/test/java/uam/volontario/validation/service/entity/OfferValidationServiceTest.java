@@ -42,9 +42,9 @@ class OfferValidationServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", user, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
+                SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
                 Collections.emptyList(), Collections.emptyList(), null, null, now.plusSeconds( 1000L ), "periodicDesc",
-                "Place", false, false);
+                "Place", false, false, "", "");
 
         //when
         ValidationResult validationResult = offerValidationService.validateEntity(offer);
@@ -65,9 +65,9 @@ class OfferValidationServiceTest {
         OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
         Offer offer = new Offer( 0L, "Title", "Desc", user, null,
                 SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 1000L ), false,
-                null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
+                SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
                 Collections.emptyList(), Collections.emptyList(),null, null, now.plusSeconds( 2000L ), "periodicDesc",
-                "Place", false, false);
+                "Place", false, false, "", "");
 
         //when
         ValidationResult validationResult = offerValidationService.validateEntity(offer);
@@ -77,57 +77,5 @@ class OfferValidationServiceTest {
         assertEquals( 1, validationResult.getValidationViolations().size() );
         assertEquals( "End date should not be earlier than Expiration date",
                 validationResult.getValidationViolations().get( "offerDates" ) );
-    }
-
-    @Test
-    void shouldNotValidateOfferWithRequiredExperienceTrueButNoExperienceObject()
-    {
-        Instant now = Instant.now();
-
-        //given
-        User user = new User();
-        user.setInstitution( SampleDataUtil.getSampleInstitution() );
-
-        OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
-        Offer offer = new Offer( 0L, "Title", "Desc", user, null,
-                SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), true,
-                null, SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
-                Collections.emptyList(), Collections.emptyList(), null, null, now.plusSeconds( 1000L ), "periodicDesc",
-                "Place", false, false);
-
-        //when
-        ValidationResult validationResult = offerValidationService.validateEntity(offer);
-
-        //then
-        assertFalse( validationResult.isValidated() );
-        assertEquals( 1, validationResult.getValidationViolations().size() );
-        assertEquals( "Experience should be specified",
-                validationResult.getValidationViolations().get( "experience" ) );
-    }
-
-    @Test
-    void shouldNotValidateOfferWithRequiredExperienceFalseButWithExperienceObject()
-    {
-        Instant now = Instant.now();
-
-        //given
-        User user = new User();
-        user.setInstitution( SampleDataUtil.getSampleInstitution() );
-
-        OfferType type = new OfferType( 0L, "Type", Collections.emptyList() );
-        Offer offer = new Offer( 0L, "Title", "Desc", user, null,
-                SampleDataUtil.getSampleInstitution(), type, now, now.plusSeconds( 2000L ), false,
-                SampleDataUtil.getSampleExperienceLeve(), SampleDataUtil.getSampleOfferState(), List.of( SampleDataUtil.getSampleInterestCategory() ),
-                Collections.emptyList(), Collections.emptyList(), null, null, now.plusSeconds( 1000L ), "periodicDesc",
-                "Place", false, false);
-
-        //when
-        ValidationResult validationResult = offerValidationService.validateEntity(offer);
-
-        //then
-        assertFalse( validationResult.isValidated() );
-        assertEquals( 1, validationResult.getValidationViolations().size() );
-        assertEquals( "Experience should not be specified",
-                validationResult.getValidationViolations().get( "experience" ) );
     }
 }

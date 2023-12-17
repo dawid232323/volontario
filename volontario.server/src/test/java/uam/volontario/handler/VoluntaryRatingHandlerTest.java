@@ -52,7 +52,7 @@ class VoluntaryRatingHandlerTest
     private InstitutionService institutionService;
 
     private DtoService dtoService = spy( new DtoService( null, null,
-            null, null, null, null, null ) );
+            null, null, null, null ) );
 
     @Spy
     @InjectMocks

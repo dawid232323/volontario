@@ -22,7 +22,6 @@ export enum DictValueOperationTypeEnum {
 
 export enum DictionaryValueTypeEnum {
   InterestCategory,
-  ExpLevel,
   AddBenefits,
 }
 

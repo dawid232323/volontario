@@ -73,27 +73,6 @@ ALTER TABLE public.benefits_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.benefits_id_seq OWNED BY public.benefits.id;
 
-CREATE TABLE public.experience_level (
-                                         id bigint NOT NULL,
-                                         definition character varying(500),
-                                         name character varying(255),
-                                         value bigint,
-                                         is_used boolean
-);
-
-ALTER TABLE public.experience_level OWNER TO postgres;
-
-CREATE SEQUENCE public.experience_level_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER TABLE public.experience_level_id_seq OWNER TO postgres;
-
-ALTER SEQUENCE public.experience_level_id_seq OWNED BY public.experience_level.id;
-
 CREATE TABLE public.institution_contact_people (
                                                    id bigint NOT NULL,
                                                    contact_email character varying(255),
@@ -226,7 +205,6 @@ CREATE TABLE public.offers (
                                assigned_moderator_id bigint,
                                contact_person_id bigint,
                                institution_id bigint,
-                               minimum_experience_id bigint,
                                offer_state_id bigint,
                                offer_type_id bigint,
                                other_categories VARCHAR(500),
@@ -301,7 +279,6 @@ CREATE TABLE public.volunteer_data (
                                        id bigint NOT NULL,
                                        domain_email_address character varying(255),
                                        participation_motivation character varying(1500),
-                                       volunteer_experience_id bigint,
                                        field_of_study character varying(255),
                                        interests character varying(1500),
                                        experience_description character varying(1500)
@@ -452,8 +429,6 @@ ALTER TABLE ONLY public.applications ALTER COLUMN id SET DEFAULT nextval('public
 
 ALTER TABLE ONLY public.benefits ALTER COLUMN id SET DEFAULT nextval('public.benefits_id_seq'::regclass);
 
-ALTER TABLE ONLY public.experience_level ALTER COLUMN id SET DEFAULT nextval('public.experience_level_id_seq'::regclass);
-
 ALTER TABLE ONLY public.institution_contact_people ALTER COLUMN id SET DEFAULT nextval('public.institution_contact_people_id_seq'::regclass);
 
 ALTER TABLE ONLY public.institutions ALTER COLUMN id SET DEFAULT nextval('public.institutions_id_seq'::regclass);
@@ -490,9 +465,6 @@ ALTER TABLE ONLY public.voluntary_ratings
 
 ALTER TABLE ONLY public.benefits
     ADD CONSTRAINT benefits_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY public.experience_level
-    ADD CONSTRAINT experience_level_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.institution_contact_people
     ADD CONSTRAINT institution_contact_people_pkey PRIMARY KEY (id);
@@ -539,17 +511,11 @@ ALTER TABLE ONLY public.applications
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_institution_id_fkey FOREIGN KEY (institution_id) REFERENCES public.institutions(id);
 
-ALTER TABLE ONLY public.volunteer_data
-    ADD CONSTRAINT volunteer_data_volunteer_experience_id_fkey FOREIGN KEY (volunteer_experience_id) REFERENCES public.experience_level(id);
-
 ALTER TABLE ONLY public.offers
     ADD CONSTRAINT offers_assigned_moderator_id_fkey FOREIGN KEY (assigned_moderator_id) REFERENCES public.users(id);
 
 ALTER TABLE ONLY public.offers
     ADD CONSTRAINT offers_contact_person_id_fkey FOREIGN KEY (contact_person_id) REFERENCES public.users(id);
-
-ALTER TABLE ONLY public.offers
-    ADD CONSTRAINT offers_minimum_experience_id_fkey FOREIGN KEY (minimum_experience_id) REFERENCES public.experience_level(id);
 
 ALTER TABLE ONLY public.offers
     ADD CONSTRAINT offers_offer_state_id_fkey FOREIGN KEY (offer_state_id) REFERENCES public.offer_states(id);

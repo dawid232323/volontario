@@ -30,7 +30,6 @@ public class OfferSpecification implements Specification< Offer >
         Path< Instant > endDate = aRoot.get( "endDate" );
         Path< List< Long > > interestCategoryIds = aRoot.get( "interestCategories" ).get( "id" );
         Path< String > offerPlace = aRoot.get( "place" );
-        Path< Long > experienceLevelId = aRoot.get( "minimumExperience" ).get( "id" );
         Path< Boolean > isPoznanOnly = aRoot.get( "isPoznanOnly" );
         Path< Boolean > isHidden = aRoot.get( "isHidden" );
         Path< Long > institutionId = aRoot.get( "institution" ).get( "id" );
@@ -63,10 +62,6 @@ public class OfferSpecification implements Specification< Offer >
         {
             predicateList.add( aCriteriaBuilder.like( aCriteriaBuilder.lower( offerPlace ),
                     "%" + query.getOfferPlace().toLowerCase() + "%" ) );
-        }
-        if ( query.getExperienceLevelId() != null )
-        {
-            predicateList.add( aCriteriaBuilder.lessThanOrEqualTo( experienceLevelId, query.getExperienceLevelId() ) );
         }
         if ( query.getIsPoznanOnly() != null )
         {

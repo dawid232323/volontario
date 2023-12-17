@@ -77,21 +77,6 @@
         *ngIf="userProfile?.hasUserRole(UserRoleEnum.Volunteer)"
         class="flex flex-col lg:flex-row justify-between items-stretch pt-3">
         <mat-form-field
-          class="flex pt-3 pb-3 flex-col w-full lg:mr-3"
-          color="accent">
-          <mat-label>Poziom doświadczenia</mat-label>
-          <mat-select formControlName="experienceLevel">
-            <mat-option
-              *ngFor="let experience of availableExperienceLevels"
-              [value]="experience.id">
-              {{ experience.name }}
-              <i
-                [matTooltip]="experience.description || ''"
-                class="fa-regular fa-circle-question hover:text-btnAccentHover"></i>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field
           class="flex pt-3 pb-3 flex-col w-full lg:ml-3"
           color="accent">
           <mat-label>Wybierz zainteresowania</mat-label>
