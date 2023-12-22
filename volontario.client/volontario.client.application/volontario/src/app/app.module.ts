@@ -44,6 +44,8 @@ import { EvaluationModalModule } from 'src/app/shared/features/evaluation-modal/
 import { MainPageEditorModule } from 'src/app/features/main-page-editor/main-page-editor.module';
 import { RegulationPreviewModalModule } from 'src/app/shared/features/regulation-preview-modal/regulation-preview-modal.module';
 import { RegulationsEditorModule } from 'src/app/features/regulations-editor/regulations-editor.module';
+import { SingleDataInputModule } from './shared/features/single-data-input/single-data-input.module';
+import { ResetPasswordModule } from './shared/features/reset-password/reset-password.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -88,6 +90,8 @@ import { RegulationsEditorModule } from 'src/app/features/regulations-editor/reg
     MainPageEditorModule,
     RegulationPreviewModalModule,
     RegulationsEditorModule,
+    SingleDataInputModule,
+    ResetPasswordModule,
   ],
   providers: [
     {

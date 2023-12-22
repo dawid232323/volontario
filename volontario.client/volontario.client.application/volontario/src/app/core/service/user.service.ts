@@ -1,6 +1,6 @@
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
 import { Injectable } from '@angular/core';
-import { firstValueFrom, map, Observable, of, Subject } from 'rxjs';
+import { firstValueFrom, map, Observable, of } from 'rxjs';
 import {
   AdministrativeUserDetails,
   PatchUserDto,
@@ -12,7 +12,7 @@ import { isNil } from 'lodash';
 import { EndpointUrls } from 'src/app/utils/url.util';
 import { AdminUsersManagementQueryParamsIf } from 'src/app/features/admin-users-management/_features/users-filter-pane/users-filter-pane.component';
 import { PageableModel } from 'src/app/core/model/pageable.model';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from '../interface/httpOptions.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -120,6 +120,27 @@ export class UserService {
       EndpointUrls.changeUserPassword.concat(`/${userId}`),
       { password: newPassword }
     );
+  }
+
+  public changeUserPasswordByToken(
+    token: string,
+    newPassword: string
+  ): Observable<void> {
+    const options: HttpOptionsInterface = {
+      params: new HttpParams({ fromObject: { t: token } }),
+    };
+
+    return this.restService.patch(
+      EndpointUrls.setUserPassword,
+      { password: newPassword },
+      options
+    );
+  }
+
+  public resetUserPassword(contactEmailAddress: string): Observable<void> {
+    return this.restService.post(EndpointUrls.resetUserPassword, {
+      contactEmailAddress: contactEmailAddress,
+    });
   }
 
   public updateVolunteerInterests(

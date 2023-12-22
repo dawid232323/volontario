@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   Inject,
+  Input,
   OnInit,
   Optional,
   Output,
@@ -21,6 +22,7 @@ import { isNil } from 'lodash';
 enum ViewMode {
   Standard,
   ModalWindow,
+  ResetWindow,
 }
 
 @Component({
@@ -34,6 +36,8 @@ export class SetPasswordComponent implements OnInit {
   private _viewMode: ViewMode = ViewMode.Standard;
 
   @Output() formSubmitEvent = new EventEmitter<SetPasswordInterface>();
+  @Input() resetRequest: boolean = false;
+
   constructor(
     private formBuilder: FormBuilder,
     @Optional() private dialogRef?: MatDialogRef<SetPasswordComponent>,
@@ -65,6 +69,9 @@ export class SetPasswordComponent implements OnInit {
   }
 
   public get submitButtonLabel(): string {
+    if (this._viewMode === ViewMode.ResetWindow) {
+      return 'Zatwierdź';
+    }
     if (this._viewMode === ViewMode.Standard) {
       return 'Zarejestruj';
     }
@@ -82,7 +89,10 @@ export class SetPasswordComponent implements OnInit {
   public onFormSubmit() {
     const { password } = this.registerContactPersonFormGroup.value;
     const result: SetPasswordInterface = { password: password };
-    if (this._viewMode === ViewMode.Standard) {
+    if (
+      this._viewMode === ViewMode.Standard ||
+      this._viewMode === ViewMode.ResetWindow
+    ) {
       this.formSubmitEvent.emit(result);
     } else {
       this.dialogRef?.close(result);
@@ -112,7 +122,9 @@ export class SetPasswordComponent implements OnInit {
   }
 
   private determineViewMode() {
-    if (!isNil(this.dialogRef)) {
+    if (this.resetRequest) {
+      this._viewMode = ViewMode.ResetWindow;
+    } else if (!isNil(this.dialogRef)) {
       this._viewMode = ViewMode.ModalWindow;
     }
   }

@@ -76,6 +76,8 @@ public class SecurityConfiguration
                 "/api/institution/register-contact-person",
                 "/api/institution/{institution_id:[0-9]+}/register-employee/set-password",
                 "/api/institution/register-contact-person",
+                "/api/reset-password",
+                "/api/set-password",
                 "api/report",
                 "/api/report",
                 "/api/report/with-attachments",

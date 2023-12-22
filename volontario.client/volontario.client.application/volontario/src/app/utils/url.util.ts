@@ -80,6 +80,8 @@ export class EndpointUrls {
   public static readonly changeUserRolesUrl =
     EndpointUrls.userResource.concat('/change-roles');
   public static readonly changeUserPassword = '/change-password';
+  public static readonly resetUserPassword = '/reset-password';
+  public static readonly setUserPassword = '/set-password';
   public static readonly interestCategoryResource = '/interest-category';
   public static readonly interestCategoriesPublic = '/interestCategories';
   public static readonly notUsedInterestCategories =
@@ -110,6 +112,8 @@ export class EndpointUrls {
     EndpointUrls.refreshToken,
     EndpointUrls.reportWithAttachment,
     EndpointUrls.report,
+    EndpointUrls.resetUserPassword,
+    EndpointUrls.setUserPassword,
   ]);
 
   public static readonly unauthorizedParametrizedUrlPatterns = new Set<RegExp>([

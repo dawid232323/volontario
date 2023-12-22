@@ -11,11 +11,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.dto.LoginDto;
+import uam.volontario.dto.PasswordDto;
+import uam.volontario.dto.user.ContactEmailDto;
 import uam.volontario.handler.MessageGenerator;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.rest.VolunteerController;
 import uam.volontario.security.jwt.JWTService;
+import uam.volontario.security.mail.MailService;
+import uam.volontario.security.util.VolontarioBase64Coder;
 
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +40,8 @@ public class SecurityController
 
     private final PasswordEncoder passwordEncoder;
 
+    private final MailService mailService;
+
     /**
      * CDI constructor.
      *
@@ -44,14 +50,17 @@ public class SecurityController
      * @param aJwtService jwt service.
      *
      * @param aPasswordEncoder password encoder.
+     *
+     * @param aMailService mail service.
      */
     @Autowired
     public SecurityController( final UserService aUserService, final JWTService aJwtService,
-                               final PasswordEncoder aPasswordEncoder )
+                               final PasswordEncoder aPasswordEncoder, final MailService aMailService )
     {
         userService = aUserService;
         jwtService = aJwtService;
         passwordEncoder = aPasswordEncoder;
+        mailService = aMailService;
     }
 
     /**
@@ -173,5 +182,92 @@ public class SecurityController
 
         return ResponseEntity.status( HttpStatus.OK )
                 .build();
+    }
+
+    /**
+     * Sends email to user with link to reset password.
+     *
+     * @param aContactEmailDto dto with User's contact email address.
+     * @return
+     *        - Response Entity with code 200 if everything goes as expected.
+     *        - Response Entity with code 500 in case of unexpected server side error.
+     */
+    @PostMapping( "/reset-password" )
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
+    public ResponseEntity< ? > resetPassword( @RequestBody final ContactEmailDto aContactEmailDto )
+    {
+        try
+        {
+            final Optional< User > optionalUser =
+                    userService.tryToLoadByContactEmail( aContactEmailDto.getContactEmailAddress() );
+
+            if( optionalUser.isEmpty()  )
+            {
+                // for sake of RODO, let's not return error in case email was not found in the system.
+                // Simply let's not send any email.
+                return ResponseEntity.ok().build();
+            }
+
+            final User user = optionalUser.get();
+
+            if( !user.isVerified() )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "Can not reset password of user %s because of inactive account.",
+                                user.getContactEmailAddress() ) );
+            }
+
+            mailService.sendMailToUserAboutResettingPassword( optionalUser.get() );
+
+            return ResponseEntity.ok().build();
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    /**
+     * Changes password by 'token' mechanism.
+     *
+     * @param aToken token.
+     *
+     * @param aPasswordDto password dto.
+     * @return
+     *        - Response Entity with code 200 if everything goes as expected.
+     *        - Resoibse Entity with code 400 in case User could not be resolved from token.
+     *        - Response Entity with code 500 in case of unexpected server side error.
+     */
+    @PatchMapping( "/set-password" )
+    @PreAuthorize( "@permissionEvaluator.allowForEveryone()" )
+    public ResponseEntity< ? > changePasswordWithToken( @RequestParam( "t" ) final String aToken,
+                                                        @RequestBody final PasswordDto aPasswordDto )
+    {
+        try
+        {
+            final String contactEmailAddress = VolontarioBase64Coder.decode( aToken );
+
+            final Optional< User > optionalUser =
+                    userService.tryToLoadByContactEmail( contactEmailAddress );
+
+            if( optionalUser.isEmpty() )
+            {
+                return ResponseEntity.badRequest()
+                        .body( "Wrong token." );
+            }
+
+            final User user = optionalUser.get();
+            user.setHashedPassword( passwordEncoder.encode( aPasswordDto.getPassword() ) );
+            userService.saveOrUpdate( user );
+
+            return ResponseEntity.ok()
+                    .build();
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
     }
 }

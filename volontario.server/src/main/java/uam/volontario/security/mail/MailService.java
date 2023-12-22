@@ -23,7 +23,6 @@ import uam.volontario.model.offer.impl.Application;
 import uam.volontario.model.offer.impl.Benefit;
 import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.model.offer.impl.VoluntaryPresence;
-import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.security.util.VolontarioBase64Coder;
 
 import java.io.IOException;
@@ -695,6 +694,38 @@ public class MailService
         content = content.replaceAll( "\\|offerName\\|", institution.getName() );
         content = content.replaceAll( "\\|ratingLink\\|", String.format( "%s/user/%d?tab=1",
                 volontarioHost, volunteer.getId() ) );
+
+        helper.setText( content, true );
+
+        mailSender.send( message );
+    }
+
+    /**
+     * Sends email to User with link to reset password.
+     *
+     * @param aUser user.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendMailToUserAboutResettingPassword( final User aUser )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        helper.setTo( aUser.getContactEmailAddress() );
+        helper.setSubject( "Zresetowanie hasła w systemie Volontario" );
+
+        String content = Resources.toString( Resources.getResource( "emails/resetPassword.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|userFullName\\|", aUser.getFullName() );
+        content = content.replaceAll( "\\|resetPasswordLink\\|", String.format( "%s/user/set-new-password?t=%s",
+                volontarioHost, VolontarioBase64Coder.encode( aUser.getContactEmailAddress() ) ) );
 
         helper.setText( content, true );
 

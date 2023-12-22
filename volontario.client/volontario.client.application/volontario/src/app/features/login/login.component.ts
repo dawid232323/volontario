@@ -4,6 +4,10 @@ import { LoginInterface } from '../../core/interface/authorization.interface';
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { isNil } from 'lodash';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { SingleDataInputComponent } from '../../shared/features/single-data-input/single-data-input.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserService } from '../../core/service/user.service';
 
 @Component({
   selector: 'app-login',
@@ -16,11 +20,18 @@ export class LoginComponent implements OnInit {
   public isAccountInactive = false;
   public nextDestination?: UrlTree;
 
+  resetPasswordForm: FormGroup;
+
   constructor(
     private authService: SecurityService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
-  ) {}
+    private activatedRoute: ActivatedRoute,
+    private matDialog: MatDialog,
+    private formBuilder: FormBuilder,
+    private userService: UserService
+  ) {
+    this.resetPasswordForm = this.createFormGroup();
+  }
 
   ngOnInit(): void {
     const next = this.activatedRoute.snapshot.queryParams['next'];
@@ -51,11 +62,43 @@ export class LoginComponent implements OnInit {
     console.error(error);
   }
 
+  private createFormGroup(): FormGroup {
+    return this.formBuilder.group({
+      contactEmailAddress: [null, [Validators.required, Validators.email]],
+    });
+  }
+
   onRegisterButtonClicked() {
     return this.router.navigate(['register']);
   }
 
   onRegisterInstitutionClicked() {
     return this.router.navigate(['institution/register']);
+  }
+
+  onPasswordResetButtonClicked(): void {
+    this.matDialog
+      .open(SingleDataInputComponent, {
+        width: '400px',
+        data: {
+          description:
+            'Podaj kontaktowy adres email przypisany do Twojego konta. Jeżeli konto\n' +
+            '        z takim adresem email istnieje, wyślemy na ten adres maila z linkiem do\n' +
+            '        zresetowania hasła.',
+          iconName: 'mail',
+          hintsMap: new Map([
+            ['required', 'Pole jest wymagane'],
+            ['email', 'Niepoprawny format adresu email'],
+          ]),
+          formGroup: this.resetPasswordForm,
+          labelName: 'Podaj kontaktowy adres email',
+        },
+      })
+      .afterClosed()
+      .subscribe((contactEmailAddress: string) => {
+        if (!isNil(contactEmailAddress)) {
+          this.userService.resetUserPassword(contactEmailAddress).subscribe();
+        }
+      });
   }
 }
