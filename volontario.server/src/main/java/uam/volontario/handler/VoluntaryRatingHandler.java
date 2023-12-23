@@ -19,6 +19,7 @@ import uam.volontario.model.offer.impl.Offer;
 import uam.volontario.model.offer.impl.VoluntaryPresence;
 import uam.volontario.model.offer.impl.VoluntaryRating;
 import uam.volontario.model.utils.ModelUtils;
+import uam.volontario.security.mail.MailService;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +42,8 @@ public class VoluntaryRatingHandler
 
     private final DtoService dtoService;
 
+    private final MailService mailService;
+
     /**
      * CDI constructor.
      * 
@@ -53,17 +56,21 @@ public class VoluntaryRatingHandler
      * @param aInstitutionService institution service.
      *
      * @param aDtoService dto service.
+     *
+     * @param aMailService mail service.
      */
     @Autowired
     public VoluntaryRatingHandler( final OfferService aOfferService, final UserService aUserService,
                                    final VoluntaryRatingService aVoluntaryRatingService,
-                                   final InstitutionService aInstitutionService, final DtoService aDtoService )
+                                   final InstitutionService aInstitutionService, final DtoService aDtoService,
+                                   final MailService aMailService )
     {
         offerService = aOfferService;
         userService = aUserService;
         voluntaryRatingService = aVoluntaryRatingService;
         institutionService = aInstitutionService;
         dtoService = aDtoService;
+        mailService = aMailService;
     }
 
     /**
@@ -121,6 +128,11 @@ public class VoluntaryRatingHandler
             voluntaryRating.setVolunteerRatingReason( aRatingReason );
 
             voluntaryRatingService.saveOrUpdate( voluntaryRating );
+
+            if( aFirstRating )
+            {
+                mailService.sendMailToVolunteerAboutNewRating( voluntaryRating );
+            }
 
             return ResponseEntity.ok()
                     .build();
@@ -191,6 +203,11 @@ public class VoluntaryRatingHandler
             voluntaryRating.setInstitutionRatingReason( aRatingReason );
 
             voluntaryRatingService.saveOrUpdate( voluntaryRating );
+
+            if( aFirstRating )
+            {
+                mailService.sendMailToInstitutionContactPersonAboutNewRating( voluntaryRating );
+            }
 
             return ResponseEntity.ok()
                     .build();

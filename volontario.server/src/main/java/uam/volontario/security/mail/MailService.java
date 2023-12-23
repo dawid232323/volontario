@@ -19,10 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
 import uam.volontario.model.institution.impl.InstitutionContactPerson;
-import uam.volontario.model.offer.impl.Application;
-import uam.volontario.model.offer.impl.Benefit;
-import uam.volontario.model.offer.impl.Offer;
-import uam.volontario.model.offer.impl.VoluntaryPresence;
+import uam.volontario.model.offer.impl.*;
 import uam.volontario.security.util.VolontarioBase64Coder;
 
 import java.io.IOException;
@@ -730,6 +727,78 @@ public class MailService
         helper.setText( content, true );
 
         mailSender.send( message );
+    }
+
+    /**
+     * Sends email to User about new rating.
+     *
+     * @param aVoluntaryRating new Voluntary rating.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendMailToVolunteerAboutNewRating( final VoluntaryRating aVoluntaryRating )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        helper.setTo( aVoluntaryRating.getVolunteer().getContactEmailAddress() );
+        helper.setSubject( "Nowa ocena!" );
+
+        String content = Resources.toString( Resources.getResource( "emails/volunteerNewRating.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|institutionName\\|", aVoluntaryRating.getInstitution().getName() );
+        content = content.replaceAll( "\\|offerName\\|", aVoluntaryRating.getOffer().getTitle() );
+        content = content.replaceAll( "\\|volunteerRating\\|", aVoluntaryRating.getVolunteerRating() + "/5" );
+        content = content.replaceAll( "\\|optionalVolunteerRatingReason\\|",
+                aVoluntaryRating.getVolunteerRatingReason() == null
+                        ? StringUtils.EMPTY
+                        : "Komentarz: " + aVoluntaryRating.getVolunteerRatingReason() );
+
+        helper.setText( content, true );
+
+        trySendMail( () -> mailSender.send( message ) );
+    }
+
+    /**
+     * Sends email to Institution Contact Person about new rating.
+     *
+     * @param aVoluntaryRating new Voluntary rating.
+     *
+     * @throws MessagingException
+     *                                          in case of message syntax errors.
+     * @throws UnsupportedEncodingException
+     *                                          in case of wrong encoding of email.
+     */
+    public void sendMailToInstitutionContactPersonAboutNewRating( final VoluntaryRating aVoluntaryRating )
+            throws MessagingException, IOException
+    {
+        final MimeMessage message = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper( message, true );
+
+        helper.setFrom( noReplyVolontarioEmailAddress, emailSender );
+        helper.setTo( aVoluntaryRating.getOffer().getContactPerson().getContactEmailAddress() );
+        helper.setSubject( "Nowa ocena!" );
+
+        String content = Resources.toString( Resources.getResource( "emails/institutionNewRating.html" ),
+                StandardCharsets.UTF_8 );
+
+        content = content.replaceAll( "\\|volunteerFullName\\|", aVoluntaryRating.getVolunteer().getFullName() );
+        content = content.replaceAll( "\\|offerName\\|", aVoluntaryRating.getOffer().getTitle() );
+        content = content.replaceAll( "\\|institutionRating\\|", aVoluntaryRating.getInstitutionRating() + "/5" );
+        content = content.replaceAll( "\\|optionalInstitutionRatingReason\\|",
+                aVoluntaryRating.getInstitutionRatingReason() == null
+                        ? StringUtils.EMPTY
+                        : "Komentarz: " + aVoluntaryRating.getInstitutionRatingReason() );
+
+        helper.setText( content, true );
+
+        trySendMail( () -> mailSender.send( message ) );
     }
 
     private void sendInstitutionVerificationMailToModerator( Institution aInstitution ) throws MessagingException, IOException {
