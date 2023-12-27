@@ -53,7 +53,9 @@ public class InstitutionValidationService extends AbstractValidationService< Ins
             }
         }
 
-        institutionContactPersonValidationService.validateEntity( aInstitution.getInstitutionContactPerson() );
+        institutionContactPersonValidationService.validateEntity( aInstitution.getInstitutionContactPerson() )
+                .getValidationViolations()
+                .forEach( validationViolations::put );
     }
 
     @Override
