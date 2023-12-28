@@ -89,5 +89,16 @@ export class ApplicationDetailsRowComponent implements OnInit {
     this.router.navigate(['user', this.applicationDetails?.volunteerId]);
   }
 
+  public get shouldShowStatusChangeButtons(): boolean {
+    return (
+      this.applicationDetails?.state === ApplicationStateEnumName.Waiting ||
+      this.applicationDetails?.state === ApplicationStateEnumName.Reserve_list
+    );
+  }
+
+  public get shouldShowReserveListButton(): boolean {
+    return this.applicationDetails?.state === ApplicationStateEnumName.Waiting;
+  }
+
   protected readonly ApplicationStateEnumName = ApplicationStateEnumName;
 }
