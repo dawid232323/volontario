@@ -54,6 +54,27 @@ public class VoluntaryRatingController
     }
 
     /**
+     * Delete Volunteer rating given Offer.
+     *
+     * @param aVolunteerId id of Volunteer.
+     *
+     * @param aOfferId id of Offer.
+     *
+     * @return
+     *         - Response Entity with code 200 if everything went as expected.
+     *         - Response Entity with code 400 if Volunteer presence wasn't confirmed,
+     *                  if rating was out of bounds or if Volunteer was already rated.
+     *         - Response Entity with code 501 when unexpected server side error occurs.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForInstitutionRelatedToTheOffer( authentication.principal, #aOfferId )" )
+    @DeleteMapping( "/volunteer/{volunteerId}/{offerId}" )
+    public ResponseEntity< ? > deleteVolunteerRating( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                                      @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return voluntaryRatingHandler.deleteVolunteerRating( aVolunteerId, aOfferId );
+    }
+
+    /**
      * Rates Institution based on Volunteer organizational feeling on given Offer.
      *
      * @param aInstitutionId id of Institution to rate.
@@ -75,6 +96,28 @@ public class VoluntaryRatingController
         return voluntaryRatingHandler.rateInstitution( aRatingRequestDto.getVolunteerId(), aInstitutionId,
                 aRatingRequestDto.getOfferId(), aRatingRequestDto.getRating(), aRatingRequestDto.getRatingReason(),
                 true );
+    }
+
+    /**
+     * Delete Volunteer rating given Offer.
+     *
+     * @param aVolunteerId id of Volunteer.
+     *
+     * @param aOfferId id of Offer.
+     *
+     * @return
+     *         - Response Entity with code 200 if everything went as expected.
+     *         - Response Entity with code 400 if Volunteer presence wasn't confirmed,
+     *                  if rating was out of bounds or if Volunteer was already rated.
+     *         - Response Entity with code 501 when unexpected server side error occurs.
+     */
+    @PreAuthorize( "@permissionEvaluator.allowForVolunteerWhichHasAcceptedApplicationForGivenOffer( authentication.principal," +
+            " #aOfferId )" )
+    @DeleteMapping( "/institution/{offerId}/{volunteerId}" )
+    public ResponseEntity< ? > deleteInstitutionRating( @PathVariable( "volunteerId" ) final Long aVolunteerId,
+                                                        @PathVariable( "offerId" ) final Long aOfferId )
+    {
+        return voluntaryRatingHandler.deleteInstitutionRating( aVolunteerId, aOfferId );
     }
 
     /**

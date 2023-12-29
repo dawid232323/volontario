@@ -32,7 +32,9 @@
     class="grid lg:grid-cols-3 grid-cols-1 gap-x-3 gap-y-3 py-3">
     <app-evaluation-card
       *ngFor="let offerEval of displayedEvaluations"
-      [evaluation]="offerEval"></app-evaluation-card>
+      [evaluation]="offerEval"
+      (removeEvaluation)="removeEvaluation($event)"
+      (editEvaluation)="editEvaluation($event)"></app-evaluation-card>
   </section>
   <section id="paginator-section" *ngIf="!hasNoEvaluations">
     <mat-paginator

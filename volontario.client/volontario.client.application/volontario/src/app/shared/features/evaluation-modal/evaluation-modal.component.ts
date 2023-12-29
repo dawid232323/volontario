@@ -5,12 +5,18 @@ import { hasMaxLengthError } from 'src/app/utils/validator.utils';
 import { EvaluationAvailableOffer } from 'src/app/core/model/evaluation.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
+export enum EvaluationModalType {
+  New,
+  Edit,
+}
+
 export interface EvaluationModalData {
   availableOffers?: EvaluationAvailableOffer[];
   evaluationValue?: number;
   selectedOfferId?: number;
   comment?: string;
   evaluationMaxScale?: number;
+  modalType?: EvaluationModalType;
 }
 
 @Component({
@@ -27,11 +33,15 @@ export class EvaluationModalComponent implements OnInit {
   private _releaseLock = false;
   private _availableOffers: EvaluationAvailableOffer[] = [];
 
+  modalType: EvaluationModalType | undefined = EvaluationModalType.New;
+
   constructor(
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) private initialData: EvaluationModalData,
     private dialogRef: MatDialogRef<EvaluationModalComponent>
-  ) {}
+  ) {
+    this.modalType = initialData.modalType;
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -111,11 +121,24 @@ export class EvaluationModalComponent implements OnInit {
     }
   }
 
+  isEditModalType(): boolean {
+    return this.modalType === EvaluationModalType.Edit;
+  }
+
+  resolveModalTitle(): string {
+    if (this.isEditModalType()) {
+      return 'Edytuj ocenę';
+    } else {
+      return 'Oceń';
+    }
+  }
+
   private getResultDataFromForm(): EvaluationModalData {
     return {
       selectedOfferId: this.form.value['offerId'],
       evaluationValue: this.form.value['evaluation'],
       comment: this.form.value['evaluationDescription'],
+      modalType: this.modalType,
     };
   }
 

@@ -27,7 +27,10 @@ import {
 import { MatTabGroup } from '@angular/material/tabs';
 import { updateActiveUrl } from 'src/app/utils/url.util';
 import { EvaluationService } from 'src/app/core/service/evaluation.service';
-import { EvaluationModalData } from 'src/app/shared/features/evaluation-modal/evaluation-modal.component';
+import {
+  EvaluationModalData,
+  EvaluationModalType,
+} from 'src/app/shared/features/evaluation-modal/evaluation-modal.component';
 
 enum SelectedTabIndex {
   BasicData,
@@ -172,16 +175,29 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       rating: $event.evaluationValue!,
       ratingReason: $event.comment,
     };
-    this.evaluationService
-      .rateVolunteer(this._userId, requestBody)
-      .subscribe(async () => {
-        const result = await firstValueFrom(
-          this.resolveUserEvaluation(this._loggedUser!)
-        );
-        this._offersToEvaluate = result.canEvaluate;
-        this._evaluations = result.evaluation;
-        this._isLoadingData = false;
-      });
+    if ($event.modalType === EvaluationModalType.New) {
+      this.evaluationService
+        .rateVolunteer(this._userId, requestBody)
+        .subscribe(async () => {
+          const result = await firstValueFrom(
+            this.resolveUserEvaluation(this._loggedUser!)
+          );
+          this._offersToEvaluate = result.canEvaluate;
+          this._evaluations = result.evaluation;
+          this._isLoadingData = false;
+        });
+    } else if ($event.modalType === EvaluationModalType.Edit) {
+      this.evaluationService
+        .editVolunteerRating(this._userId, requestBody)
+        .subscribe(async () => {
+          const result = await firstValueFrom(
+            this.resolveUserEvaluation(this._loggedUser!)
+          );
+          this._offersToEvaluate = result.canEvaluate;
+          this._evaluations = result.evaluation;
+          this._isLoadingData = false;
+        });
+    }
   }
 
   public onSelectTabIndexChange($event: number) {

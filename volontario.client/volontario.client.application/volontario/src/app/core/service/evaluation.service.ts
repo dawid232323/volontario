@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { VolontarioRestService } from 'src/app/core/service/volontarioRest.service';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import {
   EvaluationDto,
   OffersToEvaluateIf,
   UserEvaluation,
 } from 'src/app/core/model/evaluation.model';
 import { EndpointUrls } from 'src/app/utils/url.util';
-import { AdvertisementDto } from 'src/app/core/model/advertisement.model';
 
 @Injectable({ providedIn: 'root' })
 export class EvaluationService {
@@ -105,6 +104,48 @@ export class EvaluationService {
     return this.restService.post(
       EndpointUrls.evaluationResource.concat(`/institution/${institutionId}`),
       requestBody
+    );
+  }
+
+  public editVolunteerRating(
+    volunteerId: number,
+    requestBody: EvaluationDto
+  ): Observable<void> {
+    return this.restService.patch(
+      EndpointUrls.evaluationResource.concat(`/volunteer/${volunteerId}`),
+      requestBody
+    );
+  }
+
+  public editInstitutionRating(
+    institutionId: number,
+    requestBody: EvaluationDto
+  ): Observable<void> {
+    return this.restService.patch(
+      EndpointUrls.evaluationResource.concat(`/institution/${institutionId}`),
+      requestBody
+    );
+  }
+
+  public deleteVolunteerRating(
+    volunteerId: number,
+    offerId: number
+  ): Observable<void> {
+    return this.restService.delete(
+      EndpointUrls.evaluationResource.concat(
+        '/volunteer/' + volunteerId + '/' + offerId
+      )
+    );
+  }
+
+  public deleteInstitutionRating(
+    volunteerId: number,
+    offerId: number
+  ): Observable<void> {
+    return this.restService.delete(
+      EndpointUrls.evaluationResource.concat(
+        '/institution/' + offerId + '/' + volunteerId
+      )
     );
   }
 }

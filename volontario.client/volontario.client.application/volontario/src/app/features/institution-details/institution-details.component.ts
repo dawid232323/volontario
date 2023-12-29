@@ -21,7 +21,10 @@ import {
 import { isNil } from 'lodash';
 import { MatTabGroup } from '@angular/material/tabs';
 import { updateActiveUrl } from 'src/app/utils/url.util';
-import { EvaluationModalData } from 'src/app/shared/features/evaluation-modal/evaluation-modal.component';
+import {
+  EvaluationModalData,
+  EvaluationModalType,
+} from 'src/app/shared/features/evaluation-modal/evaluation-modal.component';
 
 enum SelectedTabIndex {
   basicData,
@@ -91,12 +94,21 @@ export class InstitutionDetailsComponent implements OnInit {
   public onEvaluationPerformed(evalData: EvaluationModalData) {
     this.isLoadingData = true;
     const body = this.resolveRequestDto(evalData);
-    this.evaluationService
-      .rateInstitution(this._institutionId, body)
-      .subscribe(async () => {
-        await this.onAfterRating();
-        this.isLoadingData = false;
-      });
+    if (evalData.modalType === EvaluationModalType.New) {
+      this.evaluationService
+        .rateInstitution(this._institutionId, body)
+        .subscribe(async () => {
+          await this.onAfterRating();
+          this.isLoadingData = false;
+        });
+    } else if (evalData.modalType === EvaluationModalType.Edit) {
+      this.evaluationService
+        .editInstitutionRating(this._institutionId, body)
+        .subscribe(async () => {
+          await this.onAfterRating();
+          this.isLoadingData = false;
+        });
+    }
   }
 
   private setInitialData() {

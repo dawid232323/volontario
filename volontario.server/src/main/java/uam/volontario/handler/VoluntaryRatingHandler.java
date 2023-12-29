@@ -110,7 +110,7 @@ public class VoluntaryRatingHandler
             final Optional< VoluntaryRating > optionalVoluntaryRating =
                     voluntaryRatingService.findByOfferAndVolunteer( offer, volunteer );
 
-            if( optionalVoluntaryRating.isPresent() && !aFirstRating &&
+            if( optionalVoluntaryRating.isPresent() && aFirstRating &&
                     optionalVoluntaryRating.get().getVolunteerRating() != null )
             {
                 return ResponseEntity.badRequest()
@@ -133,6 +133,75 @@ public class VoluntaryRatingHandler
             {
                 mailService.sendMailToVolunteerAboutNewRating( voluntaryRating );
             }
+
+            return ResponseEntity.ok()
+                    .build();
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    public ResponseEntity< ? > deleteVolunteerRating( final Long aVolunteerId, final Long aOfferId )
+    {
+        try
+        {
+            final User volunteer = ModelUtils.resolveVolunteer( aVolunteerId, userService );
+            final Offer offer = ModelUtils.resolveOffer( aOfferId, offerService );
+
+            final Optional< VoluntaryRating > optionalVoluntaryRating =
+                    voluntaryRatingService.findByOfferAndVolunteer( offer, volunteer );
+
+            if( optionalVoluntaryRating.isEmpty() )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "No Voluntary Rating found for Volunteer %s and Offer %s",
+                                volunteer.getFullName(), offer.getTitle() ) );
+            }
+
+            final VoluntaryRating voluntaryRating = optionalVoluntaryRating.get();
+
+            voluntaryRating.setVolunteerRating( null );
+            voluntaryRating.setVolunteerRatingReason( null );
+
+            voluntaryRatingService.saveOrUpdate( voluntaryRating );
+
+            return ResponseEntity.ok()
+                    .build();
+        }
+        catch ( Exception aE )
+        {
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( aE.getMessage() );
+        }
+    }
+
+    public ResponseEntity< ? > deleteInstitutionRating( final Long aVolunteerId, final Long aOfferId )
+    {
+        try
+        {
+            final User volunteer = ModelUtils.resolveVolunteer( aVolunteerId, userService );
+            final Offer offer = ModelUtils.resolveOffer( aOfferId, offerService );
+
+
+            final Optional< VoluntaryRating > optionalVoluntaryRating =
+                    voluntaryRatingService.findByOfferAndVolunteer( offer, volunteer );
+
+            if( optionalVoluntaryRating.isEmpty() )
+            {
+                return ResponseEntity.badRequest()
+                        .body( String.format( "No Voluntary Rating found for Volunteer %s and Offer %s",
+                                volunteer.getFullName(), offer.getTitle() ) );
+            }
+
+            final VoluntaryRating voluntaryRating = optionalVoluntaryRating.get();
+
+            voluntaryRating.setInstitutionRating( null );
+            voluntaryRating.setInstitutionRatingReason( null );
+
+            voluntaryRatingService.saveOrUpdate( voluntaryRating );
 
             return ResponseEntity.ok()
                     .build();
@@ -185,7 +254,7 @@ public class VoluntaryRatingHandler
             final Optional< VoluntaryRating > optionalVoluntaryRating =
                     voluntaryRatingService.findByOfferAndVolunteer( offer, volunteer );
 
-            if( optionalVoluntaryRating.isPresent() && !aFirstRating &&
+            if( optionalVoluntaryRating.isPresent() && aFirstRating &&
                     optionalVoluntaryRating.get().getInstitutionRating() != null )
             {
                 return ResponseEntity.badRequest()

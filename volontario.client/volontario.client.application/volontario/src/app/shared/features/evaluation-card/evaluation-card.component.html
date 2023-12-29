@@ -1,8 +1,30 @@
 <mat-card class="flex border-2 h-full">
   <mat-card-header>
-    <mat-icon *ngFor="let _ of Array(evaluation.evaluationValue)" color="accent"
-      >star</mat-icon
-    >
+    <div class="flex flex-row">
+      <mat-icon
+        *ngFor="let _ of Array(evaluation.evaluationValue)"
+        color="accent"
+        >star
+      </mat-icon>
+      <mat-icon
+        *ngIf="canManageEvaluation() | async"
+        class="hover:cursor-pointer pl-2"
+        matTooltip="Zarządzaj oceną"
+        [matMenuTriggerFor]="languageMenu"
+        #languageMenuTrigger="matMenuTrigger">
+        list</mat-icon
+      >
+      <mat-menu #languageMenu="matMenu">
+        <button mat-menu-item (click)="onEditEvaluation()">
+          <mat-icon matPrefix color="accent">edit</mat-icon>
+          Edytuj ocenę
+        </button>
+        <button mat-menu-item (click)="onRemoveEvaluation()">
+          <mat-icon matPrefix style="color: red">delete</mat-icon>
+          Usuń ocenę
+        </button>
+      </mat-menu>
+    </div>
     <mat-card-title
       [routerLink]="'/advertisement/'.concat(evaluation.offerId.toString())"
       class="hover:text-btnAccentPrimary hover:cursor-pointer"
