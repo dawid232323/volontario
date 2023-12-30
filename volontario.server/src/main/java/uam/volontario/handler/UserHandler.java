@@ -1,7 +1,6 @@
 package uam.volontario.handler;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +14,14 @@ import uam.volontario.dto.convert.DtoService;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
 import uam.volontario.dto.user.UserPatchInfoDto;
 import uam.volontario.dto.user.UserProfileDto;
+import uam.volontario.dto.user.UserWithJwtDto;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.common.impl.UserSearchQuery;
 import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.model.volunteer.impl.VolunteerData;
+import uam.volontario.security.jwt.JWTService;
 import uam.volontario.validation.ValidationResult;
 import uam.volontario.validation.service.entity.UserValidationService;
 
@@ -49,6 +50,8 @@ public class UserHandler
 
 
     private final OfferService offerService;
+
+    private final JWTService jwtService;
 
 
     /**
@@ -202,7 +205,11 @@ public class UserHandler
             if( validationResult.isValidated() )
             {
                 userService.saveOrUpdate( user );
-                return ResponseEntity.ok( validationResult.getValidatedEntity() );
+                Map<String, String> mainTokenAndRefreshToken = jwtService.createMainTokenAndRefreshToken( user );
+                UserWithJwtDto dto = dtoService.getUserProfileWithJwtDtoFromUser(
+                        ( User ) validationResult.getValidatedEntity(),
+                        mainTokenAndRefreshToken );
+                return ResponseEntity.ok( dto );
             }
             else
             {

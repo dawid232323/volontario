@@ -14,12 +14,16 @@ import { AdminUsersManagementQueryParamsIf } from 'src/app/features/admin-users-
 import { PageableModel } from 'src/app/core/model/pageable.model';
 import { HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from '../interface/httpOptions.interface';
+import { TokenService } from "./security/token.service";
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private userData?: User;
 
-  constructor(private restService: VolontarioRestService) {}
+  constructor(
+    private restService: VolontarioRestService,
+    private tokenService: TokenService
+  ) {}
 
   public logout() {
     this.userData = undefined;
@@ -48,6 +52,8 @@ export class UserService {
       )
       .pipe(
         map(updateResult => {
+          this.tokenService.saveToken(updateResult.token);
+          this.tokenService.saveRefreshToken(updateResult.refreshToken);
           this.userData = User.fromPayload(updateResult);
           return this.userData;
         })
@@ -59,6 +65,8 @@ export class UserService {
       .patch(EndpointUrls.userResource.concat('/', userId.toString()), body)
       .pipe(
         map(updateResult => {
+          this.tokenService.saveToken(updateResult.token);
+          this.tokenService.saveRefreshToken(updateResult.refreshToken);
           this.userData = User.fromPayload(updateResult);
           return this.userData;
         })

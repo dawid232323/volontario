@@ -14,6 +14,7 @@ import uam.volontario.crud.service.*;
 import uam.volontario.dto.VolunteerDto;
 import uam.volontario.dto.VolunteerPatchInfoDto;
 import uam.volontario.dto.convert.DtoService;
+import uam.volontario.dto.user.UserWithJwtDto;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.User;
 import uam.volontario.model.institution.impl.Institution;
@@ -24,6 +25,7 @@ import uam.volontario.model.offer.impl.VoluntaryRating;
 import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.model.volunteer.impl.VolunteerData;
 import uam.volontario.rest.VolunteerController;
+import uam.volontario.security.jwt.JWTService;
 import uam.volontario.security.mail.MailService;
 import uam.volontario.security.util.VolontarioBase64Coder;
 import uam.volontario.validation.ValidationResult;
@@ -33,6 +35,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -61,6 +64,7 @@ public class VolunteerHandler
 
     private final OfferService offerService;
     private final VoluntaryRatingService voluntaryRatingService;
+    private final JWTService jwtService;
 
     /**
      * CDI constructor.
@@ -91,7 +95,8 @@ public class VolunteerHandler
                              final VoluntaryPresenceStateService aVoluntaryPresenceStateService,
                              final ConfigurationEntryService aConfigurationEntryService,
                              final OfferService aOfferService,
-                             final VoluntaryRatingService aVoluntaryRatingService )
+                             final VoluntaryRatingService aVoluntaryRatingService,
+                             final JWTService aJwtService )
     {
         dtoService = aDtoService;
         userService = aUserService;
@@ -103,6 +108,7 @@ public class VolunteerHandler
         configurationEntryService = aConfigurationEntryService;
         offerService = aOfferService;
         voluntaryRatingService = aVoluntaryRatingService;
+        jwtService = aJwtService;
     }
 
     /**
@@ -248,7 +254,10 @@ public class VolunteerHandler
                 if( validationResult.isValidated() )
                 {
                     userService.saveOrUpdate( volunteer );
-                    return ResponseEntity.ok( validationResult.getValidatedEntity() );
+                    Map<String, String> mainTokenAndRefreshToken = jwtService.createMainTokenAndRefreshToken( volunteer );
+                    UserWithJwtDto dto = dtoService.getUserProfileWithJwtDtoFromUser( volunteer,
+                            mainTokenAndRefreshToken );
+                    return ResponseEntity.ok( dto );
                 }
                 else
                 {

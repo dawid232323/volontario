@@ -20,6 +20,7 @@ import uam.volontario.dto.rating.VolunteerRatingDto;
 import uam.volontario.dto.user.AdministrativeUserDetailsDto;
 import uam.volontario.dto.user.InstitutionWorkerDto;
 import uam.volontario.dto.user.UserProfileDto;
+import uam.volontario.dto.user.UserWithJwtDto;
 import uam.volontario.model.common.UserRole;
 import uam.volontario.model.common.impl.Role;
 import uam.volontario.model.common.impl.User;
@@ -29,11 +30,13 @@ import uam.volontario.model.offer.impl.*;
 import uam.volontario.model.utils.ModelUtils;
 import uam.volontario.model.volunteer.impl.InterestCategory;
 import uam.volontario.model.volunteer.impl.VolunteerData;
+import uam.volontario.security.jwt.JWTService;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service for DTO operations.
@@ -390,6 +393,43 @@ public class DtoService
             userProfileDtoBuilder
                     .institutionId( institution.getId() )
                     .institutionName( institution.getName() );
+        }
+        return userProfileDtoBuilder.build();
+    }
+
+    /**
+     * Converts user entity to the dto used for presenting basic user data and containing new JWT.
+     *
+     * @param aUser entity that needs to be converted
+     *
+     * @return dto with all user information
+     */
+    public UserWithJwtDto getUserProfileWithJwtDtoFromUser( final User aUser, final Map<String, String> aTokens )
+    {
+        final String refreshToken = aTokens.get( JWTService.REFRESH_TOKEN_MAP_ENTRY );
+        final String token = aTokens.get( JWTService.TOKEN_MAP_ENTRY );
+        final List< UserRole > userRoles = aUser.getUserRoles();
+        final UserWithJwtDto.UserWithJwtDtoBuilder userProfileDtoBuilder = UserWithJwtDto.builder()
+                .id( aUser.getId() )
+                .firstName( aUser.getFirstName() )
+                .lastName( aUser.getLastName() )
+                .contactEmailAddress( aUser.getContactEmailAddress() )
+                .phoneNumber( aUser.getPhoneNumber() )
+                .roles( userRoles )
+                .token( token )
+                .refreshToken( refreshToken );
+        if( aUser.getVolunteerData() != null )
+        {
+            final VolunteerData volunteerData = aUser.getVolunteerData();
+            userProfileDtoBuilder
+                    .domainEmailAddress( volunteerData.getDomainEmailAddress() )
+                    .volunteerData( volunteerData );
+        }
+        if( aUser.getInstitution() != null )
+        {
+            final Institution institution = aUser.getInstitution();
+            userProfileDtoBuilder
+                    .institution( institution );
         }
         return userProfileDtoBuilder.build();
     }

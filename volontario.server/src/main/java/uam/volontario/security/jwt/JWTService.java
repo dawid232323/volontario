@@ -6,8 +6,6 @@ import io.jsonwebtoken.security.SignatureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import uam.volontario.crud.service.UserService;
 import uam.volontario.model.common.impl.Role;
@@ -26,6 +24,8 @@ import java.util.Optional;
 @Component
 public class JWTService
 {
+    public static final String TOKEN_MAP_ENTRY = "refresh_token";
+    public static final String REFRESH_TOKEN_MAP_ENTRY = "token";
     private final UserService userService;
 
     /**
@@ -54,8 +54,8 @@ public class JWTService
     public Map< String, String > createMainTokenAndRefreshToken( final User aUser )
     {
         return Map.ofEntries(
-                Map.entry( "token", createToken( aUser, 5 ) ), // 5 minutes
-                Map.entry( "refresh_token", createToken( aUser, 60 * 5 ) ) // 5 hours.
+                Map.entry( TOKEN_MAP_ENTRY, createToken( aUser, 5 ) ), // 5 minutes
+                Map.entry( REFRESH_TOKEN_MAP_ENTRY, createToken( aUser, 60 * 5 ) ) // 5 hours.
         );
     }
 
