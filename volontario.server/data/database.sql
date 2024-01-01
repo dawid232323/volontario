@@ -34,10 +34,11 @@ ALTER SEQUENCE public.application_states_id_seq OWNED BY public.application_stat
 CREATE TABLE public.applications (
                                      id bigint NOT NULL,
                                      is_starred boolean,
-                                     participation_motivation character varying(255),
+                                     participation_motivation character varying(500),
                                      offer_id bigint,
                                      state_id bigint,
-                                     volunteer_id bigint
+                                     volunteer_id bigint,
+                                     decision_reason character varying(500)
 );
 
 ALTER TABLE public.applications OWNER TO postgres;
@@ -533,7 +534,7 @@ ALTER TABLE ONLY public.voluntary_ratings
     ADD CONSTRAINT voluntary_ratings_volunteer_id_fkey FOREIGN KEY (volunteer_id) REFERENCES public.users(id);
 
 ALTER TABLE ONLY public.voluntary_ratings
-    ADD CONSTRAINT voluntary_ratings_institution_id_fkey FOREIGN KEY (institution_id) REFERENCES public.institution(id);
+    ADD CONSTRAINT voluntary_ratings_institution_id_fkey FOREIGN KEY (institution_id) REFERENCES public.institutions(id);
 
 ALTER TABLE ONLY public.voluntary_ratings
     ADD CONSTRAINT voluntary_ratings_offer_id_fkey FOREIGN KEY (offer_id) REFERENCES public.offers(id);

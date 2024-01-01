@@ -14,7 +14,7 @@ export interface EvaluationModalData {
   availableOffers?: EvaluationAvailableOffer[];
   evaluationValue?: number;
   selectedOfferId?: number;
-  comment?: string;
+  comment?: string | null;
   evaluationMaxScale?: number;
   modalType?: EvaluationModalType;
 }

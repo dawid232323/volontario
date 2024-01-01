@@ -29,6 +29,12 @@
           [availableOffers]="offersToEvaluate?.offersToEvaluate || []"
           [evaluations]="evaluations"></app-evaluation>
       </mat-tab>
+      <mat-tab
+        *ngIf="userProfile?.hasUserRole(UserRoleEnum.Volunteer)"
+        label="Odbyte wolontariaty">
+        <app-volunteer-presence-list
+          [offers]="volunteerOffers"></app-volunteer-presence-list>
+      </mat-tab>
     </mat-tab-group>
   </div>
 </main>

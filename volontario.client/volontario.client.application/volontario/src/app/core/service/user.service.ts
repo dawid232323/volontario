@@ -15,6 +15,7 @@ import { PageableModel } from 'src/app/core/model/pageable.model';
 import { HttpParams } from '@angular/common/http';
 import { HttpOptionsInterface } from '../interface/httpOptions.interface';
 import { TokenService } from "./security/token.service";
+import { AdvertisementPreview } from 'src/app/core/model/advertisement.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -239,5 +240,19 @@ export class UserService {
         targetUserId.toString()
       )
     );
+  }
+
+  public resolveVolunteerPresence(
+    volunteerId: number
+  ): Observable<AdvertisementPreview[]> {
+    return this.restService
+      .get(
+        EndpointUrls.volunteerResource.concat(
+          '/',
+          String(volunteerId),
+          '/all-presences'
+        )
+      )
+      .pipe(map(result => result.map(AdvertisementPreview.fromPayload)));
   }
 }

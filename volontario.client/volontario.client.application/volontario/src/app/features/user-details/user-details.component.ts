@@ -27,6 +27,7 @@ import {
 import { MatTabGroup } from '@angular/material/tabs';
 import { updateActiveUrl } from 'src/app/utils/url.util';
 import { EvaluationService } from 'src/app/core/service/evaluation.service';
+import { AdvertisementPreview } from 'src/app/core/model/advertisement.model';
 import {
   EvaluationModalData,
   EvaluationModalType,
@@ -35,6 +36,7 @@ import {
 enum SelectedTabIndex {
   BasicData,
   Evaluation,
+  VolunteerPresences,
 }
 
 @Component({
@@ -55,6 +57,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   public _userProfilePicture?: string;
   private _evaluations?: UserEvaluation;
   private _offersToEvaluate?: OffersToEvaluateIf;
+  private _volunteerOffers: AdvertisementPreview[] = [];
 
   constructor(
     private userService: UserService,
@@ -237,9 +240,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           this._userProfilePicture = <string>profilePicture;
         }
         if (userProfileData.hasUserRole(UserRoleEnum.Volunteer)) {
-          const userRolesResolve = await firstValueFrom(
-            this.resolveUserEvaluation(loggedUser)
-          );
+          const volunteerData = await Promise.all([
+            firstValueFrom(this.resolveUserEvaluation(loggedUser)),
+            firstValueFrom(
+              this.userService.resolveVolunteerPresence(userProfileData.id)
+            ),
+          ]);
+          const userRolesResolve = volunteerData[0];
+          this._volunteerOffers = volunteerData[1];
           this._offersToEvaluate = userRolesResolve.canEvaluate;
           this._evaluations = userRolesResolve.evaluation;
         }
@@ -299,6 +307,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   public get canSeePersonalInfo(): boolean {
     return this._canSeePersonalInfo;
+  }
+
+  public get volunteerOffers(): AdvertisementPreview[] {
+    return this._volunteerOffers;
   }
 
   protected readonly UserRoleEnum = UserRoleEnum;

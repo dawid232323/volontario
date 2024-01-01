@@ -5,8 +5,8 @@ import {
   UserOfferEvaluation,
 } from 'src/app/core/model/evaluation.model';
 import { isNil } from 'lodash';
-import { UserService } from '../../../core/service/user.service';
-import { UserRoleEnum } from '../../../core/model/user-role.model';
+import { UserService } from 'src/app/core/service/user.service';
+import { UserRoleEnum } from 'src/app/core/model/user-role.model';
 import { map, Observable } from 'rxjs';
 
 export interface EvaluationRemovalDataIf {

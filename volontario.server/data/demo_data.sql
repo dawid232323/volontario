@@ -45,7 +45,7 @@ INSERT INTO public.offers(
 VALUES (1, 'Pomagamy w jednym z domów spokojnej starości w Poznaniu. ' ||
            'Nasza pomoc opiera się głównie na wsparciu personelu sprzątającego. Często pełnimy też rolę pomocy kuchennej.' ||
            'Szukamy ciepłych, cierpliwych i wyrozumiałych osób. W zamian oferujemy szczery i piękny uśmiech naszych podopiecznych',
-        '2023-05-25 00:00:00+00', '2023-05-25 00:00:00+00', true,
+        '2024-05-25 00:00:00+00', '2024-05-25 00:00:00+00', true,
         true, 'Poznań', '2023-05-20 00:00:00+00', 'Pomoc w domu spokojnej starości', 1, 1, 1, 1, NULL, false,
         NULL),
        (2, 'Potrzebujemy osoby, która pomoże naszej organizacji w przeprowadzaniu zbiórek datków dla osób potrzebujących.' ||
@@ -99,3 +99,18 @@ VALUES (1, 1),
        (1, 2),
        (1, 3),
        (2, 4);
+
+INSERT INTO public.applications (is_starred, participation_motivation, offer_id, state_id, volunteer_id, decision_reason)
+VALUES (false, 'Chciałbym pomóc w zbiórce', 2, 3, 7, null);
+
+SELECT setval('public.applications_id_seq', 2, true);
+
+INSERT INTO public.voluntary_presences (volunteer_id, offer_id, volunteer_reported_presence_state_id, institution_reported_presence_state_id, volunteer_reminder_date, institution_reminder_date, was_institution_reminded, was_volunteer_reminded, volunteer_left_reminder_count, institution_left_reminder_count, volunteer_decision_date, institution_decision_date) VALUES
+(7, 2, 2, 2, '2023-05-30'::date, '2023-05-30'::date, true, true, 3, 3, '2023-05-30'::date, '2023-05-30'::date);
+
+SELECT setval('voluntary_presences_id_seq', 2, true);
+
+INSERT INTO public.voluntary_ratings (institution_rating, institution_rating_reason, volunteer_rating, volunteer_rating_reason, institution_id, offer_id, volunteer_id) VALUES
+(5, 'Bardzo dobra współpraca', 5, 'Świetny wolontariusz, polecamy', 2, 2, 7);
+
+SELECT setval('voluntary_ratings_id_seq', 2, true);

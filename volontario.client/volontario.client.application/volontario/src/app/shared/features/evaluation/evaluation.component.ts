@@ -155,11 +155,19 @@ export class EvaluationComponent implements OnInit {
   }
 
   editEvaluation(offerId: number) {
+    const selectedRating = this._evaluations.evaluations.find(
+      evaluation => evaluation.offerId === offerId
+    );
+    if (isNil(selectedRating)) {
+      return;
+    }
     const data: EvaluationModalData = {
       availableOffers: this.availableOffers,
       evaluationMaxScale: this.evaluationMaxScale,
       modalType: EvaluationModalType.Edit,
       selectedOfferId: offerId,
+      evaluationValue: selectedRating.evaluationValue,
+      comment: selectedRating.evaluationComment,
     };
     this.matDialog
       .open(EvaluationModalComponent, {
@@ -169,7 +177,10 @@ export class EvaluationComponent implements OnInit {
       .afterClosed()
       .subscribe((modalResult: EvaluationModalData | null) => {
         if (!isNil(modalResult)) {
-          this.evaluationPerformed.emit(modalResult);
+          this.evaluationPerformed.emit({
+            ...modalResult,
+            modalType: EvaluationModalType.Edit,
+          });
         }
       });
   }
