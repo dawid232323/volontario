@@ -26,7 +26,6 @@ export class MainPageComponent implements OnInit {
   @HostListener('window:resize')
   onResize() {
     this.windowWidth = window.innerWidth;
-    console.log(this.windowWidth);
   }
 
   ngOnInit(): void {

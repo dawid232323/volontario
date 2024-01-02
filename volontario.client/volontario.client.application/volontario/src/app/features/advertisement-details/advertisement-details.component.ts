@@ -305,6 +305,21 @@ export class AdvertisementDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  public canChangeVisibility(): boolean {
+    if (!this.canManageOffer) {
+      return false;
+    }
+    if (
+      this.loggedUser?.hasUserRoles([
+        UserRoleEnum.Moderator,
+        UserRoleEnum.Admin,
+      ])
+    ) {
+      return true;
+    }
+    return this.loggedUser?.institution?.active || false;
+  }
+
   public isInstitutionActive(): boolean {
     return (
       !isNil(this.advertisementData?.institutionId) &&

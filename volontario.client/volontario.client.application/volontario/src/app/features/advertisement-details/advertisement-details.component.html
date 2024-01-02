@@ -110,13 +110,11 @@
                 <i class="fa-solid fa-hand-point-up text-lg"></i>
               </div>
               <div class="flex justify-center flex-col px-2">
-                <p class="font-semibold text-base !m-0">Czy wymagamy doświadczenia?</p>
+                <p class="font-semibold text-base !m-0">
+                  Czy wymagamy doświadczenia?
+                </p>
                 <p class="text-bgPrimary font-bold text-sm !m-0">
-                  {{
-                    advertisementData?.isExperienceRequired
-                      ? 'Tak'
-                      : 'Nie'
-                  }}
+                  {{ advertisementData?.isExperienceRequired ? 'Tak' : 'Nie' }}
                 </p>
               </div>
             </div>
@@ -289,6 +287,7 @@
             Edytuj ogłoszenie
           </button>
           <button
+            *ngIf="canChangeVisibility()"
             mat-raised-button
             class="hover:text-bgPrimary"
             (click)="onShowHideOffer()">
